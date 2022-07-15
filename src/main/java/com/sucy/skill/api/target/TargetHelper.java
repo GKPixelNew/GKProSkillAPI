@@ -223,7 +223,8 @@ public abstract class TargetHelper {
         Location temp = loc1.clone();
         for (int i = 0; i < steps; i++) {
             temp.add(slope);
-            if (isSolid(temp.getBlock().getType())) {
+//            if (isSolid(temp.getBlock().getType())) {
+            if (temp.getBlock().getType()!=Material.AIR) {
                 return true;
             }
         }

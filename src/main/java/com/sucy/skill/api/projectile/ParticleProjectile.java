@@ -35,6 +35,7 @@ import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.target.TargetHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
@@ -150,7 +151,7 @@ public class ParticleProjectile extends CustomProjectile
     @Override
     protected boolean landed()
     {
-        return TargetHelper.isSolid(getLocation().getBlock().getType());
+        return getLocation().getBlock().getType()!= Material.AIR;
     }
 
     /**
@@ -244,7 +245,7 @@ public class ParticleProjectile extends CustomProjectile
     public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan)
     {
         ArrayList<Vector> dirs = calcSpread(center, angle, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        ArrayList<ParticleProjectile> list = new ArrayList<>();
         for (Vector dir : dirs)
         {
             Location l = loc.clone();
@@ -274,7 +275,7 @@ public class ParticleProjectile extends CustomProjectile
     {
         Vector vel = new Vector(0, 1, 0);
         ArrayList<Location> locs = calcRain(center, radius, height, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        ArrayList<ParticleProjectile> list = new ArrayList<>();
         for (Location l : locs)
         {
             l.setDirection(vel);

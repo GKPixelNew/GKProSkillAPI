@@ -174,7 +174,7 @@
     </dependencies>
 
     <build>
-        <directory>../ProBuilds</directory>
+        <directory>./build</directory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
@@ -264,12 +264,4 @@
             </resource>
         </resources>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>promcteam</id>
-            <name>ProMCTeam</name>
-            <url>https://maven.pkg.github.com/promcteam/promccore</url>
-        </repository>
-    </distributionManagement>
 </project>
