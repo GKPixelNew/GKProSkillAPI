@@ -91,6 +91,7 @@ public class Settings {
             ACCOUNT_MAX            = ACCOUNT_BASE + "max-accounts",
             ACCOUNT_PERM           = ACCOUNT_BASE + "perm-accounts",
             TARGET_BASE            = "Targeting.",
+            TARGET_HITBOX          = TARGET_BASE + "hitbox",
             TARGET_MONSTER         = TARGET_BASE + "monsters-enemy",
             TARGET_PASSIVE         = TARGET_BASE + "passive-ally",
             TARGET_PLAYER          = TARGET_BASE + "player-ally",
@@ -205,6 +206,7 @@ public class Settings {
      * @return max accounts allowed for most players
      */
     @Getter private int                 maxAccounts;
+    @Getter private         float               hitbox;
     private         boolean             monsterEnemy;
     private         boolean             passiveAlly;
     private         boolean             playerAlly;
@@ -796,6 +798,10 @@ public class Settings {
     }
 
     private void loadTargetingSettings() {
+        if (config.isNumber(TARGET_HITBOX))
+            hitbox = config.getFloat(TARGET_HITBOX);
+        else
+            config.set("hitbox", 1.5);
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
             monsterEnemy = false;

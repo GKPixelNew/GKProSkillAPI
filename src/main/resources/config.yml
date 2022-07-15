@@ -33,6 +33,9 @@ Accounts:
 # you are able to use them.
 Targeting:
   #
+  # A float indicating the hit box of a projectile.
+  hitbox: 1.5
+  #
   # Whether all monsters are enemies.
   # If you are using pets that include zombies/spiders/etc,
   # you shouldn't enable this.

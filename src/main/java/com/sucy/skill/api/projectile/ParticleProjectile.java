@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.projectile;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ParticleProjectileExpireEvent;
 import com.sucy.skill.api.event.ParticleProjectileHitEvent;
@@ -160,7 +161,7 @@ public class ParticleProjectile extends CustomProjectile
     @Override
     protected double getCollisionRadius()
     {
-        return 1.5;
+        return SkillAPI.getSettings().getHitbox();
     }
 
     /**
