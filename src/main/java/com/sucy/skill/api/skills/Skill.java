@@ -62,6 +62,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -448,15 +449,15 @@ public abstract class Skill implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIndicator() {
-        ItemStack item = indicator.clone();
-        ItemMeta  meta = item.getItemMeta();
-        meta.setDisplayName(name);
-
-        ArrayList<String> lore = new ArrayList<>();
+        ItemStack    item = new ItemStack(indicator.getType());
+        ItemMeta     meta = item.getItemMeta();
+        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+        if (meta.hasDisplayName())
+            lore.add(0, meta.getDisplayName());
         lore.add("Level: " + getLevelReq(0));
         lore.add("Cost: " + getCost(0));
         meta.setLore(lore);
-
+        meta.setDisplayName(name);
         item.setItemMeta(meta);
 
         return item;
@@ -523,9 +524,11 @@ public abstract class Skill implements IconHolder {
     public ItemStack getIndicator(PlayerSkill skillData, boolean brief) {
         Player player = skillData.getPlayerData().getPlayer();
 
-        ItemStack item = indicator.clone();
+        ItemStack item = new ItemStack(indicator.getType());
         item.setAmount(Math.max(1, skillData.getLevel()));
-        ItemMeta          meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
+        ItemMeta meta = item.hasItemMeta()
+                ? item.getItemMeta()
+                : Bukkit.getItemFactory().getItemMeta(item.getType());
         ArrayList<String> lore = new ArrayList<>();
 
         String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
@@ -564,16 +567,14 @@ public abstract class Skill implements IconHolder {
                     String attr      = line.substring(start + 6, end);
                     Object currValue = getAttr(player, attr, Math.max(1, skillData.getLevel()));
                     Object nextValue = getAttr(player, attr, Math.min(skillData.getLevel() + 1, maxLevel));
-                    if (attr.equals("level") || attr.equals("cost")) {
-                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
-                        currValue = nextValue;
-                    }
+                    if (attr.equals("level") || attr.equals("cost"))
+                        currValue = nextValue =
+                                (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
 
-                    if (currValue.equals(nextValue) || brief) {
+                    if (currValue.equals(nextValue) || brief)
                         line = line.replace("{attr:" + attr + "}", attrStatic.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()));
-                    } else {
+                    else
                         line = line.replace("{attr:" + attr + "}", attrChanging.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()).replace("{new}", nextValue.toString()));
-                    }
                 }
 
                 // Full description
@@ -610,10 +611,7 @@ public abstract class Skill implements IconHolder {
         // Click string at the bottom
         if (SkillAPI.getSettings().isCombosEnabled() && canCast()) {
             PlayerCombos combos = skillData.getPlayerData().getComboData();
-            if (combos.hasCombo(this)) {
-                lore.add("");
-                lore.add(combos.getComboString(this));
-            }
+            if (combos.hasCombo(this)) lore.addAll(Arrays.asList("", combos.getComboString(this)));
         }
 
         // Binds
@@ -623,9 +621,7 @@ public abstract class Skill implements IconHolder {
             lore.add(SkillAPI.getSettings().getBindText().replace("{material}", type));
         }
 
-        if (lore.size() > 0) {
-            meta.setDisplayName(lore.remove(0));
-        }
+        if (lore.size() > 0) meta.setDisplayName(lore.remove(0));
 
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -805,7 +801,7 @@ public abstract class Skill implements IconHolder {
      * @param level  the level of the skill to create for
      * @param step   the current progress of the indicator
      */
-    public void playPreview(Player player, int level, int step) { }
+    public void playPreview(Player player, int level, int step) {}
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data
