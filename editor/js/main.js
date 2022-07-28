@@ -238,7 +238,6 @@ window.onload = function () {
             activeClass.createFormHTML();
         }
     }
-    console.log(window.localStorage.getItem('skillsActive'))
     if (window.localStorage.getItem('skillsActive') === 'false') {
         switchToClasses();
     } else {
