@@ -76,6 +76,7 @@
             <select id="skillList" size="30">
                 <option selected="selected">Skill 1</option>
                 <option>+ 新增技能</option>
+                <option>+ 匯入技能</option>
             </select>
             <div id="builder">
                 <h6 id="skillDetails">詳細資料</h6>
@@ -137,6 +138,7 @@
             }
         },
         created() {
+            Quasar.Dark.set(true);
             const url = new URL(window.location.href);
             let token = url.searchParams.get("token");
             if (token !== null) {
@@ -155,7 +157,7 @@
                     console.log("Logged in");
                     axios.get("https://accounts.robothanzo.dev/v1/discord/user/" + account.account.discordId, {
                         headers: {
-                            "Authorization": "Bearer " + token
+                            "Authorization": "Bearer " + getApiKey()
                         }
                     }).then(response => {
                         if (response.data.success) {
@@ -168,51 +170,46 @@
         },
         methods: {
             upload() {
-                const token = window.localStorage.getItem("token");
-                if (token !== null) {
-                    const apiKey = JSON.parse(atob(token.split('.')[1])).account.apiKey;
-                    let formData = new FormData();
-                    formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
-                        type: 'application/json'
-                    }));
-                    formData.append('file', new File([new Blob([activeSkill.getSaveString()], {
-                        type: 'application/x-yaml',
-                        filename: 'skill.yaml'
-                    })], activeSkill.data[0].value + ".yml"));
-                    axios.post('https://cdn.gkpixel.com/v1/skill', formData, {
-                        headers: {
-                            'Authorization': 'Bearer ' + apiKey,
-                        }
-                    }).then(function (response) {
-                        if (response.data.success) {
-                            Quasar.Notify.create({
-                                position: 'top',
-                                color: 'green',
-                                icon: 'done',
-                                progress: true,
-                                message: '成功上傳。'
-                            })
-                        } else {
-                            Quasar.Notify.create({
-                                position: 'top',
-                                color: 'negative',
-                                icon: 'report_problem',
-                                progress: true,
-                                message: '上傳失敗。'
-                            })
-                        }
-                    }).catch(function (error) {
+                const apiKey = getApiKey();
+                let formData = new FormData();
+                formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
+                    type: 'application/json'
+                }));
+                formData.append('file', new File([new Blob([activeSkill.getSaveString()], {
+                    type: 'application/x-yaml',
+                    filename: 'skill.yaml'
+                })], activeSkill.data[0].value + ".yml"));
+                axios.post('https://cdn.gkpixel.com/v1/skill', formData, {
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey,
+                    }
+                }).then(function (response) {
+                    if (response.data.success) {
+                        Quasar.Notify.create({
+                            position: 'top',
+                            color: 'green',
+                            icon: 'done',
+                            progress: true,
+                            message: '上傳成功'
+                        })
+                    } else {
                         Quasar.Notify.create({
                             position: 'top',
                             color: 'negative',
                             icon: 'report_problem',
                             progress: true,
-                            message: '上傳失敗。Error ' + error.response.status
+                            message: '上傳失敗'
                         })
-                    });
-                } else {
-                    window.location.href = "https://accounts.robothanzo.dev/v1/discord/login?redirect=" + window.location.href;
-                }
+                    }
+                }).catch(function (error) {
+                    Quasar.Notify.create({
+                        position: 'top',
+                        color: 'negative',
+                        icon: 'report_problem',
+                        progress: true,
+                        message: '上傳失敗，錯誤 ' + error.response.status
+                    })
+                });
             }
         }
     })

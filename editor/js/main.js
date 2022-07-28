@@ -46,8 +46,10 @@ depend('data/data', function () {
             if (activeComponent) {
                 activeComponent.update();
             }
-            if (this.selectedIndex == this.length - 1) {
+            if (this.selectedIndex === this.length - 2) {
                 newSkill();
+            } else if (this.selectedIndex === this.length - 1) {
+                importSkill();
             } else {
                 activeSkill = skills[this.selectedIndex];
                 activeSkill.apply();
@@ -531,6 +533,15 @@ function loadSection(data) {
                 }
             }
         }
+    }
+}
+
+function getApiKey() {
+    const token = window.localStorage.getItem("token");
+    if (token === null) {
+        window.location.href = "https://accounts.robothanzo.dev/v1/discord/login?redirect=" + window.location.href;
+    } else {
+        return JSON.parse(atob(token.split('.')[1])).account.apiKey;
     }
 }
 
