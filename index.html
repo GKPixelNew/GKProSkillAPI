@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
           type="text/css">
@@ -18,14 +17,13 @@
 </head>
 
 <body>
-<div id="super">
+<div id="super" style="height: 100vh">
     <header>
         <div>
             <h1 class="q-pb-none">GKPixel</h1>
             <h2>Skill Editor</h2>
         </div>
     </header>
-
     <div id="version">
         <label for="version-select">
             Minecraft Version
@@ -46,8 +44,6 @@
             <option>1.7</option> -->
         </select>
     </div>
-
-    <!-- IO Buttons -->
     <div id="io" class="q-pt-sm">
         <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
         <span>{{ username }}</span>
@@ -65,15 +61,10 @@
                      window.localStorage.removeItem('token')">Logout
         </q-btn>
     </div>
-
-    <!-- Display when the window is too small -->
     <div id="small">
         <p>Please enlarge your browser window or zoom out</p>
     </div>
-
     <div id="main">
-
-        <!-- Skill/Class Tabs -->
         <div id="tabSpacer"></div>
         <div id="skillTab" class="tab tabLeft tabActive">
             Skills
@@ -81,8 +72,6 @@
         <div id="classTab" class="tab tabRight">
             Classes
         </div>
-
-        <!-- Skill Content -->
         <div id="skills">
 
             <!-- Skill list -->
@@ -92,7 +81,7 @@
             </select>
 
             <!-- Effect builder -->
-            <div id="builder">
+            <div style="overflow: auto" id="builder">
                 <h6 id="skillDetails">Details</h6>
                 <h6 id="addTrigger">Triggers</h6>
                 <h6 id="saveSkill">Save Skill</h6>
@@ -131,26 +120,20 @@
 
             </div>
         </div>
-
-        <!-- Class Content -->
         <div id="classes">
-
-            <!-- Class list -->
             <select id="classList" size="30">
                 <option selected="selected">Class 1</option>
                 <option>+ New Class</option>
             </select>
-
             <div id="classForm"></div>
         </div>
-
-    </div>
-    <div id="badBrowser">
-        <p>Loading...</p>
+        <div id="badBrowser">
+            <p>Loading...</p>
+        </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.umd.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2.7.5/dist/quasar.umd.prod.js"></script>
 <script>
     const app = Vue.createApp({
         data() {

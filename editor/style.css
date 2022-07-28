@@ -1,39 +1,40 @@
 @font-face {
-	font-family: 'Product Sans Regular';
-	font-style: normal;
-	font-weight: normal;
-	src: local('Product Sans Regular'), url('ProductSans-Regular.woff') format('woff');
+    font-family: 'Product Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Regular'), url('ProductSans-Regular.woff') format('woff');
 }
+
 @font-face {
-	font-family: 'Product Sans Bold';
-	font-style: normal;
-	font-weight: normal;
-	src: local('Product Sans Bold'), url('ProductSans-Bold.woff') format('woff');
+    font-family: 'Product Sans Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Bold'), url('ProductSans-Bold.woff') format('woff');
 }
 
 * {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 html, body {
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	font: 20px Roboto;
-	font-weight: normal;
-	color: white;
-	background-color: black;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font: 20px Roboto;
+    font-weight: normal;
+    color: white;
+    background-color: black;
 }
 
 #badBrowser {
@@ -58,58 +59,59 @@ html, body {
 }
 
 #builder, #skillForm, #classForm, #componentChooser, #triggerChooser {
-	width: calc(100% - 200px);
-	height: 100%;
-	float: left;
-	overflow-y: auto;
+    width: calc(100% - 200px);
+    height: 100%;
+    float: left;
+    overflow-y: auto;
 }
 
-#skillForm, /*#builder,*/ #componentChooser, #triggerChooser {
-	display: none;
+#skillForm, /*#builder,*/
+#componentChooser, #triggerChooser {
+    display: none;
 }
 
 #skills, #classes {
-	float: left;
-	width: 100%;
-	height: calc(100% - 45px);
-	background-color: black;
-	border-radius: 0;
-	overflow: hidden;
+    float: left;
+    width: 100%;
+    height: calc(100% - 45px);
+    background-color: black;
+    border-radius: 0;
+    overflow: hidden;
 }
 
 #classes {
-	display: none;
+    display: none;
 }
 
 #main {
-	height: calc(100% - 75px);
-	background-color: #333;
-	clear: both;
+    height: calc(100% - 75px);
+    background-color: #333;
+    clear: both;
 }
 
 #small {
-	height: calc(100% - 150px);
-	background-color: black;
-	display: none;
-	padding: 20px;
-	clear: both;
+    height: calc(100% - 150px);
+    background-color: black;
+    display: none;
+    padding: 20px;
+    clear: both;
 }
 
 #builderSpacer {
-	display: inline-block;
-	width: calc(20% - 40px);
-	height: 10px;
+    display: inline-block;
+    width: calc(20% - 40px);
+    height: 10px;
 }
 
 #tabSpacer {
-	float:left;
-	width: 5%;
-	height: 10px;
+    float: left;
+    width: 5%;
+    height: 10px;
 }
 
-#skillList, #classList  {
-	float: left;
-	width: 200px;
+#skillList, #classList {
+    float: left;
+    width: 200px;
     font: 18px Roboto;
     background-color: #181818;
     color: white;
@@ -117,134 +119,134 @@ html, body {
     height: 100%;
     padding: 5px;
     border: none;
-	margin: 0;
+    margin: 0;
 }
 
 #skillList option, #classList option {
-	border-radius: 10px;
-	padding: 3px;
-	padding-left: 8px;
-	cursor: pointer;
+    border-radius: 10px;
+    padding: 3px;
+    padding-left: 8px;
+    cursor: pointer;
 }
 
 header {
-	width: 150px;
-	float: left;
-	height: 80px;
+    width: 150px;
+    float: left;
+    height: 80px;
 }
 
 #version {
-	width: calc(100% - 450px);
-	float: left;
-	height: 40px;
-	padding: 20px;
+    width: calc(100% - 450px);
+    float: left;
+    height: 40px;
+    padding: 20px;
 }
 
 h1 {
-	font: 36px Product Sans Bold;
-	font-weight: normal;
-	color: #FFAB3C;
-	padding: 10px;
+    font: 36px Product Sans Bold;
+    font-weight: normal;
+    color: #FFAB3C;
+    padding: 10px;
 }
 
 h2 {
-	font: 20px Product Sans Bold;
-	font-weight: normal;
-	padding-left: 10px;
+    font: 20px Product Sans Bold;
+    font-weight: normal;
+    padding-left: 10px;
 }
 
 h4 {
-	font: 32px Product Sans Bold;
-	font-weight: normal;
-	text-align: center;
-	padding: 10px;
-	color: #0f0;
-	clear: both;
+    font: 32px Product Sans Bold;
+    font-weight: normal;
+    text-align: center;
+    padding: 10px;
+    color: #0f0;
+    clear: both;
 }
 
 h5 {
-	float: left;
-	width: 225px;
-	padding: 10px 5px;
-	background-color: #181818;
-	margin-bottom: 10px;
-	margin-left: 10px;
-	border-radius: 5px;
-	border: 2px solid #333;
-	text-align: center;
-	font: 24px Roboto;
-	font-weight: normal;
-	
-	transition: background-color 600ms;
+    float: left;
+    width: 225px;
+    padding: 10px 5px;
+    background-color: #181818;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 2px solid #333;
+    text-align: center;
+    font: 24px Roboto;
+    font-weight: normal;
+
+    transition: background-color 600ms;
 }
 
 h5:hover {
-	background-color: #777;
-	cursor: pointer;
+    background-color: #777;
+    cursor: pointer;
 }
 
 h6 {
-	clear: both;
-	display: inline-block;
-	width: calc(20% - 8px);
-	padding: 5px 5px;
-	background-color: #043;
-	margin-left: 3px;
-	margin-top: 10px;
-	margin-bottom: 5px;
-	border-radius: 5px;
-	text-align: center;
-	font: 24px Product Sans Regular;
-	font-weight: normal;
-	
-	transition: background-color 600ms;
+    clear: both;
+    display: inline-block;
+    width: calc(20% - 8px);
+    padding: 5px 5px;
+    background-color: #043;
+    margin-left: 3px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    text-align: center;
+    font: 24px Product Sans Regular;
+    font-weight: normal;
+
+    transition: background-color 600ms;
 }
 
 h6:hover {
-	background-color: #666;
-	cursor: pointer;
+    background-color: #666;
+    cursor: pointer;
 }
 
 hr {
-	clear: both;
-	margin: 10px 0;
+    clear: both;
+    margin: 10px 0;
 }
 
 footer {
-	width: 100%;
-	height: 40px;
-	background-color: black;
+    width: 100%;
+    height: 40px;
+    background-color: black;
 }
 
 footer a {
-	text-align: center;
-	height: 25px;
-	display: inline-block;
-	width: 25%;
-	color: #06C;
-	padding-top: 5px;
-	text-decoration: none;
-	border-top: 1px solid white;
-	position: absolute;
-	left: 0;
-	transition: background-color 600ms;
-	border-left: 1px solid white;
+    text-align: center;
+    height: 25px;
+    display: inline-block;
+    width: 25%;
+    color: #06C;
+    padding-top: 5px;
+    text-decoration: none;
+    border-top: 1px solid white;
+    position: absolute;
+    left: 0;
+    transition: background-color 600ms;
+    border-left: 1px solid white;
 }
 
 footer a:hover {
-	background-color: #222;
+    background-color: #222;
 }
 
 footer a:first-child {
-	border-left: none;
+    border-left: none;
 }
 
 footer #profile {
-	left: 25%;
+    left: 25%;
 }
 
 footer #source {
-	left: 50%;
+    left: 50%;
 }
 
 footer #irc {
@@ -259,25 +261,25 @@ input, select, textarea {
 }
 
 .cancelButton {
-	background-color: #A00;
-	color: white;
-	transition: background-color 600ms, color 600ms;
+    background-color: #A00;
+    color: white;
+    transition: background-color 600ms, color 600ms;
 }
 
 .cancelButton:hover {
-	background-color: white;
-	color: #A00;
+    background-color: white;
+    color: #A00;
 }
 
 .doneButton {
-	background-color: #008966;
+    background-color: #008966;
     border: 2px solid #004433;
-	color: white;
-	transition: background-color 600ms, color 600ms;
+    color: white;
+    transition: background-color 600ms, color 600ms;
 }
 
 .doneButton:hover {
-	background-color: #004433;
+    background-color: #004433;
     border: 2px solid #002211;
 }
 
@@ -290,7 +292,7 @@ hr {
 }
 
 #saveSkill {
-	background-color: #375a7f;
+    background-color: #375a7f;
 }
 
 #saveSkill:hover {
@@ -298,7 +300,7 @@ hr {
 }
 
 #uploadSkill {
-	background-color: #317F43;
+    background-color: #317F43;
 }
 
 #uploadSkill:hover {
@@ -306,27 +308,27 @@ hr {
 }
 
 .ioButton {
-	height: 30px;
-	margin: 5px 10px;
-	width: calc(100% - 20px);
-	background-color: #375a7f;
-	color: white;
+    height: 30px;
+    margin: 5px 10px;
+    width: calc(100% - 20px);
+    background-color: #375a7f;
+    color: white;
     border: none;
-	border-radius: 5px;
-	font: 20px Roboto;
-	font-weight: normal;
-	cursor: pointer;
-	transition: background-color 600ms;
+    border-radius: 5px;
+    font: 20px Roboto;
+    font-weight: normal;
+    cursor: pointer;
+    transition: background-color 600ms;
 }
 
 .ioButton:hover {
-	background-color: #6af;
+    background-color: #6af;
 }
 
 .ioText {
-	text-align: center;
-	margin-top: 15px;
-	margin-bottom: 5px;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .premium {
@@ -348,10 +350,10 @@ hr {
     color: white;
     padding: 3px 10px;
     font: 24px Product Sans Regular;
-	font-weight: normal;
+    font-weight: normal;
     text-align: center;
-	
-	transition: background-color 600ms;
+
+    transition: background-color 600ms;
 }
 
 .tab {
@@ -405,34 +407,34 @@ hr {
 }
 
 #io {
-	float: right;
-	width: 300px;
+    float: right;
+    width: 300px;
 }
 
 label {
-	float: left;
-	text-align: right;
-	width: 40%;
-	padding-right: 15px;
-	font: 24px Roboto;
-	font-weight: normal;
-	padding-top: 10px;
-	clear: both;
+    float: left;
+    text-align: right;
+    width: 40%;
+    padding-right: 15px;
+    font: 24px Roboto;
+    font-weight: normal;
+    padding-top: 10px;
+    clear: both;
 }
 
 section {
-	text-align: center;
-	color: #ccc;
-	font: 24px Roboto;
-	font-weight: normal;
-	clear: both;
-	padding-top: 10px;
+    text-align: center;
+    color: #ccc;
+    font: 24px Roboto;
+    font-weight: normal;
+    clear: both;
+    padding-top: 10px;
 }
 
 sectionr {
-	text-align: center;
+    text-align: center;
     display: block;
-	margin: 0px auto 10px;
+    margin: 0px auto 10px;
     background-color: #888;
     height: 1px;
     width: 61%;
@@ -440,19 +442,19 @@ sectionr {
 }
 
 #skillForm input, select, #classForm input, #skillForm .byteList, #classForm .byteList {
-	font: 20px Roboto;
-	font-weight: normal;
-	background-color: #181818;
-	border: 1px solid #888;
+    font: 20px Roboto;
+    font-weight: normal;
+    background-color: #181818;
+    border: 1px solid #888;
     border-top: none;
     border-right: none;
-	border-radius: 5px;
-	color: white;
-	padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
     padding-right: 0;
-	margin: 2px 5px; 
-	width: 40%;
-	float: left;
+    margin: 2px 5px;
+    width: 40%;
+    float: left;
 }
 
 #skillForm .grayed, #classForm .grayed {
@@ -476,24 +478,24 @@ sectionr {
 }
 
 select {
-	background-color: #222;
-	cursor: pointer;
+    background-color: #222;
+    cursor: pointer;
 }
 
 #skillForm textarea, #classForm textArea {
-	font: 20px Roboto;
-	font-weight: normal;
-	background-color: #181818;
-	border: 1px solid #888;
+    font: 20px Roboto;
+    font-weight: normal;
+    background-color: #181818;
+    border: 1px solid #888;
     border-top: none;
     border-right: none;
-	border-radius: 5px;
-	color: white;
-	padding: 5px 10px;
-	margin: 2px 5px;
-	width: 40%;
-	float: left;
-	height: 200px;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
+    margin: 2px 5px;
+    width: 40%;
+    float: left;
+    height: 200px;
 }
 
 textArea {
@@ -501,29 +503,29 @@ textArea {
 }
 
 #skillForm p, #classForm p {
-	text-align: center;
-	font: 20px Roboto;
-	color: #ccc;
+    text-align: center;
+    font: 20px Roboto;
+    color: #ccc;
 }
 
 #skillForm .areaLabel, #classForm .areaLabel {
 }
 
 #skillForm .attrLabel, #classForm .attrLabel {
-	width: 30px;
-	text-align: left;
-	margin: 0;
-	padding: 0;
-	padding-top: 10px;
-	clear: none;
+    width: 30px;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    padding-top: 10px;
+    clear: none;
 }
 
 #skillForm .base, #classForm .base {
-	width: calc(25% - 32px);
+    width: calc(25% - 32px);
 }
 
 #skillForm .scale, #classForm .scale {
-	width: calc(15% - 18px);
+    width: calc(15% - 18px);
 }
 
 #skillForm .byteList input, #classForm .byteList input {
@@ -534,24 +536,24 @@ textArea {
 ::-webkit-scrollbar {
     width: 12px;
 }
- 
+
 ::-webkit-scrollbar-track {
     border-radius: 10px;
-	border: 1px solid #aaa;
+    border: 1px solid #aaa;
 }
- 
+
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-	background-color: #aaa;
+    background-color: #aaa;
 }
 
 @media screen and (max-width: 599px) {
-	
-	#main {
-		display: none;
-	}
-	
-	#small {
-		display: block;
-	}
+
+    #main {
+        display: none;
+    }
+
+    #small {
+        display: block;
+    }
 }
