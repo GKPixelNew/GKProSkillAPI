@@ -287,7 +287,7 @@ function importSkill() {
                     }
                 }).then(response => {
                     loadSkillText(response.data);
-					list.selectedIndex = list.length - 3;
+                    list.selectedIndex = list.length - 3;
                     activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(list.length - 3)))];
                     activeSkill.apply();
                     showSkillPage('builder');
