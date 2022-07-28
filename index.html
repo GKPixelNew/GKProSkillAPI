@@ -17,7 +17,7 @@
 </head>
 
 <body>
-<div id="super" style="height: 99vh">
+<div id="super" style="height: 96.5vh">
     <header>
         <div>
             <h1 class="q-pb-none">GKPixel</h1>
@@ -45,7 +45,7 @@
         </select>
     </div>
     <div id="io" class="q-pt-sm">
-        <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
+        <q-avatar v-if="loggedIn&&username!==''" class="q-mt-sm q-mr-sm"><img :src="avatar" alt="Avatar"></q-avatar>
         <span>{{ username }}</span>
         <q-btn v-if="!loggedIn"
                color="primary"
@@ -77,7 +77,7 @@
                 <option selected="selected">Skill 1</option>
                 <option>+ 新增技能</option>
             </select>
-            <div style="overflow: auto" id="builder">
+            <div id="builder">
                 <h6 id="skillDetails">詳細資料</h6>
                 <h6 id="addTrigger">觸發條件</h6>
                 <h6 id="saveSkill">儲存技能</h6>

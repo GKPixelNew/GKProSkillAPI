@@ -15,22 +15,22 @@ h3:hover {
 }
 
 .triggerLabel:before {
-    content: "Trigger: ";
+    content: "觸發條件: ";
     color: #FF5555;
 }
 
 .conditionLabel:before {
-    content: "Condition: ";
+    content: "判斷式: ";
     color: #5555FF;
 }
 
 .targetLabel:before {
-    content: "Target: ";
+    content: "目標: ";
     color: #55FF55;
 }
 
 .mechanicLabel:before {
-    content: "Mechanic: ";
+    content: "機制: ";
     color: #FF55FF;
 }
 
