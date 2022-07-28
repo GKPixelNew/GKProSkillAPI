@@ -59,9 +59,6 @@ depend('data/data', function () {
             activeSkill.createFormHTML();
             showSkillPage('skillForm');
         });
-        document.getElementById('saveButton').addEventListener('click', function (e) {
-            saveToFile('skills.yml', getSkillSaveData());
-        });
         document.getElementById('saveSkill').addEventListener('click', function (e) {
             saveToFile(activeSkill.data[0].value + '.yml', activeSkill.getSaveString());
         });
@@ -93,9 +90,6 @@ depend('data/data', function () {
                 activeClass = classes[this.selectedIndex];
                 activeClass.createFormHTML();
             }
-        });
-        document.getElementById('saveButton').addEventListener('click', function (e) {
-            saveToFile('classes.yml', getClassSaveData());
         });
     });
 
@@ -206,7 +200,6 @@ window.onload = function () {
 
     document.getElementById('skillTab').addEventListener('click', function (e) {
         switchToSkills();
-
     });
     document.getElementById('classTab').addEventListener('click', function (e) {
         switchToClasses();
@@ -248,7 +241,7 @@ window.onload = function () {
             activeClass.createFormHTML();
         }
     }
-    if (localStorage.getItem('skillsActive') == 'false') {
+    if (localStorage.getItem('skillsActive') === 'false') {
         switchToClasses();
     }
 }
@@ -260,6 +253,7 @@ function switchToSkills() {
         document.getElementById('skills').style.display = 'block';
         document.getElementById('classes').style.display = 'none';
         skillsActive = true;
+        localStorage.setItem('skillsActive', 'true');
     }
 }
 
@@ -270,6 +264,7 @@ function switchToClasses() {
         document.getElementById('classes').style.display = 'block';
         document.getElementById('skills').style.display = 'none';
         skillsActive = false;
+        localStorage.setItem('skillsActive', 'false');
     }
 }
 

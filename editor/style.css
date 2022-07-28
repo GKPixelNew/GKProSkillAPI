@@ -1,19 +1,96 @@
 @font-face {
-    font-family: 'Mojave-Web';
-    src: url('mojave-webfont.eot');
-    src: url('mojave-webfont.eot?#iefix') format('embedded-opentype'),
-         url('mojave-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'Product Sans Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Regular'), url('ProductSans-Regular.woff') format('woff');
 }
 
+
 @font-face {
-    font-family: 'Sertig-Web';
-    src: url('sertig-webfont.eot');
-    src: url('sertig-webfont.eot?#iefix') format('embedded-opentype'),
-         url('sertig-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'Product Sans Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Italic'), url('ProductSans-Italic.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Thin Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Thin Regular'), url('ProductSans-Thin.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Light Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Light Regular'), url('ProductSans-Light.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Medium Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Medium Regular'), url('ProductSans-Medium.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Black Regular';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Black Regular'), url('ProductSans-Black.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Thin Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Thin Italic'), url('ProductSans-ThinItalic.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Light Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Light Italic'), url('ProductSans-LightItalic.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Medium Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Medium Italic'), url('ProductSans-MediumItalic.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Bold';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Bold'), url('ProductSans-Bold.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Bold Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Bold Italic'), url('ProductSans-BoldItalic.woff') format('woff');
+}
+
+
+@font-face {
+	font-family: 'Product Sans Black Italic';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Product Sans Black Italic'), url('ProductSans-BlackItalic.woff') format('woff');
 }
 
 * {
@@ -35,8 +112,8 @@ html, body {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	font: 20px Sertig-Web;
-	font-weight: bold;
+	font: 20px Roboto;
+	font-weight: normal;
 	color: white;
 	background-color: black;
 }
@@ -59,7 +136,7 @@ html, body {
 #badBrowser p {
     text-align: center;
     margin-top: 40%;
-    font: 24px Sertig-Web;
+    font: 24px Roboto;
 }
 
 #builder, #skillForm, #classForm, #componentChooser, #triggerChooser {
@@ -87,7 +164,7 @@ html, body {
 }
 
 #main {
-	height: calc(100% - 115px);
+	height: calc(100% - 75px);
 	background-color: #333;
 	clear: both;
 }
@@ -115,10 +192,10 @@ html, body {
 #skillList, #classList  {
 	float: left;
 	width: 200px;
-    font: 18px Sertig-Web;
+    font: 18px Roboto;
     background-color: #181818;
     color: white;
-    font-weight: bold;
+    font-weight: normal;
     height: 100%;
     padding: 5px;
     border: none;
@@ -139,28 +216,28 @@ header {
 }
 
 #version {
-	width: calc(100% - 350px);
+	width: calc(100% - 450px);
 	float: left;
 	height: 40px;
 	padding: 20px;
 }
 
 h1 {
-	font: 36px Mojave-Web;
-	font-weight: bold;
+	font: 36px Product Sans Bold;
+	font-weight: normal;
 	color: #FFAB3C;
 	padding: 10px;
 }
 
 h2 {
-	font: 20px Mojave-Web;
-	font-weight: bold;
+	font: 20px Product Sans Bold;
+	font-weight: normal;
 	padding-left: 10px;
 }
 
 h4 {
-	font: 32px Mojave-Web;
-	font-weight: bold;
+	font: 32px Product Sans Bold;
+	font-weight: normal;
 	text-align: center;
 	padding: 10px;
 	color: #0f0;
@@ -177,8 +254,8 @@ h5 {
 	border-radius: 5px;
 	border: 2px solid #333;
 	text-align: center;
-	font: 24px Sertig-Web;
-	font-weight: bold;
+	font: 24px Roboto;
+	font-weight: normal;
 	
 	transition: background-color 600ms;
 }
@@ -191,7 +268,7 @@ h5:hover {
 h6 {
 	clear: both;
 	display: inline-block;
-	width: calc(25% - 26px);
+	width: calc(20% - 8px);
 	padding: 5px 5px;
 	background-color: #043;
 	margin-left: 3px;
@@ -199,8 +276,8 @@ h6 {
 	margin-bottom: 5px;
 	border-radius: 5px;
 	text-align: center;
-	font: 24px Sertig-Web;
-	font-weight: bold;
+	font: 24px Product Sans Regular;
+	font-weight: normal;
 	
 	transition: background-color 600ms;
 }
@@ -290,7 +367,7 @@ hr {
     display: block;
     background-color: #888;
     height: 1px;
-    width: 100%;
+    width: 99.9%;
     clear: both;
 }
 
@@ -302,6 +379,14 @@ hr {
     background-color: #6af;
 }
 
+#uploadSkill {
+	background-color: #317F43;
+}
+
+#uploadSkill:hover {
+    background-color: rgb(105, 200, 102);
+}
+
 .ioButton {
 	height: 30px;
 	margin: 5px 10px;
@@ -310,8 +395,8 @@ hr {
 	color: white;
     border: none;
 	border-radius: 5px;
-	font: 20px Sertig-Web;
-	font-weight: bold;
+	font: 20px Roboto;
+	font-weight: normal;
 	cursor: pointer;
 	transition: background-color 600ms;
 }
@@ -344,8 +429,8 @@ hr {
     margin: 5px 5px 0;
     color: white;
     padding: 3px 10px;
-    font: 24px Sertig-Web;
-	font-weight: bold;
+    font: 24px Product Sans Regular;
+	font-weight: normal;
     text-align: center;
 	
 	transition: background-color 600ms;
@@ -357,11 +442,11 @@ hr {
 }
 
 .tab:hover {
-    background-color: #FFAB3C;
+    background-color: #00d966;
 }
 
 .tabActive, .tabActive:hover {
-    background-color: #fff;
+    background-color: #00b466;
     color: black;
 }
 
@@ -403,7 +488,7 @@ hr {
 
 #io {
 	float: right;
-	width: 200px;
+	width: 300px;
 }
 
 label {
@@ -411,8 +496,8 @@ label {
 	text-align: right;
 	width: 40%;
 	padding-right: 15px;
-	font: 24px Sertig-Web;
-	font-weight: bold;
+	font: 24px Roboto;
+	font-weight: normal;
 	padding-top: 10px;
 	clear: both;
 }
@@ -420,8 +505,8 @@ label {
 section {
 	text-align: center;
 	color: #ccc;
-	font: 24px Sertig-Web;
-	font-weight: bold;
+	font: 24px Roboto;
+	font-weight: normal;
 	clear: both;
 	padding-top: 10px;
 }
@@ -437,8 +522,8 @@ sectionr {
 }
 
 #skillForm input, select, #classForm input, #skillForm .byteList, #classForm .byteList {
-	font: 20px Sertig-Web;
-	font-weight: bold;
+	font: 20px Roboto;
+	font-weight: normal;
 	background-color: #181818;
 	border: 1px solid #888;
     border-top: none;
@@ -478,8 +563,8 @@ select {
 }
 
 #skillForm textarea, #classForm textArea {
-	font: 20px Sertig-Web;
-	font-weight: bold;
+	font: 20px Roboto;
+	font-weight: normal;
 	background-color: #181818;
 	border: 1px solid #888;
     border-top: none;
@@ -499,7 +584,7 @@ textArea {
 
 #skillForm p, #classForm p {
 	text-align: center;
-	font: 20px Sertig-Web;
+	font: 20px Roboto;
 	color: #ccc;
 }
 
@@ -507,7 +592,7 @@ textArea {
 }
 
 #skillForm .attrLabel, #classForm .attrLabel {
-	width: 25px;
+	width: 30px;
 	text-align: left;
 	margin: 0;
 	padding: 0;

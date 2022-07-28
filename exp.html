@@ -143,19 +143,19 @@
     <script>
     
         function update() {
-            var section = document.querySelector('section');
+            const section = document.querySelector('section');
             while (section.hasChildNodes()) {
                 section.removeChild(section.lastChild);
             }
-            
-            var x = parseInt(document.querySelector('#x').value);
-            var y = parseInt(document.querySelector('#y').value);
-            var z = parseInt(document.querySelector('#z').value);
-            var w = parseInt(document.querySelector('#w').value);
-            
-            for (var i = 1; i <= 100; i++) {
-                var left = document.createElement('span');
-                var right = document.createElement('span');
+
+            const x = parseInt(document.querySelector('#x').value);
+            const y = parseInt(document.querySelector('#y').value);
+            const z = parseInt(document.querySelector('#z').value);
+            const w = parseInt(document.querySelector('#w').value);
+
+            for (let i = 1; i <= 100; i++) {
+                const left = document.createElement('span');
+                const right = document.createElement('span');
                 left.className = 'left';
                 right.className = 'right';
                 left.innerHTML = i;
@@ -166,8 +166,8 @@
         }
         
         window.onload = function() {
-            var inputs = document.querySelectorAll('input');
-            for (var i = 0; i < inputs.length; i++) {
+            const inputs = document.querySelectorAll('input');
+            for (let i = 0; i < inputs.length; i++) {
                 inputs[i].addEventListener('input', update);
             }
             update();

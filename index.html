@@ -2,145 +2,195 @@
 <html lang="en">
 
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
+          type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>SkillAPI - Dynamic Editor</title>
 
-	<meta charset="UTF-8"/>
-	<title>SkillAPI - Dynamic Editor</title>
-	
-	<!-- other scripts are loaded in main.js -->
-	<script src="editor/js/loader.js"></script>
-	<script src="editor/js/main.js"></script>
-	
-	<link rel="stylesheet" href="editor/builderStyle.css" />
-	<link rel="stylesheet" href="editor/style.css" />
-    <link rel="stylesheet" href="editor/tooltips.css" />
-	
+    <!-- other scripts are loaded in main.js -->
+    <script src="editor/js/loader.js"></script>
+    <script src="editor/js/main.js"></script>
+    <link rel="stylesheet" href="editor/builderStyle.css"/>
+    <link rel="stylesheet" href="editor/style.css"/>
+    <link rel="stylesheet" href="editor/tooltips.css"/>
 </head>
 
-<body>
-
-	<!-- Site header -->
-	<header>
-		<h1>Skill API</h1>
-		<h2>Dynamic Editor</h2>
-	</header>
-
-	<div id="version">
-		<label for="version-select">
-			Server
-		</label>
-		<select id="version-select">
-			<option>1.19</option>
-			<option>1.18</option>
-			<option>1.17</option>
-			<option>1.16</option>
-			<option>1.15</option>
-			<option>1.14</option>
-			<option>1.13</option>
-			<option>1.12</option>
-			<option>1.11</option>
-			<option>1.10</option>
-			<option>1.9</option>
-			<option>1.8</option>
-			<option>1.7</option>
-		</select>
-	</div>
-	
-	<!-- IO Buttons -->
-	<div id="io">
-		<p class="ioText">Drop file anywhere to load</p>
-		<button id="saveButton" class="ioButton">Backup All Data</button>
-	</div>
-	
-	<!-- Display when the window is too small -->
-	<div id="small">
-		<p>Please enlarge your browser window or zoom out</p>
-	</div>
-	
-	<div id="main">
-		
-		<!-- Skill/Class Tabs -->
-		<div id="tabSpacer"></div>
-		<div id="skillTab" class="tab tabLeft tabActive">
-			Skills
-		</div>
-		<div  id="classTab" class="tab tabRight">
-			Classes
-		</div>
-		
-		<!-- Skill Content -->
-		<div id="skills">
-			
-			<!-- Skill list -->
-			<select id="skillList" size="30">
-				<option selected="selected">Skill 1</option>
-				<option>+ New Skill</option>
-			</select>
-			
-			<!-- Effect builder -->
-			<div id="builder">
-				<h6 id="skillDetails">Details</h6>
-				<h6 id="addTrigger">Triggers</h6>
-				<h6 id="saveSkill" class>Save Skill</h6>
-				<h6 id="deleteSkill" class="cancelButton">Delete</h6>
-				<div id="builderContent"></div>
-			</div>
-			
-			<!-- Component editor -->
-			<div id="skillForm">
-			</div>
-			
-			<!-- Trigger selection -->
-			<div id="triggerChooser">
-				<h4>Triggers</h4>
-				
-				<div id="triggerOptions"></div>
-				
-				<h5 class="cancelButton">Cancel</h5>
-			</div>
-			
-			<!-- Component selection -->
-			<div id="componentChooser">
-			
-				<h4>Targets</h4>
-				<div id="targetOptions"></div>
-				
-				<h4>Conditions</h4>
-				<div id="conditionOptions"></div>
-				
-				<h4>Mechanics</h4>
-				<div id="mechanicOptions"></div>
-				
-				<hr/>
-				<h5 class="cancelButton">Cancel</h5>
-				
-			</div>
-		</div>
-		
-		<!-- Class Content -->
-		<div id="classes">
-		
-			<!-- Class list -->
-			<select id="classList" size="30">
-				<option selected="selected">Class 1</option>
-				<option>+ New Class</option>
-			</select>
-			
-			<div id="classForm"></div>
-		</div>
-		
-	</div>
-	
-	<!-- Site footer -->
-	<footer>
-		<a id="bukkit" href="https://www.spigotmc.org/resources/skillapi-continued-custom-classes-skills-and-more-proskillapi.91913/" target="_blank">Spigot</a>
-		<a id="profile" href="https://promcteam.com/wiki/index.php?title=Proskillapi:Proskillapi" target="_blank">Wiki</a>
-		<a id="source" href="https://github.com/promcteam/proskillapi" target="_blank">Source Code</a>
-        <a id="irc" href="https://discord.gg/RhTyRReKyP" target="_blank">Discord</a>
-	</footer>
-   
-    <div id="badBrowser">
-        <p>Get a real browser! (Use Chrome or Firefox)</p>
+<body id="super">
+<!-- Site header -->
+<header>
+    <div>
+        <h1 class="q-pb-none">GKPixel</h1>
+        <h2>Skill Editor</h2>
     </div>
+</header>
+
+<div id="version">
+    <label for="version-select">
+        Minecraft Version
+    </label>
+    <select id="version-select">
+        <option>1.19</option>
+        <!-- <option>1.18</option>
+        <option>1.17</option>
+        <option>1.16</option>
+        <option>1.15</option>
+        <option>1.14</option>
+        <option>1.13</option>
+        <option>1.12</option>
+        <option>1.11</option>
+        <option>1.10</option>
+        <option>1.9</option>
+        <option>1.8</option>
+        <option>1.7</option> -->
+    </select>
+</div>
+
+<!-- IO Buttons -->
+<div id="io" class="q-pt-sm">
+    <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
+    <span>{{ username }}</span>
+    <button v-if="!loggedIn"
+            class="ioButton"
+            onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
+        Login
+    </button>
+    <button v-if="loggedIn"
+            class="ioButton"
+            onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
+                     localStorage.removeItem('token')">Logout
+    </button>
+</div>
+
+<!-- Display when the window is too small -->
+<div id="small">
+    <p>Please enlarge your browser window or zoom out</p>
+</div>
+
+<div id="main">
+
+    <!-- Skill/Class Tabs -->
+    <div id="tabSpacer"></div>
+    <div id="skillTab" class="tab tabLeft tabActive">
+        Skills
+    </div>
+    <div id="classTab" class="tab tabRight">
+        Classes
+    </div>
+
+    <!-- Skill Content -->
+    <div id="skills">
+
+        <!-- Skill list -->
+        <select id="skillList" size="30">
+            <option selected="selected">Skill 1</option>
+            <option>+ New Skill</option>
+        </select>
+
+        <!-- Effect builder -->
+        <div id="builder">
+            <h6 id="skillDetails">Details</h6>
+            <h6 id="addTrigger">Triggers</h6>
+            <h6 id="saveSkill" class>Save Skill</h6>
+            <h6 id="uploadSkill" class>Upload Skill</h6>
+            <h6 id="deleteSkill" class="cancelButton">Delete</h6>
+            <div id="builderContent"></div>
+        </div>
+
+        <!-- Component editor -->
+        <div id="skillForm">
+        </div>
+
+        <!-- Trigger selection -->
+        <div id="triggerChooser">
+            <h4>Triggers</h4>
+
+            <div id="triggerOptions"></div>
+
+            <h5 class="cancelButton">Cancel</h5>
+        </div>
+
+        <!-- Component selection -->
+        <div id="componentChooser">
+
+            <h4>Targets</h4>
+            <div id="targetOptions"></div>
+
+            <h4>Conditions</h4>
+            <div id="conditionOptions"></div>
+
+            <h4>Mechanics</h4>
+            <div id="mechanicOptions"></div>
+
+            <hr/>
+            <h5 class="cancelButton">Cancel</h5>
+
+        </div>
+    </div>
+
+    <!-- Class Content -->
+    <div id="classes">
+
+        <!-- Class list -->
+        <select id="classList" size="30">
+            <option selected="selected">Class 1</option>
+            <option>+ New Class</option>
+        </select>
+
+        <div id="classForm"></div>
+    </div>
+
+</div>
+<div id="badBrowser">
+    <p>Loading...</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.umd.prod.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                avatar: "",
+                username: "",
+                loggedIn: false
+            }
+        },
+        created() {
+            const url = new URL(window.location.href);
+            let token = url.searchParams.get("token");
+            if (token !== null) {
+                url.searchParams.delete("token");
+                window.history.replaceState({}, "", url.href);
+                localStorage.setItem("token", token);
+            }
+            token = localStorage.getItem("token");
+            if (token !== null) {
+                const account = JSON.parse(atob(token.split('.')[1]));
+                if (account.exp * 1000 <= new Date().getTime()) {
+                    console.log("Token expired");
+                    localStorage.removeItem("token");
+                } else {
+                    this.loggedIn = true;
+                    console.log("Logged in");
+                    axios.get("https://accounts.robothanzo.dev/v1/discord/user/" + account.account.discordId, {
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    }).then(response => {
+                        if (response.data.success) {
+                            this.username = response.data.username;
+                            this.avatar = response.data.avatar;
+                        }
+                    });
+                }
+            }
+        }
+    })
+
+    app.use(Quasar)
+    app.mount('#super')
+</script>
 </body>
 
 </html>
