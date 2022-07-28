@@ -17,136 +17,137 @@
     <link rel="stylesheet" href="editor/tooltips.css"/>
 </head>
 
-<body id="super">
-<!-- Site header -->
-<header>
-    <div>
-        <h1 class="q-pb-none">GKPixel</h1>
-        <h2>Skill Editor</h2>
+<body>
+<div id="super">
+    <header>
+        <div>
+            <h1 class="q-pb-none">GKPixel</h1>
+            <h2>Skill Editor</h2>
+        </div>
+    </header>
+
+    <div id="version">
+        <label for="version-select">
+            Minecraft Version
+        </label>
+        <select id="version-select">
+            <option>1.19</option>
+            <!-- <option>1.18</option>
+            <option>1.17</option>
+            <option>1.16</option>
+            <option>1.15</option>
+            <option>1.14</option>
+            <option>1.13</option>
+            <option>1.12</option>
+            <option>1.11</option>
+            <option>1.10</option>
+            <option>1.9</option>
+            <option>1.8</option>
+            <option>1.7</option> -->
+        </select>
     </div>
-</header>
 
-<div id="version">
-    <label for="version-select">
-        Minecraft Version
-    </label>
-    <select id="version-select">
-        <option>1.19</option>
-        <!-- <option>1.18</option>
-        <option>1.17</option>
-        <option>1.16</option>
-        <option>1.15</option>
-        <option>1.14</option>
-        <option>1.13</option>
-        <option>1.12</option>
-        <option>1.11</option>
-        <option>1.10</option>
-        <option>1.9</option>
-        <option>1.8</option>
-        <option>1.7</option> -->
-    </select>
-</div>
-
-<!-- IO Buttons -->
-<div id="io" class="q-pt-sm">
-    <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
-    <span>{{ username }}</span>
-    <q-btn v-if="!loggedIn"
-           color = "primary"
-           style = "width: calc(100% - 20px)"
-            onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
-        Login
-    </q-btn>
-    <q-btn v-if="loggedIn"
-           class="q-mt-sm"
-           color = "negative"
-           style = "width: calc(100% - 20px)"
-            onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
+    <!-- IO Buttons -->
+    <div id="io" class="q-pt-sm">
+        <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
+        <span>{{ username }}</span>
+        <q-btn v-if="!loggedIn"
+               color="primary"
+               style="width: calc(100% - 20px)"
+               onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
+            Login
+        </q-btn>
+        <q-btn v-if="loggedIn"
+               class="q-mt-sm"
+               color="negative"
+               style="width: calc(100% - 20px)"
+               onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
                      localStorage.removeItem('token')">Logout
-    </q-btn>
-</div>
-
-<!-- Display when the window is too small -->
-<div id="small">
-    <p>Please enlarge your browser window or zoom out</p>
-</div>
-
-<div id="main">
-
-    <!-- Skill/Class Tabs -->
-    <div id="tabSpacer"></div>
-    <div id="skillTab" class="tab tabLeft tabActive">
-        Skills
-    </div>
-    <div id="classTab" class="tab tabRight">
-        Classes
+        </q-btn>
     </div>
 
-    <!-- Skill Content -->
-    <div id="skills">
-
-        <!-- Skill list -->
-        <select id="skillList" size="30">
-            <option selected="selected">Skill 1</option>
-            <option>+ New Skill</option>
-        </select>
-
-        <!-- Effect builder -->
-        <div id="builder">
-            <h6 id="skillDetails">Details</h6>
-            <h6 id="addTrigger">Triggers</h6>
-            <h6 id="saveSkill" class>Save Skill</h6>
-            <h6 id="uploadSkill" class>Upload Skill</h6>
-            <h6 id="deleteSkill" class="cancelButton">Delete</h6>
-            <div id="builderContent"></div>
-        </div>
-
-        <!-- Component editor -->
-        <div id="skillForm">
-        </div>
-
-        <!-- Trigger selection -->
-        <div id="triggerChooser">
-            <h4>Triggers</h4>
-
-            <div id="triggerOptions"></div>
-
-            <h5 class="cancelButton">Cancel</h5>
-        </div>
-
-        <!-- Component selection -->
-        <div id="componentChooser">
-
-            <h4>Targets</h4>
-            <div id="targetOptions"></div>
-
-            <h4>Conditions</h4>
-            <div id="conditionOptions"></div>
-
-            <h4>Mechanics</h4>
-            <div id="mechanicOptions"></div>
-
-            <hr/>
-            <h5 class="cancelButton">Cancel</h5>
-
-        </div>
+    <!-- Display when the window is too small -->
+    <div id="small">
+        <p>Please enlarge your browser window or zoom out</p>
     </div>
 
-    <!-- Class Content -->
-    <div id="classes">
+    <div id="main">
 
-        <!-- Class list -->
-        <select id="classList" size="30">
-            <option selected="selected">Class 1</option>
-            <option>+ New Class</option>
-        </select>
+        <!-- Skill/Class Tabs -->
+        <div id="tabSpacer"></div>
+        <div id="skillTab" class="tab tabLeft tabActive">
+            Skills
+        </div>
+        <div id="classTab" class="tab tabRight">
+            Classes
+        </div>
 
-        <div id="classForm"></div>
+        <!-- Skill Content -->
+        <div id="skills">
+
+            <!-- Skill list -->
+            <select id="skillList" size="30">
+                <option selected="selected">Skill 1</option>
+                <option>+ New Skill</option>
+            </select>
+
+            <!-- Effect builder -->
+            <div id="builder">
+                <h6 id="skillDetails">Details</h6>
+                <h6 id="addTrigger">Triggers</h6>
+                <h6 id="saveSkill">Save Skill</h6>
+                <h6 id="uploadSkill" @click="upload()">Upload Skill</h6>
+                <h6 id="deleteSkill" class="cancelButton">Delete</h6>
+                <div id="builderContent"></div>
+            </div>
+
+            <!-- Component editor -->
+            <div id="skillForm">
+            </div>
+
+            <!-- Trigger selection -->
+            <div id="triggerChooser">
+                <h4>Triggers</h4>
+
+                <div id="triggerOptions"></div>
+
+                <h5 class="cancelButton">Cancel</h5>
+            </div>
+
+            <!-- Component selection -->
+            <div id="componentChooser">
+
+                <h4>Targets</h4>
+                <div id="targetOptions"></div>
+
+                <h4>Conditions</h4>
+                <div id="conditionOptions"></div>
+
+                <h4>Mechanics</h4>
+                <div id="mechanicOptions"></div>
+
+                <hr/>
+                <h5 class="cancelButton">Cancel</h5>
+
+            </div>
+        </div>
+
+        <!-- Class Content -->
+        <div id="classes">
+
+            <!-- Class list -->
+            <select id="classList" size="30">
+                <option selected="selected">Class 1</option>
+                <option>+ New Class</option>
+            </select>
+
+            <div id="classForm"></div>
+        </div>
+
     </div>
-
-</div>
-<div id="badBrowser">
-    <p>Loading...</p>
+    <div id="badBrowser">
+        <p>Loading...</p>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.umd.prod.js"></script>
@@ -186,6 +187,55 @@
                             this.avatar = response.data.avatar;
                         }
                     });
+                }
+            }
+        },
+        methods: {
+            upload() {
+                const token = localStorage.getItem("token");
+                if (token !== null) {
+                    const apiKey = JSON.parse(atob(token.split('.')[1])).account.apiKey;
+                    let formData = new FormData();
+                    formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
+                        type: 'application/json'
+                    }));
+                    formData.append('file', new File([new Blob([activeSkill.getSaveString()], {
+                        type: 'application/x-yaml',
+                        filename: 'skill.yaml'
+                    })], activeSkill.data[0].value + ".yml"));
+                    axios.post('https://cdn.gkpixel.com/v1/skill', formData, {
+                        headers: {
+                            'Authorization': 'Bearer ' + apiKey,
+                        }
+                    }).then(function (response) {
+                        if (response.data.success) {
+                            Quasar.Notify.create({
+                                position: 'top',
+                                color: 'green',
+                                icon: 'done',
+                                progress: true,
+                                message: '成功上傳。'
+                            })
+                        } else {
+                            Quasar.Notify.create({
+                                position: 'top',
+                                color: 'negative',
+                                icon: 'report_problem',
+                                progress: true,
+                                message: '上傳失敗。'
+                            })
+                        }
+                    }).catch(function (error) {
+                        Quasar.Notify.create({
+                            position: 'top',
+                            color: 'negative',
+                            icon: 'report_problem',
+                            progress: true,
+                            message: '上傳失敗。Error ' + error.response.status
+                        })
+                    });
+                } else {
+                    window.location.href = "https://accounts.robothanzo.dev/v1/discord/login?redirect=" + window.location.href;
                 }
             }
         }

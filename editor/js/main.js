@@ -32,7 +32,7 @@ let ATTRIBS = [
 depend('filter');
 depend('input');
 depend('yaml');
-depend('component', function() {
+depend('component', function () {
     const config = localStorage.getItem('config');
     if (config) {
         parseConfig(config);
@@ -48,8 +48,7 @@ depend('data/data', function () {
             }
             if (this.selectedIndex == this.length - 1) {
                 newSkill();
-            }
-            else {
+            } else {
                 activeSkill = skills[this.selectedIndex];
                 activeSkill.apply();
                 showSkillPage('builder');
@@ -85,8 +84,7 @@ depend('data/data', function () {
             activeClass.update();
             if (this.selectedIndex == this.length - 1) {
                 newClass();
-            }
-            else {
+            } else {
                 activeClass = classes[this.selectedIndex];
                 activeClass.createFormHTML();
             }
@@ -162,8 +160,7 @@ function setupOptionList(div, list, type) {
         e.addEventListener('click', function (e) {
             if (activeComponent == activeSkill && activeSkill.usingTrigger(this.component.name)) {
                 showSkillPage('builder');
-            }
-            else {
+            } else {
                 showSkillPage('skillForm');
                 const component = this.component.construct
                     ? new this.component.construct()
@@ -316,8 +313,7 @@ function saveToFile(file, data) {
         // Chrome allows the link to be clicked
         // without actually adding it to the DOM.
         downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    }
-    else {
+    } else {
         // Firefox requires the link to be added to the DOM
         // before it can be clicked.
         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
@@ -380,7 +376,7 @@ function parseConfig(text) {
         mapping[entry.type][entry.display.toUpperCase().replace(/ /g, '_')] = {
             name: entry.display,
             container: entry.container,
-            supplier: function() {
+            supplier: function () {
                 return new CustomComponent(entry);
             }
         }
@@ -392,11 +388,9 @@ function loadIndividual(e) {
     const text = e.target.result;
     if (text.indexOf('global:') >= 0) {
         loadAttributes(e);
-    }
-    else if (text.indexOf('components:') >= 0 || (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
+    } else if (text.indexOf('components:') >= 0 || (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
         loadSkills(e);
-    }
-    else {
+    } else {
         loadClasses(e);
     }
 }
@@ -436,8 +430,7 @@ function loadSkillText(text) {
                     activeSkill.apply();
                     showSkillPage('builder');
                 }
-            }
-            else {
+            } else {
                 addSkill(key).load(data[key]);
             }
         }
@@ -464,8 +457,7 @@ function loadClassText(text) {
                 if (getClass(key) == activeClass) {
                     activeClass.createFormHTML();
                 }
-            }
-            else {
+            } else {
                 addClass(key).load(data[key]);
             }
         }
@@ -485,33 +477,27 @@ function loadSection(data) {
                     if (this.data[i].key == y && this.data[i].load) {
                         this.data[i].load(attribs[y]);
                         break;
-                    }
-                    else if (this.data[i].key + '-base' == y && this.data[i].loadBase) {
+                    } else if (this.data[i].key + '-base' == y && this.data[i].loadBase) {
                         this.data[i].loadBase(attribs[y]);
                         break;
-                    }
-                    else if (this.data[i].key + '-scale' == y && this.data[i].loadScale) {
+                    } else if (this.data[i].key + '-scale' == y && this.data[i].loadScale) {
                         this.data[i].loadScale(attribs[y]);
                         break;
                     }
                 }
             }
-        }
-        else if (x == this.componentKey) {
+        } else if (x == this.componentKey) {
             const components = data[x];
             for (var y in components) {
                 const type = components[y].type;
                 let list;
                 if (type == Type.TRIGGER) {
                     list = Trigger;
-                }
-                else if (type == Type.TARGET) {
+                } else if (type == Type.TARGET) {
                     list = Target;
-                }
-                else if (type == Type.CONDITION) {
+                } else if (type == Type.CONDITION) {
                     list = Condition;
-                }
-                else if (type == Type.MECHANIC) {
+                } else if (type == Type.MECHANIC) {
                     list = Mechanic;
                 }
 
@@ -530,8 +516,7 @@ function loadSection(data) {
                     }
                 }
             }
-        }
-        else if (this.dataKey != 'data') {
+        } else if (this.dataKey != 'data') {
             for (var i = 0; i < this.data.length; i++) {
                 if (this.data[i].key == x) {
                     if (!this.data[i].load) {
@@ -539,12 +524,10 @@ function loadSection(data) {
                     }
                     this.data[i].load(data[x]);
                     break;
-                }
-                else if (this.data[i].key + '-base' == x) {
+                } else if (this.data[i].key + '-base' == x) {
                     this.data[i].loadBase(data[x]);
                     break;
-                }
-                else if (this.data[i].key + '-scale' == x) {
+                } else if (this.data[i].key + '-scale' == x) {
                     this.data[i].loadScale(data[x]);
                     break;
                 }
