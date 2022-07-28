@@ -4,7 +4,6 @@ h3 {
     padding: 5px;
     border-radius: 5px;
     background-color: transparent;
-    font-weight: 700;
     font-size: 1.17em;
     line-height: normal;
     transition: background-color 600ms;
@@ -17,22 +16,22 @@ h3:hover {
 
 .triggerLabel:before {
     content: "Trigger: ";
-    color: red;
+    color: #FF5555;
 }
 
 .conditionLabel:before {
     content: "Condition: ";
-    color: blue;
+    color: #5555FF;
 }
 
 .targetLabel:before {
     content: "Target: ";
-    color: #080;
+    color: #55FF55;
 }
 
 .mechanicLabel:before {
     content: "Mechanic: ";
-    color: #f0f;
+    color: #FF55FF;
 }
 
 .componentWrapper {

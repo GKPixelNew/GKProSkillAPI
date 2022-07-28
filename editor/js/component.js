@@ -340,7 +340,7 @@ Component.prototype.createBuilderHTML = function (target) {
     let remove              = document.createElement('div');
     remove.title            = 'Remove';
     remove.className        = 'builderButton smallButton cancelButton';
-    remove.style.background = 'url("editor/img/delete.png") no-repeat center #f00';
+    remove.style.background = 'url("editor/img/delete.png") no-repeat center #ff3333';
     remove.component        = this;
     remove.addEventListener('click', function (e) {
         let list = this.component.parent.components;

@@ -51,16 +51,19 @@
 <div id="io" class="q-pt-sm">
     <q-avatar v-if="loggedIn&&username!==''" class="q-mr-sm"><img :src="avatar"></q-avatar>
     <span>{{ username }}</span>
-    <button v-if="!loggedIn"
-            class="ioButton"
+    <q-btn v-if="!loggedIn"
+           color = "primary"
+           style = "width: calc(100% - 20px)"
             onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
         Login
-    </button>
-    <button v-if="loggedIn"
-            class="ioButton"
+    </q-btn>
+    <q-btn v-if="loggedIn"
+           class="q-mt-sm"
+           color = "negative"
+           style = "width: calc(100% - 20px)"
             onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
                      localStorage.removeItem('token')">Logout
-    </button>
+    </q-btn>
 </div>
 
 <!-- Display when the window is too small -->
