@@ -189,6 +189,14 @@ public final class PlayerSkill {
         }
     }
 
+    public int getCooldownMillis() {
+        if (isOnCooldown()) {
+            return (int) (cooldown - System.currentTimeMillis());
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Retrieves the current ready status of the skill which could
      * be on cooldown, missing mana, or ready.
