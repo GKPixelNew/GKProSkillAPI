@@ -62,7 +62,7 @@
                color="negative"
                style="width: calc(100% - 20px)"
                onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
-                     localStorage.removeItem('token')">Logout
+                     window.localStorage.removeItem('token')">Logout
         </q-btn>
     </div>
 
@@ -166,14 +166,14 @@
             if (token !== null) {
                 url.searchParams.delete("token");
                 window.history.replaceState({}, "", url.href);
-                localStorage.setItem("token", token);
+                window.localStorage.setItem("token", token);
             }
-            token = localStorage.getItem("token");
+            token = window.localStorage.getItem("token");
             if (token !== null) {
                 const account = JSON.parse(atob(token.split('.')[1]));
                 if (account.exp * 1000 <= new Date().getTime()) {
                     console.log("Token expired");
-                    localStorage.removeItem("token");
+                    window.localStorage.removeItem("token");
                 } else {
                     this.loggedIn = true;
                     console.log("Logged in");
@@ -192,7 +192,7 @@
         },
         methods: {
             upload() {
-                const token = localStorage.getItem("token");
+                const token = window.localStorage.getItem("token");
                 if (token !== null) {
                     const apiKey = JSON.parse(atob(token.split('.')[1])).account.apiKey;
                     let formData = new FormData();

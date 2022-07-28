@@ -33,7 +33,7 @@ depend('filter');
 depend('input');
 depend('yaml');
 depend('component', function () {
-    const config = localStorage.getItem('config');
+    const config = window.localStorage.getItem('config');
     if (config) {
         parseConfig(config);
     }
@@ -93,10 +93,10 @@ depend('data/data', function () {
 
     document.getElementById("version-select").onchange = e => {
         DATA = window['DATA_' + e.target.value.substr(2)];
-        localStorage.setItem('server-version', e.target.value);
+        window.localStorage.setItem('server-version', e.target.value);
     };
 
-    const previousValue = localStorage.getItem('server-version');
+    const previousValue = window.localStorage.getItem('server-version');
     if (previousValue) {
         document.getElementById('version-select').value = previousValue;
     }
@@ -209,11 +209,11 @@ window.onload = function () {
         });
     }
 
-    const attribs = localStorage.getItem('attribs');
-    const skillData = localStorage.getItem('skillData');
-    const skillIndex = localStorage.getItem('skillIndex');
-    const classData = localStorage.getItem('classData');
-    const classIndex = localStorage.getItem('classIndex');
+    const attribs = window.localStorage.getItem('attribs');
+    const skillData = window.localStorage.getItem('skillData');
+    const skillIndex = window.localStorage.getItem('skillIndex');
+    const classData = window.localStorage.getItem('classData');
+    const classIndex = window.localStorage.getItem('classIndex');
     if (attribs) {
         ATTRIBS = attribs.split(",");
     }
@@ -238,31 +238,30 @@ window.onload = function () {
             activeClass.createFormHTML();
         }
     }
-    if (localStorage.getItem('skillsActive') === 'false') {
+    console.log(window.localStorage.getItem('skillsActive'))
+    if (window.localStorage.getItem('skillsActive') === 'false') {
         switchToClasses();
+    } else {
+        switchToSkills();
     }
 }
 
 function switchToSkills() {
-    if (!skillsActive) {
-        document.getElementById('skillTab').className = 'tab tabLeft tabActive';
-        document.getElementById('classTab').className = 'tab tabRight';
-        document.getElementById('skills').style.display = 'block';
-        document.getElementById('classes').style.display = 'none';
-        skillsActive = true;
-        localStorage.setItem('skillsActive', 'true');
-    }
+    document.getElementById('skillTab').className = 'tab tabLeft tabActive';
+    document.getElementById('classTab').className = 'tab tabRight';
+    document.getElementById('skills').style.display = 'block';
+    document.getElementById('classes').style.display = 'none';
+    skillsActive = true;
+    window.localStorage.setItem('skillsActive', 'true');
 }
 
 function switchToClasses() {
-    if (skillsActive) {
-        document.getElementById('classTab').className = 'tab tabRight tabActive';
-        document.getElementById('skillTab').className = 'tab tabLeft';
-        document.getElementById('classes').style.display = 'block';
-        document.getElementById('skills').style.display = 'none';
-        skillsActive = false;
-        localStorage.setItem('skillsActive', 'false');
-    }
+    document.getElementById('classTab').className = 'tab tabRight tabActive';
+    document.getElementById('skillTab').className = 'tab tabLeft';
+    document.getElementById('classes').style.display = 'block';
+    document.getElementById('skills').style.display = 'none';
+    skillsActive = false;
+    window.localStorage.setItem('skillsActive', 'false');
 }
 
 /**
@@ -358,7 +357,7 @@ document.addEventListener('drop', function (e) {
 
 function loadConfig(e) {
     const text = e.target.result;
-    localStorage.setItem("config", text);
+    window.localStorage.setItem("config", text);
     parseConfig(text);
     refreshOptions();
 }
@@ -406,7 +405,7 @@ function loadAttributes(e) {
         activeClass.update();
         activeClass.createFormHTML();
     }
-    localStorage.setItem('attribs', ATTRIBS);
+    window.localStorage.setItem('attribs', ATTRIBS);
 }
 
 // Loads skill data from a file after it has been read
@@ -540,9 +539,8 @@ function loadSection(data) {
  * Remember the current session data for next time
  */
 window.onbeforeunload = function () {
-    localStorage.setItem('skillData', getSkillSaveData());
-    localStorage.setItem('classData', getClassSaveData());
-    localStorage.setItem('skillsActive', this.skillsActive ? 'true' : 'false');
-    localStorage.setItem('skillIndex', document.getElementById('skillList').selectedIndex);
-    localStorage.setItem('classIndex', document.getElementById('classList').selectedIndex);
+    window.localStorage.setItem('skillData', getSkillSaveData());
+    window.localStorage.setItem('classData', getClassSaveData());
+    window.localStorage.setItem('skillIndex', document.getElementById('skillList').selectedIndex);
+    window.localStorage.setItem('classIndex', document.getElementById('classList').selectedIndex);
 };
