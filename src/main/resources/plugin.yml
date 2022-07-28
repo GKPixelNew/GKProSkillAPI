@@ -1,4 +1,4 @@
-name: ${project.name}
+name: ProSkillAPI
 main: com.sucy.skill.SkillAPI
 version: ${project.version}
 authors: [ Travja, goflish, Eniripsa96, Sentropic ]

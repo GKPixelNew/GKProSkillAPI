@@ -65,7 +65,7 @@ dependencies {
 }
 
 group = 'mc.promcteam'
-version = '1.1.7.17-3141356'
+version = '1.1.7.18'
 description = 'ProSkillAPI'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -74,6 +74,13 @@ publishing {
         maven(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+processResources {
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand project.properties
     }
 }
 
