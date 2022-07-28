@@ -264,6 +264,7 @@ function getSkill(name) {
 
 function importSkill() {
     const apiKey = getApiKey();
+    const list = document.getElementById('skillList');
     Quasar.Dialog.create({
         title: '匯入技能',
         message: '輸入要匯入的技能 ID',
@@ -286,17 +287,20 @@ function importSkill() {
                     }
                 }).then(response => {
                     loadSkillText(response.data);
-					var list = document.getElementById('skillList');
 					list.selectedIndex = list.length - 3;
-				})
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'green',
-                    icon: 'done',
-                    progress: true,
-                    message: '匯入成功'
+                    activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(list.length - 3)))];
+                    activeSkill.apply();
+                    showSkillPage('builder');
+                    Quasar.Notify.create({
+                        position: 'top',
+                        color: 'green',
+                        icon: 'done',
+                        progress: true,
+                        message: '匯入成功'
+                    })
                 })
             } else {
+                list.selectedIndex = list.length - 3;
                 Quasar.Notify.create({
                     position: 'top',
                     color: 'negative',
@@ -307,6 +311,7 @@ function importSkill() {
             }
         }).catch(error => {
             if (error.response.status === 404) {
+                list.selectedIndex = list.length - 3;
                 Quasar.Notify.create({
                     position: 'top',
                     color: 'negative',
@@ -315,6 +320,7 @@ function importSkill() {
                     message: '匯入失敗，找不到技能'
                 })
             } else {
+                list.selectedIndex = list.length - 3;
                 Quasar.Notify.create({
                     position: 'top',
                     color: 'negative',
