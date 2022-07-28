@@ -48,14 +48,13 @@ function checkRequireValue(e) {
         const requireData = this.requireLists[i];
         let visible = false;
         for (let j = 0; j < requireData.values.length; j++) {
-            if (requireData.values[j] == (this.value || this.selectedIndex)) {
+            if (requireData.values[j] === (this.value || this.selectedIndex)) {
                 visible = true;
             }
         }
         if (visible) {
             requireData.element.show();
-        }
-        else {
+        } else {
             requireData.element.hide();
         }
     }
@@ -770,7 +769,7 @@ SectionMarker.prototype.applyRequireValues = applyRequireValues;
 SectionMarker.prototype.createHTML = function (target) {
     this.component = document.createElement('section');
     this.component.innerHTML = this.value;
-	this.component.appendChild(document.createElement('sectionr'));
+    this.component.appendChild(document.createElement('sectionr'));
     target.appendChild(this.component);
 };
 
@@ -797,7 +796,8 @@ SectionMarker.prototype.show = function () {
 /**
  * Updates the current value using the HTML elements
  */
-SectionMarker.prototype.update = function () {};
+SectionMarker.prototype.update = function () {
+};
 
 /**
  * Retrieves the save string for the value
@@ -813,7 +813,8 @@ SectionMarker.prototype.getSaveString = function (spacing) {
  *
  * @param {string} value - config string value
  */
-SectionMarker.prototype.load = function (value) {};
+SectionMarker.prototype.load = function (value) {
+};
 
 /**
  * Represents a fixed string value

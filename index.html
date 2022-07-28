@@ -51,42 +51,38 @@
                color="primary"
                style="width: calc(100% - 20px)"
                onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
-            Login
+            登入
         </q-btn>
         <q-btn v-if="loggedIn"
                class="q-mt-sm"
                color="negative"
                style="width: calc(100% - 20px)"
                onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
-                     window.localStorage.removeItem('token')">Logout
+                     window.localStorage.removeItem('token')">登出
         </q-btn>
     </div>
     <div id="small">
-        <p>Please enlarge your browser window or zoom out</p>
+        <p>請將視窗放大</p>
     </div>
     <div id="main">
         <div id="tabSpacer"></div>
         <div id="skillTab" class="tab tabLeft tabActive">
-            Skills
+            技能
         </div>
         <div id="classTab" class="tab tabRight">
-            Classes
+            信仰
         </div>
         <div id="skills">
-
-            <!-- Skill list -->
             <select id="skillList" size="30">
                 <option selected="selected">Skill 1</option>
-                <option>+ New Skill</option>
+                <option>+ 新增技能</option>
             </select>
-
-            <!-- Effect builder -->
             <div style="overflow: auto" id="builder">
-                <h6 id="skillDetails">Details</h6>
-                <h6 id="addTrigger">Triggers</h6>
-                <h6 id="saveSkill">Save Skill</h6>
-                <h6 id="uploadSkill" @click="upload()">Upload Skill</h6>
-                <h6 id="deleteSkill" class="cancelButton">Delete</h6>
+                <h6 id="skillDetails">詳細資料</h6>
+                <h6 id="addTrigger">觸發條件</h6>
+                <h6 id="saveSkill">儲存技能</h6>
+                <h6 id="uploadSkill" @click="upload()">上傳技能</h6>
+                <h6 id="deleteSkill" class="cancelButton">刪除技能</h6>
                 <div id="builderContent"></div>
             </div>
 
@@ -96,39 +92,36 @@
 
             <!-- Trigger selection -->
             <div id="triggerChooser">
-                <h4>Triggers</h4>
-
+                <h4>觸發條件</h4>
                 <div id="triggerOptions"></div>
-
-                <h5 class="cancelButton">Cancel</h5>
+                <h5 class="cancelButton">取消</h5>
             </div>
 
             <!-- Component selection -->
             <div id="componentChooser">
-
-                <h4>Targets</h4>
+                <h4>目標</h4>
                 <div id="targetOptions"></div>
 
-                <h4>Conditions</h4>
+                <h4>判斷式</h4>
                 <div id="conditionOptions"></div>
 
-                <h4>Mechanics</h4>
+                <h4>機制</h4>
                 <div id="mechanicOptions"></div>
 
                 <hr/>
-                <h5 class="cancelButton">Cancel</h5>
+                <h5 class="cancelButton">取消</h5>
 
             </div>
         </div>
         <div id="classes">
             <select id="classList" size="30">
                 <option selected="selected">Class 1</option>
-                <option>+ New Class</option>
+                <option>+ 新增信仰</option>
             </select>
             <div id="classForm"></div>
         </div>
         <div id="badBrowser">
-            <p>Loading...</p>
+            <p>載入中...</p>
         </div>
     </div>
 </div>
