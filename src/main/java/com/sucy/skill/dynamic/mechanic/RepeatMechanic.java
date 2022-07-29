@@ -135,14 +135,16 @@ public class RepeatMechanic extends MechanicComponent {
                 return;
             }
 
+            if (skill.checkCancelled()) {
+                skill.cancelTrigger();
+                cancel();
+                return;
+            }
+
             final int level   = skill.getActiveLevel(caster);
             boolean   success = executeChildren(caster, level, targets, force);
 
             if (--count <= 0 || (!success && stopOnFail)) {
-                cancel();
-            }
-
-            if (skill.checkCancelled()) {
                 cancel();
             }
         }
