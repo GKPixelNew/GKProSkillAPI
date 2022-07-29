@@ -1863,7 +1863,7 @@ extend('MechanicCancel', 'Component');
 function MechanicCancel() {
     this.super('Cancel', Type.MECHANIC, false);
 
-    this.description = 'Cancels the event that caused the trigger this is under to go off. For example, damage based triggers will stop the damage that was dealt while the Launch trigger would stop the projectile from firing.';
+    this.description = 'Cancels the event that caused the trigger this is under to go off. For example, damage based triggers will stop the damage that was dealt while the Launch trigger would stop the projectile from firing. This also stops any children loops that are running.';
 }
 
 extend('MechanicCancelEffect', 'Component');
