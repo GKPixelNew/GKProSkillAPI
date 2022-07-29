@@ -356,7 +356,7 @@ Component.prototype.createBuilderHTML = function (target) {
         div.appendChild(moveUp);
         let moveDown = document.createElement('div');
         moveDown.className = 'builderButton smallButton';
-        moveDown.title = 'Move Up';
+        moveDown.title = 'Move Down';
         moveDown.style.background = 'url("editor/img/moveDown.png") no-repeat center #222';
         moveDown.component = this;
         moveDown.addEventListener('click', function (e) {
