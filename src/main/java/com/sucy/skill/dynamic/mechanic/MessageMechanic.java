@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -63,6 +64,8 @@ public class MessageMechanic extends MechanicComponent {
 
         // Display message
         boolean worked = false;
+        SkillAPI.inst().getLogger().warning("You are sending this message using the deprecated way, please use Translated Message instead: "+
+                message);
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 Player player = (Player) target;

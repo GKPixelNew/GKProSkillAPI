@@ -29,6 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.ParticleHelper;
+import com.sucy.skill.log.Logger;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -168,7 +169,12 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         rotate(offset, targetCos, targetSin);
 
                         loc.add(offset);
-                        ParticleHelper.play(loc, settings);
+                        try {
+                            ParticleHelper.play(loc, settings);
+                        } catch (IllegalArgumentException e) {
+                            Logger.invalid("Invalid particle: " + settings.getString(ParticleHelper.PARTICLE_KEY));
+                            cancel();
+                        }
                         loc.subtract(offset);
 
                         targetCos = Math.cos(Math.toRadians(-targetAngle));
@@ -177,7 +183,12 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                     } else {
                         rotate(offset, Math.cos(Math.toRadians(rots[j])), Math.sin(Math.toRadians(rots[j])));
                         loc.add(offset);
-                        ParticleHelper.play(loc, settings);
+                        try {
+                            ParticleHelper.play(loc, settings);
+                        } catch (IllegalArgumentException e) {
+                            Logger.invalid("Invalid particle: " + settings.getString(ParticleHelper.PARTICLE_KEY));
+                            cancel();
+                        }
                         loc.subtract(offset);
 
                         rotate(offset, Math.cos(Math.toRadians(-rots[j])), Math.sin(Math.toRadians(-rots[j])));
