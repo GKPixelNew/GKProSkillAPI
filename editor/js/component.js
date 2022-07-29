@@ -15,190 +15,190 @@ function canDrop(thing, target) {
  * Types of components
  */
 var Type = {
-    TRIGGER   : 'trigger',
-    TARGET    : 'target',
-    CONDITION : 'condition',
-    MECHANIC  : 'mechanic'
+    TRIGGER: 'trigger',
+    TARGET: 'target',
+    CONDITION: 'condition',
+    MECHANIC: 'mechanic'
 };
 
 /**
  * Available triggers for activating skill effects
  */
 var Trigger = {
-    BLOCK_BREAK          : { name: 'Block Break',          container: true, construct: TriggerBlockBreak         },
-    BLOCK_PLACE          : { name: 'Block Place',          container: true, construct: TriggerBlockPlace         },
-    CAST                 : { name: 'Cast',                 container: true, construct: TriggerCast               },
-    CLEANUP              : { name: 'Cleanup',              container: true, construct: TriggerCleanup            },
-    CROUCH               : { name: 'Crouch',               container: true, construct: TriggerCrouch             },
-    DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
-    DROP_ITEM            : { name: 'Drop Item',            container: true, construct: TriggerDropItem           },
-    ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
-    FISH                 : { name: 'Fishing',              container: true, construct: TriggerFishing            },
-    FISH_BITE            : { name: 'Fishing Bite',         container: true, construct: TriggerFishingBite        },
-    FISH_FAIL            : { name: 'Fishing Fail',         container: true, construct: TriggerFishingFail        },
-    FISH_GRAB            : { name: 'Fishing Grab',         container: true, construct: TriggerFishingGrab        },
-    FISH_GROUND          : { name: 'Fishing Ground',       container: true, construct: TriggerFishingGround      },
-    FISH_REEL            : { name: 'Fishing Reel',         container: true, construct: TriggerFishingReel        },
-    INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
-    ITEMSWAP             : { name: 'Item Swap',            container: true, construct: TriggerItemSwap           },
-    KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
-    LAND                 : { name: 'Land',                 container: true, construct: TriggerLand               },
-    LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
-    LEFT_CLICK           : { name: 'Left Click',           container: true, construct: TriggerLeftClick          },
-    MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
-    PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
-    RIGHT_CLICK          : { name: 'Right Click',          container: true, construct: TriggerRightClick         },
-    SKILL_DAMAGE         : { name: 'Skill Damage',         container: true, construct: TriggerSkillDamage        },
-    TOOK_PHYSICAL_DAMAGE : { name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage },
-    TOOK_SKILL_DAMAGE    : { name: 'Took Skill Damage',    container: true, construct: TriggerTookSkillDamage    }
+    BLOCK_BREAK: {name: 'Block Break', container: true, construct: TriggerBlockBreak},
+    BLOCK_PLACE: {name: 'Block Place', container: true, construct: TriggerBlockPlace},
+    CAST: {name: 'Cast', container: true, construct: TriggerCast},
+    CLEANUP: {name: 'Cleanup', container: true, construct: TriggerCleanup},
+    CROUCH: {name: 'Crouch', container: true, construct: TriggerCrouch},
+    DEATH: {name: 'Death', container: true, construct: TriggerDeath},
+    DROP_ITEM: {name: 'Drop Item', container: true, construct: TriggerDropItem},
+    ENVIRONMENT_DAMAGE: {name: 'Environment Damage', container: true, construct: TriggerEnvironmentDamage},
+    FISH: {name: 'Fishing', container: true, construct: TriggerFishing},
+    FISH_BITE: {name: 'Fishing Bite', container: true, construct: TriggerFishingBite},
+    FISH_FAIL: {name: 'Fishing Fail', container: true, construct: TriggerFishingFail},
+    FISH_GRAB: {name: 'Fishing Grab', container: true, construct: TriggerFishingGrab},
+    FISH_GROUND: {name: 'Fishing Ground', container: true, construct: TriggerFishingGround},
+    FISH_REEL: {name: 'Fishing Reel', container: true, construct: TriggerFishingReel},
+    INITIALIZE: {name: 'Initialize', container: true, construct: TriggerInitialize},
+    ITEMSWAP: {name: 'Item Swap', container: true, construct: TriggerItemSwap},
+    KILL: {name: 'Kill', container: true, construct: TriggerKill},
+    LAND: {name: 'Land', container: true, construct: TriggerLand},
+    LAUNCH: {name: 'Launch', container: true, construct: TriggerLaunch},
+    LEFT_CLICK: {name: 'Left Click', container: true, construct: TriggerLeftClick},
+    MOVE: {name: 'Move', container: true, construct: TriggerMove},
+    PHYSICAL_DAMAGE: {name: 'Physical Damage', container: true, construct: TriggerPhysicalDamage},
+    RIGHT_CLICK: {name: 'Right Click', container: true, construct: TriggerRightClick},
+    SKILL_DAMAGE: {name: 'Skill Damage', container: true, construct: TriggerSkillDamage},
+    TOOK_PHYSICAL_DAMAGE: {name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage},
+    TOOK_SKILL_DAMAGE: {name: 'Took Skill Damage', container: true, construct: TriggerTookSkillDamage}
 };
 
 /**
  * Available target component data
  */
 var Target = {
-    AREA     : { name: 'Area',     container: true, construct: TargetArea     },
-    CONE     : { name: 'Cone',     container: true, construct: TargetCone     },
-    LINEAR   : { name: 'Linear',   container: true, construct: TargetLinear   },
-    LOCATION : { name: 'Location', container: true, construct: TargetLocation },
-    NEAREST  : { name: 'Nearest',  container: true, construct: TargetNearest  },
-    OFFSET   : { name: 'Offset',   container: true, construct: TargetOffset   },
-    REMEMBER : { name: 'Remember', container: true, construct: TargetRemember },
-    SELF     : { name: 'Self',     container: true, construct: TargetSelf     },
-    SINGLE   : { name: 'Single',   container: true, construct: TargetSingle   }
+    AREA: {name: 'Area', container: true, construct: TargetArea},
+    CONE: {name: 'Cone', container: true, construct: TargetCone},
+    LINEAR: {name: 'Linear', container: true, construct: TargetLinear},
+    LOCATION: {name: 'Location', container: true, construct: TargetLocation},
+    NEAREST: {name: 'Nearest', container: true, construct: TargetNearest},
+    OFFSET: {name: 'Offset', container: true, construct: TargetOffset},
+    REMEMBER: {name: 'Remember', container: true, construct: TargetRemember},
+    SELF: {name: 'Self', container: true, construct: TargetSelf},
+    SINGLE: {name: 'Single', container: true, construct: TargetSingle}
 };
 
 /**
  * Available condition component data
  */
 var Condition = {
-    ALTITUDE    : { name: 'Altitude',    container: true, construct: ConditionAltitude   },
-    ARMOR       : { name: 'Armor',       container: true, construct: ConditionArmor      },
-    ATTRIBUTE   : { name: 'Attribute',   container: true, construct: ConditionAttribute  },
-    BIOME       : { name: 'Biome',       container: true, construct: ConditionBiome      },
-    BLOCK       : { name: 'Block',       container: true, construct: ConditionBlock      },
-    BURNING     : { name: 'Burning',     container: true, construct: ConditionBurning    },
-    CEILING     : { name: 'Ceiling',     container: true, construct: ConditionCeiling    },
-    CHANCE      : { name: 'Chance',      container: true, construct: ConditionChance     },
-    CLASS       : { name: 'Class',       container: true, construct: ConditionClass      },
-    CLASS_LEVEL : { name: 'Class Level', container: true, construct: ConditionClassLevel },
-    COMBAT      : { name: 'Combat',      container: true, construct: ConditionCombat     },
-    CROUCH      : { name: 'Crouch',      container: true, construct: ConditionCrouch     },
-    DIRECTION   : { name: 'Direction',   container: true, construct: ConditionDirection  },
-    ELEVATION   : { name: 'Elevation',   container: true, construct: ConditionElevation  },
-    ELSE        : { name: 'Else',        container: true, construct: ConditionElse       },
-    ENTITY_TYPE : { name: 'Entity Type', container: true, construct: ConditionEntityType },
-    FIRE        : { name: 'Fire',        container: true, construct: ConditionFire       },
-    FLAG        : { name: 'Flag',        container: true, construct: ConditionFlag       },
-    FOOD        : { name: 'Food',        container: true, construct: ConditionFood       },
-    GROUND      : { name: 'Ground',      container: true, construct: ConditionGround     },
-    HEALTH      : { name: 'Health',      container: true, construct: ConditionHealth     },
-    INVENTORY   : { name: 'Inventory',   container: true, construct: ConditionInventory  },
-    ITEM        : { name: 'Item',        container: true, construct: ConditionItem       },
-    LIGHT       : { name: 'Light',       container: true, construct: ConditionLight      },
-    MANA        : { name: 'Mana',        container: true, construct: ConditionMana       },
-    MONEY       : { name: 'Money',       container: true, construct: ConditionMoney      },
-    MOUNTED     : { name: 'Mounted',     container: true, construct: ConditionMounted    },
-    MOUNTING    : { name: 'Mounting',    container: true, construct: ConditionMounting   },
-    NAME        : { name: 'Name',        container: true, construct: ConditionName       },
-    OFFHAND     : { name: 'Offhand',     container: true, construct: ConditionOffhand    },
-    PERMISSION  : { name: 'Permission',  container: true, construct: ConditionPermission },
-    POTION      : { name: 'Potion',      container: true, construct: ConditionPotion     },
-    SKILL_LEVEL : { name: 'Skill Level', container: true, construct: ConditionSkillLevel },
-    SLOT        : { name: 'Slot',        container: true, construct: ConditionSlot       },
-    STATUS      : { name: 'Status',      container: true, construct: ConditionStatus     },
-    TIME        : { name: 'Time',        container: true, construct: ConditionTime       },
-    TOOL        : { name: 'Tool',        container: true, construct: ConditionTool       },
-    VALUE       : { name: 'Value',       container: true, construct: ConditionValue      },
-    WATER       : { name: 'Water',       container: true, construct: ConditionWater      },
-    WEATHER     : { name: 'Weather',     container: true, construct: ConditionWeather    },
-    WORLD       : { name: 'World',       container: true, construct: ConditionWorld      }
+    ALTITUDE: {name: 'Altitude', container: true, construct: ConditionAltitude},
+    ARMOR: {name: 'Armor', container: true, construct: ConditionArmor},
+    ATTRIBUTE: {name: 'Attribute', container: true, construct: ConditionAttribute},
+    BIOME: {name: 'Biome', container: true, construct: ConditionBiome},
+    BLOCK: {name: 'Block', container: true, construct: ConditionBlock},
+    BURNING: {name: 'Burning', container: true, construct: ConditionBurning},
+    CEILING: {name: 'Ceiling', container: true, construct: ConditionCeiling},
+    CHANCE: {name: 'Chance', container: true, construct: ConditionChance},
+    CLASS: {name: 'Class', container: true, construct: ConditionClass},
+    CLASS_LEVEL: {name: 'Class Level', container: true, construct: ConditionClassLevel},
+    COMBAT: {name: 'Combat', container: true, construct: ConditionCombat},
+    CROUCH: {name: 'Crouch', container: true, construct: ConditionCrouch},
+    DIRECTION: {name: 'Direction', container: true, construct: ConditionDirection},
+    ELEVATION: {name: 'Elevation', container: true, construct: ConditionElevation},
+    ELSE: {name: 'Else', container: true, construct: ConditionElse},
+    ENTITY_TYPE: {name: 'Entity Type', container: true, construct: ConditionEntityType},
+    FIRE: {name: 'Fire', container: true, construct: ConditionFire},
+    FLAG: {name: 'Flag', container: true, construct: ConditionFlag},
+    FOOD: {name: 'Food', container: true, construct: ConditionFood},
+    GROUND: {name: 'Ground', container: true, construct: ConditionGround},
+    HEALTH: {name: 'Health', container: true, construct: ConditionHealth},
+    INVENTORY: {name: 'Inventory', container: true, construct: ConditionInventory},
+    ITEM: {name: 'Item', container: true, construct: ConditionItem},
+    LIGHT: {name: 'Light', container: true, construct: ConditionLight},
+    MANA: {name: 'Mana', container: true, construct: ConditionMana},
+    MONEY: {name: 'Money', container: true, construct: ConditionMoney},
+    MOUNTED: {name: 'Mounted', container: true, construct: ConditionMounted},
+    MOUNTING: {name: 'Mounting', container: true, construct: ConditionMounting},
+    NAME: {name: 'Name', container: true, construct: ConditionName},
+    OFFHAND: {name: 'Offhand', container: true, construct: ConditionOffhand},
+    PERMISSION: {name: 'Permission', container: true, construct: ConditionPermission},
+    POTION: {name: 'Potion', container: true, construct: ConditionPotion},
+    SKILL_LEVEL: {name: 'Skill Level', container: true, construct: ConditionSkillLevel},
+    SLOT: {name: 'Slot', container: true, construct: ConditionSlot},
+    STATUS: {name: 'Status', container: true, construct: ConditionStatus},
+    TIME: {name: 'Time', container: true, construct: ConditionTime},
+    TOOL: {name: 'Tool', container: true, construct: ConditionTool},
+    VALUE: {name: 'Value', container: true, construct: ConditionValue},
+    WATER: {name: 'Water', container: true, construct: ConditionWater},
+    WEATHER: {name: 'Weather', container: true, construct: ConditionWeather},
+    WORLD: {name: 'World', container: true, construct: ConditionWorld}
 };
 
 /**
  * Available mechanic component data
  */
 var Mechanic = {
-    ARMOR               : { name: 'Armor',               container: false, construct: MechanicArmor              },
-    ARMOR_STAND         : { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
-    ARMOR_STAND_POSE    : { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
-    ATTRIBUTE           : { name: 'Attribute',           container: false, construct: MechanicAttribute          },
-    BLOCK               : { name: 'Block',               container: false, construct: MechanicBlock              },
-    BUFF                : { name: 'Buff',                container: false, construct: MechanicBuff               },
-    CANCEL              : { name: 'Cancel',              container: false, construct: MechanicCancel             },
-    CHANNEL             : { name: 'Channel',             container: true,  construct: MechanicChannel            },
-    CLEANSE             : { name: 'Cleanse',             container: false, construct: MechanicCleanse            },
-    COMMAND             : { name: 'Command',             container: false, construct: MechanicCommand            },
-    COOLDOWN            : { name: 'Cooldown',            container: false, construct: MechanicCooldown           },
-    DAMAGE              : { name: 'Damage',              container: false, construct: MechanicDamage             },
-    DAMAGE_BUFF         : { name: 'Damage Buff',         container: false, construct: MechanicDamageBuff         },
-    DAMAGE_LORE         : { name: 'Damage Lore',         container: false, construct: MechanicDamageLore         },
-    DEFENSE_BUFF        : { name: 'Defense Buff',        container: false, construct: MechanicDefenseBuff        },
-    DELAY               : { name: 'Delay',               container: true,  construct: MechanicDelay              },
-    DISGUISE            : { name: 'Disguise',            container: false, construct: MechanicDisguise           },
-    DURABILITY          : { name: 'Durability',          container: false, construct: MechanicDurability         },
-    EXPLOSION           : { name: 'Explosion',           container: false, construct: MechanicExplosion          },
-    FIRE                : { name: 'Fire',                container: false, construct: MechanicFire               },
-    FLAG                : { name: 'Flag',                container: false, construct: MechanicFlag               },
-    FLAG_CLEAR          : { name: 'Flag Clear',          container: false, construct: MechanicFlagClear          },
-    FLAG_TOGGLE         : { name: 'Flag Toggle',         container: false, construct: MechanicFlagToggle         },
-    FOOD                : { name: 'Food',                container: false, construct: MechanicFood               },
-    FORGET_TARGETS      : { name: 'Forget Targets',      container: false, construct: MechanicForgetTargets      },
-    HEAL                : { name: 'Heal',                container: false, construct: MechanicHeal               },
-    HEALTH_SET          : { name: 'Health Set',          container: false, construct: MechanicHealthSet          },
-    HELD_ITEM           : { name: 'Held Item',           container: false, construct: MechanicHeldItem           },
-    IMMUNITY            : { name: 'Immunity',            container: false, construct: MechanicImmunity           },
-    INTERRUPT           : { name: 'Interrupt',           container: false, construct: MechanicInterrupt          },
-    ITEM                : { name: 'Item',                container: false, construct: MechanicItem               },
-    ITEM_DROP           : { name: 'Item Drop',           container: false, construct: MechanicItemDrop           },
-    ITEM_PROJECTILE     : { name: 'Item Projectile',     container: true,  construct: MechanicItemProjectile     },
-    ITEM_REMOVE         : { name: 'Item Remove',         container: false, construct: MechanicItemRemove         },
-    LAUNCH              : { name: 'Launch',              container: false, construct: MechanicLaunch             },
-    LIGHTNING           : { name: 'Lightning',           container: true,  construct: MechanicLightning          },
-    MANA                : { name: 'Mana',                container: false, construct: MechanicMana               },
-    MESSAGE             : { name: 'Message',             container: false, construct: MechanicMessage            },
-    MINE                : { name: 'Mine',                container: false, construct: MechanicMine               },
-    MONEY               : { name: 'Money',               container: false, construct: MechanicMoney              },
-    PARTICLE            : { name: 'Particle',            container: false, construct: MechanicParticle           },
-    PARTICLE_ANIMATION  : { name: 'Particle Animation',  container: false, construct: MechanicParticleAnimation  },
-    PARTICLE_EFFECT     : { name: 'Particle Effect',     container: false, construct: MechanicParticleEffect     },
-    CANCEL_EFFECT       : { name: 'Cancel Effect',       container: false, construct: MechanicCancelEffect       },
-    PARTICLE_PROJECTILE : { name: 'Particle Projectile', container: true,  construct: MechanicParticleProjectile },
-    PASSIVE             : { name: 'Passive',             container: true,  construct: MechanicPassive            },
-    PERMISSION          : { name: 'Permission',          container: false, construct: MechanicPermission         },
-    POTION              : { name: 'Potion',              container: false, construct: MechanicPotion             },
-    POTION_PROJECTILE   : { name: 'Potion Projectile',   container: true,  construct: MechanicPotionProjectile   },
-    PROJECTILE          : { name: 'Projectile',          container: true,  construct: MechanicProjectile         },
-    PURGE               : { name: 'Purge',               container: false, construct: MechanicPurge              },
-    PUSH                : { name: 'Push',                container: false, construct: MechanicPush               },
-    REMEMBER_TARGETS    : { name: 'Remember Targets',    container: false, construct: MechanicRememberTargets    },
-    REPEAT              : { name: 'Repeat',              container: true,  construct: MechanicRepeat             },
-    SOUND               : { name: 'Sound',               container: false, construct: MechanicSound              },
-    Stat                : { name: 'Stat',                container: false, construct: MechanicStat               },
-    STATUS              : { name: 'Status',              container: false, construct: MechanicStatus             },
-    TAUNT               : { name: 'Taunt',               container: false, construct: MechanicTaunt              },
-    TRANSLATED_MESSAGE  : { name: 'Translated Message',  container: false, construct: MechanicTranslatedMessage  },
-    TRIGGER             : { name: 'Trigger',             container: true,  construct: MechanicTrigger            },
-    VALUE_ADD           : { name: 'Value Add',           container: false, construct: MechanicValueAdd           },
-    VALUE_ATTRIBUTE     : { name: 'Value Attribute',     container: false, construct: MechanicValueAttribute     },
-    VALUE_COPY          : { name: 'Value Copy',          container: false, construct: MechanicValueCopy          },
-    VALUE_DISTANCE      : { name: 'Value Distance',      container: false, construct: MechanicValueDistance      },
-    VALUE_HEALTH        : { name: 'Value Health',        container: false, construct: MechanicValueHealth        },
-    VALUE_LOCATION      : { name: 'Value Location',      container: false, construct: MechanicValueLocation      },
-    VALUE_LORE          : { name: 'Value Lore',          container: false, construct: MechanicValueLore          },
-    VALUE_LORE_SLOT     : { name: 'Value Lore Slot',     container: false, construct: MechanicValueLoreSlot      },
-    VALUE_MANA          : { name: 'Value Mana',          container: false, construct: MechanicValueMana          },
-    VALUE_MULTIPLY      : { name: 'Value Multiply',      container: false, construct: MechanicValueMultiply      },
-    VALUE_PLACEHOLDER   : { name: 'Value Placeholder',   container: false, construct: MechanicValuePlaceholder   },
-    VALUE_RANDOM        : { name: 'Value Random',        container: false, construct: MechanicValueRandom        },
-    VALUE_SET           : { name: 'Value Set',           container: false, construct: MechanicValueSet           },
-    WARP                : { name: 'Warp',                container: false, construct: MechanicWarp               },
-    WARP_LOC            : { name: 'Warp Location',       container: false, construct: MechanicWarpLoc            },
-    WARP_RANDOM         : { name: 'Warp Random',         container: false, construct: MechanicWarpRandom         },
-    WARP_SWAP           : { name: 'Warp Swap',           container: false, construct: MechanicWarpSwap           },
-    WARP_TARGET         : { name: 'Warp Target',         container: false, construct: MechanicWarpTarget         },
-    WARP_VALUE          : { name: 'Warp Value',          container: false, construct: MechanicWarpValue          },
-    WOLF                : { name: 'Wolf',                container: true,  construct: MechanicWolf               }
+    ARMOR: {name: 'Armor', container: false, construct: MechanicArmor},
+    ARMOR_STAND: {name: 'Armor Stand', container: true, construct: MechanicArmorStand},
+    ARMOR_STAND_POSE: {name: 'Armor Stand Pose', container: false, construct: MechanicArmorStandPose},
+    ATTRIBUTE: {name: 'Attribute', container: false, construct: MechanicAttribute},
+    BLOCK: {name: 'Block', container: false, construct: MechanicBlock},
+    BUFF: {name: 'Buff', container: false, construct: MechanicBuff},
+    CANCEL: {name: 'Cancel', container: false, construct: MechanicCancel},
+    CHANNEL: {name: 'Channel', container: true, construct: MechanicChannel},
+    CLEANSE: {name: 'Cleanse', container: false, construct: MechanicCleanse},
+    COMMAND: {name: 'Command', container: false, construct: MechanicCommand},
+    COOLDOWN: {name: 'Cooldown', container: false, construct: MechanicCooldown},
+    DAMAGE: {name: 'Damage', container: false, construct: MechanicDamage},
+    DAMAGE_BUFF: {name: 'Damage Buff', container: false, construct: MechanicDamageBuff},
+    DAMAGE_LORE: {name: 'Damage Lore', container: false, construct: MechanicDamageLore},
+    DEFENSE_BUFF: {name: 'Defense Buff', container: false, construct: MechanicDefenseBuff},
+    DELAY: {name: 'Delay', container: true, construct: MechanicDelay},
+    DISGUISE: {name: 'Disguise', container: false, construct: MechanicDisguise},
+    DURABILITY: {name: 'Durability', container: false, construct: MechanicDurability},
+    EXPLOSION: {name: 'Explosion', container: false, construct: MechanicExplosion},
+    FIRE: {name: 'Fire', container: false, construct: MechanicFire},
+    FLAG: {name: 'Flag', container: false, construct: MechanicFlag},
+    FLAG_CLEAR: {name: 'Flag Clear', container: false, construct: MechanicFlagClear},
+    FLAG_TOGGLE: {name: 'Flag Toggle', container: false, construct: MechanicFlagToggle},
+    FOOD: {name: 'Food', container: false, construct: MechanicFood},
+    FORGET_TARGETS: {name: 'Forget Targets', container: false, construct: MechanicForgetTargets},
+    HEAL: {name: 'Heal', container: false, construct: MechanicHeal},
+    HEALTH_SET: {name: 'Health Set', container: false, construct: MechanicHealthSet},
+    HELD_ITEM: {name: 'Held Item', container: false, construct: MechanicHeldItem},
+    IMMUNITY: {name: 'Immunity', container: false, construct: MechanicImmunity},
+    INTERRUPT: {name: 'Interrupt', container: false, construct: MechanicInterrupt},
+    ITEM: {name: 'Item', container: false, construct: MechanicItem},
+    ITEM_DROP: {name: 'Item Drop', container: false, construct: MechanicItemDrop},
+    ITEM_PROJECTILE: {name: 'Item Projectile', container: true, construct: MechanicItemProjectile},
+    ITEM_REMOVE: {name: 'Item Remove', container: false, construct: MechanicItemRemove},
+    LAUNCH: {name: 'Launch', container: false, construct: MechanicLaunch},
+    LIGHTNING: {name: 'Lightning', container: true, construct: MechanicLightning},
+    MANA: {name: 'Mana', container: false, construct: MechanicMana},
+    MESSAGE: {name: 'Message', container: false, construct: MechanicMessage},
+    MINE: {name: 'Mine', container: false, construct: MechanicMine},
+    MONEY: {name: 'Money', container: false, construct: MechanicMoney},
+    PARTICLE: {name: 'Particle', container: false, construct: MechanicParticle},
+    PARTICLE_ANIMATION: {name: 'Particle Animation', container: false, construct: MechanicParticleAnimation},
+    PARTICLE_EFFECT: {name: 'Particle Effect', container: false, construct: MechanicParticleEffect},
+    CANCEL_EFFECT: {name: 'Cancel Effect', container: false, construct: MechanicCancelEffect},
+    PARTICLE_PROJECTILE: {name: 'Particle Projectile', container: true, construct: MechanicParticleProjectile},
+    PASSIVE: {name: 'Passive', container: true, construct: MechanicPassive},
+    PERMISSION: {name: 'Permission', container: false, construct: MechanicPermission},
+    POTION: {name: 'Potion', container: false, construct: MechanicPotion},
+    POTION_PROJECTILE: {name: 'Potion Projectile', container: true, construct: MechanicPotionProjectile},
+    PROJECTILE: {name: 'Projectile', container: true, construct: MechanicProjectile},
+    PURGE: {name: 'Purge', container: false, construct: MechanicPurge},
+    PUSH: {name: 'Push', container: false, construct: MechanicPush},
+    REMEMBER_TARGETS: {name: 'Remember Targets', container: false, construct: MechanicRememberTargets},
+    REPEAT: {name: 'Repeat', container: true, construct: MechanicRepeat},
+    SOUND: {name: 'Sound', container: false, construct: MechanicSound},
+    Stat: {name: 'Stat', container: false, construct: MechanicStat},
+    STATUS: {name: 'Status', container: false, construct: MechanicStatus},
+    TAUNT: {name: 'Taunt', container: false, construct: MechanicTaunt},
+    TRANSLATED_MESSAGE: {name: 'Translated Message', container: false, construct: MechanicTranslatedMessage},
+    TRIGGER: {name: 'Trigger', container: true, construct: MechanicTrigger},
+    VALUE_ADD: {name: 'Value Add', container: false, construct: MechanicValueAdd},
+    VALUE_ATTRIBUTE: {name: 'Value Attribute', container: false, construct: MechanicValueAttribute},
+    VALUE_COPY: {name: 'Value Copy', container: false, construct: MechanicValueCopy},
+    VALUE_DISTANCE: {name: 'Value Distance', container: false, construct: MechanicValueDistance},
+    VALUE_HEALTH: {name: 'Value Health', container: false, construct: MechanicValueHealth},
+    VALUE_LOCATION: {name: 'Value Location', container: false, construct: MechanicValueLocation},
+    VALUE_LORE: {name: 'Value Lore', container: false, construct: MechanicValueLore},
+    VALUE_LORE_SLOT: {name: 'Value Lore Slot', container: false, construct: MechanicValueLoreSlot},
+    VALUE_MANA: {name: 'Value Mana', container: false, construct: MechanicValueMana},
+    VALUE_MULTIPLY: {name: 'Value Multiply', container: false, construct: MechanicValueMultiply},
+    VALUE_PLACEHOLDER: {name: 'Value Placeholder', container: false, construct: MechanicValuePlaceholder},
+    VALUE_RANDOM: {name: 'Value Random', container: false, construct: MechanicValueRandom},
+    VALUE_SET: {name: 'Value Set', container: false, construct: MechanicValueSet},
+    WARP: {name: 'Warp', container: false, construct: MechanicWarp},
+    WARP_LOC: {name: 'Warp Location', container: false, construct: MechanicWarpLoc},
+    WARP_RANDOM: {name: 'Warp Random', container: false, construct: MechanicWarpRandom},
+    WARP_SWAP: {name: 'Warp Swap', container: false, construct: MechanicWarpSwap},
+    WARP_TARGET: {name: 'Warp Target', container: false, construct: MechanicWarpTarget},
+    WARP_VALUE: {name: 'Warp Value', container: false, construct: MechanicWarpValue},
+    WOLF: {name: 'Wolf', container: true, construct: MechanicWolf}
 };
 
 var saveIndex;
@@ -214,13 +214,13 @@ var saveIndex;
  * @constructor
  */
 function Component(name, type, container, parent) {
-    this.name       = name;
-    this.type       = type;
-    this.container  = container;
-    this.parent     = parent;
-    this.html       = undefined;
+    this.name = name;
+    this.type = type;
+    this.container = container;
+    this.parent = parent;
+    this.html = undefined;
     this.components = [];
-    this.data       = [new StringValue('Icon Key', 'icon-key', '').setTooltip('The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}".')];
+    this.data = [new StringValue('Icon Key', 'icon-key', '').setTooltip('The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}".')];
     if (this.type == Type.MECHANIC) {
         this.data.push(new ListValue('Counts as Cast', 'counts', ['True', 'False'], 'True')
             .setTooltip('Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic appled when the skill fails such as cleanup or an error message.')
@@ -234,7 +234,7 @@ function Component(name, type, container, parent) {
         );
     }
 
-    this.dataKey      = 'data';
+    this.dataKey = 'data';
     this.componentKey = 'children';
 }
 
@@ -260,16 +260,16 @@ Component.prototype.dupe = function (parent) {
  */
 Component.prototype.createBuilderHTML = function (target) {
     // Create the wrapping divs with the appropriate classes
-    let container  = document.createElement('div');
+    let container = document.createElement('div');
     container.comp = this;
     if (this.type == Type.TRIGGER) {
         container.className = 'componentWrapper';
     }
 
-    let div       = document.createElement('div');
+    let div = document.createElement('div');
     div.className = 'component ' + this.type;
     if (this.type != Type.TRIGGER) {
-        div.draggable   = true;
+        div.draggable = true;
         div.ondragstart = this.drag;
     }
     div.ondrop = this.drop;
@@ -278,8 +278,8 @@ Component.prototype.createBuilderHTML = function (target) {
     }
 
     // Component label
-    let label       = document.createElement('h3');
-    label.title     = 'Edit ' + this.name + ' options';
+    let label = document.createElement('h3');
+    label.title = 'Edit ' + this.name + ' options';
     label.className = this.type + 'Label';
     label.innerHTML = this.name;
     label.component = this;
@@ -291,7 +291,7 @@ Component.prototype.createBuilderHTML = function (target) {
 
     // Container components can add children so they get a button
     if (this.container) {
-        let add       = document.createElement('div');
+        let add = document.createElement('div');
         add.className = 'builderButton';
         add.innerHTML = '+ Add Child';
         add.component = this;
@@ -301,19 +301,19 @@ Component.prototype.createBuilderHTML = function (target) {
         });
         div.appendChild(add);
 
-        let vision              = document.createElement('div');
-        vision.title            = 'Hide Children';
-        vision.className        = 'builderButton smallButton';
+        let vision = document.createElement('div');
+        vision.title = 'Hide Children';
+        vision.className = 'builderButton smallButton';
         vision.style.background = 'url("editor/img/eye.png") no-repeat center #222';
-        vision.component        = this;
+        vision.component = this;
         vision.addEventListener('click', function (e) {
             let comp = this.component;
             if (comp.childrenHidden) {
                 comp.childDiv.style.display = 'block';
-                this.style.backgroundImage  = 'url("editor/img/eye.png")';
+                this.style.backgroundImage = 'url("editor/img/eye.png")';
             } else {
                 comp.childDiv.style.display = 'none';
-                this.style.backgroundImage  = 'url("editor/img/eyeShaded.png")';
+                this.style.backgroundImage = 'url("editor/img/eyeShaded.png")';
             }
             comp.childrenHidden = !comp.childrenHidden;
         });
@@ -323,11 +323,11 @@ Component.prototype.createBuilderHTML = function (target) {
 
     // Add the duplicate button
     if (this.type != Type.TRIGGER) {
-        let duplicate              = document.createElement('div');
-        duplicate.className        = 'builderButton smallButton';
-        duplicate.title            = 'Duplicate';
+        let duplicate = document.createElement('div');
+        duplicate.className = 'builderButton smallButton';
+        duplicate.title = 'Duplicate';
         duplicate.style.background = 'url("editor/img/duplicate.png") no-repeat center #222';
-        duplicate.component        = this;
+        duplicate.component = this;
         duplicate.addEventListener('click', function (e) {
             let comp = this.component;
             let copy = comp.dupe(comp.parent);
@@ -335,18 +335,56 @@ Component.prototype.createBuilderHTML = function (target) {
             copy.createBuilderHTML(comp.parent.html);
         });
         div.appendChild(duplicate);
+        // Add move up /down buttons
+        let moveUp = document.createElement('div');
+        moveUp.className = 'builderButton smallButton';
+        moveUp.title = 'Move Up';
+        moveUp.style.background = 'url("editor/img/moveUp.png") no-repeat center #222';
+        moveUp.component = this;
+        moveUp.addEventListener('click', function (e) {
+            const components = this.component.parent.components;
+            let index = components.findIndex(e => e === this.component);
+            if (index > 0) {
+                let el = components[index];
+                components[index] = components[index - 1];
+                components[index - 1] = el;
+            }
+            const element = this.parentNode.parentNode;
+            if(element.previousElementSibling)
+                element.parentNode.insertBefore(element, element.previousElementSibling);
+        });
+        div.appendChild(moveUp);
+        let moveDown = document.createElement('div');
+        moveDown.className = 'builderButton smallButton';
+        moveDown.title = 'Move Up';
+        moveDown.style.background = 'url("editor/img/moveDown.png") no-repeat center #222';
+        moveDown.component = this;
+        moveDown.addEventListener('click', function (e) {
+            const components = this.component.parent.components;
+            let index = components.findIndex(e => e === this.component);
+            if (index > 0) {
+                let el = components[index];
+                components[index] = components[index + 1];
+                components[index + 1] = el;
+            }
+            const element = this.parentNode.parentNode;
+            if(element.nextElementSibling)
+                element.parentNode.insertBefore(element.nextElementSibling, element);
+        });
+        div.appendChild(moveDown);
     }
 
     // Add the remove button
-    let remove              = document.createElement('div');
-    remove.title            = 'Remove';
-    remove.className        = 'builderButton smallButton cancelButton';
+    let remove = document.createElement('div');
+    remove.title = 'Remove';
+    remove.className = 'builderButton smallButton cancelButton';
     remove.style.background = 'url("editor/img/delete.png") no-repeat center #ff3333';
-    remove.component        = this;
+    remove.component = this;
     remove.addEventListener('click', function (e) {
         let list = this.component.parent.components;
         for (let i = 0; i < list.length; i++) {
-            if (list[i] == this.component) {
+            if (
+                list[i] === this.component) {
                 list.splice(i, 1);
                 break;
             }
@@ -358,7 +396,7 @@ Component.prototype.createBuilderHTML = function (target) {
     container.appendChild(div);
 
     // Apply child components
-    let childContainer       = document.createElement('div');
+    let childContainer = document.createElement('div');
     childContainer.className = 'componentChildren';
     if (this.components.length > 0) {
         for (let i = 0; i < this.components.length; i++) {
@@ -378,7 +416,7 @@ Component.prototype.allowDrop = function (e) {
     e.preventDefault();
     if (hoverSpace) {
         hoverSpace.style.marginBottom = '0px';
-        hoverSpace.onmouseout         = undefined;
+        hoverSpace.onmouseout = undefined;
     }
     hoverSpace = e.target;
     while (hoverSpace.className.indexOf('component') < 0) {
@@ -387,14 +425,14 @@ Component.prototype.allowDrop = function (e) {
     let thing = document.getElementById('dragComponent');
     if (hoverSpace.id != 'dragComponent' && hoverSpace.parentNode.comp.container && canDrop(thing, hoverSpace)) {
         hoverSpace.style.marginBottom = '30px';
-        hoverSpace.onmouseout         = function () {
+        hoverSpace.onmouseout = function () {
             if (!hoverSpace) {
                 this.onmouseout = undefined;
                 return;
             }
             hoverSpace.style.marginBottom = '0px';
-            hoverSpace.onmouseout         = undefined;
-            hoverSpace                    = undefined;
+            hoverSpace.onmouseout = undefined;
+            hoverSpace = undefined;
         }
     } else hoverSpace = undefined;
 };
@@ -411,11 +449,11 @@ Component.prototype.drag = function (e) {
 Component.prototype.drop = function (e) {
     if (hoverSpace) {
         hoverSpace.style.marginBottom = '0px';
-        hoverSpace                    = undefined;
+        hoverSpace = undefined;
     }
 
     e.preventDefault();
-    let thing  = document.getElementById('dragComponent').parentNode;
+    let thing = document.getElementById('dragComponent').parentNode;
     let target = e.target;
     while (target.className.indexOf('component') < 0) {
         target = target.parentNode;
@@ -424,8 +462,8 @@ Component.prototype.drop = function (e) {
         return;
     }
     let targetComp = target.parentNode.comp;
-    let thingComp  = thing.comp;
-    target         = target.parentNode.childNodes[1];
+    let thingComp = thing.comp;
+    target = target.parentNode.childNodes[1];
     thing.parentNode.removeChild(thing);
     target.appendChild(thing);
 
@@ -443,12 +481,12 @@ Component.prototype.createFormHTML = function () {
 
     let form = document.createElement('form');
 
-    let header       = document.createElement('h4');
+    let header = document.createElement('h4');
     header.innerHTML = this.name;
     form.appendChild(header);
 
     if (this.description) {
-        let desc       = document.createElement('p');
+        let desc = document.createElement('p');
         desc.innerHTML = this.description;
         form.appendChild(desc);
     }
@@ -473,7 +511,7 @@ Component.prototype.createFormHTML = function () {
     let hr = document.createElement('hr');
     form.appendChild(hr);
 
-    let done       = document.createElement('h5');
+    let done = document.createElement('h5');
     done.className = 'doneButton';
     done.innerHTML = 'Done';
     done.component = this;
@@ -512,7 +550,7 @@ Component.prototype.update = function () {
 Component.prototype.getSaveString = function (spacing) {
     this.createFormHTML();
 
-    let id    = '';
+    let id = '';
     let index = saveIndex;
     while (index > 0 || id.length == 0) {
         id += String.fromCharCode((index % 26) + 97);
@@ -769,12 +807,12 @@ function TriggerLaunch() {
     this.description = 'Applies skill effects when a player launches a projectile.';
 
     this.data.push(new ListValue('Type', 'type', ['Any',
-                                                  'Arrow',
-                                                  'Egg',
-                                                  'Ender Pearl',
-                                                  'Fireball',
-                                                  'Fishing Hook',
-                                                  'Snowball'], 'Any')
+        'Arrow',
+        'Egg',
+        'Ender Pearl',
+        'Fireball',
+        'Fishing Hook',
+        'Snowball'], 'Any')
         .setTooltip('The type of projectile that should be launched.')
     );
 }
@@ -907,7 +945,7 @@ function TargetArea() {
     this.data.push(new AttributeValue("Radius", "radius", 3, 0)
         .setTooltip('The radius of the area to target in blocks')
     );
-	addTargetOptions(this);
+    addTargetOptions(this);
     this.data.push(new ListValue("Random", "random", ['True', 'False'], 'False')
         .setTooltip('Whether to randomize the targets selected')
     );
@@ -926,7 +964,7 @@ function TargetCone() {
     this.data.push(new AttributeValue("Angle", "angle", 90, 0)
         .setTooltip('The angle of the cone arc in degrees')
     );
-	addTargetOptions(this);
+    addTargetOptions(this);
 }
 
 extend('TargetLinear', 'Component');
@@ -942,7 +980,7 @@ function TargetLinear() {
     this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
         .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
-	addTargetOptions(this);
+    addTargetOptions(this);
 }
 
 extend('TargetLocation', 'Component');
@@ -979,7 +1017,7 @@ function TargetNearest() {
     this.data.push(new AttributeValue("Radius", "radius", 3, 0)
         .setTooltip('The radius of the area to target in blocks')
     );
-	addTargetOptions(this);
+    addTargetOptions(this);
 }
 
 extend('TargetOffset', 'Component');
@@ -1046,19 +1084,18 @@ function TargetSingle() {
 
 extend('ConditionAltitude', 'Component');
 
-function ConditionAltitude()
-{
+function ConditionAltitude() {
     this.super('Altitude', Type.CONDITION, true);
 
     this.description = "Applies child components whenever the player is on a certain height-level";
 
     this.data.push(new IntValue('Min', 'min', 0)
         .setTooltip('The minimum height a player has to be on')
-        );
+    );
 
     this.data.push(new IntValue('Max', 'max', 0)
         .setTooltip('The maximum height a player can be on')
-        );
+    );
 
 }
 
@@ -1116,9 +1153,9 @@ function ConditionBlock() {
     this.description = 'Applies child components if the target is currently standing on a block of the given type.';
 
     this.data.push(new ListValue('Type', 'standing', ['On Block',
-                                                      'Not On Block',
-                                                      'In Block',
-                                                      'Not In Block'], 'On Block')
+        'Not On Block',
+        'In Block',
+        'Not In Block'], 'On Block')
         .setTooltip('Specifies which block to check and whether it should match the selected mateiral. "On Block" is directly below the player while "In Block" is the block a player\'s feet are in.')
     );
     this.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt')
@@ -1128,15 +1165,14 @@ function ConditionBlock() {
 
 extend('ConditionBurning', 'Component');
 
-function ConditionBurning() 
-{
+function ConditionBurning() {
     this.super('Burning', Type.CONDITION, true);
 
     this.description = 'Applies child components if the caster burns or not';
 
     this.data.push(new ListValue('Type', 'burn', ['Burn', 'Dont burn'], 'Burn')
         .setTooltip('Specifies whether the player has to be burning for this skill to be performed')
-        );
+    );
 }
 
 extend('ConditionCeiling', 'Component');
@@ -1413,7 +1449,7 @@ function ConditionMoney() {
     this.super('Money', Type.CONDITION, true);
 
     this.description = "Applies child components when the target's balance matches the settings (requires Vault and an economy plugin). Always is false for non-player targets.";
-	
+
     this.data.push(new ListValue('Type', 'type', ['Min', 'Max', 'Between'], 'Min')
         .setTooltip('The type of comparison to make')
     );
@@ -1555,13 +1591,13 @@ function ConditionStatus() {
         .setTooltip('Whether the status should be active')
     );
     this.data.push(new ListValue('Status', 'status', ['Any',
-                                                      'Absorb',
-                                                      'Curse',
-                                                      'Disarm',
-                                                      'Invincible',
-                                                      'Root',
-                                                      'Silence',
-                                                      'Stun'], 'Any')
+        'Absorb',
+        'Curse',
+        'Disarm',
+        'Invincible',
+        'Root',
+        'Silence',
+        'Stun'], 'Any')
         .setTooltip('The status to look for')
     );
 }
@@ -1586,12 +1622,12 @@ function ConditionTool() {
     this.description = 'Applies child components when the target is wielding a matching tool.';
 
     this.data.push(new ListValue('Material', 'material', ['Any',
-                                                          'Wood',
-                                                          'Stone',
-                                                          'Iron',
-                                                          'Gold',
-                                                          'Diamond',
-                                                          'Netherite'], 'Any')
+        'Wood',
+        'Stone',
+        'Iron',
+        'Gold',
+        'Diamond',
+        'Netherite'], 'Any')
         .setTooltip('The material the held tool needs to be made out of')
     );
     this.data.push(new ListValue('Tool', 'tool', ['Any', 'Axe', 'Hoe', 'Pickaxe', 'Shovel', 'Sword'], 'Any')
@@ -1643,8 +1679,7 @@ function ConditionWeather() {
 
 extend('ConditionWorld', 'Component');
 
-function ConditionWorld() 
-{
+function ConditionWorld() {
     this.super('World', Type.CONDITION, true);
 
     this.description = 'Applies child components when the target is in a specific world';
@@ -1698,7 +1733,7 @@ function MechanicArmor() {
     this.data.push(new ListValue('Overwrite', 'overwrite', ['True', 'False'], 'False')
         .setTooltip('USE WITH CAUTION. Whether to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
     );
-	addItemOptions(this)
+    addItemOptions(this)
 }
 
 extend('MechanicArmorStand', 'Component');
@@ -1836,10 +1871,10 @@ function MechanicBuff() {
         .setTooltip('Whether to apply the buff to the current damage trigger.')
     );
     this.data.push(new ListValue('Type', 'type', ['DAMAGE',
-                                                  'DEFENSE',
-                                                  'SKILL_DAMAGE',
-                                                  'SKILL_DEFENSE',
-                                                  'HEALING'], 'DAMAGE')
+        'DEFENSE',
+        'SKILL_DAMAGE',
+        'SKILL_DEFENSE',
+        'HEALING'], 'DAMAGE')
         .requireValue('immediate', ['False'])
         .setTooltip('What type of buff to apply. DAMAGE/DEFENSE is for regular attacks, SKILL_DAMAGE/SKILL_DEFENSE are for damage from abilities, and HEALING is for healing from abilities')
     );
@@ -1905,12 +1940,12 @@ function MechanicCleanse() {
         .setTooltip('The type of potion effect to remove from the target')
     );
     this.data.push(new ListValue('Status', 'status', ['None',
-                                                      'All',
-                                                      'Curse',
-                                                      'Disarm',
-                                                      'Root',
-                                                      'Silence',
-                                                      'Stun'], 'All')
+        'All',
+        'Curse',
+        'Disarm',
+        'Root',
+        'Silence',
+        'Stun'], 'All')
         .setTooltip('The status to remove from the target')
     );
 }
@@ -2065,44 +2100,44 @@ function MechanicDisguise() {
     );
 
     this.data.push(new ListValue('Mob', 'mob', ['Bat',
-                                                'Blaze',
-                                                'Cave Spider',
-                                                'Chicken',
-                                                'Cow',
-                                                'Creeper',
-                                                'Donkey',
-                                                'Elder Guardian',
-                                                'Ender Dragon',
-                                                'Enderman',
-                                                'Endermite',
-                                                'Ghast',
-                                                'Giant',
-                                                'Guardian',
-                                                'Horse',
-                                                'Iron Golem',
-                                                'Magma Cube',
-                                                'Mule',
-                                                'Mushroom Cow',
-                                                'Ocelot',
-                                                'Pig',
-                                                'Pig Zombie',
-                                                'Rabbit',
-                                                'Sheep',
-                                                'Shulker',
-                                                'Silverfish',
-                                                'Skeleton',
-                                                'Slime',
-                                                'Snowman',
-                                                'Spider',
-                                                'Squid',
-                                                'Undead Horse',
-                                                'Villager',
-                                                'Witch',
-                                                'Wither',
-                                                'Wither Skeleton',
-                                                'Wolf',
-                                                'Zombie',
-                                                'Zombie Villager'], 'Zombie')
+        'Blaze',
+        'Cave Spider',
+        'Chicken',
+        'Cow',
+        'Creeper',
+        'Donkey',
+        'Elder Guardian',
+        'Ender Dragon',
+        'Enderman',
+        'Endermite',
+        'Ghast',
+        'Giant',
+        'Guardian',
+        'Horse',
+        'Iron Golem',
+        'Magma Cube',
+        'Mule',
+        'Mushroom Cow',
+        'Ocelot',
+        'Pig',
+        'Pig Zombie',
+        'Rabbit',
+        'Sheep',
+        'Shulker',
+        'Silverfish',
+        'Skeleton',
+        'Slime',
+        'Snowman',
+        'Spider',
+        'Squid',
+        'Undead Horse',
+        'Villager',
+        'Witch',
+        'Wither',
+        'Wither Skeleton',
+        'Wolf',
+        'Zombie',
+        'Zombie Villager'], 'Zombie')
         .requireValue('type', ['Mob'])
         .setTooltip('The type of mob to disguise the target as')
     );
@@ -2117,74 +2152,74 @@ function MechanicDisguise() {
     );
 
     this.data.push(new ListValue('Misc', 'misc', ['Area Effect Cloud',
-                                                  'Armor Stand',
-                                                  'Arrow',
-                                                  'Boat',
-                                                  'Dragon Fireball',
-                                                  'Dropped Item',
-                                                  'Egg',
-                                                  'Ender Crystal',
-                                                  'Ender Pearl',
-                                                  'Ender Signal',
-                                                  'Experience Orb',
-                                                  'Falling Block',
-                                                  'Fireball',
-                                                  'Firework',
-                                                  'Fishing Hook',
-                                                  'Item Frame',
-                                                  'Leash Hitch',
-                                                  'Minecart',
-                                                  'Minecart Chest',
-                                                  'Minecart Command',
-                                                  'Minecart Furnace',
-                                                  'Minecart Hopper',
-                                                  'Minecart Mob Spawner',
-                                                  'Minecart TNT',
-                                                  'Painting',
-                                                  'Primed TNT',
-                                                  'Shulker Bullet',
-                                                  'Snowball',
-                                                  'Spectral Arrow',
-                                                  'Splash Potion',
-                                                  'Tipped Arrow',
-                                                  'Thrown EXP Bottle',
-                                                  'Wither Skull'], 'Painting')
+        'Armor Stand',
+        'Arrow',
+        'Boat',
+        'Dragon Fireball',
+        'Dropped Item',
+        'Egg',
+        'Ender Crystal',
+        'Ender Pearl',
+        'Ender Signal',
+        'Experience Orb',
+        'Falling Block',
+        'Fireball',
+        'Firework',
+        'Fishing Hook',
+        'Item Frame',
+        'Leash Hitch',
+        'Minecart',
+        'Minecart Chest',
+        'Minecart Command',
+        'Minecart Furnace',
+        'Minecart Hopper',
+        'Minecart Mob Spawner',
+        'Minecart TNT',
+        'Painting',
+        'Primed TNT',
+        'Shulker Bullet',
+        'Snowball',
+        'Spectral Arrow',
+        'Splash Potion',
+        'Tipped Arrow',
+        'Thrown EXP Bottle',
+        'Wither Skull'], 'Painting')
         .requireValue('type', ['Misc'])
         .setTooltip('The object to disguise the target as')
     );
     this.data.push(new IntValue('Data', 'data', 0)
         // .requireValue('type', [ 'Misc' ])
         .requireValue('misc', ['Area Effect Cloud',
-                               'Armor Stand',
-                               'Arrow',
-                               'Boat',
-                               'Dragon Fireball',
-                               'Egg',
-                               'Ender Crystal',
-                               'Ender Pearl',
-                               'Ender Signal',
-                               'Experience Orb',
-                               'Fireball',
-                               'Firework',
-                               'Fishing Hook',
-                               'Item Frame',
-                               'Leash Hitch',
-                               'Minecart',
-                               'Minecart Chest',
-                               'Minecart Command',
-                               'Minecart Furnace',
-                               'Minecart Hopper',
-                               'Minecart Mob Spawner',
-                               'Minecart TNT',
-                               'Painting',
-                               'Primed TNT',
-                               'Shulker Bullet',
-                               'Snowball',
-                               'Spectral Arrow',
-                               'Splash Potion',
-                               'Tipped Arrow',
-                               'Thrown EXP Bottle',
-                               'Wither Skull'])
+            'Armor Stand',
+            'Arrow',
+            'Boat',
+            'Dragon Fireball',
+            'Egg',
+            'Ender Crystal',
+            'Ender Pearl',
+            'Ender Signal',
+            'Experience Orb',
+            'Fireball',
+            'Firework',
+            'Fishing Hook',
+            'Item Frame',
+            'Leash Hitch',
+            'Minecart',
+            'Minecart Chest',
+            'Minecart Command',
+            'Minecart Furnace',
+            'Minecart Hopper',
+            'Minecart Mob Spawner',
+            'Minecart TNT',
+            'Painting',
+            'Primed TNT',
+            'Shulker Bullet',
+            'Snowball',
+            'Spectral Arrow',
+            'Splash Potion',
+            'Tipped Arrow',
+            'Thrown EXP Bottle',
+            'Wither Skull'])
         .setTooltip('Data value to use for the disguise type. What it does depends on the disguise')
     );
 
@@ -2390,7 +2425,7 @@ function MechanicItemDrop() {
     this.super('Item Drop', Type.MECHANIC, false);
 
     this.description = 'Spawns a dropped item defined by the settings at the specified location.';
-	
+
     this.data.push(new AttributeValue('Pickup Delay', 'pickup_delay', 10, 0)
         .setTooltip('How many ticks must pass before the item can be picked up, in ticks.')
     );
@@ -2399,8 +2434,8 @@ function MechanicItemDrop() {
     );
 
     addItemOptions(this);
-	
-	this.data.push(new SectionMarker("Offset"));
+
+    this.data.push(new SectionMarker("Offset"));
     this.data.push(new AttributeValue('Forward offset', 'forward', 0, 0)
         .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards.')
     );
@@ -2418,12 +2453,12 @@ function MechanicItemProjectile() {
     this.super('Item Projectile', Type.MECHANIC, true);
 
     this.description = 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
-    
+
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
     );
 
-	addItemOptions(this);
+    addItemOptions(this);
     addProjectileOptions(this);
     addEffectOptions(this, true);
 }
@@ -2479,8 +2514,8 @@ function MechanicLightning() {
     this.data.push(new ListValue("Include Caster", "caster", ['True', 'False'], 'False')
         .setTooltip('Whether the lightning strike can hit the caster')
     );
-	
-	this.data.push(new SectionMarker("Offset"));
+
+    this.data.push(new SectionMarker("Offset"));
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far in front of the target in blocks to place the lightning')
     );
@@ -2522,8 +2557,8 @@ function MechanicMine() {
     this.super('Mine', Type.MECHANIC, false);
 
     this.description = 'Destroys a selection of blocks at the location of the target.'
-	
-	this.data.push(new MultiListValue('Material', 'materials', ['Origin', ...getAnyMaterials()], ['Origin'])
+
+    this.data.push(new MultiListValue('Material', 'materials', ['Origin', ...getAnyMaterials()], ['Origin'])
         .setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location')
     );
     this.data.push(new ListValue('Drop', 'drop', ['True', 'False'], 'True')
@@ -2532,7 +2567,7 @@ function MechanicMine() {
     this.data.push(new ListValue('Tool', 'tool', ['Caster', 'Target', ...getMaterials()], 'Diamond pickaxe').requireValue('drop', ['True'])
         .setTooltip('What tool to use when breaking the blocks. This allows to take into account the fact that, for example, Diamond Ore does not drop when mined with a Stone Pickaxe, as well as to consider enchantments like Looting and Silk Touch. \'Caster\' an \'Target\' refers to the items in their respective main hands')
     );
-	
+
     this.data.push(new ListValue('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
         .setTooltip('The shape of the region to mine')
     );
@@ -2552,8 +2587,8 @@ function MechanicMine() {
     this.data.push(new AttributeValue('Depth (Z)', 'depth', 3, 0).requireValue('shape', ['Cuboid'])
         .setTooltip('The depth of the cuboid, in blocks')
     );
-	
-	this.data.push(new SectionMarker("Offset"));
+
+    this.data.push(new SectionMarker("Offset"));
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far forward in front of the target the region should be in blocks. A negative value will put it behind.')
     );
@@ -2571,15 +2606,15 @@ function MechanicMoney() {
     this.super('Money', Type.MECHANIC, false);
 
     this.description = 'Adds or multiplies the target\'s balance by some amount (requires Vault and an economy plugin). Fails if the resulting balance is not within the range allowed by the economy plugin.'
-	
+
     this.data.push(new ListValue('Type', 'type', ['Add', 'Multiply'], 'Add')
-	.setTooltip('Whether the target\'s balance will be added or multiplied by the set amount.')
+        .setTooltip('Whether the target\'s balance will be added or multiplied by the set amount.')
     );
     this.data.push(new AttributeValue('Amount', 'amount', 5, 0)
         .setTooltip('The amount that the target\'s balance will be added or multiplied by. Can be negative.')
     );
     this.data.push(new ListValue('Allows negative', 'allows_negative', ['True', 'False'], 'False')
-		.setTooltip('Whether the mechanic will be executed even if it will result in the target having a negative balance.')
+        .setTooltip('Whether the mechanic will be executed even if it will result in the target having a negative balance.')
     );
 }
 
@@ -2683,7 +2718,7 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
     );
-	
+
     addProjectileOptions(this);
 
     addParticleOptions(this);
@@ -2769,11 +2804,11 @@ function MechanicProjectile() {
     this.description = 'Launches a projectile that applies child components on hit. The target supplied will be the struck target.';
 
     this.data.push(new ListValue('Projectile', 'projectile', ['Arrow',
-                                                              'Egg',
-                                                              'Snowball',
-                                                              'Fireball',
-                                                              'Large Fireball',
-                                                              'Small fireball'], 'Arrow')
+        'Egg',
+        'Snowball',
+        'Fireball',
+        'Large Fireball',
+        'Small fireball'], 'Arrow')
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', ['True', 'False'], 'False')
@@ -2860,11 +2895,11 @@ function MechanicSound() {
 
     this.description = "Plays a sound at the target's location.";
 
-    this.data.push(new ListValue('Sound', 'sound', [ 'Custom', ...getSounds() ], 'Ambient Cave')
+    this.data.push(new ListValue('Sound', 'sound', ['Custom', ...getSounds()], 'Ambient Cave')
         .setTooltip('The sound clip to play. Select \'Custom\' to enter custom sounds from your resource pack.')
     );
     this.data.push(new StringValue('Custom sound name', 'custom', 'myrp:some_sound')
-		.requireValue('sound', ['Custom'])
+        .requireValue('sound', ['Custom'])
         .setTooltip('Namespaced key of your custom sound.')
     );
     this.data.push(new AttributeValue('Volume', 'volume', 100, 0)
@@ -2883,26 +2918,26 @@ function MechanicStat() {
     this.description = 'Gives a player bonus stat temporarily.';
 
     this.data.push(new ListValue('Stat', 'key', ['health',
-                                                 'mana',
-                                                 'mana-regen',
-                                                 'physical-damage',
-                                                 'melee-damage',
-                                                 'projectile-damage',
-                                                 'physical-damage',
-                                                 'melee-defense',
-                                                 'projectile-defense',
-                                                 'skill-damage',
-                                                 'skill-defense',
-                                                 'move-speed',
-                                                 'attack-speed',
-                                                 'armor',
-                                                 'luck',
-                                                 'armor-toughness',
-                                                 'exp',
-                                                 'hunger',
-                                                 'hunger-heal',
-                                                 'cooldown',
-                                                 'knockback-resist'], 'health')
+        'mana',
+        'mana-regen',
+        'physical-damage',
+        'melee-damage',
+        'projectile-damage',
+        'physical-damage',
+        'melee-defense',
+        'projectile-defense',
+        'skill-damage',
+        'skill-defense',
+        'move-speed',
+        'attack-speed',
+        'armor',
+        'luck',
+        'armor-toughness',
+        'exp',
+        'hunger',
+        'hunger-heal',
+        'cooldown',
+        'knockback-resist'], 'health')
         .setTooltip('The name of the stat to add to')
     );
     this.data.push(new ListValue('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
@@ -2927,12 +2962,12 @@ function MechanicStatus() {
     this.description = 'Applies a status effect to the target for a duration.';
 
     this.data.push(new ListValue('Status', 'status', ['Absorb',
-                                                      'Curse',
-                                                      'Disarm',
-                                                      'Invincible',
-                                                      'Root',
-                                                      'Silence',
-                                                      'Stun'], 'Stun')
+        'Curse',
+        'Disarm',
+        'Invincible',
+        'Root',
+        'Silence',
+        'Stun'], 'Stun')
         .setTooltip('The status to apply')
     );
     this.data.push(new AttributeValue('Duration', 'duration', 3, 1)
@@ -2975,28 +3010,28 @@ function MechanicTrigger() {
     this.description = 'Listens for a trigger on the current targets for a duration.';
 
     this.data.push(new ListValue('Trigger', 'trigger', ['Block Break',
-                                                        'Block Place', 
-                                                        'Crouch',
-                                                        'Death',
-                                                        'Drop Item',
-                                                        'Environment Damage',
-                                                        'Fishing',
-                                                        'Fishing Bite',
-                                                        'Fishing Fail',
-                                                        'Fishing Grab',
-                                                        'Fishing Ground',
-                                                        'Fishing Reel',
-                                                        'Item Swap',
-                                                        'Kill',
-                                                        'Land',
-                                                        'Launch',
-                                                        'Left Click',
-                                                        'Move',
-                                                        'Physical Damage',
-                                                        'Right Click',
-                                                        'Skill Damage',
-                                                        'Took Physical Damage',
-                                                        'Took Skill Damage'], 'Death')
+        'Block Place',
+        'Crouch',
+        'Death',
+        'Drop Item',
+        'Environment Damage',
+        'Fishing',
+        'Fishing Bite',
+        'Fishing Fail',
+        'Fishing Grab',
+        'Fishing Ground',
+        'Fishing Reel',
+        'Item Swap',
+        'Kill',
+        'Land',
+        'Launch',
+        'Left Click',
+        'Move',
+        'Physical Damage',
+        'Right Click',
+        'Skill Damage',
+        'Took Physical Damage',
+        'Took Skill Damage'], 'Death')
         .setTooltip('The trigger to listen for')
     );
     this.data.push(new AttributeValue('Duration', 'duration', 5, 0)
@@ -3059,12 +3094,12 @@ function MechanicTrigger() {
 
     // LAUNCH
     this.data.push(new ListValue('Type', 'type', ['Any',
-                                                  'Arrow',
-                                                  'Egg',
-                                                  'Ender Pearl',
-                                                  'Fireball',
-                                                  'Fishing Hook',
-                                                  'Snowball'], 'Any')
+        'Arrow',
+        'Egg',
+        'Ender Pearl',
+        'Fireball',
+        'Fishing Hook',
+        'Snowball'], 'Any')
         .requireValue('trigger', ['Launch'])
         .setTooltip('The type of projectile that should be launched.')
     );
@@ -3468,7 +3503,7 @@ function addItemOptions(component) {
     component.data.push(new IntValue('CustomModelData', 'byte', 0)
         .setTooltip('The CustomModelData of the item')
     );
-	component.data.push(new MultiListValue('Hide Flags', 'hide-flags', ['Enchants', 'Attributes', 'Unbreakable', 'Destroys', 'Placed on', 'Potion effects', 'Dye'], [])
+    component.data.push(new MultiListValue('Hide Flags', 'hide-flags', ['Enchants', 'Attributes', 'Unbreakable', 'Destroys', 'Placed on', 'Potion effects', 'Dye'], [])
         .setTooltip('Flags to hide from the item')
     );
     component.data.push(new ListValue('Custom Name/Lore', 'custom', ['True', 'False'], 'False')
@@ -3482,18 +3517,18 @@ function addItemOptions(component) {
         .setTooltip('The lore text for the item (the text below the name)')
     );
     component.data.push(new StringValue('Potion Color', 'potion_color', '#385dc6').requireValue('material', ['Potion',
-                                                                                                        'Splash potion', 'Lingering potion'])
+        'Splash potion', 'Lingering potion'])
         .setTooltip('The potion color in hex RGB')
     );
     component.data.push(new ListValue('Potion Type', 'potion_type', getPotionTypes, 'Speed').requireValue('material', ['Potion',
-                                                                                                                  'Splash potion', 'Lingering potion'])
+        'Splash potion', 'Lingering potion'])
         .setTooltip('The type of potion')
     );
     component.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', ['Potion', 'Splash potion', 'Lingering potion'])
         .setTooltip('The potion level')
     );
     component.data.push(new IntValue('Potion Duration', 'potion_duration', 30).requireValue('material', ['Potion',
-                                                                                                    'Splash potion', 'Lingering potion'])
+        'Splash potion', 'Lingering potion'])
         .setTooltip('The potion duration (seconds)')
     );
     component.data.push(new StringValue('Armor Color', 'armor_color', '#a06540').requireValue('material', ['Leather helmet', 'Leather chestplate', 'Leather leggings', 'Leather boots'])
@@ -3603,10 +3638,10 @@ function addParticleOptions(component) {
     );
 
     component.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt').requireValue('particle', ['Item crack',
-                                                                                                              'Block crack',
-                                                                                                              'Block dust',
-                                                                                                              'Falling dust',
-                                                                                                              'Block marker'])
+        'Block crack',
+        'Block dust',
+        'Falling dust',
+        'Block marker'])
         .setTooltip('The material to use for the particles')
     );
     component.data.push(new IntValue('Durability', 'durability', 0).requireValue('particle', ['Item crack'])
@@ -3630,8 +3665,8 @@ function addParticleOptions(component) {
     );
     // Circle arrangement direction
     component.data.push(new ListValue('Circle Direction', 'direction', ['XY',
-                                                                        'XZ',
-                                                                        'YZ'], 'XZ').requireValue('arrangement', ['Circle'])
+        'XZ',
+        'YZ'], 'XZ').requireValue('arrangement', ['Circle'])
         .setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle.')
     );
     component.data.push(new AttributeValue('Radius', 'radius', 1, 0)
@@ -3643,9 +3678,9 @@ function addParticleOptions(component) {
 
     // Bukkit particle data value
     component.data.push(new IntValue('Effect Data', 'data', 0).requireValue('particle', ['Smoke',
-                                                                                         'Ender Signal',
-                                                                                         'Mobspawner Flames',
-                                                                                         'Potion Break'])
+        'Ender Signal',
+        'Mobspawner Flames',
+        'Potion Break'])
         .setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break')
     );
     component.data.push(new IntValue('Visible Radius', 'visible-radius', 25).setTooltip('How far away players can see the particles from in blocks')
@@ -3713,7 +3748,7 @@ function addEffectOptions(component, optional) {
         .setTooltip('The material to use for the particle.')
     ));
     component.data.push(opt(new IntValue('Durability', '-particle-durability', 0)
-		.requireValue('particle', ['Item crack'])
+        .requireValue('particle', ['Item crack'])
         .setTooltip('The durability to be reduced from the item used to make the particles')
     ));
     component.data.push(opt(new IntValue('CustomModelData', '-particle-data', 0)
