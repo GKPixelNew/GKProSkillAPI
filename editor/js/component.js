@@ -124,7 +124,6 @@ var Mechanic = {
     ARMOR_STAND_POSE    : { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
     ATTRIBUTE           : { name: 'Attribute',           container: false, construct: MechanicAttribute          },
     BLOCK               : { name: 'Block',               container: false, construct: MechanicBlock              },
-    BREAK               : { name: 'Break',               container: false, construct: MechanicBreak              },
     BUFF                : { name: 'Buff',                container: false, construct: MechanicBuff               },
     CANCEL              : { name: 'Cancel',              container: false, construct: MechanicCancel             },
     CHANNEL             : { name: 'Channel',             container: true,  construct: MechanicChannel            },
@@ -1823,13 +1822,6 @@ function MechanicBlock() {
     this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
         .setTooltip('How far to the right the region should be of the target. A negative value will put it to the left.')
     );
-}
-
-extend('MechanicBreak', 'Component');
-
-function MechanicBreak() {
-    this.super('Break', Type.MECHANIC, false);
-    this.description = 'Breaks execution out of a repeating loop.';
 }
 
 extend('MechanicBuff', 'Component');
