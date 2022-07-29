@@ -177,6 +177,7 @@ var Mechanic = {
     Stat                : { name: 'Stat',                container: false, construct: MechanicStat               },
     STATUS              : { name: 'Status',              container: false, construct: MechanicStatus             },
     TAUNT               : { name: 'Taunt',               container: false, construct: MechanicTaunt              },
+    TRANSLATED_MESSAGE  : { name: 'Translated Message',  container: false, construct: MechanicTranslatedMessage  },
     TRIGGER             : { name: 'Trigger',             container: true,  construct: MechanicTrigger            },
     VALUE_ADD           : { name: 'Value Add',           container: false, construct: MechanicValueAdd           },
     VALUE_ATTRIBUTE     : { name: 'Value Attribute',     container: false, construct: MechanicValueAttribute     },
@@ -2508,7 +2509,7 @@ extend('MechanicMessage', 'Component');
 function MechanicMessage() {
     this.super('Message', Type.MECHANIC, false);
 
-    this.description = 'Sends a message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.'
+    this.description = '(DEPRECATED) Sends a message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.'
 
     this.data.push(new StringValue('Message', 'message', 'text')
         .setTooltip('The message to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
@@ -2948,6 +2949,21 @@ function MechanicTaunt() {
 
     this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('The amount of aggro to apply if MythicMobs is active. Use negative amounts to reduce aggro')
+    );
+}
+
+extend('MechanicTranslatedMessage', 'Component');
+
+function MechanicTranslatedMessage() {
+    this.super('Translated Message', Type.MECHANIC, false);
+
+    this.description = 'Sends a translated message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.';
+
+    this.data.push(new StringValue('Message', 'message', 'text')
+        .setTooltip('The message\'s key to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
+    );
+    this.data.push(new ListValue('Dynamic Translations', 'dyntra', ['True', 'False'], 'True')
+        .setTooltip('Whether this message uses GKMagic\'s Dynamic Translations. If false, the message\'s key must be in magic.ini of GKMagic')
     );
 }
 
