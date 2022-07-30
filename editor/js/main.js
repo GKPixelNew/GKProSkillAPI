@@ -64,20 +64,7 @@ depend('data/data', function () {
             saveToFile(activeSkill.data[0].value + '.yml', activeSkill.getSaveString());
         });
         document.getElementById('deleteSkill').addEventListener('click', function (e) {
-            const list = document.getElementById('skillList');
-            let index = list.selectedIndex;
-
-            skills.splice(index, 1);
-            if (skills.length == 0) {
-                newSkill();
-            }
-            list.remove(index);
-            index = Math.min(index, skills.length - 1);
-            activeSkill = skills[index];
-            list.selectedIndex = index;
-
-            activeSkill.apply();
-            showSkillPage('builder');
+            deleteSkill()
         });
     });
 

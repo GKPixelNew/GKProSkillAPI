@@ -262,6 +262,74 @@ function getSkill(name) {
     return null;
 }
 
+function deleteSkill() {
+    function deleteRemote() {
+        const apiKey = getApiKey();
+        axios.delete('https://cdn.gkpixel.com/v1/skill/' + activeSkill.data[0].value, {
+            headers: {
+                'Authorization': 'Bearer ' + apiKey
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    deleteLocal()
+                    Quasar.Notify.create({
+                        position: 'top',
+                        color: 'green',
+                        icon: 'done',
+                        progress: true,
+                        message: '刪除成功'
+                    })
+                } else {
+                    Quasar.Notify.create({
+                        position: 'top',
+                        color: 'negative',
+                        icon: 'report_problem',
+                        progress: true,
+                        message: '刪除失敗'
+                    })
+                }
+            }).catch(error => {
+            Quasar.Notify.create({
+                position: 'top',
+                color: 'negative',
+                icon: 'report_problem',
+                progress: true,
+                message: '刪除失敗，錯誤 ' + error.response.status
+            })
+        })
+    }
+
+    function deleteLocal() {
+        const list = document.getElementById('skillList');
+        let index = list.selectedIndex;
+
+        skills.splice(index, 1);
+        if (skills.length === 0) {
+            newSkill();
+        }
+        list.remove(index);
+        index = Math.min(index, skills.length - 1);
+        activeSkill = skills[index];
+        list.selectedIndex = index;
+
+        activeSkill.apply();
+        showSkillPage('builder');
+    }
+
+    Quasar.Dialog.create({
+        title: '確認遠端移除',
+        message: '是否要在遠端CDN也移除這個信仰？',
+        cancel: {label: "否", color: "negative", flat: true},
+        ok: {label: "是", color: 'positive', flat: true},
+        persistent: true
+    }).onOk(() => {
+        deleteRemote()
+    }).onCancel(() => {
+        deleteLocal()
+    })
+}
+
 function importSkill() {
     const apiKey = getApiKey();
     const list = document.getElementById('skillList');
