@@ -121,30 +121,12 @@ function deleteClass() {
             .then(response => {
                 if (response.data.success) {
                     deleteLocal()
-                    Quasar.Notify.create({
-                        position: 'top',
-                        color: 'green',
-                        icon: 'done',
-                        progress: true,
-                        message: '刪除成功'
-                    })
+                    notifySuccess('刪除成功')
                 } else {
-                    Quasar.Notify.create({
-                        position: 'top',
-                        color: 'negative',
-                        icon: 'report_problem',
-                        progress: true,
-                        message: '刪除失敗'
-                    })
+                    notifyError('刪除失敗')
                 }
             }).catch(error => {
-            Quasar.Notify.create({
-                position: 'top',
-                color: 'negative',
-                icon: 'report_problem',
-                progress: true,
-                message: '刪除失敗，錯誤 ' + error.response.status
-            })
+            notifyError('刪除失敗，錯誤 ' + error.response.status)
         })
     }
 
@@ -291,68 +273,37 @@ function getClass(name) {
     return null;
 }
 
-function importClass() {
+function importClass(classId) {
     const apiKey = getApiKey();
-    Quasar.Dialog.create({
-        title: '匯入信仰',
-        message: '輸入要匯入的信仰 ID',
-        prompt: {
-            model: '',
-            type: 'text' // optional
-        },
-        cancel: true,
-        persistent: true
-    }).onOk(classId => {
-        axios.get('https://cdn.gkpixel.com/v1/class/' + classId, {
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            }
-        }).then(response => {
-            if (response.data.success) {
-                axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.class.fileId, {
-                    headers: {
-                        'Authorization': 'Bearer ' + apiKey
-                    }
-                }).then(response => {
-                    loadClassText(response.data);
-                    const list = document.getElementById('classList');
-                    list.selectedIndex = list.length - 3;
-                })
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'green',
-                    icon: 'done',
-                    progress: true,
-                    message: '匯入成功'
-                })
-            } else {
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗'
-                })
-            }
-        }).catch(error => {
-            if (error.response.status === 404) {
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗，找不到信仰'
-                })
-            } else {
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗，錯誤 ' + error.response.status
-                })
-            }
-        })
+    const list = document.getElementById('classList');
+    axios.get('https://cdn.gkpixel.com/v1/class/' + classId, {
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        }
+    }).then(response => {
+        if (response.data.success) {
+            axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.class.fileId, {
+                headers: {
+                    'Authorization': 'Bearer ' + apiKey
+                }
+            }).then(response => {
+                loadClassText(response.data);
+                list.selectedIndex = list.length - 3;
+                activeClass = classes[Math.max(0, Math.min(classes.length - 1, parseInt(list.length - 3)))];
+                activeClass.createFormHTML();
+                showSkillPage('builder');
+                notifySuccess('匯入成功')
+            })
+            notifySuccess('匯入成功');
+        } else {
+            notifyFailure('匯入失敗');
+        }
+    }).catch(error => {
+        if (error.response.status === 404) {
+            notifyFailure('匯入失敗，找不到信仰');
+        } else {
+            notifyFailure('匯入失敗，錯誤 ' + error.response.status);
+        }
     })
 }
 

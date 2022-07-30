@@ -273,30 +273,12 @@ function deleteSkill() {
             .then(response => {
                 if (response.data.success) {
                     deleteLocal()
-                    Quasar.Notify.create({
-                        position: 'top',
-                        color: 'green',
-                        icon: 'done',
-                        progress: true,
-                        message: '刪除成功'
-                    })
+                    notifySuccess('刪除成功');
                 } else {
-                    Quasar.Notify.create({
-                        position: 'top',
-                        color: 'negative',
-                        icon: 'report_problem',
-                        progress: true,
-                        message: '刪除失敗'
-                    })
+                    notifyFailure('刪除失敗');
                 }
             }).catch(error => {
-            Quasar.Notify.create({
-                position: 'top',
-                color: 'negative',
-                icon: 'report_problem',
-                progress: true,
-                message: '刪除失敗，錯誤 ' + error.response.status
-            })
+            notifyFailure('刪除失敗，錯誤 ' + error.response.status)
         })
     }
 
@@ -330,74 +312,39 @@ function deleteSkill() {
     })
 }
 
-function importSkill() {
+function importSkill(skillId) {
     const apiKey = getApiKey();
     const list = document.getElementById('skillList');
-    Quasar.Dialog.create({
-        title: '匯入技能',
-        message: '輸入要匯入的技能 ID',
-        prompt: {
-            model: '',
-            type: 'text' // optional
-        },
-        cancel: true,
-        persistent: true
-    }).onOk(skillId => {
-        axios.get('https://cdn.gkpixel.com/v1/skill/' + skillId, {
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            }
-        }).then(response => {
-            if (response.data.success) {
-                axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.skill.fileId, {
-                    headers: {
-                        'Authorization': 'Bearer ' + apiKey
-                    }
-                }).then(response => {
-                    loadSkillText(response.data);
-                    list.selectedIndex = list.length - 3;
-                    activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(list.length - 3)))];
-                    activeSkill.apply();
-                    showSkillPage('builder');
-                    Quasar.Notify.create({
-                        position: 'top',
-                        color: 'green',
-                        icon: 'done',
-                        progress: true,
-                        message: '匯入成功'
-                    })
-                })
-            } else {
+    axios.get('https://cdn.gkpixel.com/v1/skill/' + skillId, {
+        headers: {
+            'Authorization': 'Bearer ' + apiKey
+        }
+    }).then(response => {
+        if (response.data.success) {
+            axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.skill.fileId, {
+                headers: {
+                    'Authorization': 'Bearer ' + apiKey
+                }
+            }).then(response => {
+                loadSkillText(response.data);
                 list.selectedIndex = list.length - 3;
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗'
-                })
-            }
-        }).catch(error => {
-            if (error.response.status === 404) {
-                list.selectedIndex = list.length - 3;
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗，找不到技能'
-                })
-            } else {
-                list.selectedIndex = list.length - 3;
-                Quasar.Notify.create({
-                    position: 'top',
-                    color: 'negative',
-                    icon: 'report_problem',
-                    progress: true,
-                    message: '匯入失敗，錯誤 ' + error.response.status
-                })
-            }
-        })
+                activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(list.length - 3)))];
+                activeSkill.apply();
+                showSkillPage('builder');
+                notifySuccess('匯入成功')
+            })
+        } else {
+            list.selectedIndex = list.length - 3;
+            notifyFailure('匯入失敗')
+        }
+    }).catch(error => {
+        if (error.response.status === 404) {
+            list.selectedIndex = list.length - 3;
+            notifyFailure('匯入失敗，找不到技能')
+        } else {
+            list.selectedIndex = list.length - 3;
+            notifyFailure('匯入失敗，錯誤 ' + error.response.status)
+        }
     })
 }
 

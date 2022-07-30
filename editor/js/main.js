@@ -48,12 +48,12 @@ depend('data/data', function () {
             }
             if (this.selectedIndex === this.length - 2) {
                 newSkill();
-            } else if (this.selectedIndex === this.length - 1) {
-                importSkill();
             } else {
-                activeSkill = skills[this.selectedIndex];
-                activeSkill.apply();
-                showSkillPage('builder');
+                if (this.selectedIndex !== this.length - 1) {
+                    activeSkill = skills[this.selectedIndex];
+                    activeSkill.apply();
+                    showSkillPage('builder');
+                }
             }
         });
         document.getElementById('skillDetails').addEventListener('click', function (e) {
@@ -73,8 +73,6 @@ depend('data/data', function () {
             activeClass.update();
             if (this.selectedIndex === this.length - 2) {
                 newClass();
-            } else if (this.selectedIndex === this.length - 1) {
-                importClass();
             } else {
                 activeClass = classes[this.selectedIndex];
                 activeClass.createFormHTML();
@@ -532,6 +530,26 @@ function getApiKey() {
     } else {
         return JSON.parse(atob(token.split('.')[1])).account.apiKey;
     }
+}
+
+function notifySuccess(message) {
+    Quasar.Notify.create({
+        position: 'top',
+        color: 'green',
+        icon: 'done',
+        progress: true,
+        message: message
+    })
+}
+
+function notifyFailure(message) {
+    Quasar.Notify.create({
+        position: 'top',
+        color: 'negative',
+        icon: 'report_problem',
+        progress: true,
+        message: message
+    })
 }
 
 /**

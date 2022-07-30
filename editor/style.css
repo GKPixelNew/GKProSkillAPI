@@ -188,7 +188,7 @@ h5:hover {
 h6 {
     clear: both;
     display: inline-block;
-    width: calc(20% - 8px);
+    width: calc(17.7%);
     padding: 5px 5px;
     background-color: #043;
     margin-left: 3px;
@@ -415,7 +415,7 @@ hr {
     width: 300px;
 }
 
-label {
+#main label, #version label {
     float: left;
     text-align: right;
     width: 40%;
