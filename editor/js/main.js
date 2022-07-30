@@ -208,10 +208,12 @@ window.onload = function () {
     }
     if (skillData) {
         skills = [];
-        document.getElementById('skillList').remove(0);
+        const list = document.getElementById('skillList');
+        list.selectedIndex = 0;
+        list.remove(0);
         loadSkillText(skillData);
         if (skillIndex) {
-            document.getElementById('skillList').selectedIndex = parseInt(skillIndex);
+            list.selectedIndex = parseInt(skillIndex);
             activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(skillIndex)))];
             activeSkill.apply();
             showSkillPage('builder');
@@ -219,10 +221,12 @@ window.onload = function () {
     }
     if (classData) {
         classes = [];
-        document.getElementById('classList').remove(0);
+        const list = document.getElementById('classList');
+        list.selectedIndex = 0;
+        list.remove(0);
         loadClassText(classData);
         if (classIndex) {
-            document.getElementById('classList').selectedIndex = parseInt(classIndex);
+            list.selectedIndex = parseInt(classIndex);
             activeClass = classes[Math.max(0, Math.min(classes.length - 1, parseInt(classIndex)))];
             activeClass.createFormHTML();
         }
