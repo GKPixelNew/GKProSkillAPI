@@ -83,7 +83,7 @@
                 <h6 id="skillDetails">詳細資料</h6>
                 <h6 id="addTrigger">觸發條件</h6>
                 <h6 id="saveSkill">儲存技能</h6>
-                <h6 id="uploadSkill" @click="upload()">上傳技能</h6>
+                <h6 id="uploadSkill" @click="uploadSkill()">上傳技能</h6>
                 <h6 id="deleteSkill" class="cancelButton">刪除技能</h6>
                 <div id="builderContent"></div>
             </div>
@@ -119,7 +119,11 @@
             <select id="classList" size="30">
                 <option selected="selected">Class 1</option>
                 <option>+ 新增信仰</option>
+                <option>+ 匯入信仰</option>
             </select>
+            <h6 id="saveClass" class="classIO" @click="saveClass()">儲存信仰</h6>
+            <h6 id="uploadClass" class="classIO" @click="uploadClass()">上傳信仰</h6>
+            <h6 id="deleteClass" class="cancelButton classIO" @click="deleteClass()">刪除信仰</h6>
             <div id="classForm"></div>
         </div>
         <div id="badBrowser">
@@ -170,15 +174,14 @@
             }
         },
         methods: {
-            upload() {
+            uploadSkill() {
                 const apiKey = getApiKey();
                 let formData = new FormData();
                 formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
                     type: 'application/json'
                 }));
                 formData.append('file', new File([new Blob([activeSkill.getSaveString()], {
-                    type: 'application/x-yaml',
-                    filename: 'skill.yaml'
+                    type: 'application/x-yaml'
                 })], activeSkill.data[0].value + ".yml"));
                 axios.post('https://cdn.gkpixel.com/v1/skill', formData, {
                     headers: {
@@ -211,6 +214,53 @@
                         message: '上傳失敗，錯誤 ' + error.response.status
                     })
                 });
+            },
+            uploadClass() {
+                const apiKey = getApiKey();
+                let formData = new FormData();
+                formData.append('details', new Blob([JSON.stringify({classId: activeClass.data[0].value})], {
+                    type: 'application/json'
+                }));
+                formData.append('file', new File([new Blob([activeClass.getSaveString()], {
+                    type: 'application/x-yaml'
+                })], activeClass.data[0].value + ".yml"));
+                axios.post('https://cdn.gkpixel.com/v1/class', formData, {
+                    headers: {
+                        'Authorization': 'Bearer ' + apiKey,
+                    }
+                }).then(function (response) {
+                    if (response.data.success) {
+                        Quasar.Notify.create({
+                            position: 'top',
+                            color: 'green',
+                            icon: 'done',
+                            progress: true,
+                            message: '上傳成功'
+                        })
+                    } else {
+                        Quasar.Notify.create({
+                            position: 'top',
+                            color: 'negative',
+                            icon: 'report_problem',
+                            progress: true,
+                            message: '上傳失敗'
+                        })
+                    }
+                }).catch(function (error) {
+                    Quasar.Notify.create({
+                        position: 'top',
+                        color: 'negative',
+                        icon: 'report_problem',
+                        progress: true,
+                        message: '上傳失敗，錯誤 ' + error.response.status
+                    })
+                });
+            },
+            saveClass() {
+                saveClass();
+            },
+            deleteClass() {
+                deleteClass();
             }
         }
     })

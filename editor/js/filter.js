@@ -6,7 +6,7 @@ function filterInt() {
 
     // Get the element
     var element = document.activeElement;
-    
+
     // Remove non-numeric characters
     element.value = element.value.replace(/[^0-9-]/g, "");
     

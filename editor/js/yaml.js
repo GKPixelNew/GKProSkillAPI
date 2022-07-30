@@ -1,6 +1,6 @@
 /**
  * RegEx patterns used by the YAML parser
- */ 
+ */
 var Regex = {
 	INT: /^-?[0-9]+$/,
 	FLOAT: /^-?[0-9]+\.[0-9]+$/
@@ -82,9 +82,9 @@ YAMLObject.prototype.parse = function(lines, index, indent)
 	{
 		while (index < lines.length && (countSpaces(lines[index]) != indent || lines[index].replace(/ /g, '').charAt(0) == '#' || lines[index].indexOf(':') == -1)) index++;
 		if (index == lines.length) return index;
-		
+
 		var key = lines[index].substring(indent, lines[index].indexOf(':'));
-		
+
         // New empty section
 		if (lines[index].indexOf(": {}") == lines[index].length - 4 && lines[index].length >= 4)
 		{

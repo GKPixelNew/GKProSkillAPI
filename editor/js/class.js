@@ -107,38 +107,33 @@ Class.prototype.createFormHTML = function()
 	var hr = document.createElement('hr');
 	form.appendChild(hr);
 
-	var save = document.createElement('h5');
-	save.innerHTML = 'Save Class';
-	save.classData = this;
-	save.addEventListener('click', function(e) {
-		this.classData.update();
-		saveToFile(this.classData.data[0].value + '.yml', this.classData.getSaveString());
-	});
-	form.appendChild(save);
-
-	var del = document.createElement('h5');
-	del.innerHTML = 'Delete';
-	del.className = 'cancelButton';
-	del.addEventListener('click', function(e) {
-		var list = document.getElementById('classList');
-		var index = list.selectedIndex;
-
-		classes.splice(index, 1);
-		if (classes.length === 0)
-		{
-			newClass();
-		}
-		list.remove(index);
-		index = Math.min(index, classes.length - 1);
-		activeClass = classes[index];
-		list.selectedIndex = index;
-	});
-	form.appendChild(del);
-
 	var target = document.getElementById('classForm');
 	target.innerHTML = '';
 	target.appendChild(form);
 };
+
+function saveClass() {
+	const list = document.getElementById('classList');
+	let index = list.selectedIndex;
+	const classData = classes[index];
+	classData.update();
+	saveToFile(classData.data[0].value + '.yml', classData.getSaveString());
+}
+
+function deleteClass() {
+	const list = document.getElementById('classList');
+	let index = list.selectedIndex;
+
+	classes.splice(index, 1);
+	if (classes.length === 0)
+	{
+		newClass();
+	}
+	list.remove(index);
+	index = Math.min(index, classes.length - 1);
+	activeClass = classes[index];
+	list.selectedIndex = index;
+}
 
 /**
  * Updates the class data from the details form if it exists
@@ -235,7 +230,7 @@ function addClass(name)
 	var option = document.createElement('option');
 	option.text = name;
 	var list = document.getElementById('classList');
-	list.add(option, list.length - 1);
+	list.add(option, list.length - 2);
 
 	return c;
 }
@@ -267,6 +262,71 @@ function getClass(name)
 		if (classes[i].data[0].value.toLowerCase() == name) return classes[i];
 	}
 	return null;
+}
+
+function importClass() {
+	const apiKey = getApiKey();
+	Quasar.Dialog.create({
+		title: '匯入信仰',
+		message: '輸入要匯入的信仰 ID',
+		prompt: {
+			model: '',
+			type: 'text' // optional
+		},
+		cancel: true,
+		persistent: true
+	}).onOk(classId => {
+		axios.get('https://cdn.gkpixel.com/v1/class/' + classId, {
+			headers: {
+				'Authorization': 'Bearer ' + apiKey
+			}
+		}).then(response => {
+			if (response.data.success) {
+				axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.class.fileId, {
+					headers: {
+						'Authorization': 'Bearer ' + apiKey
+					}
+				}).then(response => {
+					loadClassText(response.data);
+					const list = document.getElementById('classList');
+					list.selectedIndex = list.length - 3;
+				})
+				Quasar.Notify.create({
+					position: 'top',
+					color: 'green',
+					icon: 'done',
+					progress: true,
+					message: '匯入成功'
+				})
+			} else {
+				Quasar.Notify.create({
+					position: 'top',
+					color: 'negative',
+					icon: 'report_problem',
+					progress: true,
+					message: '匯入失敗'
+				})
+			}
+		}).catch(error => {
+			if (error.response.status === 404) {
+				Quasar.Notify.create({
+					position: 'top',
+					color: 'negative',
+					icon: 'report_problem',
+					progress: true,
+					message: '匯入失敗，找不到信仰'
+				})
+			} else {
+				Quasar.Notify.create({
+					position: 'top',
+					color: 'negative',
+					icon: 'report_problem',
+					progress: true,
+					message: '匯入失敗，錯誤 ' + error.response.status
+				})
+			}
+		})
+	})
 }
 
 var activeClass = new Class('Class 1');

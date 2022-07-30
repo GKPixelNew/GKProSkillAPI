@@ -110,7 +110,7 @@ function depend(script, callback) {
 	else {
 		var src = 'editor/js/' + script + '.js';
 		var scripts = document.querySelectorAll('script');
-		for (var i = 0; i < scripts.length; i++) 
+		for (var i = 0; i < scripts.length; i++)
 		{
 			if (scripts[i].src == src)
 			{
@@ -119,7 +119,7 @@ function depend(script, callback) {
 				return;
 			}
 		}
-		
+
         var scriptTag = document.createElement('script');
         scriptTag.id = script;
         scriptTag.type = 'text/javascript';

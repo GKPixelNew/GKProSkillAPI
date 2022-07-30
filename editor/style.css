@@ -60,7 +60,7 @@ html, body {
 
 #builder, #skillForm, #classForm, #componentChooser, #triggerChooser {
     width: calc(100% - 200px);
-    height: 100%;
+    height: 94%;
     float: left;
     overflow-y: auto;
 }
@@ -207,6 +207,10 @@ h6:hover {
     cursor: pointer;
 }
 
+.classIO {
+    width: calc(30% - 20px);
+}
+
 hr {
     clear: both;
     margin: 10px 0;
@@ -291,11 +295,11 @@ hr {
     clear: both;
 }
 
-#saveSkill {
+#saveSkill, #saveClass {
     background-color: #375a7f;
 }
 
-#saveSkill:hover {
+#saveSkill:hover, #saveClass:hover {
     background-color: #6af;
 }
 

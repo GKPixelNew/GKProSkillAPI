@@ -84,8 +84,10 @@ depend('data/data', function () {
     depend('class', function () {
         document.getElementById('classList').addEventListener('change', function (e) {
             activeClass.update();
-            if (this.selectedIndex == this.length - 1) {
+            if (this.selectedIndex === this.length - 2) {
                 newClass();
+            } else if (this.selectedIndex === this.length - 1) {
+                importClass();
             } else {
                 activeClass = classes[this.selectedIndex];
                 activeClass.createFormHTML();
