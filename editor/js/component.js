@@ -144,6 +144,7 @@ var Mechanic = {
     FLAG_TOGGLE: {name: 'Flag Toggle', container: false, construct: MechanicFlagToggle},
     FOOD: {name: 'Food', container: false, construct: MechanicFood},
     FORGET_TARGETS: {name: 'Forget Targets', container: false, construct: MechanicForgetTargets},
+    GKCOOLDOWN: {name: 'GKCooldown', container: false, construct: MechanicGKCooldown},
     HEAL: {name: 'Heal', container: false, construct: MechanicHeal},
     HEALTH_SET: {name: 'Health Set', container: false, construct: MechanicHealthSet},
     HELD_ITEM: {name: 'Held Item', container: false, construct: MechanicHeldItem},
@@ -2341,6 +2342,27 @@ function MechanicForgetTargets() {
 
     this.data.push(new StringValue('Key', 'key', 'key')
         .setTooltip('The unique key the targets were stored under')
+    );
+}
+
+extend('MechanicGKCooldown', 'Component');
+
+function MechanicGKCooldown() {
+    this.super('GKCooldown', Type.MECHANIC, false);
+
+    this.description = "Modifies the cooldown of the selected target's skill(s) in GKMagic's cooldown system.";
+
+    this.data.push(new StringValue('Skill', 'skill', '')
+        .setTooltip('The skill to modify the cooldown for, "all" to specify all the skills, leave it empty to specify the current skill.')
+    );
+    this.data.push(new ListValue('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
+        .setTooltip('The modification unit to use. Seconds will add/set seconds from the cooldown while Percent will add/set a percentage of its full cooldown')
+    );
+    this.data.push(new ListValue('Action', 'action', ['Add', 'Set'], 'Set')
+        .setTooltip('Whether to add or set the cooldown')
+    );
+    this.data.push(new AttributeValue('Value', 'value', 0, 0)
+        .setTooltip('The amount to add to/set the skill\'s cooldown, a negative amount means to subtract cooldown')
     );
 }
 

@@ -353,7 +353,7 @@ AttributeValue.prototype.createHTML = function (target) {
     target.appendChild(this.baseBox);
 
     this.left = document.createElement('label');
-    this.left.innerHTML = '+ (';
+    this.left.innerHTML = '× (';
     this.left.className = 'attrLabel';
     target.appendChild(this.left);
 
