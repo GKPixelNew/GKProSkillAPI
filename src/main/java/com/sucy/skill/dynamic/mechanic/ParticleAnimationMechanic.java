@@ -29,6 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.ParticleHelper;
+import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.log.Logger;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -79,12 +80,12 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
         copy.set("level", level);
-        new ParticleTask(caster, targets, level, copy);
+        new ParticleTask(caster, targets, level, copy, this.skill);
         return targets.size() > 0;
     }
 
     private class ParticleTask extends BukkitRunnable {
-
+        private final Skill skill;
         private final List<LivingEntity> targets;
         private final double[]           rots;
         private final Vector             offset;
@@ -111,7 +112,8 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private       int      life;
         private       boolean  withRotation = false;
 
-        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings) {
+        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings, Skill skill) {
+            this.skill = skill;
             this.targets = targets;
             this.settings = settings;
 
@@ -172,7 +174,8 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         try {
                             ParticleHelper.play(loc, settings);
                         } catch (IllegalArgumentException e) {
-                            Logger.invalid("Invalid particle: " + settings.getString(ParticleHelper.PARTICLE_KEY));
+                            Logger.invalid("Invalid particle while trying to cast "+ this.skill.getName() +": " +
+                                    settings.getString(ParticleHelper.PARTICLE_KEY));
                             cancel();
                         }
                         loc.subtract(offset);
@@ -186,7 +189,8 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         try {
                             ParticleHelper.play(loc, settings);
                         } catch (IllegalArgumentException e) {
-                            Logger.invalid("Invalid particle: " + settings.getString(ParticleHelper.PARTICLE_KEY));
+                            Logger.invalid("Invalid particle while trying to cast "+ this.skill.getName() +": " +
+                                    settings.getString(ParticleHelper.PARTICLE_KEY));
                             cancel();
                         }
                         loc.subtract(offset);
