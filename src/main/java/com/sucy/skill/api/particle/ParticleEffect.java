@@ -136,8 +136,6 @@ public class ParticleEffect {
         );
         this.interval = interval;
         this.view = viewRange;
-
-        int points = shape.getPoints(shapeDir).length;
         animation.getPoints(animDir);
     }
 
