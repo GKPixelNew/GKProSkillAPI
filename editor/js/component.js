@@ -2358,6 +2358,11 @@ function MechanicGKCooldown() {
     this.data.push(new ListValue('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
         .setTooltip('The modification unit to use. Seconds will add/set seconds from the cooldown while Percent will add/set a percentage of its full cooldown')
     );
+    this.data.push(new ListValue('Percent Reference', 'percent_reference', ['Skill Cooldown', 'Current Cooldown'], 'Skill Cooldown')
+        .setTooltip('How to determine type:percent\'s base value. Skill Cooldown is the cooldown of the skill stored in database, ' +
+            'Current Cooldown is the current cooldown of the player on the skill.')
+        .requireValue('type', ['Percent'])
+    );
     this.data.push(new ListValue('Action', 'action', ['Add', 'Set'], 'Set')
         .setTooltip('Whether to add or set the cooldown')
     );
