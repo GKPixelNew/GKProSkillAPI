@@ -39,7 +39,7 @@ public class WaterCondition extends ConditionComponent {
     private static final String STATE = "state";
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final boolean  in    = settings.getString(STATE).equalsIgnoreCase("in water");
         final Material block = target.getLocation().getBlock().getType();
 

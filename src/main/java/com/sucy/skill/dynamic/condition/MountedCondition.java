@@ -28,7 +28,7 @@ public class MountedCondition extends ConditionComponent {
     }
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         Set<String> passengers = target.getPassengers().stream()
                 .map(e -> e.getType().name())
                 .collect(Collectors.toSet());

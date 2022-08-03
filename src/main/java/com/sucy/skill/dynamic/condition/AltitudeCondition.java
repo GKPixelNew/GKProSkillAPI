@@ -10,19 +10,19 @@ public class AltitudeCondition extends ConditionComponent{
 
 	private static final String MIN = "min";
 	private static final String MAX = "max";
-	
+
 	private int min, max;
-	
+
 	@Override
-	boolean test(LivingEntity caster, int level, LivingEntity target) {
-		
+	public boolean test(LivingEntity caster, int level, LivingEntity target) {
+
 		return target.getLocation().getY() >= min && target.getLocation().getY() <= max;
 	}
-	
+
 	@Override
 	public void load(DynamicSkill skill, DataSection config) {
 		super.load(skill, config);
-		
+
 		min = settings.getInt(MIN);
 		max = settings.getInt(MAX);
 	}
@@ -31,7 +31,4 @@ public class AltitudeCondition extends ConditionComponent{
 	public String getKey() {
 		return "Altitude";
 	}
-	
-	
-
 }

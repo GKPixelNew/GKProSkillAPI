@@ -43,7 +43,7 @@ public class MoneyCondition extends ConditionComponent {
     }
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         if (!VaultHook.isEconomyValid() || !(target instanceof Player)) { return false; }
 
         CompareType type = CompareType.BETWEEN;

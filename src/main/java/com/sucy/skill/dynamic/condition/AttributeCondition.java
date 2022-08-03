@@ -38,7 +38,7 @@ public class AttributeCondition extends ConditionComponent
     private static final String MAX  = "max";
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         if (!(target instanceof Player)) return false;
 
         final String attr = settings.getString(ATTR, null);
