@@ -102,6 +102,7 @@ var Condition = {
     MOUNTING: {name: 'Mounting', container: true, construct: ConditionMounting},
     NAME: {name: 'Name', container: true, construct: ConditionName},
     OFFHAND: {name: 'Offhand', container: true, construct: ConditionOffhand},
+    PARTICLE_PACK: {name: 'Particle Pack', container: true, construct: ConditionParticlePack},
     PERMISSION: {name: 'Permission', container: true, construct: ConditionPermission},
     POTION: {name: 'Potion', container: true, construct: ConditionPotion},
     SKILL_LEVEL: {name: 'Skill Level', container: true, construct: ConditionSkillLevel},
@@ -1515,6 +1516,18 @@ function ConditionOffhand() {
     this.description = "Applies child components when the target is wielding an item matching the given material as an offhand item. This is for v1.9+ servers only.";
 
     addItemConditionOptions(this);
+}
+
+extend('ConditionParticlePack', 'Component');
+
+function ConditionParticlePack() {
+    this.super('Particle Pack', Type.CONDITION, true);
+
+    this.description = 'Applies child components if the caster has the specified particle pack';
+
+    this.data.push(new StringValue('Particle Pack', 'pack', '')
+        .setTooltip('The particle pack the player needs to have')
+    );
 }
 
 extend('ConditionPermission', 'Component');
