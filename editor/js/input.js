@@ -353,7 +353,7 @@ AttributeValue.prototype.createHTML = function (target) {
     target.appendChild(this.baseBox);
 
     this.left = document.createElement('label');
-    this.left.innerHTML = '× (';
+    this.left.innerHTML = '+ (';
     this.left.className = 'attrLabel';
     target.appendChild(this.left);
 
@@ -364,8 +364,8 @@ AttributeValue.prototype.createHTML = function (target) {
     target.appendChild(this.scaleBox);
 
     this.right = document.createElement('label');
-    this.right.innerHTML = ')';
-    this.right.className = 'attrLabel';
+    this.right.innerHTML = '× [ level - 1 ] )';
+    this.right.className = 'rightAttrLabel';
     target.appendChild(this.right);
 };
 

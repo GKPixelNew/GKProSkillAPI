@@ -524,6 +524,13 @@ textArea {
     clear: none;
 }
 
+#skillForm .rightAttrLabel, #classForm .rightAttrLabel {
+    width: 160px;
+    text-align: left;
+    margin: 0;
+    clear: none;
+}
+
 #skillForm .base, #classForm .base {
     width: calc(25% - 32px);
 }
