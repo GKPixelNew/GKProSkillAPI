@@ -3512,6 +3512,19 @@ function MechanicWolf() {
     this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('How many wolves to summon')
     );
+    let targets = [];
+    for (const t of Object.values(Target)) {
+        targets.push(t.name);
+    }
+    this.data.push(new ListValue('Trigger', 'aggro_target', targets, 'Death')
+        .setTooltip('The trigger to listen for')
+    );
+    for (const t of Object.values(Target)) {
+        this.data.push(new SectionMarker('Target: ' + t.name).requireValue('aggro_target', [t.name]));
+        for (const d of new t.construct().data) {
+            this.data.push(d.requireValue('aggro_target', [t.name]));
+        }
+    }
     this.data.push(new StringListValue('Skills (one per line)', 'skills', [])
         .setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
     );
