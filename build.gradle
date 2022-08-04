@@ -48,7 +48,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.apache.maven.plugins:maven-install-plugin:3.0.0-M1'
-    compileOnly 'org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     compileOnly 'LibsDisguises:LibsDisguises:10.0.29'
