@@ -50,15 +50,14 @@ public class NearestTarget extends TargetComponent {
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-
         final double radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
             final Comparator<LivingEntity> comparator = new DistanceComparator(target.getLocation());
             Nearby.getLivingNearby(target, radius).stream()
                     .min(comparator)
+                    .filter(t -> self.equals(IncludeCaster.IN_AREA) || caster!=t)
                     .ifPresent(result::add);
-
         }
         return result;
     }

@@ -56,7 +56,6 @@ public class BlockMechanic extends MechanicComponent {
     private static final String HEIGHT  = "height";
     private static final String DEPTH   = "depth";
     private static final String BLOCK   = "block";
-    private static final String DATA    = "data";
     private static final String SECONDS = "seconds";
     private static final String FORWARD = "forward";
     private static final String UPWARD  = "upward";
@@ -115,7 +114,6 @@ public class BlockMechanic extends MechanicComponent {
 
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
         int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte    data   = (byte) settings.getInt(DATA, 0);
 
         String  type  = settings.getString(TYPE, "solid").toLowerCase();
         boolean solid = type.equals("solid");
@@ -220,8 +218,6 @@ public class BlockMechanic extends MechanicComponent {
             states.add(b.getLocation());
             BlockState state = b.getState();
             state.setType(block);
-            if (data > 0)
-                state.setData(new MaterialData(block, data));
             state.update(true, false);
         }
 

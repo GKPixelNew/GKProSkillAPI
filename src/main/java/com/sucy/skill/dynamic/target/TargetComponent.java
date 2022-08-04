@@ -34,6 +34,11 @@ public abstract class TargetComponent extends EffectComponent {
     boolean everyone;
     boolean allies;
     boolean throughWall;
+
+    public IncludeCaster getSelf() {
+        return self;
+    }
+
     IncludeCaster self;
 
     @Override
@@ -93,7 +98,7 @@ public abstract class TargetComponent extends EffectComponent {
         }.runTask(SkillAPI.inst());
     }
 
-    List<LivingEntity> determineTargets(
+    public List<LivingEntity> determineTargets(
             final LivingEntity caster,
             final int level,
             final List<LivingEntity> from,
