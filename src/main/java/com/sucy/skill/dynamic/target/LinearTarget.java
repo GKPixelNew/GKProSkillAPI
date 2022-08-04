@@ -27,7 +27,6 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.Preview;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -43,7 +42,7 @@ public class LinearTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         final double tolerance = parseValues(caster, TOLERANCE, level, 4.0);
         final double range = parseValues(caster, RANGE, level, 5.0);

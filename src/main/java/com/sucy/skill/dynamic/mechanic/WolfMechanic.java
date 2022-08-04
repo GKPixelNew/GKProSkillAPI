@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.WolfMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,11 +29,17 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.dynamic.ComponentRegistry;
+import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.target.TargetComponent;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.DyeColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -47,18 +53,29 @@ import java.util.Map;
  * Applies a flag to each target
  */
 public class WolfMechanic extends MechanicComponent {
-    public static final  String SKILL_META = "sapi_wolf_skills";
-    public static final  String LEVEL      = "sapi_wolf_level";
-    private static final String COLOR      = "color";
-    private static final String HEALTH     = "health";
-    private static final String SECONDS    = "seconds";
-    private static final String NAME       = "name";
-    private static final String DAMAGE     = "damage";
-    private static final String SKILLS     = "skills";
-    private static final String AMOUNT     = "amount";
-    private static final String SITTING    = "sitting";
-
+    public static final String SKILL_META = "sapi_wolf_skills";
+    public static final String LEVEL = "sapi_wolf_level";
+    private static final String COLOR = "color";
+    private static final String HEALTH = "health";
+    private static final String SECONDS = "seconds";
+    private static final String NAME = "name";
+    private static final String DAMAGE = "damage";
+    private static final String SKILLS = "skills";
+    private static final String AMOUNT = "amount";
+    private static final String SITTING = "sitting";
+    private static final String AGGRO_TARGET = "aggro_target";
     private final Map<Integer, RemoveTask> tasks = new HashMap<>();
+    private TargetComponent aggroTarget;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        String targetString = settings.getString(AGGRO_TARGET, "");
+        if (!targetString.isBlank()) {
+            aggroTarget = (TargetComponent) ComponentRegistry.getComponent(ComponentType.TARGET, targetString);
+            aggroTarget.setSettings(settings);
+        }
+    }
 
     /**
      * Executes the component
@@ -66,19 +83,16 @@ public class WolfMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {
+        if (!(caster instanceof final Player player)) {
             return false;
         }
 
         cleanUp(caster);
-
-        final Player player = (Player) caster;
 
         String color = settings.getString(COLOR);
         double health = parseValues(player, HEALTH, level, 10.0);
@@ -98,13 +112,23 @@ public class WolfMechanic extends MechanicComponent {
         double seconds = parseValues(player, SECONDS, level, 10.0);
         int ticks = (int) (seconds * 20);
         List<LivingEntity> wolves = new ArrayList<>();
+        List<LivingEntity> aggroTargets = List.of();
+        if (aggroTarget != null) {
+            aggroTargets = aggroTarget.getTargets(caster, level, targets);
+        }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);
                 wolf.setOwner(player);
-                wolf.setMaxHealth(health);
+                AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if (maxHealth != null)
+                    maxHealth.setBaseValue(health);
                 wolf.setHealth(health);
                 wolf.setSitting(sitting);
+                if (aggroTargets.size() > 0) {
+                    wolf.setTarget(aggroTargets.get(0));
+                    wolf.setAngry(true);
+                }
                 SkillAPI.setMeta(wolf, MechanicListener.SUMMON_DAMAGE, damage);
 
                 List<LivingEntity> owner = new ArrayList<>(1);

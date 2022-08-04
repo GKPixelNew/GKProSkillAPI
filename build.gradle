@@ -67,7 +67,7 @@ dependencies {
 group = 'mc.promcteam'
 version = '1.1.7.18'
 description = 'ProSkillAPI'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 publishing {
     publications {

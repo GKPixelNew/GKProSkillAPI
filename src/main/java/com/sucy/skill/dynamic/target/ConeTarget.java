@@ -28,7 +28,6 @@ package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.ConePreview;
-import com.sucy.skill.cast.Preview;
 import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -58,7 +57,7 @@ public class ConeTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
         double range = parseValues(caster, RANGE, level, 3.0);
         double angle = parseValues(caster, ANGLE, level, 90.0);
         return determineTargets(caster, level, targets, t -> TargetHelper.getConeTargets(t, angle, range));

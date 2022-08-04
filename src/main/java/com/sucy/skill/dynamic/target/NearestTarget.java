@@ -48,7 +48,7 @@ public class NearestTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
 
         final double radius = parseValues(caster, RADIUS, level, 3.0);

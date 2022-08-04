@@ -200,13 +200,13 @@ public class ComponentRegistry {
         return TRIGGERS.get(key.toUpperCase().replace(' ', '_'));
     }
 
-    static EffectComponent getComponent(final ComponentType type, final String key) {
+    public static EffectComponent getComponent(final ComponentType type, final String key) {
         final Class<?> componentClass = COMPONENTS.get(type).get(key.toLowerCase());
         if (componentClass == null) {
             throw new IllegalArgumentException("Invalid component key - " + key);
         }
         try {
-            return (EffectComponent) componentClass.newInstance();
+            return (EffectComponent) componentClass.getDeclaredConstructor().newInstance();
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid component - does not have a default constructor");
         }

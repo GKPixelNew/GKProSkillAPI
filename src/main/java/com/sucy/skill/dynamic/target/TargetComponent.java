@@ -9,7 +9,6 @@ import com.sucy.skill.dynamic.EffectComponent;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -69,7 +68,7 @@ public abstract class TargetComponent extends EffectComponent {
         self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase().replace(' ', '_'));
     }
 
-    abstract List<LivingEntity> getTargets(
+    public abstract List<LivingEntity> getTargets(
             final LivingEntity caster,
             final int level,
             final List<LivingEntity> targets);
