@@ -29,6 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.api.util.Nearby;
 import com.sucy.skill.dynamic.ComponentRegistry;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -74,6 +75,7 @@ public class WolfMechanic extends MechanicComponent {
         if (!targetString.isBlank()) {
             aggroTarget = (TargetComponent) ComponentRegistry.getComponent(ComponentType.TARGET, targetString);
             aggroTarget.setSettings(settings);
+            aggroTarget.load(skill, config);
         }
     }
 
@@ -114,7 +116,8 @@ public class WolfMechanic extends MechanicComponent {
         List<LivingEntity> wolves = new ArrayList<>();
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
-            aggroTargets = aggroTarget.getTargets(caster, level, targets);
+            aggroTargets = aggroTarget.getTargets(caster, level, Nearby.getLivingNearby(caster,
+                    parseValues(caster, "radius", level, 100)));
         }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
@@ -180,5 +183,6 @@ public class WolfMechanic extends MechanicComponent {
             task.cancel();
             task.run();
         }
+        aggroTarget.cleanUp(caster);
     }
 }
