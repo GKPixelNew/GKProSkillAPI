@@ -3516,8 +3516,8 @@ function MechanicWolf() {
     for (const t of Object.values(Target)) {
         targets.push(t.name);
     }
-    this.data.push(new ListValue('Trigger', 'aggro_target', targets, 'Death')
-        .setTooltip('The trigger to listen for')
+    this.data.push(new ListValue('Target', 'aggro_target', targets, 'Nearest')
+        .setTooltip('The target to aggro on')
     );
     for (const t of Object.values(Target)) {
         this.data.push(new SectionMarker('Target: ' + t.name).requireValue('aggro_target', [t.name]));
