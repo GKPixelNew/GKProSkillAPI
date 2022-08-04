@@ -73,9 +73,9 @@ public class WolfMechanic extends MechanicComponent {
         super.load(skill, config);
         String targetString = settings.getString(AGGRO_TARGET, "");
         if (!targetString.isBlank()) {
+            aggroTarget.load(skill, config);
             aggroTarget = (TargetComponent) ComponentRegistry.getComponent(ComponentType.TARGET, targetString);
             aggroTarget.setSettings(settings);
-            aggroTarget.load(skill, config);
         }
     }
 
