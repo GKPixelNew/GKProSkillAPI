@@ -3666,6 +3666,10 @@ function addProjectileOptions(component) {
         .setTooltip('The radius of the rain emission area in blocks')
     );
 
+    component.data.push(new ListValue('Target blocks', 'target-blocks', ['True', 'False'], 'False')
+        .setTooltip('Whether to execute children if the projectile hits a block')
+    );
+
     // Offsets
     component.data.push(new SectionMarker('Offset'));
     component.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
