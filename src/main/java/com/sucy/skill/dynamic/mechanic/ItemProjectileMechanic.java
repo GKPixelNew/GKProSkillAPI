@@ -34,7 +34,9 @@ import com.sucy.skill.api.projectile.ItemProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.api.util.ItemStackReader;
 import com.sucy.skill.cast.*;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -66,8 +68,16 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
+    private static final String TARGET_BLOCKS = "target-blocks";
+    private boolean targetBlocks;
 
     private Preview preview;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -218,5 +228,10 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
         projectile.setCallback(null);
+    }
+
+    @Override
+    public boolean shouldTargetBlocks() {
+        return targetBlocks;
     }
 }

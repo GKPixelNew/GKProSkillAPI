@@ -221,12 +221,15 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     @Override
     public void callback(CustomProjectile projectile, LivingEntity hit) {
         if (hit == null) {
-            if (!targetBlocks)
-                return;
             hit = new TempEntity(projectile.getLocation());
         }
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
+    }
+
+    @Override
+    public boolean shouldTargetBlocks() {
+        return targetBlocks;
     }
 }

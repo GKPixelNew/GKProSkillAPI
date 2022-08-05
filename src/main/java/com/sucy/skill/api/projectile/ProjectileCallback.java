@@ -43,4 +43,6 @@ public interface ProjectileCallback
      * @param hit        the entity hit by the projectile, if any
      */
     void callback(CustomProjectile projectile, LivingEntity hit);
+
+    boolean shouldTargetBlocks();
 }
