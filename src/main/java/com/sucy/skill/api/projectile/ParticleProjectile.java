@@ -152,7 +152,7 @@ public class ParticleProjectile extends CustomProjectile
     @Override
     protected boolean landed()
     {
-        return getLocation().getBlock().getType()!= Material.AIR;
+        return !getLocation().getBlock().isPassable();
     }
 
     /**

@@ -35,7 +35,9 @@ import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.cast.*;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -62,11 +64,19 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     private static final String FORWARD  = "forward";
     private static final String UPWARD   = "upward";
     private static final String RIGHT    = "right";
+    private static final String TARGET_BLOCKS = "target-blocks";
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
 
     private Preview preview;
+    private boolean targetBlocks;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -211,6 +221,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     @Override
     public void callback(CustomProjectile projectile, LivingEntity hit) {
         if (hit == null) {
+            if (!targetBlocks)
+                return;
             hit = new TempEntity(projectile.getLocation());
         }
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
