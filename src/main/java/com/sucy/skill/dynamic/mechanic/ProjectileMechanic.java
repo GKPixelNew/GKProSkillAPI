@@ -28,9 +28,11 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.projectile.CustomProjectile;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,18 +64,25 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       FORWARD            = "forward";
     private static final String                                       UPWARD             = "upward";
     private static final String                                       RIGHT              = "right";
-    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        = new HashMap<String, Class<? extends Projectile>>() {{
+    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        = new HashMap<>() {{
         put("arrow", Arrow.class);
         put("egg", Egg.class);
         put("ghast fireball", LargeFireball.class);
         put("snowball", Snowball.class);
     }};
-    private static final HashMap<String, Material>                    MATERIALS          = new HashMap<String, Material>() {{
+    private static final HashMap<String, Material>                    MATERIALS          = new HashMap<>() {{
         put("arrow", Material.ARROW);
         put("egg", Material.EGG);
         put("snowball", snowBall());
     }};
-    private static final Class<Enum<?>>                               PICKUP_STATUS_ENUM = null;
+    private static final String TARGET_BLOCKS = "target-blocks";
+    private boolean targetBlocks;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
         StringBuilder conditionedName = new StringBuilder();
@@ -231,7 +240,10 @@ public class ProjectileMechanic extends MechanicComponent {
      * @param hit        the entity hit by the projectile, if any
      */
     public void callback(Projectile projectile, LivingEntity hit) {
-        if (hit == null) hit = new TempEntity(projectile.getLocation());
+        if (hit == null) {
+            if (!targetBlocks) return;
+            hit = new TempEntity(projectile.getLocation());
+        }
 
         LivingEntity finalHit = hit;
         Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> {
