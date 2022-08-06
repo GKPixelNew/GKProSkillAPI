@@ -42,6 +42,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -279,5 +280,11 @@ public class MechanicListener extends SkillAPIListener {
         if (SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onBlockFade(BlockFadeEvent event) {
+        if (BlockMechanic.isPending(event.getBlock().getLocation()))
+            event.setCancelled(true);
     }
 }
