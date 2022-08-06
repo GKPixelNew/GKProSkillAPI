@@ -2755,6 +2755,9 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue('Pierce', 'pierce', ['True', 'False'], 'False')
         .setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them')
     );
+    this.data.push(new ListValue('Pierce through blocks', 'pierce-blocks', ['True', 'False'], 'False')
+        .setTooltip('Whether this projectile should pierce through blocks')
+    );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
     );
