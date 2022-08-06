@@ -1839,9 +1839,6 @@ function MechanicBlock() {
     this.data.push(new ListValue('Block', 'block', getMaterials, 'Ice')
         .setTooltip('The type of block to turn the region into')
     );
-    this.data.push(new IntValue('Block Data', 'data', 0)
-        .setTooltip('The block data to apply, mostly applicable for things like signs, woods, steps, or the similar')
-    );
     this.data.push(new AttributeValue('Seconds', 'seconds', 5, 0)
         .setTooltip('How long the blocks should be replaced for')
     );
