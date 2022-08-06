@@ -75,7 +75,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     @Override
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
-        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+        targetBlocks = settings.getBool(TARGET_BLOCKS, true);
     }
 
     /** {@inheritDoc} */
