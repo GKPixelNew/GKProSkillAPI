@@ -31,13 +31,29 @@ import com.sucy.skill.api.particle.target.EffectTarget;
 import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.particle.target.FixedTarget;
 import com.sucy.skill.api.util.Nearby;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.EntityEffect;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityCategory;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -56,7 +72,11 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Temporary dummy entity used for targeting a location in the dynamic system
@@ -86,14 +106,12 @@ public class TempEntity implements LivingEntity {
         return 0.2;
     }
 
+    @NotNull
     public Location getEyeLocation() {
         return getLocation().add(0, 1, 0);
     }
 
-    public List<Block> getLineOfSight(HashSet<Byte> hashSet, int i) {
-        return null;
-    }
-
+    @NotNull
     public List<Block> getLineOfSight(Set<Material> set, int i) {
         return null;
     }
@@ -721,7 +739,9 @@ public class TempEntity implements LivingEntity {
 
     @NotNull
     @Override
-    public SpawnCategory getSpawnCategory() { return SpawnCategory.MISC; }
+    public SpawnCategory getSpawnCategory() {
+        return SpawnCategory.MISC;
+    }
 
     public void playEffect(EntityEffect entityEffect) {
     }

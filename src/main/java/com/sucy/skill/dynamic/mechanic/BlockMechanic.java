@@ -48,20 +48,21 @@ import java.util.Map;
 public class BlockMechanic extends MechanicComponent {
     private static final Vector UP = new Vector(0, 1, 0);
 
-    private static final String SHAPE   = "shape";
-    private static final String TYPE    = "type";
-    private static final String RADIUS  = "radius";
-    private static final String WIDTH   = "width";
-    private static final String HEIGHT  = "height";
-    private static final String DEPTH   = "depth";
-    private static final String BLOCK   = "block";
+    private static final String SHAPE = "shape";
+    private static final String TYPE = "type";
+    private static final String RADIUS = "radius";
+    private static final String WIDTH = "width";
+    private static final String HEIGHT = "height";
+    private static final String DEPTH = "depth";
+    private static final String BLOCK = "block";
     private static final String SECONDS = "seconds";
     private static final String FORWARD = "forward";
-    private static final String UPWARD  = "upward";
-    private static final String RIGHT   = "right";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
+    private static final String FILL = "fill";
 
-    private static final HashMap<Location, Integer>    pending  = new HashMap<Location, Integer>();
-    private static final HashMap<Location, BlockState> original = new HashMap<Location, BlockState>();
+    private static final HashMap<Location, Integer> pending = new HashMap<>();
+    private static final HashMap<Location, BlockState> original = new HashMap<>();
 
     private final Map<Integer, List<RevertTask>> tasks = new HashMap<>();
 
@@ -102,7 +103,9 @@ public class BlockMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {return false;}
+        if (targets.size() == 0) {
+            return false;
+        }
 
         Material block = Material.ICE;
         try {
@@ -112,29 +115,30 @@ public class BlockMechanic extends MechanicComponent {
         }
 
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
-        int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        int ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
 
-        String  type  = settings.getString(TYPE, "solid").toLowerCase();
+        String type = settings.getString(TYPE, "solid").toLowerCase();
         boolean solid = type.equals("solid");
-        boolean air   = type.equals("air");
+        boolean air = type.equals("air");
+        boolean fill = settings.getBool(FILL, false);
 
         double forward = parseValues(caster, FORWARD, level, 0);
-        double upward  = parseValues(caster, UPWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
+        double upward = parseValues(caster, UPWARD, level, 0);
+        double right = parseValues(caster, RIGHT, level, 0);
 
-        List<Block> blocks = new ArrayList<Block>();
-        World       w      = caster.getWorld();
+        List<Block> blocks = new ArrayList<>();
+        World w = caster.getWorld();
 
         // Grab blocks in a sphere
         if (sphere) {
             double radius = parseValues(caster, RADIUS, level, 3);
             double x, y, z, dx, dy, dz;
-            double rSq    = radius * radius;
+            double rSq = radius * radius;
             for (LivingEntity t : targets) {
                 // Get the center with offsets included
                 Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
+                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
@@ -146,15 +150,18 @@ public class BlockMechanic extends MechanicComponent {
                 for (int i = (int) (x - radius) + 1; i < (int) (x + radius); i++) {
                     for (int j = (int) (y - radius) + 1; j < (int) (y + radius); j++) {
                         for (int k = (int) (z - radius) + 1; k < (int) (z + radius); k++) {
-                            dx = x - i;
-                            dy = y - j;
-                            dz = z - k;
-                            if (dx * dx + dy * dy + dz * dz < rSq) {
-                                Block b = w.getBlockAt(i, j, k);
-                                if ((!solid || b.getType().isSolid())
-                                        && (!air || b.getType() == Material.AIR)
-                                        && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
-                                    blocks.add(b);
+                            if (fill || i == x + radius || j == y + radius || k == z + radius
+                                    || i == x - radius || j == y - radius || k == z - radius) {
+                                dx = x - i;
+                                dy = y - j;
+                                dz = z - k;
+                                if (dx * dx + dy * dy + dz * dz < rSq) {
+                                    Block b = w.getBlockAt(i, j, k);
+                                    if ((!solid || b.getType().isSolid())
+                                            && (!air || b.getType() == Material.AIR)
+                                            && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
+                                        blocks.add(b);
+                                    }
                                 }
                             }
                         }
@@ -166,20 +173,20 @@ public class BlockMechanic extends MechanicComponent {
         // Grab blocks in a cuboid
         else {
             // Cuboid options
-            double width  = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
+            double width = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
             double height = (parseValues(caster, HEIGHT, level, 5) - 1) / 2;
-            double depth  = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
+            double depth = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
             double x, y, z;
 
             for (LivingEntity t : targets) {
                 // Get the location with offsets included
                 Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
+                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
-                double  yaw     = loc.getYaw();
+                double yaw = loc.getYaw();
                 boolean facingZ = Math.abs(yaw) < 45 || Math.abs(yaw) > 135;
 
                 x = facingZ ? loc.getX() : loc.getZ();
@@ -190,11 +197,14 @@ public class BlockMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
-                            if ((!solid || b.getType().isSolid())
-                                    && (!air || b.getType() == Material.AIR)
-                                    && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
-                                blocks.add(b);
+                            if (fill || i == x + width || j == y + height || k == z + depth
+                                    || i == x - width || j == y - height || k == z - depth) {
+                                Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
+                                if ((!solid || b.getType().isSolid())
+                                        && (!air || b.getType() == Material.AIR)
+                                        && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
+                                    blocks.add(b);
+                                }
                             }
                         }
                     }
@@ -233,7 +243,7 @@ public class BlockMechanic extends MechanicComponent {
      */
     private class RevertTask extends BukkitRunnable {
         private final ArrayList<Location> locs;
-        private final LivingEntity        caster;
+        private final LivingEntity caster;
 
         RevertTask(final LivingEntity caster, final ArrayList<Location> locs) {
             this.caster = caster;

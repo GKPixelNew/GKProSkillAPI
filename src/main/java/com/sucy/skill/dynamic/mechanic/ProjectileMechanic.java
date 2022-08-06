@@ -36,7 +36,15 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LargeFireball;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -49,40 +57,34 @@ import java.util.List;
  * Heals each target
  */
 public class ProjectileMechanic extends MechanicComponent {
-    private static final Vector                                       UP                 = new Vector(0, 1, 0);
-    private static final String                                       PROJECTILE         = "projectile";
-    private static final String                                       FLAMING            = "flaming";
-    private static final String                                       COST               = "cost";
-    private static final String                                       VELOCITY           = "velocity";
-    private static final String                                       LIFESPAN           = "lifespan";
-    private static final String                                       SPREAD             = "spread";
-    private static final String                                       AMOUNT             = "amount";
-    private static final String                                       ANGLE              = "angle";
-    private static final String                                       HEIGHT             = "height";
-    private static final String                                       RADIUS             = "rain-radius";
-    private static final String                                       LEVEL              = "skill_level";
-    private static final String                                       FORWARD            = "forward";
-    private static final String                                       UPWARD             = "upward";
-    private static final String                                       RIGHT              = "right";
-    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        = new HashMap<>() {{
+    private static final Vector UP = new Vector(0, 1, 0);
+    private static final String PROJECTILE = "projectile";
+    private static final String FLAMING = "flaming";
+    private static final String COST = "cost";
+    private static final String VELOCITY = "velocity";
+    private static final String LIFESPAN = "lifespan";
+    private static final String SPREAD = "spread";
+    private static final String AMOUNT = "amount";
+    private static final String ANGLE = "angle";
+    private static final String HEIGHT = "height";
+    private static final String RADIUS = "rain-radius";
+    private static final String LEVEL = "skill_level";
+    private static final String FORWARD = "forward";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
+    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES = new HashMap<>() {{
         put("arrow", Arrow.class);
         put("egg", Egg.class);
         put("ghast fireball", LargeFireball.class);
         put("snowball", Snowball.class);
     }};
-    private static final HashMap<String, Material>                    MATERIALS          = new HashMap<>() {{
+    private static final HashMap<String, Material> MATERIALS = new HashMap<>() {{
         put("arrow", Material.ARROW);
         put("egg", Material.EGG);
         put("snowball", snowBall());
     }};
     private static final String TARGET_BLOCKS = "target-blocks";
     private boolean targetBlocks;
-
-    @Override
-    public void load(DynamicSkill skill, DataSection config) {
-        super.load(skill, config);
-        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
-    }
 
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
         StringBuilder conditionedName = new StringBuilder();
@@ -106,6 +108,12 @@ public class ProjectileMechanic extends MechanicComponent {
     }
 
     @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
+
+    @Override
     public String getKey() {
         return "projectile";
     }
@@ -122,13 +130,13 @@ public class ProjectileMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
-        int                         amount     = (int) parseValues(caster, AMOUNT, level, 1.0);
-        double                      speed      = parseValues(caster, VELOCITY, level, 2.0);
-        boolean                     flaming    = settings.getString(FLAMING, "false").equalsIgnoreCase("true");
-        String                      spread     = settings.getString(SPREAD, "cone").toLowerCase();
-        String                      projectile = settings.getString(PROJECTILE, "arrow").toLowerCase();
-        String                      cost       = settings.getString(COST, "none").toLowerCase();
-        Class<? extends Projectile> type       = getProjectileClass(projectile);
+        int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+        double speed = parseValues(caster, VELOCITY, level, 2.0);
+        boolean flaming = settings.getString(FLAMING, "false").equalsIgnoreCase("true");
+        String spread = settings.getString(SPREAD, "cone").toLowerCase();
+        String projectile = settings.getString(PROJECTILE, "arrow").toLowerCase();
+        String cost = settings.getString(COST, "none").toLowerCase();
+        Class<? extends Projectile> type = getProjectileClass(projectile);
         if (type == null) {
             type = Arrow.class;
         }
@@ -136,8 +144,7 @@ public class ProjectileMechanic extends MechanicComponent {
         // Cost to cast
         if (cost.equals("one") || cost.equals("all")) {
             Material mat = MATERIALS.get(settings.getString(PROJECTILE, "arrow").toLowerCase());
-            if (mat == null || !(caster instanceof Player)) return false;
-            Player player = (Player) caster;
+            if (mat == null || !(caster instanceof Player player)) return false;
             if (cost.equals("one") && !player.getInventory().contains(mat, 1)) {
                 return false;
             }
@@ -170,11 +177,12 @@ public class ProjectileMechanic extends MechanicComponent {
                                 arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                             } catch (NoClassDefFoundError e) {
                                 //1.12+
-                                Arrow    arrow             = (Arrow) p;
+                                Arrow arrow = (Arrow) p;
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
                                 Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
+                                 IllegalAccessException | InvocationTargetException ignored) {
                         }
                     }
                     p.setVelocity(new Vector(0, speed, 0));
@@ -189,13 +197,13 @@ public class ProjectileMechanic extends MechanicComponent {
                     dir.setY(0);
                     dir.normalize();
                 }
-                double angle   = parseValues(caster, ANGLE, level, 30.0);
-                double right   = parseValues(caster, RIGHT, level, 0);
-                double upward  = parseValues(caster, UPWARD, level, 0);
+                double angle = parseValues(caster, ANGLE, level, 30.0);
+                double right = parseValues(caster, RIGHT, level, 0);
+                double upward = parseValues(caster, UPWARD, level, 0);
                 double forward = parseValues(caster, FORWARD, level, 0);
 
                 Vector looking = target.getLocation().getDirection().setY(0).normalize();
-                Vector normal  = looking.clone().crossProduct(UP);
+                Vector normal = looking.clone().crossProduct(UP);
                 looking.multiply(forward).add(normal.multiply(right));
 
                 ArrayList<Vector> dirs = CustomProjectile.calcSpread(dir, angle, amount);
@@ -211,11 +219,12 @@ public class ProjectileMechanic extends MechanicComponent {
                                 arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                             } catch (NoClassDefFoundError e) {
                                 //1.12+
-                                Arrow    arrow             = (Arrow) p;
+                                Arrow arrow = (Arrow) p;
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
                                 Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
+                                 IllegalAccessException | InvocationTargetException ignored) {
                         }
                     } else {
                         p.teleport(target.getLocation().add(looking).add(0, upward + 0.5, 0).add(p.getVelocity()).setDirection(d));
@@ -241,9 +250,9 @@ public class ProjectileMechanic extends MechanicComponent {
      */
     public void callback(Projectile projectile, LivingEntity hit) {
         if (hit == null) {
-            if (!targetBlocks) return;
             hit = new TempEntity(projectile.getLocation());
         }
+        if (hit instanceof TempEntity && !targetBlocks) return;
 
         LivingEntity finalHit = hit;
         Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> {
