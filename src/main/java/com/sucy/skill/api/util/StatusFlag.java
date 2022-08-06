@@ -26,6 +26,10 @@
  */
 package com.sucy.skill.api.util;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Flag keys used by statuses
  */
@@ -39,16 +43,15 @@ public class StatusFlag
     public static final String SILENCE    = "silence";
     public static final String CHANNELING = "channeling";
     public static final String CHANNEL    = "channel";
+    public static final String BYPASS_NEGATIVE = "bypass_negative";
 
     public static final String[] ALL = new String[] {
-        STUN, ROOT, INVINCIBLE, ABSORB, DISARM, SILENCE, CHANNELING
+        STUN, ROOT, INVINCIBLE, ABSORB, DISARM, SILENCE, CHANNELING, BYPASS_NEGATIVE
     };
 
-    public static final String[] NEGATIVE = new String[] {
-        STUN, ROOT, DISARM, SILENCE
-    };
+    public static final List<String> NEGATIVE = List.of(STUN, ROOT, DISARM, SILENCE);
 
-    public static final String[] POSITIVE = new String[] {
-        INVINCIBLE, ABSORB
-    };
+    public static final List<String> POSITIVE = List.of(
+        INVINCIBLE, ABSORB, BYPASS_NEGATIVE
+    );
 }

@@ -32,6 +32,7 @@ import com.sucy.skill.api.event.PlayerCastSkillEvent;
 import com.sucy.skill.api.event.TrueDamageEvent;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
+import com.sucy.skill.dynamic.mechanic.CleanseMechanic;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -208,6 +210,16 @@ public class StatusListener extends SkillAPIListener {
     @EventHandler(ignoreCancelled = true)
     public void onCast(PlayerCastSkillEvent event) {
         check(event, event.getPlayer(), event.getPlayer(), true, StatusFlag.SILENCE, StatusFlag.STUN, StatusFlag.CHANNEL);
+    }
+
+    @EventHandler
+    public void onPotion(EntityPotionEffectEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (FlagManager.hasFlag(player, StatusFlag.BYPASS_NEGATIVE) && event.getNewEffect() != null &&
+                    CleanseMechanic.NEGATIVE_POTIONS.contains(event.getNewEffect().getType().getName())) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     /**

@@ -26,8 +26,11 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.util.FlagManager;
+import com.sucy.skill.api.util.StatusFlag;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -37,6 +40,7 @@ import java.util.List;
 public class StatusMechanic extends MechanicComponent {
     private static final String KEY      = "status";
     private static final String DURATION = "duration";
+    private static final String FORCE    = "force";
 
     @Override
     public String getKey() {
@@ -59,10 +63,14 @@ public class StatusMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY, "stun").toLowerCase();
+        String key = settings.getString(KEY, "stun").toLowerCase().replace(" ", "_");
         double seconds = parseValues(caster, DURATION, level, 3.0);
+        boolean forceStatus = settings.getBool(FORCE, false);
         int ticks = (int) (seconds * 20);
         for (LivingEntity target : targets) {
+            if (FlagManager.hasFlag(target, StatusFlag.BYPASS_NEGATIVE) && StatusFlag.NEGATIVE.contains(key) && !forceStatus) {
+                continue;
+            }
             FlagManager.addFlag(target, key, ticks);
         }
         return targets.size() > 0;

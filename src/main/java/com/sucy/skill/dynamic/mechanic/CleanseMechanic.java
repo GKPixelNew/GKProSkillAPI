@@ -40,7 +40,7 @@ import java.util.Set;
  * Cleanses a target of negative potion or status effects
  */
 public class CleanseMechanic extends MechanicComponent {
-    private static final Set<String> POTIONS = ImmutableSet.of(
+    public static final Set<String> NEGATIVE_POTIONS = ImmutableSet.of(
             "BLINDNESS", "CONFUSION", "HUNGER", "LEVITATION", "POISON",
             "SLOW", "SLOW_DIGGING", "WEAKNESS", "WITHER"
     );
@@ -90,7 +90,7 @@ public class CleanseMechanic extends MechanicComponent {
 
             if (potion.equals("ALL")) {
                 for (PotionEffect p : target.getActivePotionEffects()) {
-                    if (POTIONS.contains(p.getType().getName())) {
+                    if (NEGATIVE_POTIONS.contains(p.getType().getName())) {
                         target.removePotionEffect(p.getType());
                         worked = true;
                     }
