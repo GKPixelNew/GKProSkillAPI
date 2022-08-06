@@ -1842,6 +1842,9 @@ function MechanicBlock() {
     this.data.push(new AttributeValue('Seconds', 'seconds', 5, 0)
         .setTooltip('How long the blocks should be replaced for')
     );
+    this.data.push(new ListValue('Fill', 'fill', ['True', 'False'], 'False')
+        .setTooltip('Whether the inside of the region should be filled with the blocks, if set to False, the center will be hollow')
+    );
 
     // Sphere options
     this.data.push(new AttributeValue('Radius', 'radius', 3, 0).requireValue('shape', ['Sphere'])
