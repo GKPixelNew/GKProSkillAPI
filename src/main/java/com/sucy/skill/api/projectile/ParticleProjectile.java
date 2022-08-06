@@ -69,6 +69,7 @@ public class ParticleProjectile extends CustomProjectile
     private static final String GRAVITY = "gravity";
 
     private static final String PIERCE = "pierce";
+    private static final String PIERCE_BLOCKS = "pierce-blocks";
 
     private       Location loc;
     private final Settings settings;
@@ -79,6 +80,7 @@ public class ParticleProjectile extends CustomProjectile
     private       int life;
     private final Vector  gravity;
     private final boolean pierce;
+    private final boolean pierceBlocks;
 
     /**
      * Constructor
@@ -99,6 +101,7 @@ public class ParticleProjectile extends CustomProjectile
         this.life = lifespan;
         this.gravity = new Vector(0, settings.getDouble(GRAVITY, 0), 0);
         this.pierce = settings.getBool(PIERCE, false);
+        this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
 
         steps = (int) Math.ceil(vel.length() * 2);
         vel.multiply(1.0 / steps);
@@ -152,7 +155,7 @@ public class ParticleProjectile extends CustomProjectile
     @Override
     protected boolean landed()
     {
-        return !getLocation().getBlock().isPassable();
+        return (!getLocation().getBlock().isPassable()&&!pierceBlocks);
     }
 
     /**
