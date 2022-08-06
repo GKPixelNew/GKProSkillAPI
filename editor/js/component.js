@@ -1606,6 +1606,7 @@ function ConditionStatus() {
     );
     this.data.push(new ListValue('Status', 'status', ['Any',
         'Absorb',
+        'Bypass Negative',
         'Curse',
         'Disarm',
         'Invincible',
@@ -3005,6 +3006,7 @@ function MechanicStatus() {
     this.description = 'Applies a status effect to the target for a duration.';
 
     this.data.push(new ListValue('Status', 'status', ['Absorb',
+        'Bypass Negative',
         'Curse',
         'Disarm',
         'Invincible',
@@ -3015,6 +3017,9 @@ function MechanicStatus() {
     );
     this.data.push(new AttributeValue('Duration', 'duration', 3, 1)
         .setTooltip('How long in seconds to apply the status')
+    );
+    this.data.push(new ListValue('Force', 'force', ['True', 'False'], 'False')
+        .setTooltip('Whether to apply the negative status even if the target has the status')
     );
 }
 
