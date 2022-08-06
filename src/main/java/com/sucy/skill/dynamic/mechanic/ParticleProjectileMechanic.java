@@ -223,13 +223,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
+        if (hit instanceof TempEntity&&!targetBlocks) return;
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
-    }
-
-    @Override
-    public boolean shouldTargetBlocks() {
-        return targetBlocks;
     }
 }

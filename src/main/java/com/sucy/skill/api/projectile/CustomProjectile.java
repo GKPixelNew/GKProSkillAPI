@@ -28,7 +28,6 @@ package com.sucy.skill.api.projectile;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.target.Followable;
-import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
 import mc.promcteam.engine.utils.Reflex;
@@ -304,7 +303,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         if (valid) {
             cancel();
             Bukkit.getPluginManager().callEvent(land());
-            if (callback != null && callback.shouldTargetBlocks())
+            if (callback != null)
                 callback.callback(this, null);
         }
     }
@@ -327,7 +326,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
             Bukkit.getPluginManager().callEvent(hit(entity));
 
-            if (callback != null && (entity instanceof TempEntity || callback.shouldTargetBlocks()))
+            if (callback != null)
                 callback.callback(this, entity);
 
             if (!pierce) {

@@ -224,14 +224,10 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
+        if (hit instanceof TempEntity&&!targetBlocks) return;
         ArrayList<LivingEntity> targets = new ArrayList<>();
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
         projectile.setCallback(null);
-    }
-
-    @Override
-    public boolean shouldTargetBlocks() {
-        return targetBlocks;
     }
 }
