@@ -3520,6 +3520,9 @@ function MechanicWolf() {
     this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('How many wolves to summon')
     );
+    this.data.push(new StringListValue('Skills (one per line)', 'skills', [])
+        .setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
+    );
     let targets = [];
     for (const t of Object.values(Target)) {
         targets.push(t.name);
@@ -3529,13 +3532,12 @@ function MechanicWolf() {
     );
     for (const t of Object.values(Target)) {
         this.data.push(new SectionMarker('Target: ' + t.name).requireValue('aggro_target', [t.name]));
-        for (const d of new t.construct().data) {
+        const target = new t.construct();
+        for (let d of target.data) {
+            d = d.dupe();
             this.data.push(d.requireValue('aggro_target', [t.name]));
         }
     }
-    this.data.push(new StringListValue('Skills (one per line)', 'skills', [])
-        .setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
-    );
 }
 
 // The active component being edited or added to

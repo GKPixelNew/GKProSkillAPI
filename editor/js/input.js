@@ -47,6 +47,9 @@ function checkRequireValue(e) {
     for (let i = 0; i < this.requireLists.length; i++) {
         const requireData = this.requireLists[i];
         let visible = false;
+        if (requireData.values === undefined) {
+            continue;
+        }
         for (let j = 0; j < requireData.values.length; j++) {
             if (requireData.values[j] === (this.value || this.selectedIndex)) {
                 visible = true;
@@ -231,6 +234,9 @@ ListValue.prototype.createHTML = function (target) {
 
     const vLower = this.value.toLowerCase().replace('_', ' ');
     const list = typeof this.list == 'function' ? this.list() : this.list;
+    if (list === undefined) {
+        return;
+    }
     for (let i = 0; i < list.length; i++) {
         const option = document.createElement('option');
         option.innerHTML = list[i];
