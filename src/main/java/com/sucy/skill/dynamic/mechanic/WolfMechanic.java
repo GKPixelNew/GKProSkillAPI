@@ -116,9 +116,7 @@ public class WolfMechanic extends MechanicComponent {
         List<LivingEntity> wolves = new ArrayList<>();
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
-            aggroTargets = aggroTarget.getTargets(caster, level, Nearby.getLivingNearby(caster,
-                    parseValues(caster, "radius", level, 100),
-                    aggroTarget.getSelf() == TargetComponent.IncludeCaster.IN_AREA));
+            aggroTargets = aggroTarget.getTargets(caster, level, targets);
         }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
