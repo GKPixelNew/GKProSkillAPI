@@ -158,7 +158,12 @@ public class ParticleAnimationMechanic extends MechanicComponent {
             for (int i = 0; i < steps; i++) {
                 // Play the effect
                 int j = 0;
+                boolean executed = false;
                 for (LivingEntity target : targets) {
+                    if (target.isDead())
+                        continue;
+                    executed = true;
+
                     Location loc = target.getLocation();
 
                     // Calculate the target rotation and add that
@@ -198,6 +203,10 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         rotate(offset, Math.cos(Math.toRadians(-rots[j])), Math.sin(Math.toRadians(-rots[j])));
                         j += 1;
                     }
+                }
+                if (!executed) {
+                    cancel();
+                    return;
                 }
 
                 // Update the lifespan of the animation
