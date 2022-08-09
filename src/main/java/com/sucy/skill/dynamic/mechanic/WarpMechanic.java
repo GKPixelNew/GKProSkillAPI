@@ -67,7 +67,7 @@ public class WarpMechanic extends MechanicComponent {
         }
 
         // Get the world
-        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
+        boolean throughWalls = settings.getString(WALL, "false").equalsIgnoreCase("true");
         double forward = parseValues(caster, FORWARD, level, 0.0);
         double upward = parseValues(caster, UPWARD, level, 0.0);
         double right = parseValues(caster, RIGHT, level, 0.0);
