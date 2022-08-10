@@ -95,7 +95,6 @@ public class StatMechanic extends MechanicComponent {
                 final PlayerData data = SkillAPI.getPlayerData((Player) target);
                 PlayerStatModifier modifier = new PlayerStatModifier("skillapi.mechanic.stat_mechanic", amount,
                         Operation.valueOf(operation), false);
-
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final StatTask old = casterTasks.remove(data.getPlayerName());
 
