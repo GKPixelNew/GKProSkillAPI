@@ -35,9 +35,11 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -120,6 +122,18 @@ public class KillListener extends SkillAPIListener {
             SkillAPI.setMeta(event.getEntity(), S_TYPE, EGG);
     }
 
+    private void setKiller(LivingEntity t, LivingEntity d) {
+        if (t instanceof Player target) {
+            if (d instanceof Player damager) {
+                target.setKiller(damager);
+            }
+            if (d instanceof Tameable tameable) {
+                if (tameable.getOwner()!=null)
+                    target.setKiller(Bukkit.getPlayer(tameable.getOwner().getUniqueId()));
+            }
+        }
+    }
+
     /**
      * Keeps track of killers when dealing physical damage
      *
@@ -127,8 +141,7 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target)
-            target.setKiller(damager);
+        setKiller(event.getTarget(), event.getDamager());
     }
 
     /**
@@ -138,8 +151,7 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target)
-            target.setKiller(damager);
+        setKiller(event.getTarget(), event.getDamager());
     }
 
     /**
@@ -149,8 +161,6 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target) {
-            target.setKiller(damager);
-        }
+        setKiller(event.getTarget(), event.getDamager());
     }
 }
