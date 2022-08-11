@@ -32,7 +32,6 @@ import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
@@ -45,14 +44,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.sucy.skill.listener.MechanicListener.*;
+import static com.sucy.skill.listener.MechanicListener.POTION_PROJECTILE;
+import static com.sucy.skill.listener.MechanicListener.SKILL_CASTER;
+import static com.sucy.skill.listener.MechanicListener.SKILL_LEVEL;
 
 /**
  * Heals each target
  */
 public class PotionProjectileMechanic extends MechanicComponent {
     private static final String POTION = "type";
-    private static final String ALLY   = "group";
+    private static final String ALLY = "group";
     private static final String LINGER = "linger";
 
     @Override
@@ -72,8 +73,8 @@ public class PotionProjectileMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
-        String     potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
-        boolean    linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
+        String potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
+        boolean linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
         PotionType type;
         try {
             type = PotionType.valueOf(potion);
@@ -81,7 +82,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
             return false;
         }
 
-        Potion    p = new Potion(type, 1);
+        Potion p = new Potion(type, 1);
         ItemStack item;
         PotionMeta potionMeta = null;
         try {
@@ -99,7 +100,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
         // Fire from each target
         for (LivingEntity target : targets) {
             ThrownPotion thrown = target.launchProjectile(ThrownPotion.class);
-            if (potionMeta!=null)
+            if (potionMeta != null)
                 thrown.setPotionMeta(potionMeta);
             SkillAPI.setMeta(thrown, SKILL_LEVEL, level);
             SkillAPI.setMeta(thrown, SKILL_CASTER, caster);
@@ -118,12 +119,12 @@ public class PotionProjectileMechanic extends MechanicComponent {
      */
     public void callback(Entity entity, Collection<LivingEntity> hit) {
         List<LivingEntity> targets = new ArrayList<>(hit);
-        String             group   = settings.getString(ALLY, "enemy").toLowerCase();
-        boolean            both    = group.equals("both");
-        boolean            ally    = group.equals("ally");
-        LivingEntity       caster  = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
-        int                level   = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
-        Location           loc     = entity.getLocation();
+        String group = settings.getString(ALLY, "enemy").toLowerCase();
+        boolean both = group.equals("both");
+        boolean ally = group.equals("ally");
+        LivingEntity caster = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
+        int level = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
+        Location loc = entity.getLocation();
         for (int i = 0; i < targets.size(); i++) {
             if (!both && SkillAPI.getSettings().canAttack(caster, targets.get(i)) == ally) {
                 targets.remove(i);
