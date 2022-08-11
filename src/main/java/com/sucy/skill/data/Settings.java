@@ -49,6 +49,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -746,8 +747,9 @@ public class Settings {
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
-        if (attacker instanceof Player) {
-            final Player player = (Player) attacker;
+        if (isTeammate(attacker, target))
+            return false;
+        if (attacker instanceof final Player player) {
             if (target instanceof Animals && !(target instanceof Tameable)) {
                 if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {return false;}
             } else if (target instanceof Monster) {
@@ -764,8 +766,7 @@ public class Settings {
                 return combatProtection.canAttack(player, (Player) target);
             }
             return combatProtection.canAttack(player, target);
-        } else if (attacker instanceof Tameable) {
-            Tameable tameable = (Tameable) attacker;
+        } else if (attacker instanceof Tameable tameable) {
             if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
                 return (tameable.getOwner() != target)
                         && canAttack((LivingEntity) tameable.getOwner(), target);
@@ -773,6 +774,16 @@ public class Settings {
         } else {return !(target instanceof Monster);}
 
         return combatProtection.canAttack(attacker, target);
+    }
+
+    public boolean isTeammate(LivingEntity a, LivingEntity b) {
+        if (a instanceof Player playerA && b instanceof Player playerB) {
+            var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            var teamA = scoreboard.getEntryTeam(playerA.getName());
+            var teamB = scoreboard.getEntryTeam(playerB.getName());
+            return Objects.equals(teamA, teamB);
+        }
+        return false;
     }
 
     /**
