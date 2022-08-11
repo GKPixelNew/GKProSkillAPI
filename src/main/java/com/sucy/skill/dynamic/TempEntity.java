@@ -26,11 +26,14 @@
  */
 package com.sucy.skill.dynamic;
 
+import com.destroystokyo.paper.block.TargetBlockInfo;
+import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.api.particle.target.EffectTarget;
 import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.particle.target.FixedTarget;
 import com.sucy.skill.api.util.Nearby;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.FluidCollisionMode;
@@ -43,21 +46,22 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -73,7 +77,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -81,6 +84,7 @@ import java.util.UUID;
 /**
  * Temporary dummy entity used for targeting a location in the dynamic system
  */
+@SuppressWarnings("ConstantConditions")
 public class TempEntity implements LivingEntity {
 
     private EffectTarget target;
@@ -116,18 +120,37 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public Block getTargetBlock(HashSet<Byte> hashSet, int i) {
-        return null;
-    }
-
+    @NotNull
     public Block getTargetBlock(Set<Material> set, int i) {
         return null;
     }
 
-    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> hashSet, int i) {
+    @Override
+    public @Nullable Block getTargetBlock(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
         return null;
     }
 
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Entity getTargetEntity(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @NotNull
     public List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
         return null;
     }
@@ -149,18 +172,6 @@ public class TempEntity implements LivingEntity {
 
     @Override
     public @Nullable RayTraceResult rayTraceBlocks(double maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
-        return null;
-    }
-
-    public Egg throwEgg() {
-        return null;
-    }
-
-    public Snowball throwSnowball() {
-        return null;
-    }
-
-    public Arrow shootArrow() {
         return null;
     }
 
@@ -198,6 +209,26 @@ public class TempEntity implements LivingEntity {
     public void setArrowsInBody(int count) {
     }
 
+    @Override
+    public int getBeeStingerCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingerCooldown(int ticks) {
+
+    }
+
+    @Override
+    public int getBeeStingersInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingersInBody(int count) {
+
+    }
+
     public int getMaximumNoDamageTicks() {
         return 0;
     }
@@ -212,13 +243,6 @@ public class TempEntity implements LivingEntity {
     public void setLastDamage(double v) {
     }
 
-    public int _INVALID_getLastDamage() {
-        return 0;
-    }
-
-    public void _INVALID_setLastDamage(int i) {
-    }
-
     public int getNoDamageTicks() {
         return 0;
     }
@@ -230,35 +254,46 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public boolean addPotionEffect(PotionEffect potionEffect) {
+    @Override
+    public void setKiller(@Nullable Player killer) {
+
+    }
+
+    public boolean addPotionEffect(@NotNull PotionEffect potionEffect) {
         return false;
     }
 
-    public boolean addPotionEffect(PotionEffect potionEffect, boolean b) {
+    public boolean addPotionEffect(@NotNull PotionEffect potionEffect, boolean b) {
         return false;
     }
 
-    public boolean addPotionEffects(Collection<PotionEffect> collection) {
+    public boolean addPotionEffects(@NotNull Collection<PotionEffect> collection) {
         return false;
     }
 
-    public boolean hasPotionEffect(PotionEffectType potionEffectType) {
+    public boolean hasPotionEffect(@NotNull PotionEffectType potionEffectType) {
         return false;
     }
 
-    public PotionEffect getPotionEffect(PotionEffectType potionEffectType) {
+    public PotionEffect getPotionEffect(@NotNull PotionEffectType potionEffectType) {
         return null;
     }
 
-    public void removePotionEffect(PotionEffectType potionEffectType) {
+    public void removePotionEffect(@NotNull PotionEffectType potionEffectType) {
 
     }
 
+    @NotNull
     public Collection<PotionEffect> getActivePotionEffects() {
         return ImmutableList.of();
     }
 
-    public boolean hasLineOfSight(Entity entity) {
+    public boolean hasLineOfSight(@NotNull Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean hasLineOfSight(@NotNull Location location) {
         return false;
     }
 
@@ -279,6 +314,16 @@ public class TempEntity implements LivingEntity {
     }
 
     public void setCanPickupItems(boolean b) {
+
+    }
+
+    @Override
+    public @Nullable Component customName() {
+        return null;
+    }
+
+    @Override
+    public void customName(@Nullable Component customName) {
 
     }
 
@@ -338,18 +383,20 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @NotNull
     public Set<String> getScoreboardTags() {
         return null;
     }
 
-    public boolean addScoreboardTag(String s) {
+    public boolean addScoreboardTag(@NotNull String s) {
         return false;
     }
 
-    public boolean removeScoreboardTag(String s) {
+    public boolean removeScoreboardTag(@NotNull String s) {
         return false;
     }
 
+    @NotNull
     public PistonMoveReaction getPistonMoveReaction() {
         return null;
     }
@@ -369,10 +416,96 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @Override
+    public @NotNull Component name() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component teamDisplayName() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Location getOrigin() {
+        return null;
+    }
+
+    @Override
+    public boolean fromMobSpawner() {
+        return false;
+    }
+
+    @Override
+    public @NotNull CreatureSpawnEvent.SpawnReason getEntitySpawnReason() {
+        return null;
+    }
+
+    @Override
+    public boolean isInRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isInBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrRainOrBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInLava() {
+        return false;
+    }
+
+    @Override
+    public boolean isTicking() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        return null;
+    }
+
+    @Override
+    public boolean spawnAt(@NotNull Location location, @NotNull CreatureSpawnEvent.SpawnReason reason) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
+    }
+
+    @Override
+    public boolean collidesAt(@NotNull Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean wouldCollideUsing(@NotNull BoundingBox boundingBox) {
+        return false;
+    }
+
     public boolean isLeashed() {
         return false;
     }
 
+    @NotNull
     public Entity getLeashHolder() throws IllegalStateException {
         return null;
     }
@@ -468,16 +601,85 @@ public class TempEntity implements LivingEntity {
     public void setInvisible(boolean invisible) {
     }
 
+    @Override
+    public int getArrowsStuck() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowsStuck(int arrows) {
+
+    }
+
+    @Override
+    public int getShieldBlockingDelay() {
+        return 0;
+    }
+
+    @Override
+    public void setShieldBlockingDelay(int delay) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack getActiveItem() {
+        return null;
+    }
+
+    @Override
+    public void clearActiveItem() {
+
+    }
+
+    @Override
+    public int getItemUseRemainingTime() {
+        return 0;
+    }
+
+    @Override
+    public int getHandRaisedTime() {
+        return 0;
+    }
+
+    @Override
+    public boolean isHandRaised() {
+        return false;
+    }
+
+    @Override
+    public @NotNull EquipmentSlot getHandRaised() {
+        return null;
+    }
+
+    @Override
+    public boolean isJumping() {
+        return false;
+    }
+
+    @Override
+    public void setJumping(boolean jumping) {
+
+    }
+
+    @Override
+    public void playPickupItemAnimation(@NotNull Item item, int quantity) {
+
+    }
+
+    @Override
+    public float getHurtDirection() {
+        return 0;
+    }
+
+    @Override
+    public void setHurtDirection(float hurtDirection) {
+
+    }
+
     public void damage(double v) {
     }
 
-    public void _INVALID_damage(int i) {
-    }
-
     public void damage(double v, Entity entity) {
-    }
-
-    public void _INVALID_damage(int i, Entity entity) {
     }
 
     public double getHealth() {
@@ -485,10 +687,6 @@ public class TempEntity implements LivingEntity {
     }
 
     public void setHealth(double v) {
-    }
-
-    public int _INVALID_getHealth() {
-        return 0;
     }
 
     @Override
@@ -500,9 +698,6 @@ public class TempEntity implements LivingEntity {
     public void setAbsorptionAmount(double v) {
     }
 
-    public void _INVALID_setHealth(int i) {
-    }
-
     public double getMaxHealth() {
         return 1;
     }
@@ -510,16 +705,10 @@ public class TempEntity implements LivingEntity {
     public void setMaxHealth(double v) {
     }
 
-    public int _INVALID_getMaxHealth() {
-        return 0;
-    }
-
-    public void _INVALID_setMaxHealth(int i) {
-    }
-
     public void resetMaxHealth() {
     }
 
+    @NotNull
     public Location getLocation() {
         return target.getLocation().clone();
     }
@@ -535,11 +724,12 @@ public class TempEntity implements LivingEntity {
         return location;
     }
 
+    @NotNull
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
     }
 
-    public void setVelocity(Vector vector) {
+    public void setVelocity(@NotNull Vector vector) {
     }
 
     public double getHeight() {
@@ -564,6 +754,7 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
+    @NotNull
     public World getWorld() {
         return target.getLocation().getWorld();
     }
@@ -572,26 +763,33 @@ public class TempEntity implements LivingEntity {
     public void setRotation(float yaw, float pitch) {
     }
 
-    public boolean teleport(Location location) {
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount) {
         target = new FixedTarget(location);
         return true;
     }
 
-    public boolean teleport(Location location, PlayerTeleportEvent.TeleportCause teleportCause) {
+    public boolean teleport(@NotNull Location location) {
         target = new FixedTarget(location);
         return true;
     }
 
-    public boolean teleport(Entity entity) {
+    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause) {
+        target = new FixedTarget(location);
+        return true;
+    }
+
+    public boolean teleport(@NotNull Entity entity) {
         target = new EntityTarget(entity);
         return true;
     }
 
-    public boolean teleport(Entity entity, PlayerTeleportEvent.TeleportCause teleportCause) {
+    public boolean teleport(@NotNull Entity entity, @NotNull PlayerTeleportEvent.TeleportCause teleportCause) {
         target = new EntityTarget(entity);
         return true;
     }
 
+    @NotNull
     public List<Entity> getNearbyEntities(double x, double y, double z) {
         return Nearby.getNearby(target.getLocation(), x);
     }
@@ -641,6 +839,16 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean locked) {
+
+    }
+
     public void remove() {
     }
 
@@ -652,10 +860,10 @@ public class TempEntity implements LivingEntity {
         return true;
     }
 
-    public void sendMessage(String s) {
+    public void sendMessage(@NotNull String s) {
     }
 
-    public void sendMessage(String[] strings) {
+    public void sendMessage(@NotNull String[] strings) {
     }
 
     @Override
@@ -666,6 +874,7 @@ public class TempEntity implements LivingEntity {
     public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {
     }
 
+    @NotNull
     public Server getServer() {
         return Bukkit.getServer();
     }
@@ -679,6 +888,7 @@ public class TempEntity implements LivingEntity {
     public void setPersistent(boolean persistent) {
     }
 
+    @NotNull
     public String getName() {
         return "Location";
     }
@@ -687,19 +897,20 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public boolean setPassenger(Entity entity) {
+    public boolean setPassenger(@NotNull Entity entity) {
         return false;
     }
 
+    @NotNull
     public List<Entity> getPassengers() {
         return null;
     }
 
-    public boolean addPassenger(final Entity entity) {
+    public boolean addPassenger(@NotNull final Entity entity) {
         return false;
     }
 
-    public boolean removePassenger(final Entity entity) {
+    public boolean removePassenger(@NotNull final Entity entity) {
         return false;
     }
 
@@ -726,6 +937,7 @@ public class TempEntity implements LivingEntity {
     public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {
     }
 
+    @NotNull
     public UUID getUniqueId() {
         return null;
     }
@@ -743,9 +955,10 @@ public class TempEntity implements LivingEntity {
         return SpawnCategory.MISC;
     }
 
-    public void playEffect(EntityEffect entityEffect) {
+    public void playEffect(@NotNull EntityEffect entityEffect) {
     }
 
+    @NotNull
     public EntityType getType() {
         return EntityType.CHICKEN;
     }
@@ -762,63 +975,68 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public void setMetadata(String s, MetadataValue metadataValue) {
+    public void setMetadata(@NotNull String s, @NotNull MetadataValue metadataValue) {
 
     }
 
-    public List<MetadataValue> getMetadata(String s) {
+    @NotNull
+    public List<MetadataValue> getMetadata(@NotNull String s) {
         return null;
     }
 
-    public boolean hasMetadata(String s) {
+    public boolean hasMetadata(@NotNull String s) {
         return false;
     }
 
-    public void removeMetadata(String s, Plugin plugin) {
+    public void removeMetadata(@NotNull String s, @NotNull Plugin plugin) {
 
     }
 
-    public <T extends Projectile> T launchProjectile(Class<? extends T> aClass) {
+    @NotNull
+    public <T extends Projectile> T launchProjectile(@NotNull Class<? extends T> aClass) {
         return null;
     }
 
-    public <T extends Projectile> T launchProjectile(Class<? extends T> aClass, Vector vector) {
+    @NotNull
+    public <T extends Projectile> T launchProjectile(@NotNull Class<? extends T> aClass, Vector vector) {
         return null;
     }
 
-    public boolean isPermissionSet(String s) {
+    public boolean isPermissionSet(@NotNull String s) {
         return false;
     }
 
-    public boolean isPermissionSet(Permission permission) {
+    public boolean isPermissionSet(@NotNull Permission permission) {
         return false;
     }
 
-    public boolean hasPermission(String s) {
+    public boolean hasPermission(@NotNull String s) {
         return false;
     }
 
-    public boolean hasPermission(Permission permission) {
+    public boolean hasPermission(@NotNull Permission permission) {
         return false;
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
+    @NotNull
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String s, boolean b) {
         return null;
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin) {
+    @NotNull
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         return null;
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String s, boolean b, int i) {
         return null;
     }
 
-    public PermissionAttachment addAttachment(Plugin plugin, int i) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int i) {
         return null;
     }
 
-    public void removeAttachment(PermissionAttachment permissionAttachment) {
+    public void removeAttachment(@NotNull PermissionAttachment permissionAttachment) {
 
     }
 
@@ -826,6 +1044,7 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @NotNull
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return null;
     }
@@ -838,8 +1057,13 @@ public class TempEntity implements LivingEntity {
 
     }
 
-    public AttributeInstance getAttribute(Attribute attribute) {
+    public AttributeInstance getAttribute(@NotNull Attribute attribute) {
         return null;
+    }
+
+    @Override
+    public void registerAttribute(@NotNull Attribute attribute) {
+
     }
 
     @Override
