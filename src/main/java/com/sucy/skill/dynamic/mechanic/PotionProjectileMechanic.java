@@ -83,11 +83,12 @@ public class PotionProjectileMechanic extends MechanicComponent {
 
         Potion    p = new Potion(type, 1);
         ItemStack item;
+        PotionMeta potionMeta = null;
         try {
             item = new ItemStack(Material.valueOf(linger ? "LINGERING_POTION" : "SPLASH_POTION"));
             Field meta = ItemStack.class.getDeclaredField("meta");
             meta.setAccessible(true);
-            PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+            potionMeta = (PotionMeta) item.getItemMeta();
             potionMeta.setDisplayName("lol");
             meta.set(item, potionMeta);
         } catch (Exception ex) {
@@ -97,7 +98,9 @@ public class PotionProjectileMechanic extends MechanicComponent {
 
         // Fire from each target
         for (LivingEntity target : targets) {
-            ThrownPotion thrown = target.launchProjectile(linger ? LingeringPotion.class : ThrownPotion.class);
+            ThrownPotion thrown = target.launchProjectile(ThrownPotion.class);
+            if (potionMeta!=null)
+                thrown.setPotionMeta(potionMeta);
             SkillAPI.setMeta(thrown, SKILL_LEVEL, level);
             SkillAPI.setMeta(thrown, SKILL_CASTER, caster);
             SkillAPI.setMeta(thrown, POTION_PROJECTILE, this);
