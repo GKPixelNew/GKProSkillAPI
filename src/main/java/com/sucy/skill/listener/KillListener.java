@@ -35,8 +35,6 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
-import com.sucy.skill.util.Version;
-import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -45,45 +43,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 /**
  * Tracks who kills what entities and awards experience accordingly
  */
 public class KillListener extends SkillAPIListener {
-    private static final String S_TYPE  = "sType";
-    private static final int    SPAWNER = 0, EGG = 1;
-
-    private Method handle;
-    private Field  killer;
-    private Field  damageTime;
-
-    public KillListener() {
-        try {
-            Class<?> living = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
-                    : Reflex.getNMSClass("EntityLiving");
-            handle = Reflex.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
-
-            if (Version.MINOR_VERSION == 17)
-                killer = living.getDeclaredField("bc");
-            else if (Version.MINOR_VERSION >= 18)
-                killer = living.getDeclaredField("bd");
-            else
-                killer = living.getDeclaredField("killer");
-
-            if (Version.MINOR_VERSION == 17)
-                damageTime = living.getDeclaredField("bd");
-            else if (Version.MINOR_VERSION >= 18)
-                damageTime = living.getDeclaredField("be");
-            else
-                damageTime = living.getDeclaredField("lastDamageByPlayerTime");
-
-            damageTime.setAccessible(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    private static final String S_TYPE = "sType";
+    private static final int SPAWNER = 0, EGG = 1;
 
     public static void giveExp(LivingEntity entity, Player killer, int exp) {
 
@@ -121,7 +86,7 @@ public class KillListener extends SkillAPIListener {
 
                 // Give experience based on config when not using orbs
             else {
-                String name  = ListenerUtil.getName(entity);
+                String name = ListenerUtil.getName(entity);
                 double yield = SkillAPI.getSettings().getYield(name);
                 player.giveExp(yield, ExpSource.MOB);
             }
@@ -162,8 +127,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target)
+            target.setKiller(damager);
     }
 
     /**
@@ -173,8 +138,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target)
+            target.setKiller(damager);
     }
 
     /**
@@ -184,16 +149,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
-    }
-
-    private void setKiller(LivingEntity entity, Player player) {
-        try {
-            Object hit    = handle.invoke(entity);
-            Object source = handle.invoke(player);
-            killer.set(hit, source);
-            damageTime.set(hit, 100);
-        } catch (Exception ex) { /* */ }
+        if (event.getDamager() instanceof Player damager && event.getTarget() instanceof Player target) {
+            target.setKiller(damager);
+        }
     }
 }

@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.30")
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT")
