@@ -51,14 +51,26 @@ import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>The management class for SkillAPI's config.yml settings.</p>
@@ -67,491 +79,557 @@ public class Settings {
 
     private static final String GUI_BASE = "GUI.";
     private static final String
-                                GUI_OLD  = GUI_BASE + "old-health-bar",
-            GUI_DOWNSCALE                = GUI_BASE + "downscale-under",
-            GUI_FORCE                    = GUI_BASE + "force-scaling",
-            GUI_LVLBAR                   = GUI_BASE + "level-bar",
-            GUI_FOOD                     = GUI_BASE + "food-bar",
-            GUI_ACTION                   = GUI_BASE + "use-action-bar",
-            GUI_TEXT                     = GUI_BASE + "action-bar-text",
-            GUI_BOARD                    = GUI_BASE + "scoreboard-enabled",
-            GUI_NAME                     = GUI_BASE + "show-class-name",
-            GUI_LEVEL                    = GUI_BASE + "show-class-level",
-            GUI_BINDS                    = GUI_BASE + "show-binds",
-            GUI_BIND_TEXT                = GUI_BASE + "show-bind-text",
-            GUI_LVLTXT                   = GUI_BASE + "class-level-text",
-            GUI_TITLE                    = GUI_BASE + "title-enabled",
-            GUI_DUR                      = GUI_BASE + "title-duration",
-            GUI_FADEI                    = GUI_BASE + "title-fade-in",
-            GUI_FADEO                    = GUI_BASE + "title-fade-out",
-            GUI_LIST                     = GUI_BASE + "title-messages",
+            GUI_OLD = GUI_BASE + "old-health-bar",
+            GUI_DOWNSCALE = GUI_BASE + "downscale-under",
+            GUI_FORCE = GUI_BASE + "force-scaling",
+            GUI_LVLBAR = GUI_BASE + "level-bar",
+            GUI_FOOD = GUI_BASE + "food-bar",
+            GUI_ACTION = GUI_BASE + "use-action-bar",
+            GUI_TEXT = GUI_BASE + "action-bar-text",
+            GUI_BOARD = GUI_BASE + "scoreboard-enabled",
+            GUI_NAME = GUI_BASE + "show-class-name",
+            GUI_LEVEL = GUI_BASE + "show-class-level",
+            GUI_BINDS = GUI_BASE + "show-binds",
+            GUI_BIND_TEXT = GUI_BASE + "show-bind-text",
+            GUI_LVLTXT = GUI_BASE + "class-level-text",
+            GUI_TITLE = GUI_BASE + "title-enabled",
+            GUI_DUR = GUI_BASE + "title-duration",
+            GUI_FADEI = GUI_BASE + "title-fade-in",
+            GUI_FADEO = GUI_BASE + "title-fade-out",
+            GUI_LIST = GUI_BASE + "title-messages",
 
-    DEFAULT_YIELD                  = "default",
-            ACCOUNT_BASE           = "Accounts.",
-            ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
-            ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
-            ACCOUNT_MAX            = ACCOUNT_BASE + "max-accounts",
-            ACCOUNT_PERM           = ACCOUNT_BASE + "perm-accounts",
-            TARGET_BASE            = "Targeting.",
-            TARGET_HITBOX          = TARGET_BASE + "hitbox",
-            TARGET_MONSTER         = TARGET_BASE + "monsters-enemy",
-            TARGET_PASSIVE         = TARGET_BASE + "passive-ally",
-            TARGET_PLAYER          = TARGET_BASE + "player-ally",
-            TARGET_PARTIES         = TARGET_BASE + "parties-ally",
-            TARGET_NPC             = TARGET_BASE + "affect-npcs",
-            TARGET_STANDS          = TARGET_BASE + "affect-armor-stands",
-            SAVE_BASE              = "Saving.",
-            SAVE_AUTO              = SAVE_BASE + "auto-save",
-            SAVE_MINS              = SAVE_BASE + "minutes",
-            SAVE_SQL               = SAVE_BASE + "sql-database",
-            SAVE_SQLD              = SAVE_BASE + "sql-details",
-            CLASS_BASE             = "Classes.",
-            CLASS_MODIFY           = CLASS_BASE + "modify-health",
-            CLASS_HP               = CLASS_BASE + "classless-hp",
-            CLASS_SHOW             = CLASS_BASE + "show-auto-skills",
-            CLASS_ATTRIB           = CLASS_BASE + "attributes-enabled",
-            CLASS_REFUND           = CLASS_BASE + "attributes-downgrade",
-            CLASS_REFUND_PRICE     = CLASS_BASE + "attributes-downgrade-price",
-            CLASS_LEVEL            = CLASS_BASE + "level-up-skill",
-            MANA_BASE              = "Mana.",
-            MANA_ENABLED           = MANA_BASE + "enabled",
-            MANA_FREQ              = MANA_BASE + "freq",
-            SKILL_BASE             = "Skills.",
-            SKILL_DOWNGRADE        = SKILL_BASE + "allow-downgrade",
-            SKILL_MESSAGE          = SKILL_BASE + "show-messages",
-            SKILL_RADIUS           = SKILL_BASE + "message-radius",
-            SKILL_BLOCKS           = SKILL_BASE + "block-filter",
-            SKILL_KNOCKBACK        = SKILL_BASE + "knockback-no-damage",
+    DEFAULT_YIELD = "default",
+            ACCOUNT_BASE = "Accounts.",
+            ACCOUNT_MAIN = ACCOUNT_BASE + "main-class-group",
+            ACCOUNT_EACH = ACCOUNT_BASE + "one-per-class",
+            ACCOUNT_MAX = ACCOUNT_BASE + "max-accounts",
+            ACCOUNT_PERM = ACCOUNT_BASE + "perm-accounts",
+            TARGET_BASE = "Targeting.",
+            TARGET_HITBOX = TARGET_BASE + "hitbox",
+            TARGET_MONSTER = TARGET_BASE + "monsters-enemy",
+            TARGET_PASSIVE = TARGET_BASE + "passive-ally",
+            TARGET_PLAYER = TARGET_BASE + "player-ally",
+            TARGET_PARTIES = TARGET_BASE + "parties-ally",
+            TARGET_NPC = TARGET_BASE + "affect-npcs",
+            TARGET_STANDS = TARGET_BASE + "affect-armor-stands",
+            SAVE_BASE = "Saving.",
+            SAVE_AUTO = SAVE_BASE + "auto-save",
+            SAVE_MINS = SAVE_BASE + "minutes",
+            SAVE_SQL = SAVE_BASE + "sql-database",
+            SAVE_SQLD = SAVE_BASE + "sql-details",
+            CLASS_BASE = "Classes.",
+            CLASS_MODIFY = CLASS_BASE + "modify-health",
+            CLASS_HP = CLASS_BASE + "classless-hp",
+            CLASS_SHOW = CLASS_BASE + "show-auto-skills",
+            CLASS_ATTRIB = CLASS_BASE + "attributes-enabled",
+            CLASS_REFUND = CLASS_BASE + "attributes-downgrade",
+            CLASS_REFUND_PRICE = CLASS_BASE + "attributes-downgrade-price",
+            CLASS_LEVEL = CLASS_BASE + "level-up-skill",
+            MANA_BASE = "Mana.",
+            MANA_ENABLED = MANA_BASE + "enabled",
+            MANA_FREQ = MANA_BASE + "freq",
+            SKILL_BASE = "Skills.",
+            SKILL_DOWNGRADE = SKILL_BASE + "allow-downgrade",
+            SKILL_MESSAGE = SKILL_BASE + "show-messages",
+            SKILL_RADIUS = SKILL_BASE + "message-radius",
+            SKILL_BLOCKS = SKILL_BASE + "block-filter",
+            SKILL_KNOCKBACK = SKILL_BASE + "knockback-no-damage",
             SKILL_REFUND_ON_CHANGE = SKILL_BASE + "refund-on-change",
-            ITEM_BASE              = "Items.",
-            ITEM_LORE              = ITEM_BASE + "lore-requirements",
-            ITEM_DROP              = ITEM_BASE + "drop-weapon",
-            ITEM_SKILLS            = ITEM_BASE + "skill-requirements",
-            ITEM_ATTRIBS           = ITEM_BASE + "lore-attributes",
-            ITEM_CLASS             = ITEM_BASE + "lore-class-text",
-            ITEM_SKILL             = ITEM_BASE + "lore-skill-text",
-            ITEM_LEVEL             = ITEM_BASE + "lore-level-text",
-            ITEM_EXCLUDE           = ITEM_BASE + "lore-exclude-text",
-            ITEM_ATTR              = ITEM_BASE + "lore-attribute-text",
-            ITEM_STATS             = ITEM_BASE + "attribute-text",
-            ITEM_SLOTS             = ITEM_BASE + "slots",
-            CAST_BASE              = "Casting.",
-            CAST_ENABLED           = CAST_BASE + "enabled",
-            CAST_BARS              = CAST_BASE + "bars",
-            CAST_COMBAT            = CAST_BASE + "combat",
-            CAST_INDICATOR         = CAST_BASE + "cast-indicator",
-            CAST_SLOT              = CAST_BASE + "slot",
-            CAST_ITEM              = CAST_BASE + "item",
-            CAST_COOLDOWN          = CAST_BASE + "cooldown",
-            CAST_HOVER             = CAST_BASE + "hover-item",
-            CAST_INSTANT           = CAST_BASE + "instant-item",
-            COMBO_BASE             = "Click Combos.",
-            COMBO_ENABLED          = COMBO_BASE + "enabled",
-            COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
-            COMBO_CLICK            = COMBO_BASE + "use-click-",
-            COMBO_SIZE             = COMBO_BASE + "combo-size",
-            COMBO_TIME             = COMBO_BASE + "click-time",
-            COMBO_AUTO             = COMBO_BASE + "auto-assign",
-            EXP_BASE               = "Experience.",
-            WORLD_BASE             = "Worlds.",
-            WORLD_ENABLE           = WORLD_BASE + "enable",
-            WORLD_TYPE             = WORLD_BASE + "use-as-enabling",
-            WORLD_LIST             = WORLD_BASE + "worlds",
-            WG_SKILLS              = "disable-skills",
-            WG_EXP                 = "disable-exp";
+            ITEM_BASE = "Items.",
+            ITEM_LORE = ITEM_BASE + "lore-requirements",
+            ITEM_DROP = ITEM_BASE + "drop-weapon",
+            ITEM_SKILLS = ITEM_BASE + "skill-requirements",
+            ITEM_ATTRIBS = ITEM_BASE + "lore-attributes",
+            ITEM_CLASS = ITEM_BASE + "lore-class-text",
+            ITEM_SKILL = ITEM_BASE + "lore-skill-text",
+            ITEM_LEVEL = ITEM_BASE + "lore-level-text",
+            ITEM_EXCLUDE = ITEM_BASE + "lore-exclude-text",
+            ITEM_ATTR = ITEM_BASE + "lore-attribute-text",
+            ITEM_STATS = ITEM_BASE + "attribute-text",
+            ITEM_SLOTS = ITEM_BASE + "slots",
+            CAST_BASE = "Casting.",
+            CAST_ENABLED = CAST_BASE + "enabled",
+            CAST_BARS = CAST_BASE + "bars",
+            CAST_COMBAT = CAST_BASE + "combat",
+            CAST_INDICATOR = CAST_BASE + "cast-indicator",
+            CAST_SLOT = CAST_BASE + "slot",
+            CAST_ITEM = CAST_BASE + "item",
+            CAST_COOLDOWN = CAST_BASE + "cooldown",
+            CAST_HOVER = CAST_BASE + "hover-item",
+            CAST_INSTANT = CAST_BASE + "instant-item",
+            COMBO_BASE = "Click Combos.",
+            COMBO_ENABLED = COMBO_BASE + "enabled",
+            COMBO_CUSTOM = COMBO_BASE + "allow-custom",
+            COMBO_CLICK = COMBO_BASE + "use-click-",
+            COMBO_SIZE = COMBO_BASE + "combo-size",
+            COMBO_TIME = COMBO_BASE + "click-time",
+            COMBO_AUTO = COMBO_BASE + "auto-assign",
+            EXP_BASE = "Experience.",
+            WORLD_BASE = "Worlds.",
+            WORLD_ENABLE = WORLD_BASE + "enable",
+            WORLD_TYPE = WORLD_BASE + "use-as-enabling",
+            WORLD_LIST = WORLD_BASE + "worlds",
+            WG_SKILLS = "disable-skills",
+            WG_EXP = "disable-exp";
 
-    private final         HashMap<String, Double>        yields           = new HashMap<>();
-    private final         HashMap<String, GroupSettings> groups           = new HashMap<>();
-    private final         SkillAPI                       plugin;
-    private final         DataSection                    config;
-    private final         HashMap<String, Integer>       permAccounts     = new HashMap<>();
-    private final         ArrayList<String>              monsterWorlds    = new ArrayList<>();
-    private final         ArrayList<String>              passiveWorlds    = new ArrayList<>();
-    private final         ArrayList<String>              playerWorlds     = new ArrayList<>();
+    private final HashMap<String, Double> yields = new HashMap<>();
+    private final HashMap<String, GroupSettings> groups = new HashMap<>();
+    private final SkillAPI plugin;
+    private final DataSection config;
+    private final HashMap<String, Integer> permAccounts = new HashMap<>();
+    private final ArrayList<String> monsterWorlds = new ArrayList<>();
+    private final ArrayList<String> passiveWorlds = new ArrayList<>();
+    private final ArrayList<String> playerWorlds = new ArrayList<>();
     /**
      * Retrieves the default skill bar layout
      *
      * @return default skill bar layout
      */
-    @Getter private final boolean[]                      defaultBarLayout = new boolean[9];
+    @Getter
+    private final boolean[] defaultBarLayout = new boolean[9];
     /**
      * Retrieves the list of locked skill bar slots
      *
      * @return list of locked skill bar slots
      */
-    @Getter private final boolean[]                      lockedSlots      = new boolean[9];
+    @Getter
+    private final boolean[] lockedSlots = new boolean[9];
     @Getter
     @Accessors(fluent = true)
-    private               boolean                        useBoundingBoxes;
+    private boolean useBoundingBoxes;
 
-    private         Map<String, Map<String, Double>> breakYields;
-    private         Map<String, Map<String, Double>> placeYields;
-    private         Map<String, Map<String, Double>> craftYields;
-    @Getter private boolean                          trackBreak, yieldsEnabled;
+    private Map<String, Map<String, Double>> breakYields;
+    private Map<String, Map<String, Double>> placeYields;
+    private Map<String, Map<String, Double>> craftYields;
+    @Getter
+    private boolean trackBreak, yieldsEnabled;
     /**
      * Retrieves whether accounts should be initialized with
      * one file per class.
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             onePerClass;
+    @Getter
+    private boolean onePerClass;
     /**
      * Retrieves the main class group for displaying prefixes
      * or showing account information
      *
      * @return main class group
      */
-    @Getter private String              mainGroup;
+    @Getter
+    private String mainGroup;
     /**
      * Retrieves the max accounts allowed for most players
      *
      * @return max accounts allowed for most players
      */
-    @Getter private int                 maxAccounts;
-    @Getter private         float               hitbox;
-    private         boolean             monsterEnemy;
-    private         boolean             passiveAlly;
-    private         boolean             playerAlly;
-    private         boolean             partiesAlly;
-    private         boolean             affectNpcs;
-    private         boolean             affectArmorStands;
-    private         CombatProtection    combatProtection = new DefaultCombatProtection();
-    private         boolean             auto;
-    private         boolean             useSql;
-    private         int                 minutes;
-    private         int                 sqlDelay;
+    @Getter
+    private int maxAccounts;
+    @Getter
+    private float hitbox;
+    private boolean monsterEnemy;
+    private boolean passiveAlly;
+    private boolean playerAlly;
+    private boolean partiesAlly;
+    private boolean affectNpcs;
+    private boolean affectArmorStands;
+    private CombatProtection combatProtection = new DefaultCombatProtection();
+    private boolean auto;
+    private boolean useSql;
+    private int minutes;
+    private int sqlDelay;
     /**
      * Retrieves the host IP for the database
      *
      * @return host IP for SQL database
      */
-    @Getter private String              sqlHost;
+    @Getter
+    private String sqlHost;
     /**
      * Retrieves the host port for the database
      *
      * @return host port for SQL database
      */
-    @Getter private String              sqlPort;
+    @Getter
+    private String sqlPort;
     /**
      * Retrieves the name of the SQL database
      *
      * @return SQL database name
      */
-    @Getter private String              sqlDatabase;
-    private         String              sqlUser;
-    private         String              sqlPass;
-    private         boolean             modifyHealth;
-    private         int                 defaultHealth;
-    private         boolean             showAutoSkills;
-    private         boolean             attributesEnabled;
+    @Getter
+    private String sqlDatabase;
+    private String sqlUser;
+    private String sqlPass;
+    private boolean modifyHealth;
+    private int defaultHealth;
+    private boolean showAutoSkills;
+    private boolean attributesEnabled;
     /**
      * Checks whether attribute points can be refunded
      *
      * @return if true, can refund, false otherwise
      */
-    @Getter private boolean             attributesDowngrade;
-    @Getter private int                 attributesDowngradePrice;
-    private         String              levelUpSkill;
+    @Getter
+    private boolean attributesDowngrade;
+    @Getter
+    private int attributesDowngradePrice;
+    private String levelUpSkill;
     /**
      * Checks whether mana is enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             manaEnabled;
+    @Getter
+    private boolean manaEnabled;
     /**
      * Retrieves the frequency of mana gain
      *
      * @return the frequency of mana gain
      */
-    @Getter private int                 gainFreq;
+    @Getter
+    private int gainFreq;
     /**
      * Retrieves the list of filtered blocks
      *
      * @return list of blocks
      */
-    @Getter private ArrayList<Material> filteredBlocks;
+    @Getter
+    private ArrayList<Material> filteredBlocks;
     /**
      * Checks whether downgrades are allowed
      *
      * @return true if allowed, false otherwise
      */
-    @Getter private boolean             allowDowngrade;
+    @Getter
+    private boolean allowDowngrade;
     /**
      * Checks whether skill messages are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             showSkillMessages;
+    @Getter
+    private boolean showSkillMessages;
     /**
      * @return whether knockback should be applied when dealing 0 damage
      */
-    @Getter private boolean             knockback;
+    @Getter
+    private boolean knockback;
     /**
      * Gets the radius in which skill messages are sent out
      *
      * @return skill message radius
      */
-    @Getter private int                 messageRadius;
-    private         boolean             skillModelData;
+    @Getter
+    private int messageRadius;
+    private boolean skillModelData;
     /**
      * Checks whether lore requirements are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             checkLore;
+    @Getter
+    private boolean checkLore;
     /**
      * @return true if should check for attribute bonuses
      */
-    @Getter private boolean             checkAttributes;
+    @Getter
+    private boolean checkAttributes;
     /**
      * @return true if should check for skill requirements
      */
-    @Getter private boolean             checkSkills;
+    @Getter
+    private boolean checkSkills;
     /**
      * @return checks if weapons are dropped when hovered
      */
-    @Getter private boolean             dropWeapon;
+    @Getter
+    private boolean dropWeapon;
     /**
      * Retrieves the text used for class requirements on items
      *
      * @return lore text for class requirements
      */
-    @Getter private String              loreClassText;
+    @Getter
+    private String loreClassText;
     /**
      * Retrieves the text used for level requirements on items
      *
      * @return lore text for level requirements
      */
-    @Getter private String              loreLevelText;
+    @Getter
+    private String loreLevelText;
     /**
      * Retrieves the text used for excluded classes on items
      *
      * @return lore text for excluded classes
      */
-    @Getter private String              loreExcludeText;
+    @Getter
+    private String loreExcludeText;
     /**
      * @return slots checked for requirements and attributes
      */
-    @Getter private int[]               slots;
-    private         String              skillPre, skillPost;
+    @Getter
+    private int[] slots;
+    private String skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
-    private         List<String> titleMessages;
+    private List<String> titleMessages;
     /**
      * Checks whether old health bars (fixed 10 hearts) are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      oldHealth;
+    @Getter
+    private boolean oldHealth;
     /**
      * Whether health less than 10 hearts should be scaled down instead of filling the full 10 hearts.
      *
      * @return true if hearts should be allowed to be less than 10
      */
-    @Getter private boolean      downScaling;
+    @Getter
+    private boolean downScaling;
     /**
      * @return true if forces the SkillAPI health scaling, false otherwise
      */
-    @Getter private boolean      forceScaling;
+    @Getter
+    private boolean forceScaling;
     /**
      * Gets the setting for using the level bar
      *
      * @return level bar setting
      */
-    @Getter private String       levelBar;
+    @Getter
+    private String levelBar;
     /**
      * Gets the setting for using the food bar
      *
      * @return food bar setting
      */
-    @Getter private String       foodBar;
+    @Getter
+    private String foodBar;
     /**
      * @return boolean whether classes should be refunded their skill points on changing.
      */
-    @Getter private boolean      refundOnClassChange;
+    @Getter
+    private boolean refundOnClassChange;
     /**
      * @return text shown alongside the class level
      */
-    @Getter private String       levelText;
+    @Getter
+    private String levelText;
     /**
      * Checks whether the action bar is being used
      *
      * @return true if used, false otherwise
      */
-    @Getter private boolean      useActionBar;
+    @Getter
+    private boolean useActionBar;
     /**
      * Gets the text to display on the action bar
      *
      * @return action bar text
      */
-    @Getter private String       actionText;
+    @Getter
+    private String actionText;
     /**
      * Checks whether the stats scoreboard is to be shown
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showScoreboard;
+    @Getter
+    private boolean showScoreboard;
     /**
      * Checks whether a player's class name is to be
      * shown next to their name
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showClassName;
+    @Getter
+    private boolean showClassName;
     /**
      * Checks whether a player's class level is to be
      * shown below their name
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showClassLevel;
-    @Getter private boolean      showBinds;
-    @Getter private String       bindText;
-    private         boolean      useTitle;
+    @Getter
+    private boolean showClassLevel;
+    @Getter
+    private boolean showBinds;
+    @Getter
+    private String bindText;
+    private boolean useTitle;
     /**
      * @return duration of the title display in ticks
      */
-    @Getter private int          titleDuration;
+    @Getter
+    private int titleDuration;
     /**
      * @return fade in time of the title display in ticks
      */
-    @Getter private int          titleFadeIn;
+    @Getter
+    private int titleFadeIn;
     /**
      * @return fade out time of the title display in ticks
      */
-    @Getter private int          titleFadeOut;
+    @Getter
+    private int titleFadeOut;
     /**
      * @return true if default casting is enabled
      */
-    @Getter private boolean      castEnabled;
-    private         boolean      castBars;
-    private         boolean      combatEnabled;
+    @Getter
+    private boolean castEnabled;
+    private boolean castBars;
+    private boolean combatEnabled;
     /**
      * @return slot the cast item is stored in
      */
-    @Getter private int          castSlot;
+    @Getter
+    private int castSlot;
     /**
      * @return global cooldown for casting
      */
-    @Getter private long         castCooldown;
+    @Getter
+    private long castCooldown;
     /**
      * @return cast item to use in the slot
      */
-    @Getter private ItemStack    castItem;
-    @Getter private ItemStack    hoverItem;
-    @Getter private ItemStack    instantItem;
+    @Getter
+    private ItemStack castItem;
+    @Getter
+    private ItemStack hoverItem;
+    @Getter
+    private ItemStack instantItem;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
-    @Getter private boolean[]    enabledClicks;
+    @Getter
+    private boolean[] enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      combosEnabled;
+    @Getter
+    private boolean combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
      * @return true if can customize them, false otherwise
      */
-    @Getter private boolean      customCombosAllowed;
+    @Getter
+    private boolean customCombosAllowed;
     @Getter
     @Accessors(fluent = true)
-    private         boolean      shouldAutoAssignCombos;
+    private boolean shouldAutoAssignCombos;
     /**
      * Retrieves the max length of combos to be used
      *
      * @return max length of combos to be used
      */
-    @Getter private int          comboSize;
+    @Getter
+    private int comboSize;
     /**
      * Retrieves the amount of seconds allowed between clicks before the combo resets
      *
      * @return number of seconds before a click combo resets
      */
-    @Getter private int          clickTime;
-    private         ExpFormula   expFormula;
-    private         Formula      expCustom;
-    private         boolean      useCustomExp;
+    @Getter
+    private int clickTime;
+    private ExpFormula expFormula;
+    private Formula expCustom;
+    private boolean useCustomExp;
     /**
      * Checks whether experience is to be gained through
      * vanilla experience orbs
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      useOrbs;
+    @Getter
+    private boolean useOrbs;
     /**
      * Checks whether experience from mobs spawned
      * via a mob spawner is to be blocked.
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockSpawner;
+    @Getter
+    private boolean blockSpawner;
     /**
      * Checks whether experience from mobs spawned
      * via eggs are to be blocked
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockEgg;
+    @Getter
+    private boolean blockEgg;
     /**
      * Checks whether players in creative mode
      * are blocked from receiving experience.
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockCreative;
+    @Getter
+    private boolean blockCreative;
     /**
      * Checks whether messages should
      * be displayed when a player gains experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showExpMessages;
+    @Getter
+    private boolean showExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player gains a level
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLevelMessages;
+    @Getter
+    private boolean showLevelMessages;
     /**
      * Checks whether messages should be displayed
      * when a loses experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLossExpMessages;
+    @Getter
+    private boolean showLossExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player loses a level
      */
-    @Getter private boolean      showLossLevelMessages;
-    private         Set<String>  expLostBlacklist;
+    @Getter
+    private boolean showLossLevelMessages;
+    private Set<String> expLostBlacklist;
     /**
      * Checks whether the skill bar is enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      skillBarEnabled;
+    @Getter
+    private boolean skillBarEnabled;
     /**
      * Checks whether the skill bar is to display cooldowns
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      skillBarCooldowns;
+    @Getter
+    private boolean skillBarCooldowns;
     /**
      * Retrieves the indicator for an unassigned skill slot
      *
      * @return unassigned indicator
      */
-    @Getter private ItemStack    unassigned;
-    private         List<String> worlds;
-    private         boolean      worldEnabled;
-    private         boolean      worldEnableList;
-    private         Set<String>  skillDisabledRegions;
-    private         Set<String>  expDisabledRegions;
+    @Getter
+    private ItemStack unassigned;
+    private List<String> worlds;
+    private boolean worldEnabled;
+    private boolean worldEnableList;
+    private Set<String> skillDisabledRegions;
+    private Set<String> expDisabledRegions;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -618,8 +696,8 @@ public class Settings {
     private Map<String, Map<String, Double>> loadYields(DataSection config) {
         Map<String, Map<String, Double>> yields = new HashMap<String, Map<String, Double>>();
         for (String className : config.keys()) {
-            HashMap<String, Double> map         = new HashMap<String, Double>();
-            DataSection             classYields = config.getSection(className);
+            HashMap<String, Double> map = new HashMap<String, Double>();
+            DataSection classYields = config.getSection(className);
             for (String type : classYields.keys()) {
                 map.put(type.toUpperCase().replace(" ", "_"), classYields.getDouble(type));
             }
@@ -650,8 +728,8 @@ public class Settings {
     }
 
     public void loadGroupSettings() {
-        CommentedConfig file   = new CommentedConfig(plugin, "groups");
-        DataSection     config = file.getConfig();
+        CommentedConfig file = new CommentedConfig(plugin, "groups");
+        DataSection config = file.getConfig();
         groups.clear();
 
         for (String key : config.keys()) {
@@ -706,8 +784,9 @@ public class Settings {
             String permString = permission.getPermission();
             if (permString.startsWith(Permissions.MAX_ACCOUNTS)) {
                 try {
-                    max = Math.max(max, Integer.parseInt(permString.substring(Permissions.MAX_ACCOUNTS.length()+1)));
-                } catch (NumberFormatException ignored) { }
+                    max = Math.max(max, Integer.parseInt(permString.substring(Permissions.MAX_ACCOUNTS.length() + 1)));
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -751,16 +830,22 @@ public class Settings {
             return false;
         if (attacker instanceof final Player player) {
             if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {return false;}
+                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
             } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {return true;}
+                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {
+                    return true;
+                }
             } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {return false;}
+                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
 
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
-                    final Party   p1      = parties.getJoinedParty(player);
-                    final Party   p2      = parties.getJoinedParty((Player) target);
+                    final Party p1 = parties.getJoinedParty(player);
+                    final Party p2 = parties.getJoinedParty((Player) target);
                     return p1 == null || p1 != p2;
                 }
                 return combatProtection.canAttack(player, (Player) target);
@@ -771,14 +856,19 @@ public class Settings {
                 return (tameable.getOwner() != target)
                         && canAttack((LivingEntity) tameable.getOwner(), target);
             }
-        } else {return !(target instanceof Monster);}
+        } else {
+            return !(target instanceof Monster);
+        }
 
         return combatProtection.canAttack(attacker, target);
     }
 
     public boolean isTeammate(LivingEntity a, LivingEntity b) {
-        if (a instanceof Player playerA && b instanceof Player playerB) {
+        if (a instanceof OfflinePlayer playerA && b instanceof OfflinePlayer playerB) {
             var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            if (playerA.getName() == null || playerB.getName() == null) {
+                return false;
+            }
             var teamA = scoreboard.getEntryTeam(playerA.getName());
             var teamB = scoreboard.getEntryTeam(playerB.getName());
             return Objects.equals(teamA, teamB);
@@ -825,17 +915,23 @@ public class Settings {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
             monsterEnemy = false;
-        } else {monsterEnemy = config.getBoolean(TARGET_MONSTER);}
+        } else {
+            monsterEnemy = config.getBoolean(TARGET_MONSTER);
+        }
 
         if (config.isList(TARGET_PASSIVE)) {
             passiveWorlds.addAll(config.getList(TARGET_PASSIVE));
             passiveAlly = false;
-        } else {passiveAlly = config.getBoolean(TARGET_PASSIVE);}
+        } else {
+            passiveAlly = config.getBoolean(TARGET_PASSIVE);
+        }
 
         if (config.isList(TARGET_PLAYER)) {
             playerWorlds.addAll(config.getList(TARGET_PLAYER));
             playerAlly = false;
-        } else {playerAlly = config.getBoolean(TARGET_PLAYER);}
+        } else {
+            playerAlly = config.getBoolean(TARGET_PLAYER);
+        }
 
         partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
@@ -1043,8 +1139,8 @@ public class Settings {
         loreLevelText = config.getString(ITEM_LEVEL).toLowerCase();
         loreExcludeText = config.getString(ITEM_EXCLUDE).toLowerCase();
 
-        String temp  = config.getString(ITEM_SKILL).toLowerCase();
-        int    index = temp.indexOf('{');
+        String temp = config.getString(ITEM_SKILL).toLowerCase();
+        int index = temp.indexOf('{');
         skillPre = temp.substring(0, index);
         skillPost = temp.substring(index + 7);
 
@@ -1059,9 +1155,13 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {slotList.remove("40");}
+        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            slotList.remove("40");
+        }
         slots = new int[slotList.size()];
-        for (int i = 0; i < slots.length; i++) {slots[i] = NumberParser.parseInt(slotList.get(i));}
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = NumberParser.parseInt(slotList.get(i));
+        }
     }
 
     /**
@@ -1191,9 +1291,9 @@ public class Settings {
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
         DataSection formula = config.getSection(EXP_BASE + "formula");
-        int         x       = formula.getInt("x");
-        int         y       = formula.getInt("y");
-        int         z       = formula.getInt("z");
+        int x = formula.getInt("x");
+        int y = formula.getInt("y");
+        int z = formula.getInt("z");
         expFormula = new ExpFormula(x, y, z);
 
         expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
@@ -1212,28 +1312,34 @@ public class Settings {
         skillBarCooldowns = bar.getBoolean("show-cooldown", true);
 
         DataSection icon = bar.getSection("empty-icon");
-        Material    mat  = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
-        if (mat == null) {mat = Material.PUMPKIN_SEEDS;}
+        Material mat = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
+        if (mat == null) {
+            mat = Material.PUMPKIN_SEEDS;
+        }
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (data != 0) {meta.setCustomModelData(data);}
+        if (data != 0) {
+            meta.setCustomModelData(data);
+        }
 
         if (icon.isList("text")) {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
-        } else {meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));}
+        } else {
+            meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
+        }
 
         if (meta instanceof Damageable) {
             ((Damageable) meta).setDamage(icon.getInt("durability", 0));
         }
         unassigned.setItemMeta(meta);
 
-        DataSection layout     = bar.getSection("layout");
-        int         skillCount = 0;
+        DataSection layout = bar.getSection("layout");
+        int skillCount = 0;
         for (int i = 0; i < 9; i++) {
             DataSection slot = layout.getSection((i + 1) + "");
             defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);

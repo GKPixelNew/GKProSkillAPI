@@ -17,10 +17,8 @@ public interface CombatProtection {
         if (attacker == target) {
             return false;
         } else {
-            if (target instanceof Tameable) {
-                Tameable entity = (Tameable) target;
-                if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer) {
-                    OfflinePlayer owner = (OfflinePlayer) entity.getOwner();
+            if (target instanceof Tameable entity) {
+                if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer owner) {
                     if (owner.isOnline()) {
                         return canAttack(attacker, owner.getPlayer(), false);
                     }

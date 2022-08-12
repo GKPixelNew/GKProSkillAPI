@@ -161,10 +161,10 @@ public class StatusListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || !(event.getEntity() instanceof LivingEntity))
+                || !(event.getEntity() instanceof LivingEntity livingEntity))
             return;
 
-        checkAbsorbAndInvincible((LivingEntity) event.getEntity(), event, event.getDamage());
+        checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
     }
 
     /**
@@ -172,6 +172,7 @@ public class StatusListener extends SkillAPIListener {
      *
      * @param event event details
      */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onTrueDamage(TrueDamageEvent event) {
         checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
