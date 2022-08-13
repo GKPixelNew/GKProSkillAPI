@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.log.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -37,9 +38,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Mechanic that changes blocks for a duration before
@@ -50,16 +54,19 @@ public class BlockMechanic extends MechanicComponent {
 
     private static final String SHAPE = "shape";
     private static final String TYPE = "type";
+    private static final String RANDOMIZE = "randomize";
     private static final String RADIUS = "radius";
     private static final String WIDTH = "width";
     private static final String HEIGHT = "height";
     private static final String DEPTH = "depth";
     private static final String BLOCK = "block";
+    private static final String BLOCKS = "blocks";
     private static final String SECONDS = "seconds";
     private static final String FORWARD = "forward";
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
     private static final String FILL = "fill";
+    private static final Random random = new Random();
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
     private static final HashMap<Location, BlockState> original = new HashMap<>();
@@ -106,12 +113,24 @@ public class BlockMechanic extends MechanicComponent {
         if (targets.size() == 0) {
             return false;
         }
+        boolean randomize = settings.getBool(RANDOMIZE, false);
 
-        Material block = Material.ICE;
-        try {
-            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_'));
-        } catch (Exception ex) {
-            // Use default
+        List<Material> block = new LinkedList<>();
+        if (randomize) {
+            List<String> blocks = settings.getStringList(BLOCKS);
+            for (String b : blocks) {
+                try {
+                    block.add(Material.valueOf(b.toUpperCase().replace(' ', '_')));
+                } catch (Exception ex) {
+                    Logger.invalid("Invalid block type: " + settings.getString(BLOCK, "ICE"));
+                }
+            }
+        } else {
+            try {
+                block.add(Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_')));
+            } catch (Exception ex) {
+                Logger.invalid("Invalid block type: " + settings.getString(BLOCK, "ICE"));
+            }
         }
 
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
@@ -226,7 +245,7 @@ public class BlockMechanic extends MechanicComponent {
 
             states.add(b.getLocation());
             BlockState state = b.getState();
-            state.setType(block);
+            state.setType(block.get(random.nextInt(block.size())));
             state.update(true, false);
         }
 
