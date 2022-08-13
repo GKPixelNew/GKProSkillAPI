@@ -35,6 +35,7 @@ import com.sucy.skill.data.Point3D;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
+import com.sucy.skill.log.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -136,6 +137,10 @@ public class ParticleEffect {
         );
         this.interval = interval;
         this.view = viewRange;
+        if (animation == null) {
+            Logger.invalid("Animation formula for " + name + " is null");
+            return;
+        }
         animation.getPoints(animDir);
     }
 
