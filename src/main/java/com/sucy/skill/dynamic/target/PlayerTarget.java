@@ -28,6 +28,7 @@ public class PlayerTarget extends TargetComponent {
                 case "ally" -> playerTeam != null && playerTeam.equals(casterTeam);
                 case "enemy" -> playerTeam == null || !playerTeam.equals(casterTeam);
                 case "all" -> true;
+                default -> false;
             }) result.add(player);
         }
         return result;
