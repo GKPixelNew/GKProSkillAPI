@@ -1984,6 +1984,10 @@ function MechanicCleanse() {
         'Stun'], 'All')
         .setTooltip('The status to remove from the target')
     );
+    this.data.push(new ListValue('Extinguish Target', 'extinguish', ['True', 'False'], 'True')
+        .setTooltip('Whether to extinguish the player if are on fire'));
+    this.data.push(new ListValue('Reset Negative Stats', 'reset_negative_stats', ['True', 'False'], 'True')
+        .setTooltip('Whether to reset the negative stats of the target, mainly below default speed'));
 }
 
 extend('MechanicCommand', 'Component');
