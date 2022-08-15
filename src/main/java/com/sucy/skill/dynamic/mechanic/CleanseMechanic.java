@@ -42,7 +42,7 @@ import java.util.Set;
 public class CleanseMechanic extends MechanicComponent {
     public static final Set<String> NEGATIVE_POTIONS = ImmutableSet.of(
             "BLINDNESS", "CONFUSION", "HUNGER", "LEVITATION", "POISON",
-            "SLOW", "SLOW_DIGGING", "WEAKNESS", "WITHER"
+            "SLOW", "SLOW_DIGGING", "WEAKNESS", "WITHER", "GLOWING"
     );
 
     private static final String STATUS = "status";
