@@ -87,7 +87,6 @@ const GOOD_POTIONS = [
     "Health Boost",
     "Absorption",
     "Saturation",
-    "Glowing",
     "Luck",
     "Slow Falling",
     "Conduit Power",
@@ -104,6 +103,7 @@ const BAD_POTIONS = [
     "Poison",
     "Wither",
     "Levitation",
+    "Glowing",
     "Unluck"
 ];
 
