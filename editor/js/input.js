@@ -317,6 +317,9 @@ function AttributeValue(name, key, base, scale) {
     this.name = name;
     this.key = key;
     this.base = base;
+    if (scale === undefined) {
+        scale = 0;
+    }
     this.scale = scale;
 
     this.label = undefined;

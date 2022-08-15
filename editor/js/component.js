@@ -1034,7 +1034,7 @@ function TargetOffset() {
     this.data.push(new AttributeValue('Forward', 'forward', 0, 0)
         .setTooltip('The offset from the target in the direction they are facing. Negative numbers go backwards.')
     );
-    this.data.push(new AttributeValue('Upward', 'upward', 2, 0.5)
+    this.data.push(new AttributeValue('Upward', 'upward', 2, 0)
         .setTooltip('The offset from the target upwards. Negative numbers go below them.')
     );
     this.data.push(new AttributeValue('Right', 'right', 0, 0)
@@ -1367,7 +1367,7 @@ function ConditionFood() {
     this.data.push(new AttributeValue('Min Value', 'min-value', 0, 0)
         .setTooltip('The minimum food required. A positive minimum with one of the "Difference" types would be for when the target has more food')
     );
-    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 2)
+    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 0)
         .setTooltip('The maximum food required. A negative maximum with one of the "Difference" types would be for when the target has less food')
     );
 }
@@ -1397,7 +1397,7 @@ function ConditionHealth() {
     this.data.push(new AttributeValue('Min Value', 'min-value', 0, 0)
         .setTooltip('The minimum health required. A positive minimum with one of the "Difference" types would be for when the target has more health')
     );
-    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 2)
+    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 0)
         .setTooltip('The maximum health required. A negative maximum with one of the "Difference" types would be for when the target has less health')
     );
 }
@@ -1435,7 +1435,7 @@ function ConditionLight() {
     this.data.push(new AttributeValue('Min Light', 'min-light', 0, 0)
         .setTooltip('The minimum light level needed. 16 is full brightness while 0 is complete darkness')
     );
-    this.data.push(new AttributeValue('Max Light', 'max-light', 16, 16)
+    this.data.push(new AttributeValue('Max Light', 'max-light', 16, 0)
         .setTooltip('The maximum light level needed. 16 is full brightness while 0 is complete darkness')
     );
 }
@@ -1453,7 +1453,7 @@ function ConditionMana() {
     this.data.push(new AttributeValue('Min Value', 'min-value', 0, 0)
         .setTooltip('The minimum amount of mana needed')
     );
-    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 2)
+    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 0)
         .setTooltip('The maximum amount of mana needed')
     );
 }
@@ -1737,7 +1737,7 @@ function MechanicAttribute() {
     this.data.push(new ListValue('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
         .setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount')
     );
-    this.data.push(new AttributeValue('Amount', 'amount', 5, 2)
+    this.data.push(new AttributeValue('Amount', 'amount', 5, 0)
         .setTooltip('The amount to use with the operation')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
@@ -2029,7 +2029,7 @@ function MechanicDamage() {
     this.data.push(new ListValue('Type', 'type', ['Damage', 'Multiplier', 'Percent Left', 'Percent Missing'], 'Damage')
         .setTooltip('The unit to use for the amount of damage. Damage will deal flat damage, Multiplier will deal a percentage of the target\'s max health, Percent Left will deal a percentage of their current health, and Percent Missing will deal a percentage of the difference between their max health and current health')
     );
-    this.data.push(new AttributeValue("Value", "value", 3, 1)
+    this.data.push(new AttributeValue("Value", "value", 3, 0)
         .setTooltip('The amount of damage to deal')
     );
     this.data.push(new ListValue('True Damage', 'true', ['True', 'False'], 'False')
@@ -2309,7 +2309,7 @@ function MechanicFire() {
     this.data.push(new AttributeValue('Damage', 'damage', 1, 0)
         .setTooltip('The damage dealt by each fire tick')
     );
-    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 1)
+    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
         .setTooltip('The duration of the fire in seconds')
     );
 }
@@ -2324,7 +2324,7 @@ function MechanicFlag() {
     this.data.push(new StringValue('Key', 'key', 'key')
         .setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition.')
     );
-    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 1)
+    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
         .setTooltip('The duration the flag should be set for. To set one indefinitely, use Flag Toggle.')
     );
 }
@@ -2416,7 +2416,7 @@ function MechanicHeal() {
     this.data.push(new ListValue("Type", "type", ["Health", "Percent"], "Health")
         .setTooltip('The unit to use for the amount of health to restore. Health restores a flat amount while Percent restores a percentage of their max health.')
     );
-    this.data.push(new AttributeValue("Value", "value", 3, 1)
+    this.data.push(new AttributeValue("Value", "value", 3, 0)
         .setTooltip('The amount of health to restore')
     );
 }
@@ -2552,7 +2552,7 @@ function MechanicLaunch() {
     this.data.push(new AttributeValue('Forward Speed', 'forward', 0, 0)
         .setTooltip('The speed to give the target in the direction they are facing')
     );
-    this.data.push(new AttributeValue('Upward Speed', 'upward', 2, 0.5)
+    this.data.push(new AttributeValue('Upward Speed', 'upward', 2, 0)
         .setTooltip('The speed to give the target upwards')
     );
     this.data.push(new AttributeValue('Right Speed', 'right', 0, 0)
@@ -2838,7 +2838,7 @@ function MechanicPotion() {
     this.data.push(new AttributeValue('Tier', 'tier', 1, 0)
         .setTooltip('The strength of the potion')
     );
-    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 1)
+    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
         .setTooltip('How long to apply the effect for')
     );
 }
@@ -2912,7 +2912,7 @@ function MechanicPush() {
     this.data.push(new ListValue('Type', 'type', ['Fixed', 'Inverse', 'Scaled'], 'Fixed')
         .setTooltip('How to scale the speed based on relative position. Fixed does the same speed to all targets. Inverse pushes enemies farther away faster. Scaled pushes enemies closer faster.')
     );
-    this.data.push(new AttributeValue('Speed', 'speed', 3, 1)
+    this.data.push(new AttributeValue('Speed', 'speed', 3, 0)
         .setTooltip('How fast to push the target away. Use a negative value to pull them closer.')
     );
     this.data.push(new StringValue('Source', 'source', 'none')
@@ -3008,7 +3008,7 @@ function MechanicStat() {
     this.data.push(new ListValue('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
         .setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount')
     );
-    this.data.push(new AttributeValue('Amount', 'amount', 5, 2)
+    this.data.push(new AttributeValue('Amount', 'amount', 5, 0)
         .setTooltip('The amount to use with the operation')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
@@ -3036,7 +3036,7 @@ function MechanicStatus() {
         'Stun'], 'Stun')
         .setTooltip('The status to apply')
     );
-    this.data.push(new AttributeValue('Duration', 'duration', 3, 1)
+    this.data.push(new AttributeValue('Duration', 'duration', 3, 0)
         .setTooltip('How long in seconds to apply the status')
     );
     this.data.push(new ListValue('Force', 'force', ['True', 'False'], 'False')
@@ -3440,7 +3440,7 @@ function MechanicWarp() {
         .setTooltip('Whether to allow the target to teleport through walls')
     );
     this.data.push(new SectionMarker('Position'));
-    this.data.push(new AttributeValue('Forward', 'forward', 3, 1)
+    this.data.push(new AttributeValue('Forward', 'forward', 3, 0)
         .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards.')
     );
     this.data.push(new AttributeValue('Upward', 'upward', 0, 0)
@@ -3491,7 +3491,7 @@ function MechanicWarpRandom() {
     this.data.push(new ListValue('Through Walls', 'walls', ['True', 'False'], 'False')
         .setTooltip('Whether to allow the target to teleport through walls')
     );
-    this.data.push(new AttributeValue('Distance', 'distance', 3, 1)
+    this.data.push(new AttributeValue('Distance', 'distance', 3, 0)
         .setTooltip('The max distance in blocks to teleport')
     );
 }
