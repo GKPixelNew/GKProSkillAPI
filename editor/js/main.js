@@ -41,21 +41,6 @@ depend('component', function () {
 });
 depend('data/data', function () {
     depend('skill', function () {
-        document.getElementById('skillList').addEventListener('change', function (e) {
-            activeSkill.update();
-            if (activeComponent) {
-                activeComponent.update();
-            }
-            if (this.selectedIndex === this.length - 2) {
-                newSkill();
-            } else {
-                if (this.selectedIndex !== this.length - 1) {
-                    activeSkill = skills[this.selectedIndex];
-                    activeSkill.apply();
-                    showSkillPage('builder');
-                }
-            }
-        });
         document.getElementById('skillDetails').addEventListener('click', function (e) {
             activeSkill.createFormHTML();
             showSkillPage('skillForm');
@@ -208,13 +193,12 @@ window.onload = function () {
     }
     if (skillData) {
         skills = [];
-        const list = document.getElementById('skillList');
-        list.selectedIndex = 0;
-        list.remove(0);
         loadSkillText(skillData);
         if (skillIndex) {
-            list.selectedIndex = parseInt(skillIndex);
-            activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(skillIndex)))];
+            activeSkill = skills[parseInt(skillIndex)];
+            if (!activeSkill) {
+                activeSkill = skills[0];
+            }
             activeSkill.apply();
             showSkillPage('builder');
         }
@@ -409,7 +393,7 @@ function loadSkills(e) {
 }
 
 // Loads skill data from a string
-function loadSkillText(text) {
+function loadSkillText(text, activate) {
 
     // Load new skills
     const data = parseYAML(text);
@@ -417,12 +401,16 @@ function loadSkillText(text) {
         if (data[key] instanceof YAMLObject && key != 'loaded') {
             if (isSkillNameTaken(key)) {
                 getSkill(key).load(data[key]);
-                if (getSkill(key) == activeSkill) {
-                    activeSkill.apply();
-                    showSkillPage('builder');
-                }
             } else {
                 addSkill(key).load(data[key]);
+            }
+            if (activate) {
+                activeSkill = getSkill(key);
+                activeSkill.apply();
+                showSkillPage('builder');
+            } else if (getSkill(key) === activeSkill){
+                activeSkill.apply();
+                showSkillPage('builder');
             }
         }
     }
@@ -562,6 +550,6 @@ function notifyFailure(message) {
 window.onbeforeunload = function () {
     window.localStorage.setItem('skillData', getSkillSaveData());
     window.localStorage.setItem('classData', getClassSaveData());
-    window.localStorage.setItem('skillIndex', document.getElementById('skillList').selectedIndex);
+    window.localStorage.setItem('skillIndex', skills.findIndex(obj => obj.data[0].value === activeSkill.data[0].value).toString());
     window.localStorage.setItem('classIndex', document.getElementById('classList').selectedIndex);
 };

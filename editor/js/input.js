@@ -278,8 +278,13 @@ ListValue.prototype.show = function () {
  */
 ListValue.prototype.update = function () {
     if (this.select) {
-        this.value = this.select[this.select.selectedIndex].innerHTML;
-        if (this.value == 'None') {
+        this.value = this.select[this.select.selectedIndex];
+        if (this.value === undefined) {
+            this.value = '';
+        } else {
+            this.value = this.value.innerHTML;
+        }
+        if (this.value === 'None') {
             this.value = '';
         }
     }

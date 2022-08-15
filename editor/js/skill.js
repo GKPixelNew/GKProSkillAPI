@@ -58,6 +58,7 @@ Skill.prototype.apply = function () {
     for (var i = 0; i < this.components.length; i++) {
         this.components[i].createBuilderHTML(builder);
     }
+    vue.activeSkillId = this.data[0].value;
 }
 
 /**
@@ -98,13 +99,12 @@ Skill.prototype.createFormHTML = function () {
 Skill.prototype.createEditButton = function (form) {
     var done = document.createElement('h5');
     done.className = 'doneButton';
-    done.innerHTML = 'Edit Effects',
-        done.skill = this;
+    done.innerHTML = 'Edit Effects';
+    done.skill = this;
     done.form = form;
     done.addEventListener('click', function (e) {
         this.skill.update();
-        var list = document.getElementById('skillList');
-        list[list.selectedIndex].text = this.skill.data[0].value;
+        vue.updateSkills(skills)
         this.form.parentNode.removeChild(this.form);
         showSkillPage('builder');
     });
@@ -116,7 +116,6 @@ Skill.prototype.createEditButton = function (form) {
  */
 Skill.prototype.update = function () {
     var index;
-    var list = document.getElementById('skillList');
     for (var i = 0; i < skills.length; i++) {
         if (skills[i] == this) {
             index = i;
@@ -131,7 +130,6 @@ Skill.prototype.update = function () {
     this.data[0].value = prevName;
     if (isSkillNameTaken(newName)) return;
     this.data[0].value = newName;
-    list[index].text = this.data[0].value;
 }
 
 /**
@@ -206,10 +204,6 @@ function newSkill() {
     while (isSkillNameTaken('Skill ' + id)) id++;
 
     activeSkill = addSkill('Skill ' + id);
-
-    var list = document.getElementById('skillList');
-    list.selectedIndex = list.length - 3;
-
     activeSkill.apply();
     activeSkill.createFormHTML();
     showSkillPage('skillForm');
@@ -227,12 +221,10 @@ function newSkill() {
 function addSkill(name) {
     var skill = new Skill(name);
     skills.push(skill);
+    vue.updateSkills(skills);
 
     var option = document.createElement('option');
     option.text = name;
-    var list = document.getElementById('skillList');
-    list.add(option, list.length - 2);
-
     return skill;
 }
 
@@ -283,20 +275,16 @@ function deleteSkill() {
     }
 
     function deleteLocal() {
-        const list = document.getElementById('skillList');
-        let index = list.selectedIndex;
-
         skills.splice(index, 1);
         if (skills.length === 0) {
             newSkill();
         }
-        list.remove(index);
         index = Math.min(index, skills.length - 1);
         activeSkill = skills[index];
-        list.selectedIndex = index;
 
         activeSkill.apply();
         showSkillPage('builder');
+        vue.updateSkills(skills);
     }
 
     Quasar.Dialog.create({
@@ -312,9 +300,8 @@ function deleteSkill() {
     })
 }
 
-function importSkill(skillId) {
+function importSkill(skillId, callback, failureCallback) {
     const apiKey = getApiKey();
-    const list = document.getElementById('skillList');
     axios.get('https://cdn.gkpixel.com/v1/skill/' + skillId, {
         headers: {
             'Authorization': 'Bearer ' + apiKey
@@ -326,24 +313,29 @@ function importSkill(skillId) {
                     'Authorization': 'Bearer ' + apiKey
                 }
             }).then(response => {
-                loadSkillText(response.data);
-                list.selectedIndex = list.length - 3;
-                activeSkill = skills[Math.max(0, Math.min(skills.length - 1, parseInt(list.length - 3)))];
-                activeSkill.apply();
-                showSkillPage('builder');
+                loadSkillText(response.data, true);
                 notifySuccess('匯入成功')
+                if (callback) {
+                    callback()
+                }
             })
         } else {
-            list.selectedIndex = list.length - 3;
             notifyFailure('匯入失敗')
+            if (failureCallback) {
+                failureCallback()
+            }
         }
     }).catch(error => {
         if (error.response.status === 404) {
-            list.selectedIndex = list.length - 3;
             notifyFailure('匯入失敗，找不到技能')
+            if (failureCallback) {
+                failureCallback()
+            }
         } else {
-            list.selectedIndex = list.length - 3;
             notifyFailure('匯入失敗，錯誤 ' + error.response.status)
+            if (failureCallback) {
+                failureCallback()
+            }
         }
     })
 }
