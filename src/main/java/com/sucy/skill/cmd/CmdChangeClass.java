@@ -16,6 +16,7 @@ import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -47,7 +48,7 @@ public class CmdChangeClass implements IFunction {
         DynamicSkill.clearCastData(player);
 
         player.setDisplayName(player.getName());
-        player.setWalkSpeed(0.2f);
+        player.setWalkSpeed((float) player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue());
     }
 
     /**

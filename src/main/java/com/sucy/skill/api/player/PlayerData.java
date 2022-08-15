@@ -1607,8 +1607,7 @@ public class PlayerData {
      * @param player the player
      */
     public void updateWalkSpeed(Player player) {
-
-        float level = (float) (this.scaleStat(AttributeManager.MOVE_SPEED, 0.2f, 0D, Double.MAX_VALUE));
+        float level = (float) (this.scaleStat(AttributeManager.MOVE_SPEED, (float) player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue(), 0D, Double.MAX_VALUE));
         try {
             player.setWalkSpeed(level);
         } catch (IllegalArgumentException e) {

@@ -38,6 +38,7 @@ import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -108,7 +109,7 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         flying.remove(event.getPlayer().getUniqueId());
-        event.getPlayer().setWalkSpeed(0.2f);
+        event.getPlayer().setWalkSpeed((float) event.getPlayer().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue());
     }
 
     /**
