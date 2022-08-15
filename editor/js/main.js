@@ -46,6 +46,9 @@ depend('data/data', function () {
             showSkillPage('skillForm');
         });
         document.getElementById('saveSkill').addEventListener('click', function (e) {
+            activeComponent.update();
+            document.getElementById('skillForm').removeChild(activeComponent.form);
+            showSkillPage('builder');
             saveToFile(activeSkill.data[0].value + '.yml', activeSkill.getSaveString());
         });
         document.getElementById('deleteSkill').addEventListener('click', function (e) {

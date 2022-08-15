@@ -222,6 +222,9 @@
         },
         methods: {
             uploadSkill() {
+                activeComponent.component.update();
+                document.getElementById('skillForm').removeChild(activeComponent.component.form);
+                showSkillPage('builder');
                 const apiKey = getApiKey();
                 let formData = new FormData();
                 formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
