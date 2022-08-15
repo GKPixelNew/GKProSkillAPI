@@ -27,9 +27,14 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.google.common.collect.ImmutableSet;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.player.PlayerStatModifier;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
+import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -47,6 +52,8 @@ public class CleanseMechanic extends MechanicComponent {
 
     private static final String STATUS = "status";
     private static final String POTION = "potion";
+    private static final String EXTINGUISH = "extinguish";
+    private static final String RESET_NEGATIVE_STATS = "reset_negative_stats";
 
     @Override
     public String getKey() {
@@ -68,6 +75,8 @@ public class CleanseMechanic extends MechanicComponent {
         boolean worked = false;
         String status = settings.getString(STATUS, "None").toLowerCase();
         String potion = settings.getString(POTION).toUpperCase().replace(' ', '_');
+        boolean extinguish = settings.getBool(EXTINGUISH, true);
+        boolean resetNegativeStats = settings.getBool(RESET_NEGATIVE_STATS, true);
         PotionEffectType type = null;
         try {
             type = PotionEffectType.getByName(potion);
@@ -98,6 +107,21 @@ public class CleanseMechanic extends MechanicComponent {
             } else if (type != null && target.hasPotionEffect(type)) {
                 target.removePotionEffect(type);
                 worked = true;
+            }
+
+            if (extinguish && target.getFireTicks() > 0) {
+                target.setFireTicks(0);
+                worked = true;
+            }
+
+            if (resetNegativeStats && target instanceof Player player) {
+                PlayerData playerData = SkillAPI.getPlayerData(player);
+                for (PlayerStatModifier modifier : playerData.getStatModifiers(AttributeManager.MOVE_SPEED)) {
+                    if (modifier.applyOn(0.2) < 0.2) {
+                        playerData.removeStatModifier(modifier.getUUID(), true);
+                        worked = true;
+                    }
+                }
             }
         }
         return worked;
