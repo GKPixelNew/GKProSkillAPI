@@ -26,11 +26,16 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.SkillPushEvent;
+import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.target.RememberTarget;
+import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -39,7 +44,7 @@ import java.util.List;
  * Launches the target in a given direction relative to their forward direction
  */
 public class PushMechanic extends MechanicComponent {
-    private static final String SPEED  = "speed";
+    private static final String SPEED = "speed";
     private static final String SOURCE = "source";
 
     @Override
@@ -63,10 +68,10 @@ public class PushMechanic extends MechanicComponent {
         }
 
         final double speed = parseValues(caster, SPEED, level, 3.0);
-        final String type  = settings.getString("type", "scaled").toLowerCase();
+        final String type = settings.getString("type", "scaled").toLowerCase();
 
         final List<LivingEntity> sources = RememberTarget.remember(caster, settings.getString(SOURCE, "_none"));
-        final Location           center  = sources.isEmpty() ? caster.getLocation() : sources.get(0).getLocation();
+        final Location center = sources.isEmpty() ? caster.getLocation() : sources.get(0).getLocation();
 
         boolean worked = false;
         for (LivingEntity target : targets) {
@@ -80,7 +85,24 @@ public class PushMechanic extends MechanicComponent {
             } else { // "scaled"
                 vel.multiply(speed / vel.lengthSquared());
             }
-            vel.setY(vel.getY() / 5 + 0.5);
+            double resistKnockback = 0;
+            if (target instanceof Player targetPlayer) {
+                PlayerData data = SkillAPI.getPlayerData(targetPlayer);
+                resistKnockback = data.scaleStat(AttributeManager.KNOCKBACK_RESIST, 0);
+            }
+            //If slow falling. we won't apply anti-knockback at push mechanics
+            boolean isSlowFalling = false;
+            if (target.hasPotionEffect(PotionEffectType.LEVITATION)) {
+                if (target.getPotionEffect(PotionEffectType.LEVITATION).getAmplifier() > 127) {
+                    isSlowFalling = true;
+                }
+            }
+            if (resistKnockback >= 1 && !isSlowFalling)
+                continue;
+            vel.setY(vel.getY() / 5);
+            if (!isSlowFalling) {
+                vel.multiply(1 - resistKnockback);
+            }
 
             SkillPushEvent event = new SkillPushEvent(caster, target, vel);
             Bukkit.getPluginManager().callEvent(event);
