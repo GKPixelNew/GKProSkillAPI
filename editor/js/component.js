@@ -1867,6 +1867,13 @@ function MechanicBlock() {
     this.data.push(new ListValue('Fill', 'fill', ['True', 'False'], 'True')
         .setTooltip('Whether the inside of the region should be filled with the blocks, if set to False, the center will be hollow')
     );
+    this.data.push(new ListValue('Block damage type', 'block_damage_type', ['Static', 'Random'], 'Static')
+        .setTooltip('How the block damage should be determined')
+    );
+    this.data.push(new AttributeValue('Block damage', 'block_damage', 0, 0)
+        .setTooltip('The static amount of damage to deal to the block, from 0 to 1')
+        .requireValue('block_damage_type', ['Static'])
+    );
 
     // Sphere options
     this.data.push(new AttributeValue('Radius', 'radius', 3, 0).requireValue('shape', ['Sphere'])
