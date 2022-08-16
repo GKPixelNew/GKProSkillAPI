@@ -223,8 +223,8 @@
         methods: {
             uploadSkill() {
                 if (activeComponent) {
-                    activeComponent.component.update();
-                    document.getElementById('skillForm').removeChild(activeComponent.component.form);
+                    activeComponent.update();
+                    document.getElementById('skillForm').removeChild(activeComponent.form);
                 }
                 showSkillPage('builder');
                 const apiKey = getApiKey();
