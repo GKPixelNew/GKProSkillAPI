@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.log.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,7 +39,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,6 +66,8 @@ public class BlockMechanic extends MechanicComponent {
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
     private static final String FILL = "fill";
+    private static final String BLOCK_DAMAGE_TYPE = "block_damage_TYPE";
+    private static final String BLOCK_DAMAGE = "block_damage";
     private static final Random random = new Random();
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
@@ -144,6 +146,9 @@ public class BlockMechanic extends MechanicComponent {
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward = parseValues(caster, UPWARD, level, 0);
         double right = parseValues(caster, RIGHT, level, 0);
+        float blockDamage = settings.getString(BLOCK_DAMAGE_TYPE, "static").equalsIgnoreCase("random") ?
+                new Random().nextFloat() :
+                (float) parseValues(caster, BLOCK_DAMAGE, level, 0);
 
         List<Block> blocks = new ArrayList<>();
         World w = caster.getWorld();
@@ -187,11 +192,7 @@ public class BlockMechanic extends MechanicComponent {
                     }
                 }
             }
-        }
-
-        // Grab blocks in a cuboid
-        else {
-            // Cuboid options
+        } else { // Grab blocks in a cuboid
             double width = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
             double height = (parseValues(caster, HEIGHT, level, 5) - 1) / 2;
             double depth = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
@@ -247,6 +248,11 @@ public class BlockMechanic extends MechanicComponent {
             BlockState state = b.getState();
             state.setType(block.get(random.nextInt(block.size())));
             state.update(true, false);
+            if (blockDamage > 0) {
+                for (var player : Bukkit.getOnlinePlayers()) {
+                    player.sendBlockDamage(loc, blockDamage);
+                }
+            }
         }
 
         // Revert after duration
