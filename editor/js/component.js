@@ -353,7 +353,7 @@ Component.prototype.createBuilderHTML = function (target) {
                 components[index - 1] = el;
             }
             const element = this.parentNode.parentNode;
-            if(element.previousElementSibling)
+            if (element.previousElementSibling)
                 element.parentNode.insertBefore(element, element.previousElementSibling);
         });
         div.appendChild(moveUp);
@@ -371,7 +371,7 @@ Component.prototype.createBuilderHTML = function (target) {
                 components[index + 1] = el;
             }
             const element = this.parentNode.parentNode;
-            if(element.nextElementSibling)
+            if (element.nextElementSibling)
                 element.parentNode.insertBefore(element.nextElementSibling, element);
         });
         div.appendChild(moveDown);
@@ -3775,6 +3775,12 @@ function addParticleOptions(component) {
     );
     component.data.push(new DoubleValue('Dust Size', 'dust-size', 1).requireValue('particle', ['Redstone', 'Dust color transition'])
         .setTooltip('The size of the dust particles')
+    );
+    component.data.push(new DoubleValue('Angle', 'angle', 0).requireValue('particle', ['Sculk charge'])
+        .setTooltip('The angle in degrees of the particle')
+    );
+    component.data.push(new IntValue('Delay', 'delay', 0).requireValue('particle', ['Shriek'])
+        .setTooltip('The delay in ticks before showing the particle')
     );
 
     component.data.push(new ListValue('Arrangement', 'arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
