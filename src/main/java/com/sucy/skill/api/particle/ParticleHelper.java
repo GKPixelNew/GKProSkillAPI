@@ -28,13 +28,23 @@ package com.sucy.skill.api.particle;
 
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.enums.Direction;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Vibration;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Simplified particle utility compared to MCCore's
@@ -59,10 +69,12 @@ public final class ParticleHelper {
     public static final String DUST_COLOR = "dust-color";
     public static final String FINAL_DUST_COLOR = "final-dust-color";
     public static final String DUST_SIZE = "dust-size";
-
+    public static final String ANGLE = "angle";
+    public static final String DELAY = "delay";
     private static final Random random = new Random();
 
-    private ParticleHelper() { }
+    private ParticleHelper() {
+    }
 
     public static Particle getFromKey(String particleKey) {
         return Particle.valueOf(particleKey.toUpperCase().replace(' ', '_'));
@@ -85,19 +97,14 @@ public final class ParticleHelper {
         int level = settings.getInt(LEVEL, 1);
         int points = (int) settings.getAttr(POINTS_KEY, 0, 20);
         switch (arrangement) {
-            case "circle":
-                fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
-                break;
-            case "sphere":
-                fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
-                break;
-            case "hemisphere":
-                fillHemisphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
-                break;
-            default:
-                filterPlayers(Objects.requireNonNull(loc.getWorld()).getPlayers(), loc, visibleRadius).forEach(
-                        player -> player.spawnParticle(particle, loc, amount, dx, dy, dz, speed, object));
-                break;
+            case "circle" ->
+                    fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+            case "sphere" ->
+                    fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+            case "hemisphere" ->
+                    fillHemisphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+            default -> filterPlayers(Objects.requireNonNull(loc.getWorld()).getPlayers(), loc, visibleRadius).forEach(
+                    player -> player.spawnParticle(particle, loc, amount, dx, dy, dz, speed, object));
         }
     }
 
@@ -143,7 +150,7 @@ public final class ParticleHelper {
             }
 
             filterPlayers(worldPlayers, temp, visibleRadius).forEach(
-                    player ->player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
+                    player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
     }
@@ -174,7 +181,7 @@ public final class ParticleHelper {
             }
 
             filterPlayers(worldPlayers, temp, visibleRadius).forEach(
-                    player ->player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
+                    player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
     }
@@ -205,28 +212,28 @@ public final class ParticleHelper {
             }
 
             filterPlayers(worldPlayers, temp, visibleRadius).forEach(
-                    player ->player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
+                    player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
     }
 
     public static Object makeObject(Particle particle, Settings settings) {
         return makeObject(particle,
-                   Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
-                   settings.getInt(CMD_KEY, 0),
-                   settings.getInt(DURABILITY_KEY, 0),
-                    Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
-                          Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                    (float) settings.getDouble(DUST_SIZE, 1));
+                Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
+                settings.getInt(CMD_KEY, 0),
+                settings.getInt(DURABILITY_KEY, 0),
+                Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                (float) settings.getDouble(DUST_SIZE, 1),
+                settings.getDouble(ANGLE, 0),
+                settings.getInt(DELAY, 0));
     }
-    
-    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor, Color toColor, float dustSize) {
-        Object object = null;
-        switch (particle) {
-            case REDSTONE:
-                object = new Particle.DustOptions(dustColor, dustSize);
-                break;
-            case ITEM_CRACK:
+
+    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor,
+                                    Color toColor, float dustSize, double angle, int delay) {
+        return switch (particle) {
+            case REDSTONE -> new Particle.DustOptions(dustColor, dustSize);
+            case ITEM_CRACK -> {
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
                 meta.setCustomModelData(cmd);
@@ -234,20 +241,19 @@ public final class ParticleHelper {
                     ((Damageable) meta).setDamage(durability);
                 }
                 item.setItemMeta(meta);
-                object = item;
-                break;
-            case BLOCK_CRACK: case BLOCK_DUST: case FALLING_DUST: case BLOCK_MARKER:
-                object = material.createBlockData();
-                break;
-            case DUST_COLOR_TRANSITION:
-                object = new Particle.DustTransition(dustColor, toColor, dustSize);
-                break;
-        }
-        return object;
+                yield item;
+            }
+            case BLOCK_CRACK, BLOCK_DUST, FALLING_DUST, BLOCK_MARKER -> material.createBlockData();
+            case DUST_COLOR_TRANSITION -> new Particle.DustTransition(dustColor, toColor, dustSize);
+            case VIBRATION -> new Vibration(new Vibration.Destination.BlockDestination(new Location(null, 0, 0, 0)), 1); //TODO proper destination
+            case SCULK_CHARGE -> (float) Math.toRadians(angle); // the angle the particle displays at in radians
+            case SHRIEK -> delay; // the delay between showing in ticks
+            default -> null;
+        };
     }
 
     public static Set<Player> filterPlayers(Collection<Player> players, Location location, double visibleRadius) {
-        visibleRadius = visibleRadius*visibleRadius;
+        visibleRadius = visibleRadius * visibleRadius;
         Set<Player> result = new HashSet<>();
         for (Player player : players) {
             if (location.distanceSquared(player.getLocation()) <= visibleRadius) {

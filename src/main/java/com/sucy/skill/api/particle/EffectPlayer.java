@@ -38,29 +38,31 @@ import org.bukkit.Particle;
  * Handles playing effects based on configuration settings
  */
 public class EffectPlayer {
-    public static final String SHAPE            = "-shape";
-    public static final String SHAPE_DIR        = "-shape-dir";
-    public static final String SHAPE_SIZE       = "-shape-size";
-    public static final String ANIMATION        = "-animation";
-    public static final String ANIM_DIR         = "-anim-dir";
-    public static final String ANIM_SIZE        = "-anim-size";
-    public static final String INTERVAL         = "-interval";
-    public static final String VIEW_RANGE       = "-view-range";
-    public static final String WITH_ROTATION    = "-with-rotation";
+    public static final String SHAPE = "-shape";
+    public static final String SHAPE_DIR = "-shape-dir";
+    public static final String SHAPE_SIZE = "-shape-size";
+    public static final String ANIMATION = "-animation";
+    public static final String ANIM_DIR = "-anim-dir";
+    public static final String ANIM_SIZE = "-anim-size";
+    public static final String INTERVAL = "-interval";
+    public static final String VIEW_RANGE = "-view-range";
+    public static final String WITH_ROTATION = "-with-rotation";
     public static final String INITIAL_ROTATION = "-initial-rotation";
 
     public static final String P_TYPE = "-particle-type";
-    public static final String MAT    = "-particle-material";
+    public static final String MAT = "-particle-material";
     public static final String DURABILITY = "-particle-durability";
     public static final String CMD = "-particle-data";
     public static final String DUST_COLOR = "-particle-dust-color";
     public static final String FINAL_DUST_COLOR = "-particle-final-dust-color";
     public static final String DUST_SIZE = "-particle-dust-size";
     public static final String AMOUNT = "-particle-amount";
-    public static final String DX     = "-particle-dx";
-    public static final String DY     = "-particle-dy";
-    public static final String DZ     = "-particle-dz";
-    public static final String SPEED  = "-particle-speed";
+    public static final String DX = "-particle-dx";
+    public static final String DY = "-particle-dy";
+    public static final String DZ = "-particle-dz";
+    public static final String SPEED = "-particle-speed";
+    public static final String ANGLE = "-angle";
+    public static final String DELAY = "-delay";
 
     private final Settings settings;
 
@@ -133,12 +135,13 @@ public class EffectPlayer {
                     (float) settings.getDouble(keyMod + SPEED, 1),
                     settings.getInt(keyMod + AMOUNT, 1),
                     Material.matchMaterial(settings.getString(keyMod + MAT, "DIRT")),
-                    settings.getInt(keyMod +CMD, 0),
+                    settings.getInt(keyMod + CMD, 0),
                     settings.getInt(keyMod + DURABILITY, 0),
                     Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
                     Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                    (float) settings.getDouble(DUST_SIZE, 1)
-
+                    (float) settings.getDouble(DUST_SIZE, 1),
+                    settings.getDouble(keyMod + ANGLE, 0),
+                    settings.getInt(keyMod + DELAY, 0)
             );
         } catch (Exception ex) {
             Logger.invalid("Bad material for particle effect - " + settings.getString(keyMod + MAT));
