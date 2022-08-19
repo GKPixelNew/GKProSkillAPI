@@ -9,6 +9,7 @@ import com.sucy.skill.dynamic.EffectComponent;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
+import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -86,11 +87,15 @@ public abstract class TargetComponent extends EffectComponent {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (previewType != PreviewType.NONE) { targets.forEach(target -> playPreview(caster, level, target, step)); }
+                if (previewType != PreviewType.NONE) {
+                    targets.forEach(target -> playPreview(caster, level, target, step));
+                }
                 List<LivingEntity> childTargets = null;
                 for (final EffectComponent component : children) {
                     if (component.hasPreview()) {
-                        if (childTargets == null) { childTargets = getTargets(caster, level, targets); }
+                        if (childTargets == null) {
+                            childTargets = getTargets(caster, level, targets);
+                        }
                         component.playPreview(caster, level, childTargets, step);
                     }
                 }
@@ -126,6 +131,9 @@ public abstract class TargetComponent extends EffectComponent {
     boolean isValidTarget(final LivingEntity caster, final LivingEntity from, final LivingEntity target) {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
+        if (target instanceof Player && (
+                ((Player) target).getGameMode() == GameMode.SPECTATOR
+        )) return false;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)
                 && (throughWall || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))

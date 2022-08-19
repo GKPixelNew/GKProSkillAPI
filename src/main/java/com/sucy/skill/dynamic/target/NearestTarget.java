@@ -32,6 +32,7 @@ import com.sucy.skill.cast.Preview;
 import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.cast.PreviewType;
 import com.sucy.skill.cast.SpherePreview;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,7 +62,12 @@ public class NearestTarget extends TargetComponent {
             Nearby.getLivingNearby(target, radius).stream()
                     .filter(e -> self == IncludeCaster.IN_AREA || !e.equals(caster))
                     .min(comparator)
-                    .ifPresent(result::add);
+                    .ifPresent(e -> {
+                        GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
+                        if (gm == GameMode.SPECTATOR) return;
+
+                        result.add(e);
+                    });
         }
         return result;
     }
