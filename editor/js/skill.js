@@ -275,6 +275,7 @@ function deleteSkill() {
     }
 
     function deleteLocal() {
+        let index = skills.indexOf(activeSkill);
         skills.splice(index, 1);
         if (skills.length === 0) {
             newSkill();
