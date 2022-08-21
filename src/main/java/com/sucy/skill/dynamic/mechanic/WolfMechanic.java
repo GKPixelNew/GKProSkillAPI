@@ -127,7 +127,8 @@ public class WolfMechanic extends MechanicComponent {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);
                 wolf.setOwner(player);
                 wolf.setSilent(silent);
-                wolf.setAI(!noAI);
+                wolf.setAware(!noAI);
+                wolf.setCollidable(!noAI);
                 AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (maxHealth != null)
                     maxHealth.setBaseValue(health);
