@@ -31,6 +31,7 @@ import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.listener.MechanicListener;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
@@ -48,6 +49,7 @@ public class DisguiseMechanic extends MechanicComponent {
     private static final String DATA     = "data";
     private static final String MATERIAL = "mat";
     private static final String DURATION = "duration";
+    private static final String CHANGE_NAME = "change_name";
 
     @Override
     public String getKey() {
@@ -70,6 +72,7 @@ public class DisguiseMechanic extends MechanicComponent {
         }
 
         String type = settings.getString(TYPE);
+        boolean changeName = settings.getBool(CHANGE_NAME, false);
 
         // Mob disguises
         if (type.equalsIgnoreCase("mob")) {
@@ -86,7 +89,7 @@ public class DisguiseMechanic extends MechanicComponent {
                 if (!(target instanceof TempEntity)) {
                     DisguiseHook.disguisePlayer(
                             target,
-                            settings.getString(PLAYER, "Eniripsa96").replace("{player}", caster.getName()));
+                            settings.getString(PLAYER, "Eniripsa96").replace("{player}", caster.getName()), changeName);
                 }
             }
         }

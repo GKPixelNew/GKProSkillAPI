@@ -38,6 +38,7 @@ import me.libraryaddict.disguise.disguisetypes.watchers.ArmorStandWatcher;
 import me.libraryaddict.disguise.disguisetypes.watchers.SlimeWatcher;
 import me.libraryaddict.disguise.utilities.DisguiseValues;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -73,13 +74,13 @@ public class DisguiseHook {
      * @param target target to disguise
      * @param player player to disguise as
      */
-    public static void disguisePlayer(LivingEntity target, String player) {
+    public static void disguisePlayer(LivingEntity target, String player, boolean changeName) {
         try {
-            String name = target.getCustomName();
+            Component name = target.customName();
             PlayerDisguise playerDisguise = new PlayerDisguise(player);
             DisguiseAPI.disguiseToAll(target, playerDisguise);
-            if (name != null)
-                target.setCustomName(name);
+            if (!changeName)
+                target.customName(name);
         } catch (Exception ex) {
             Logger.invalid("Invalid player disguise: " + player);
         }
