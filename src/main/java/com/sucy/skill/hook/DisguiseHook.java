@@ -76,11 +76,13 @@ public class DisguiseHook {
      */
     public static void disguisePlayer(LivingEntity target, String player, boolean changeName) {
         try {
-            Component name = target.customName();
+            String name = target.getCustomName();
             PlayerDisguise playerDisguise = new PlayerDisguise(player);
             DisguiseAPI.disguiseToAll(target, playerDisguise);
-            if (!changeName)
-                target.customName(name);
+            if (!changeName) {
+                target.setCustomName(name);
+                playerDisguise.getWatcher().setCustomName(name);
+            }
         } catch (Exception ex) {
             Logger.invalid("Invalid player disguise: " + player);
         }
