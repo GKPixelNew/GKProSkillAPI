@@ -2188,7 +2188,7 @@ function MechanicDisguise() {
         .requireValue('type', ['Mob'])
         .setTooltip('The type of mob to disguise the target as')
     );
-    this.data.push(new ListValue('Adult', 'adult', ['True', 'False',], 'True')
+    this.data.push(new ListValue('Adult', 'adult', ['True', 'False'], 'True')
         .requireValue('type', ['Mob'])
         .setTooltip('Whether to use the adult variant of the mob')
     );
@@ -2196,6 +2196,11 @@ function MechanicDisguise() {
     this.data.push(new StringValue('Player', 'player', 'Eniripsa96')
         .requireValue('type', ['Player'])
         .setTooltip('The player to disguise the target as')
+    );
+
+    this.data.push(new ListValue('Change name', 'change_name', ['True', 'False'], 'False')
+        .requireValue('type', ['Player'])
+        .setTooltip('Whether to change the entity\'s name to the player after disguising them')
     );
 
     this.data.push(new ListValue('Misc', 'misc', ['Area Effect Cloud',
