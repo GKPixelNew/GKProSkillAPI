@@ -2244,6 +2244,7 @@ function MechanicDisguise() {
         .requireValue('misc', ['Area Effect Cloud',
             'Armor Stand',
             'Arrow',
+            'Axolotl',
             'Boat',
             'Dragon Fireball',
             'Egg',
