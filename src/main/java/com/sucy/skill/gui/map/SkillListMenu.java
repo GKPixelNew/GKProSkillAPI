@@ -29,7 +29,13 @@ package com.sucy.skill.gui.map;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import mc.promcteam.engine.mccore.gui.*;
+import mc.promcteam.engine.mccore.gui.MapBuffer;
+import mc.promcteam.engine.mccore.gui.MapMenu;
+import mc.promcteam.engine.mccore.gui.MapMenuManager;
+import mc.promcteam.engine.mccore.gui.MapObject;
+import mc.promcteam.engine.mccore.gui.MapScene;
+import mc.promcteam.engine.mccore.gui.MapScheme;
+import mc.promcteam.engine.mccore.gui.MapString;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

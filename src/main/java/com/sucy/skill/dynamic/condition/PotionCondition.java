@@ -37,20 +37,20 @@ import java.util.Collection;
  * A condition for dynamic skills that requires the target to have a specified potion effect
  */
 public class PotionCondition extends ConditionComponent {
-    private static final String TYPE     = "type";
-    private static final String POTION   = "potion";
+    private static final String TYPE = "type";
+    private static final String POTION = "potion";
     private static final String MIN_RANK = "min-rank";
     private static final String MAX_RANK = "max-rank";
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final boolean                  active  = !settings.getString(TYPE, "active").equalsIgnoreCase("not active");
+        final boolean active = !settings.getString(TYPE, "active").equalsIgnoreCase("not active");
         final Collection<PotionEffect> effects = target.getActivePotionEffects();
         if (effects.isEmpty()) return !active;
 
-        final String potion  = settings.getString(POTION, "").toUpperCase().replace(' ', '_');
-        final int    minRank = (int) parseValues(caster, MIN_RANK, level, 0);
-        final int    maxRank = (int) parseValues(caster, MAX_RANK, level, 999);
+        final String potion = settings.getString(POTION, "").toUpperCase().replace(' ', '_');
+        final int minRank = (int) parseValues(caster, MIN_RANK, level, 0);
+        final int maxRank = (int) parseValues(caster, MAX_RANK, level, 999);
         try {
             final PotionEffectType type = PotionEffectType.getByName(potion);
             return has(target, type, minRank, maxRank) == active;

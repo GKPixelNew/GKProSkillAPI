@@ -86,7 +86,9 @@ public class CmdExp implements IFunction {
             // Parse the experience
             double amount = NumberParser.parseDouble(args[numberIndex]);
 
-            if (amount == 0) { return; }
+            if (amount == 0) {
+                return;
+            }
 
             int lastArg = args.length - 1;
             boolean message = IS_BOOL.matcher(args[lastArg]).matches();
@@ -97,7 +99,9 @@ public class CmdExp implements IFunction {
             // Give experience to a specific class group
             if (numberIndex + 1 <= lastArg) {
                 PlayerClass playerClass = data.getClass(CmdManager.join(args, numberIndex + 1, lastArg));
-                if (playerClass == null) { return; }
+                if (playerClass == null) {
+                    return;
+                }
 
                 if (amount > 0) {
                     playerClass.giveExp(amount, ExpSource.COMMAND, showMessage);
@@ -109,7 +113,7 @@ public class CmdExp implements IFunction {
                                     ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
                                     Filter.PLAYER.setReplacement(target.getName()),
                                     RPGFilter.EXP.setReplacement("" + amount),
-                                    RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                                    RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                         }
                     }
                 } else {
@@ -121,7 +125,7 @@ public class CmdExp implements IFunction {
                                 ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
                                 Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.EXP.setReplacement("" + -amount),
-                                RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                                RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                     }
                 }
             }

@@ -26,8 +26,22 @@
  */
 package com.sucy.skill.data.formula;
 
-import com.sucy.skill.data.formula.func.*;
-import com.sucy.skill.data.formula.operator.*;
+import com.sucy.skill.data.formula.func.Abs;
+import com.sucy.skill.data.formula.func.Ceil;
+import com.sucy.skill.data.formula.func.Cos;
+import com.sucy.skill.data.formula.func.Floor;
+import com.sucy.skill.data.formula.func.Root;
+import com.sucy.skill.data.formula.func.Sign;
+import com.sucy.skill.data.formula.func.Sin;
+import com.sucy.skill.data.formula.func.Square;
+import com.sucy.skill.data.formula.func.Tan;
+import com.sucy.skill.data.formula.operator.Addition;
+import com.sucy.skill.data.formula.operator.Division;
+import com.sucy.skill.data.formula.operator.Exponent;
+import com.sucy.skill.data.formula.operator.Log;
+import com.sucy.skill.data.formula.operator.Modulo;
+import com.sucy.skill.data.formula.operator.Multiplication;
+import com.sucy.skill.data.formula.operator.Subtraction;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.data.formula.value.ValueNum;
 import com.sucy.skill.log.Logger;
@@ -66,16 +80,17 @@ public class Formula implements IValue {
         put("tan", Tan.class);
     }};
 
-    private         IValue[]    values;
-    private         IOperator[] operations;
+    private IValue[] values;
+    private IOperator[] operations;
     /**
      * Whether the equation was valid when parsed.
      *
      * @return whether the equation was valid
      */
-    @Getter private boolean     valid;
-    private         boolean     negative;
-    private         String      equation;
+    @Getter
+    private boolean valid;
+    private boolean negative;
+    private String equation;
 
     /**
      * Creates a new formula from a config string
@@ -100,10 +115,10 @@ public class Formula implements IValue {
         this.equation = equation;
 
         // Parse the formula
-        ArrayList<IValue>       vals   = new ArrayList<IValue>();
-        ArrayList<IOperator>    ops    = new ArrayList<IOperator>();
-        int                     parens = 0, l = equation.length(), valStart = 0, lastOp = -1;
-        Class<? extends IValue> func   = null;
+        ArrayList<IValue> vals = new ArrayList<IValue>();
+        ArrayList<IOperator> ops = new ArrayList<IOperator>();
+        int parens = 0, l = equation.length(), valStart = 0, lastOp = -1;
+        Class<? extends IValue> func = null;
         for (i = 0; i < l; i++) {
             char c = equation.charAt(i);
 
@@ -261,7 +276,7 @@ public class Formula implements IValue {
      */
     public double compute(double... input) {
         double result = values[0].compute(input);
-        int    i;
+        int i;
         for (i = 1; i < values.length; i++) {
             double val = values[i].compute(input);
             result = operations[i - 1].compute(result, val);

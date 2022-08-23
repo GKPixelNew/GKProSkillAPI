@@ -50,7 +50,6 @@ public class MessageMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -64,7 +63,7 @@ public class MessageMechanic extends MechanicComponent {
 
         // Display message
         boolean worked = false;
-        SkillAPI.inst().getLogger().warning("You are sending this message using the deprecated way, please use Translated Message instead: "+
+        SkillAPI.inst().getLogger().warning("You are sending this message using the deprecated way, please use Translated Message instead: " +
                 message);
         for (LivingEntity target : targets) {
             if (target instanceof Player) {

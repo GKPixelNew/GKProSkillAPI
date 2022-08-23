@@ -3,8 +3,7 @@ package com.sucy.skill.dynamic.condition;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 
-public class CeilingCondition extends ConditionComponent
-{
+public class CeilingCondition extends ConditionComponent {
     private static final String DISTANCE = "distance";
     private static final String AT_LEAST = "at-least";
 

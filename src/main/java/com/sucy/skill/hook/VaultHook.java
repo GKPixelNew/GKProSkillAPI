@@ -40,8 +40,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public class VaultHook {
 
     private static Permission permission;
-    private static Economy    economy;
-    private static boolean    checked = false;
+    private static Economy economy;
+    private static boolean checked = false;
 
     /**
      * Initializes the permissions and economy manager

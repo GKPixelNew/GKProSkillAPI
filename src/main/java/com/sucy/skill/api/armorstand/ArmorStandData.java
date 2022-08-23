@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class ArmorStandData {
     private final HashMap<String, ArmorStandInstance> armorStands = new HashMap<>();
-    private final LivingEntity                        target;
+    private final LivingEntity target;
 
     /**
      * @param target target of the armor stands

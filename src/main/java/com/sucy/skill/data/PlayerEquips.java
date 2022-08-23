@@ -40,8 +40,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Handles keeping track of and applying attribute
@@ -51,9 +58,9 @@ public class PlayerEquips {
 
     private final PlayerData playerData;
 
-    private final EquipData                   emptyEquip   = new EquipData();
-    private final HashMap<Integer, EquipData> equips       = new HashMap<Integer, EquipData>();
-    private       EquipData                   handHeldItem = new EquipData();
+    private final EquipData emptyEquip = new EquipData();
+    private final HashMap<Integer, EquipData> equips = new HashMap<Integer, EquipData>();
+    private EquipData handHeldItem = new EquipData();
 
     /**
      * @param player player data reference
@@ -238,15 +245,15 @@ public class PlayerEquips {
      * Represents one available item's data
      */
     public class EquipData {
-        private final ArrayList<UUID>          attrModifierUUIDs = new ArrayList<UUID>();
-        private       HashMap<String, Integer> skillReq;
-        private       HashMap<String, Integer> attrReq;
-        private       HashMap<String, Integer> attribs;
-        private       HashSet<String>          classReq;
-        private       HashSet<String>          classExc;
-        private       ItemStack                item;
-        private       int                      levelReq;
-        private       EquipType                type;
+        private final ArrayList<UUID> attrModifierUUIDs = new ArrayList<UUID>();
+        private HashMap<String, Integer> skillReq;
+        private HashMap<String, Integer> attrReq;
+        private HashMap<String, Integer> attribs;
+        private HashSet<String> classReq;
+        private HashSet<String> classExc;
+        private ItemStack item;
+        private int levelReq;
+        private EquipType type;
 
         /**
          * Sets up for an empty item slot
@@ -275,12 +282,12 @@ public class PlayerEquips {
 
             List<String> lore = itemMeta.getLore();
 
-            Settings settings    = SkillAPI.getSettings();
-            String   classText   = settings.getLoreClassText();
-            String   excludeText = settings.getLoreExcludeText();
-            String   levelText   = settings.getLoreLevelText();
-            boolean  skills      = settings.isCheckSkills();
-            boolean  attributes  = settings.isAttributesEnabled();
+            Settings settings = SkillAPI.getSettings();
+            String classText = settings.getLoreClassText();
+            String excludeText = settings.getLoreExcludeText();
+            String levelText = settings.getLoreLevelText();
+            boolean skills = settings.isCheckSkills();
+            boolean attributes = settings.isAttributesEnabled();
 
             for (String line : lore) {
                 String lower = ChatColor.stripColor(line).toLowerCase();
@@ -341,8 +348,8 @@ public class PlayerEquips {
                                     attribs = new HashMap<>();
 
                                 String normalized = SkillAPI.getAttributeManager().normalize(attr);
-                                int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
-                                int    extra      = NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
+                                int current = attribs.containsKey(attr) ? attribs.get(attr) : 0;
+                                int extra = NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
                                 attribs.put(normalized, current + extra);
                                 break;
                             }
@@ -386,8 +393,8 @@ public class PlayerEquips {
                 return true;
             }
 
-            PlayerClass main      = playerData.getMainClass();
-            String      className = main == null ? "null" : main.getData().getName().toLowerCase();
+            PlayerClass main = playerData.getMainClass();
+            String className = main == null ? "null" : main.getData().getName().toLowerCase();
             if ((levelReq > 0 && (main == null || main.getLevel() < levelReq))
                     || (classExc != null && main != null && classExc.contains(className))
                     || (classReq != null && (main == null || !classReq.contains(className))))

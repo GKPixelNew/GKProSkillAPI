@@ -46,9 +46,9 @@ import java.util.HashMap;
  * Loads player data from the SQL Database
  */
 public class SQLIO extends IOManager {
-    public static final String ID     = "id";
-    public static final String DATA   = "data";
-    public static final char   STRING = '√';
+    public static final String ID = "id";
+    public static final String DATA = "data";
+    public static final char STRING = '√';
 
     /**
      * Initializes the SQL IO Manager
@@ -109,9 +109,9 @@ public class SQLIO extends IOManager {
 
     @Override
     public void saveAll() {
-        SQLConnection                   connection = openConnection();
-        HashMap<String, PlayerAccounts> data       = SkillAPI.getPlayerAccountData();
-        ArrayList<String>               keys       = new ArrayList<String>(data.keySet());
+        SQLConnection connection = openConnection();
+        HashMap<String, PlayerAccounts> data = SkillAPI.getPlayerAccountData();
+        ArrayList<String> keys = new ArrayList<String>(data.keySet());
         for (String key : keys) {
             saveSingle(connection, data.get(key));
         }
@@ -120,8 +120,8 @@ public class SQLIO extends IOManager {
 
     private PlayerAccounts load(SQLConnection connection, OfflinePlayer player) {
         try {
-            String      playerKey = player.getUniqueId().toString().toLowerCase();
-            DataSection file      = YAMLParser.parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
+            String playerKey = player.getUniqueId().toString().toLowerCase();
+            DataSection file = YAMLParser.parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
             return load(player, file);
         } catch (Exception ex) {
             Logger.bug("Failed to load data from the SQL Database - " + ex.getMessage());
@@ -142,6 +142,6 @@ public class SQLIO extends IOManager {
 
     private class SQLConnection {
         private SQLDatabase database;
-        private SQLTable    table;
+        private SQLTable table;
     }
 }

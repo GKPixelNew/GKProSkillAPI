@@ -44,10 +44,10 @@ import java.util.Map;
  * Applies a flag to each target
  */
 public class StatMechanic extends MechanicComponent {
-    private static final String KEY       = "key";
+    private static final String KEY = "key";
     private static final String OPERATION = "operation";
-    private static final String AMOUNT    = "amount";
-    private static final String SECONDS   = "seconds";
+    private static final String AMOUNT = "amount";
+    private static final String SECONDS = "seconds";
     private static final String STACKABLE = "stackable";
 
     private final Map<Integer, Map<String, StatTask>> tasks = new HashMap<>();
@@ -82,11 +82,11 @@ public class StatMechanic extends MechanicComponent {
         }
 
         final Map<String, StatTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final double                amount      = parseValues(caster, AMOUNT, level, 5);
-        final double                seconds     = parseValues(caster, SECONDS, level, 3.0);
-        final boolean               stackable   = settings.getBool(STACKABLE, false);
-        final int                   ticks       = (int) (seconds * 20);
-        final String                operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
+        final double amount = parseValues(caster, AMOUNT, level, 5);
+        final double seconds = parseValues(caster, SECONDS, level, 3.0);
+        final boolean stackable = settings.getBool(STACKABLE, false);
+        final int ticks = (int) (seconds * 20);
+        final String operation = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
 
         boolean worked = false;
         for (LivingEntity target : targets) {
@@ -119,11 +119,11 @@ public class StatMechanic extends MechanicComponent {
 
     private class StatTask extends BukkitRunnable {
 
-        private final PlayerData         data;
+        private final PlayerData data;
         private final PlayerStatModifier modifier;
-        private final int                id;
-        private       boolean            running = false;
-        private       boolean            stopped = false;
+        private final int id;
+        private boolean running = false;
+        private boolean stopped = false;
 
         StatTask(int id, PlayerData data, PlayerStatModifier modifier) {
             this.id = id;

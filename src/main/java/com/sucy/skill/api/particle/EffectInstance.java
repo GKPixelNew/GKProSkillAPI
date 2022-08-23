@@ -33,12 +33,12 @@ import com.sucy.skill.api.particle.target.EffectTarget;
  */
 public class EffectInstance {
     private final ParticleEffect effect;
-    private final EffectTarget   target;
+    private final EffectTarget target;
 
     private final int level;
-    private       int life;
-    private       int tick;
-    private       int frame;
+    private int life;
+    private int tick;
+    private int frame;
 
     /**
      * @param effect the effect to play

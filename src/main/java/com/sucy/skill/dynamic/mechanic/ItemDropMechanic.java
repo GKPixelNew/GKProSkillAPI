@@ -52,7 +52,7 @@ public class ItemDropMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
             target.getWorld().dropItem(loc, item, drop -> {
                 drop.setPickupDelay(delay);
-                drop.setTicksLived(Math.max(6000-duration, 1));
+                drop.setTicksLived(Math.max(6000 - duration, 1));
             });
         }
         return targets.size() > 0;

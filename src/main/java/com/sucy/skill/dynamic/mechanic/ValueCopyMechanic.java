@@ -10,8 +10,8 @@ import java.util.List;
  * com.sucy.skill.dynamic.mechanic.ValueCopyMechanic
  */
 public class ValueCopyMechanic extends MechanicComponent {
-    private static final String KEY       = "key";
-    private static final String TARGET    = "destination";
+    private static final String KEY = "key";
+    private static final String TARGET = "destination";
     private static final String TO_TARGET = "to-target";
 
     @Override

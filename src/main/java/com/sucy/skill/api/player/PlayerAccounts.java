@@ -45,8 +45,8 @@ import java.util.UUID;
  */
 public class PlayerAccounts {
     private final HashMap<Integer, PlayerData> classData = new HashMap<>();
-    private final UUID                         player;
-    private       int                          active;
+    private final UUID player;
+    private int active;
 
     /**
      * Initializes a new container for player account data.

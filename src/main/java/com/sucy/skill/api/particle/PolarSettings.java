@@ -45,10 +45,10 @@ public class PolarSettings {
     private final Point2D[][] trig;
 
     private final IValue formula;
-    private final int    copies;
-    private final int    steps;
+    private final int copies;
+    private final int steps;
     private final double domain;
-    private       double xOff, yOff, zOff;
+    private double xOff, yOff, zOff;
 
     /**
      * Sets up a formula for particle effects
@@ -74,14 +74,14 @@ public class PolarSettings {
         this.domain = Math.max(0, domain / steps);
         this.steps = Math.max(1, steps);
 
-        double angle   = Math.PI * 2 * this.domain;
-        double cos     = Math.cos(angle);
-        double sin     = Math.sin(angle);
+        double angle = Math.PI * 2 * this.domain;
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
         double copyCos = Math.cos(Math.PI * 2 / copies);
         double copySin = Math.sin(Math.PI * 2 / copies);
 
         this.trig = new Point2D[steps][copies];
-        Point2D rot  = new Point2D(1, 0);
+        Point2D rot = new Point2D(1, 0);
         Point2D copy = new Point2D();
         for (int i = 0; i < steps; i++) {
             copy.x = rot.x;
@@ -178,11 +178,11 @@ public class PolarSettings {
         int k = 0;
         for (int i = 0; i < steps; i++) {
             Point2D rot = trig[i][0];
-            double  t   = domain * i;
-            double  r   = formula.compute(t, (double) i / steps, rot.x, rot.y);
+            double t = domain * i;
+            double r = formula.compute(t, (double) i / steps, rot.x, rot.y);
             for (int j = 0; j < copies; j++) {
                 Point2D copy = trig[i][j];
-                Point3D p    = new Point3D();
+                Point3D p = new Point3D();
                 direction.apply(p, r * copy.x, r * copy.y);
                 p.x += xOff;
                 p.y += yOff;

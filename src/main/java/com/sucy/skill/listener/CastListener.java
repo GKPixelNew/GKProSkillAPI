@@ -39,8 +39,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -97,7 +105,7 @@ public class CastListener extends SkillAPIListener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
-        boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        boolean to = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
             forceCleanup(event.getPlayer());
         else
@@ -114,9 +122,9 @@ public class CastListener extends SkillAPIListener {
 
     private void init(Player player) {
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerInventory inv  = player.getInventory();
-            int             slot = SkillAPI.getSettings().getCastSlot();
-            ItemStack       item = inv.getItem(slot);
+            PlayerInventory inv = player.getInventory();
+            int slot = SkillAPI.getSettings().getCastSlot();
+            ItemStack item = inv.getItem(slot);
             inv.setItem(slot, SkillAPI.getSettings().getCastItem());
             if (item != null && item.getType() != Material.AIR)
                 inv.addItem(item);

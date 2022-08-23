@@ -55,14 +55,18 @@ public class PluginChecker extends SkillAPIListener {
      *
      * @return true if active with permissions plugin, false otherwise
      */
-    public static boolean isVaultPermissionsActive() {return vault && VaultHook.isPermissionsValid();}
+    public static boolean isVaultPermissionsActive() {
+        return vault && VaultHook.isPermissionsValid();
+    }
 
     /**
      * Checks if vault economy is active on the server
      *
      * @return true if active with economy plugin, false otherwise
      */
-    public static boolean isVaultEconomyActive() {return vault && VaultHook.isEconomyValid();}
+    public static boolean isVaultEconomyActive() {
+        return vault && VaultHook.isEconomyValid();
+    }
 
 
     /**
@@ -70,34 +74,50 @@ public class PluginChecker extends SkillAPIListener {
      *
      * @return true if active
      */
-    public static boolean isDisguiseActive() {return libsDisguises;}
+    public static boolean isDisguiseActive() {
+        return libsDisguises;
+    }
 
     /**
      * Checks whether or not NoCheatPlus is active on the server
      *
      * @return true if active, false otherwise
      */
-    public static boolean isNoCheatActive() {return noCheatPlus;}
+    public static boolean isNoCheatActive() {
+        return noCheatPlus;
+    }
 
-    public static boolean isPlaceholderAPIActive() {return papi;}
+    public static boolean isPlaceholderAPIActive() {
+        return papi;
+    }
 
     /**
      * Checks whether or not bungee is present
      *
      * @return true if present, false otherwise
      */
-    public static boolean isBungeeActive() {return bungee;}
+    public static boolean isBungeeActive() {
+        return bungee;
+    }
 
-    public static boolean isMythicMobsActive() {return mythicMobs;}
+    public static boolean isMythicMobsActive() {
+        return mythicMobs;
+    }
 
-    public static boolean isWorldGuardActive() {return worldGuard;}
+    public static boolean isWorldGuardActive() {
+        return worldGuard;
+    }
 
-    public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");}
+    public static boolean isPartiesActive() {
+        return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");
+    }
 
     /**
      * Checks whether Mimic is present.
      */
-    public static boolean isMimicActive() {return mimic && MimicHook.isHooked();}
+    public static boolean isMimicActive() {
+        return mimic && MimicHook.isHooked();
+    }
 
     @Override
     public void init() {
@@ -110,7 +130,9 @@ public class PluginChecker extends SkillAPIListener {
         try {
             Class.forName("net.md_5.bungee.Util");
             bungee = true;
-        } catch (Exception ex) {bungee = false;}
+        } catch (Exception ex) {
+            bungee = false;
+        }
         mythicMobs = pluginManager.isPluginEnabled("MythicMobs");
         worldGuard = pluginManager.isPluginEnabled("WorldGuard");
         parties = pluginManager.isPluginEnabled("ProSkillAPIParties");

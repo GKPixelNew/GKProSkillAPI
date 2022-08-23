@@ -47,7 +47,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -56,31 +62,31 @@ import java.util.stream.Collectors;
  */
 public class AttributeManager {
     // Keys for supported stat modifiers
-    public static final String HEALTH             = "health";
-    public static final String MANA               = "mana";
-    public static final String MANA_REGEN         = "mana-regen";
-    public static final String PHYSICAL_DAMAGE    = "physical-damage";
-    public static final String MELEE_DAMAGE       = "melee-damage";
-    public static final String PROJECTILE_DAMAGE  = "projectile-damage";
-    public static final String PHYSICAL_DEFENSE   = "physical-defense";
-    public static final String MELEE_DEFENSE      = "melee-defense";
+    public static final String HEALTH = "health";
+    public static final String MANA = "mana";
+    public static final String MANA_REGEN = "mana-regen";
+    public static final String PHYSICAL_DAMAGE = "physical-damage";
+    public static final String MELEE_DAMAGE = "melee-damage";
+    public static final String PROJECTILE_DAMAGE = "projectile-damage";
+    public static final String PHYSICAL_DEFENSE = "physical-defense";
+    public static final String MELEE_DEFENSE = "melee-defense";
     public static final String PROJECTILE_DEFENSE = "projectile-defense";
-    public static final String SKILL_DAMAGE       = "skill-damage";
-    public static final String SKILL_DEFENSE      = "skill-defense";
-    public static final String MOVE_SPEED         = "move-speed";
-    public static final String ATTACK_SPEED       = "attack-speed";
-    public static final String ARMOR              = "armor";
-    public static final String LUCK               = "luck";
-    public static final String ARMOR_TOUGHNESS    = "armor-toughness";
-    public static final String EXPERIENCE         = "exp";
-    public static final String HUNGER             = "hunger";
-    public static final String HUNGER_HEAL        = "hunger-heal";
-    public static final String COOLDOWN           = "cooldown";
-    public static final String KNOCKBACK_RESIST   = "knockback-resist";
+    public static final String SKILL_DAMAGE = "skill-damage";
+    public static final String SKILL_DEFENSE = "skill-defense";
+    public static final String MOVE_SPEED = "move-speed";
+    public static final String ATTACK_SPEED = "attack-speed";
+    public static final String ARMOR = "armor";
+    public static final String LUCK = "luck";
+    public static final String ARMOR_TOUGHNESS = "armor-toughness";
+    public static final String EXPERIENCE = "exp";
+    public static final String HUNGER = "hunger";
+    public static final String HUNGER_HEAL = "hunger-heal";
+    public static final String COOLDOWN = "cooldown";
+    public static final String KNOCKBACK_RESIST = "knockback-resist";
 
-    private final HashMap<String, Attribute>       attributes  = new LinkedHashMap<>();
-    private final HashMap<String, Attribute>       lookup      = new HashMap<>();
-    private final HashMap<String, List<Attribute>> byStat      = new HashMap<>();
+    private final HashMap<String, Attribute> attributes = new LinkedHashMap<>();
+    private final HashMap<String, Attribute> lookup = new HashMap<>();
+    private final HashMap<String, List<Attribute>> byStat = new HashMap<>();
     private final HashMap<String, List<Attribute>> byComponent = new HashMap<>();
 
     /**
@@ -181,7 +187,7 @@ public class AttributeManager {
 
         GUIData attribs = GUITool.getAttributesMenu();
         if (!attribs.isValid()) {
-            int     i    = 0;
+            int i = 0;
             GUIPage page = attribs.getPage(0);
             for (String key : attributes.keySet()) {
                 if (i < 54) {
@@ -196,19 +202,19 @@ public class AttributeManager {
      * A single attribute template
      */
     public class Attribute implements IconHolder {
-        private static final String DISPLAY   = "display";
-        private static final String GLOBAL    = "global";
+        private static final String DISPLAY = "display";
+        private static final String GLOBAL = "global";
         private static final String CONDITION = "condition";
-        private static final String MECHANIC  = "mechanic";
-        private static final String TARGET    = "target";
-        private static final String STATS     = "stats";
-        private static final String MAX       = "max";
+        private static final String MECHANIC = "mechanic";
+        private static final String TARGET = "target";
+        private static final String STATS = "stats";
+        private static final String MAX = "max";
 
         // Attribute description
-        private String    key;
-        private String    display;
+        private String key;
+        private String display;
         private ItemStack icon;
-        private int       max;
+        private int max;
 
         // Dynamic global modifiers
         private Map<ComponentType, Map<String, AttributeValue[]>> dynamicModifiers = new EnumMap<>(ComponentType.class);
@@ -271,9 +277,9 @@ public class AttributeManager {
          */
         @Override
         public ItemStack getIcon(PlayerData data) {
-            ItemStack item     = new ItemStack(icon.getType());
-            ItemMeta  iconMeta = icon.getItemMeta();
-            ItemMeta  meta     = item.getItemMeta();
+            ItemStack item = new ItemStack(icon.getType());
+            ItemMeta iconMeta = icon.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(filter(data, iconMeta.getDisplayName()));
             List<String> iconLore = iconMeta.getLore();
             List<String> lore = iconLore != null
@@ -316,7 +322,7 @@ public class AttributeManager {
          */
         public ItemStack getToolIcon() {
             ItemStack icon = new ItemStack(this.icon.getType());
-            ItemMeta  meta = icon.getItemMeta();
+            ItemMeta meta = icon.getItemMeta();
             meta.setDisplayName(key);
             List<String> lore =
                     this.icon.hasItemMeta() && this.icon.getItemMeta().hasLore()
@@ -391,10 +397,10 @@ public class AttributeManager {
             for (String key : data.keys()) {
                 final String lower = key.toLowerCase();
                 Logger.log(LogType.ATTRIBUTE_LOAD, 2, "    SkillMod: " + key);
-                final String           value    = data.getString(key);
-                final String[]         formulas = value.split("\\|");
-                final AttributeValue[] values   = new AttributeValue[formulas.length];
-                int                    i        = 0;
+                final String value = data.getString(key);
+                final String[] formulas = value.split("\\|");
+                final AttributeValue[] values = new AttributeValue[formulas.length];
+                int i = 0;
                 for (final String formula : formulas) {
                     values[i++] = new AttributeValue(formula);
                 }
@@ -433,7 +439,7 @@ public class AttributeManager {
      * that can have conditions
      */
     public class AttributeValue {
-        private Formula                 formula;
+        private Formula formula;
         private HashMap<String, String> conditions = new HashMap<>();
 
         /**

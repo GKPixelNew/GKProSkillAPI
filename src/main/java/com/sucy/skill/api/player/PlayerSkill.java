@@ -39,12 +39,12 @@ import org.bukkit.entity.Player;
  */
 public final class PlayerSkill {
 
-    private Skill       skill;
-    private PlayerData  player;
+    private Skill skill;
+    private PlayerData player;
     private PlayerClass parent;
-    private Material    bind;
-    private long        cooldown;
-    private int         level;
+    private Material bind;
+    private long cooldown;
+    private int level;
 
     /**
      * Constructs a new PlayerSkill. You should not need to use
@@ -109,12 +109,33 @@ public final class PlayerSkill {
     }
 
     /**
+     * Sets the bind material of the skill
+     *
+     * @param mat new bind material
+     */
+    public void setBind(Material mat) {
+        this.bind = mat;
+        getPlayerData().bind(mat, this);
+    }
+
+    /**
      * Retrieves the current level the player has the skill at
      *
      * @return current skill level
      */
     public int getLevel() {
         return level;
+    }
+
+    /**
+     * Sets the level of the skill. This will not update passive
+     * effects. To level up/down the skill properly, use the
+     * upgrade and downgrade methods in PlayerData.
+     *
+     * @param level new level of the skill
+     */
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     /**
@@ -222,17 +243,6 @@ public final class PlayerSkill {
     }
 
     /**
-     * Sets the level of the skill. This will not update passive
-     * effects. To level up/down the skill properly, use the
-     * upgrade and downgrade methods in PlayerData.
-     *
-     * @param level new level of the skill
-     */
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    /**
      * Adds levels to the skill. This will not update passive
      * effects. To level up/down the skill properly, use the
      * upgrade and downgrade methods in PlayerData.
@@ -241,16 +251,6 @@ public final class PlayerSkill {
      */
     public void addLevels(int amount) {
         this.level = Math.min(this.level + amount, skill.getMaxLevel());
-    }
-
-    /**
-     * Sets the bind material of the skill
-     *
-     * @param mat new bind material
-     */
-    public void setBind(Material mat) {
-        this.bind = mat;
-        getPlayerData().bind(mat, this);
     }
 
     /**

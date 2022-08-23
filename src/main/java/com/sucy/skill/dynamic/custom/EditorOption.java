@@ -16,6 +16,13 @@ public class EditorOption {
     public final String description;
     public final Map<String, String> extra = new HashMap<>();
 
+    private EditorOption(final Type type, final String key, final String name, final String description) {
+        this.type = type;
+        this.key = key;
+        this.name = name;
+        this.description = description;
+    }
+
     public static EditorOption number(final String key, final String name, final String description, final double base, final double scale) {
         final EditorOption option = new EditorOption(Type.NUMBER, key, name, description);
         option.extra.put("base", Double.toString(base));
@@ -43,13 +50,6 @@ public class EditorOption {
 
     private static String format(final List<String> list) {
         return "[\"" + list.stream().collect(Collectors.joining("\",\"")) + "\"]";
-    }
-
-    private EditorOption(final Type type, final String key, final String name, final String description) {
-        this.type = type;
-        this.key = key;
-        this.name = name;
-        this.description = description;
     }
 
     private enum Type {

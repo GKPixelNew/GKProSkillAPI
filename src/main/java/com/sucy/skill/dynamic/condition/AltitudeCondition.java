@@ -1,34 +1,32 @@
 package com.sucy.skill.dynamic.condition;
 
+import com.sucy.skill.dynamic.DynamicSkill;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
-import com.sucy.skill.dynamic.DynamicSkill;
+public class AltitudeCondition extends ConditionComponent {
 
-import mc.promcteam.engine.mccore.config.parse.DataSection;
+    private static final String MIN = "min";
+    private static final String MAX = "max";
 
-public class AltitudeCondition extends ConditionComponent{
+    private int min, max;
 
-	private static final String MIN = "min";
-	private static final String MAX = "max";
+    @Override
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
 
-	private int min, max;
+        return target.getLocation().getY() >= min && target.getLocation().getY() <= max;
+    }
 
-	@Override
-	public boolean test(LivingEntity caster, int level, LivingEntity target) {
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
 
-		return target.getLocation().getY() >= min && target.getLocation().getY() <= max;
-	}
+        min = settings.getInt(MIN);
+        max = settings.getInt(MAX);
+    }
 
-	@Override
-	public void load(DynamicSkill skill, DataSection config) {
-		super.load(skill, config);
-
-		min = settings.getInt(MIN);
-		max = settings.getInt(MAX);
-	}
-
-	@Override
-	public String getKey() {
-		return "Altitude";
-	}
+    @Override
+    public String getKey() {
+        return "Altitude";
+    }
 }

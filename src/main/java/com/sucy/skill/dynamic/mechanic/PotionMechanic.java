@@ -36,9 +36,9 @@ import java.util.List;
  * Executes child components after a delay
  */
 public class PotionMechanic extends MechanicComponent {
-    private static final String POTION  = "potion";
+    private static final String POTION = "potion";
     private static final String AMBIENT = "ambient";
-    private static final String TIER    = "tier";
+    private static final String TIER = "tier";
     private static final String SECONDS = "seconds";
 
     @Override
@@ -65,10 +65,10 @@ public class PotionMechanic extends MechanicComponent {
             PotionEffectType potion = PotionEffectType.getByName(settings.getString(POTION, "Absorption")
                     .toUpperCase()
                     .replace(' ', '_'));
-            int     tier    = (int) parseValues(caster, TIER, level, 1) - 1;
-            double  seconds = parseValues(caster, SECONDS, level, 3.0);
+            int tier = (int) parseValues(caster, TIER, level, 1) - 1;
+            double seconds = parseValues(caster, SECONDS, level, 3.0);
             boolean ambient = settings.getBool(AMBIENT, true);
-            int     ticks   = (int) (seconds * 20);
+            int ticks = (int) (seconds * 20);
             for (LivingEntity target : targets) {
                 target.addPotionEffect(new PotionEffect(potion, ticks, tier, ambient, ambient));
             }

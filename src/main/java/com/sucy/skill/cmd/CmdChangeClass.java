@@ -25,11 +25,11 @@ import org.bukkit.plugin.Plugin;
  * com.sucy.skill.cmd.CmdChangeClass
  */
 public class CmdChangeClass implements IFunction {
-    private static final String INVALID_GROUP  = "invalid-group";
+    private static final String INVALID_GROUP = "invalid-group";
     private static final String INVALID_PLAYER = "invalid-player";
     private static final String INVALID_TARGET = "invalid-class";
-    private static final String SUCCESS        = "success";
-    private static final String NOTIFICATION   = "notification";
+    private static final String SUCCESS = "success";
+    private static final String NOTIFICATION = "notification";
 
     public static void unload(Player player) {
         if (CitizensHook.isNPC(player))
@@ -62,8 +62,8 @@ public class CmdChangeClass implements IFunction {
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         if (args.length >= 3) {
             final String playerName = args[0];
-            final String groupName  = args[1];
-            String       className  = args[2];
+            final String groupName = args[1];
+            String className = args[2];
             for (int i = 3; i < args.length; i++) className += ' ' + args[i];
 
             final Player player = Bukkit.getPlayer(playerName);
@@ -73,7 +73,7 @@ public class CmdChangeClass implements IFunction {
                 return;
             }
 
-            final PlayerData  data  = SkillAPI.getPlayerData(player);
+            final PlayerData data = SkillAPI.getPlayerData(player);
             final PlayerClass clazz = data.getClass(groupName);
             if (clazz == null) {
                 cmd.sendMessage(sender, INVALID_GROUP, "{player} does not have a {class}",
@@ -83,8 +83,8 @@ public class CmdChangeClass implements IFunction {
                 return;
             }
 
-            final String   original = clazz.getData().getName();
-            final RPGClass target   = SkillAPI.getClass(className);
+            final String original = clazz.getData().getName();
+            final RPGClass target = SkillAPI.getClass(className);
             if (target == null) {
                 cmd.sendMessage(sender, INVALID_TARGET, "{class} is not a valid class to change to",
                         RPGFilter.CLASS.setReplacement(className));

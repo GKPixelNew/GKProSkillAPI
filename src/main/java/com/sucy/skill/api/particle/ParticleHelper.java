@@ -245,7 +245,8 @@ public final class ParticleHelper {
             }
             case BLOCK_CRACK, BLOCK_DUST, FALLING_DUST, BLOCK_MARKER -> material.createBlockData();
             case DUST_COLOR_TRANSITION -> new Particle.DustTransition(dustColor, toColor, dustSize);
-            case VIBRATION -> new Vibration(new Vibration.Destination.BlockDestination(new Location(null, 0, 0, 0)), 1); //TODO proper destination
+            case VIBRATION ->
+                    new Vibration(new Vibration.Destination.BlockDestination(new Location(null, 0, 0, 0)), 1); //TODO proper destination
             case SCULK_CHARGE -> (float) Math.toRadians(angle); // the angle the particle displays at in radians
             case SHRIEK -> delay; // the delay between showing in ticks
             default -> null;

@@ -46,36 +46,36 @@ import java.util.Map;
  * A component for dynamic skills which takes care of one effect
  */
 public abstract class EffectComponent {
-    private static final String                     ICON_KEY   = "icon-key";
-    private static final String                     COUNTS_KEY = "counts";
-    private static final String                     TYPE       = "type";
-    private static final String                     PREVIEW    = "indicator";
-    private static       boolean                    passed;
+    private static final String ICON_KEY = "icon-key";
+    private static final String COUNTS_KEY = "counts";
+    private static final String TYPE = "type";
+    private static final String PREVIEW = "indicator";
+    private static boolean passed;
     /**
      * Child components
      */
-    public final         ArrayList<EffectComponent> children   = new ArrayList<>();
-    /**
-     * The settings for the component
-     */
-    protected      Settings                   settings   = new Settings();
+    public final ArrayList<EffectComponent> children = new ArrayList<>();
     /**
      * Whether the component has preview effects
      */
-    public               boolean                    hasPreview;
+    public boolean hasPreview;
+    /**
+     * The settings for the component
+     */
+    protected Settings settings = new Settings();
     /**
      * Parent class of the component
      */
-    protected            DynamicSkill               skill;
+    protected DynamicSkill skill;
     /**
      * Type of indicators to show
      */
-    protected PreviewType                           previewType;
-    private              String                     instanceKey;
+    protected PreviewType previewType;
+    private String instanceKey;
 
     private static String filterSpecialChars(String string) {
-        int           i       = 0;
-        int           j       = string.indexOf('&');
+        int i = 0;
+        int j = string.indexOf('&');
         StringBuilder builder = new StringBuilder();
         while (j >= 0) {
             String key = string.substring(j + 1, j + 3);
@@ -138,7 +138,9 @@ public abstract class EffectComponent {
      *
      * @return true if has a preview, false otherwise
      */
-    public boolean hasPreview() { return hasPreview; }
+    public boolean hasPreview() {
+        return hasPreview;
+    }
 
     /**
      * Retrieves an attribute value while applying attribute
@@ -151,7 +153,7 @@ public abstract class EffectComponent {
      * @return the value with attribute modifications if applicable
      */
     protected double parseValues(LivingEntity caster, String key, int level, double fallback) {
-        double base  = getNum(caster, key + "-base", fallback);
+        double base = getNum(caster, key + "-base", fallback);
         double scale = getNum(caster, key + "-scale", 0);
         double value = base + (level - 1) * scale;
 
@@ -195,7 +197,7 @@ public abstract class EffectComponent {
         }
 
         try {
-            final int    mid = val.indexOf('-', 1);
+            final int mid = val.indexOf('-', 1);
             final double min = Double.parseDouble(val.substring(0, mid));
             final double max = Double.parseDouble(val.substring(mid + 1));
             return Math.random() * (max - min) + min;
@@ -270,8 +272,8 @@ public abstract class EffectComponent {
             return filterSpecialChars(text);
         }
 
-        StringBuilder           builder = new StringBuilder();
-        HashMap<String, Object> data    = DynamicSkill.getCastData(caster);
+        StringBuilder builder = new StringBuilder();
+        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
 
         int k = 0;
         while (i >= 0 && j > i) {
@@ -335,7 +337,9 @@ public abstract class EffectComponent {
      */
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         if (hasPreview) {
-            for (EffectComponent component : children) { component.playPreview(caster, level, targets, step); }
+            for (EffectComponent component : children) {
+                component.playPreview(caster, level, targets, step);
+            }
         }
     }
 
@@ -377,9 +381,9 @@ public abstract class EffectComponent {
         DataSection children = config.getSection("children");
         if (children != null) {
             for (String key : children.keys()) {
-                final String        typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase();
-                final ComponentType type     = ComponentType.valueOf(typeName);
-                final String        mkey     = key.replaceAll("-.+", "");
+                final String typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase();
+                final ComponentType type = ComponentType.valueOf(typeName);
+                final String mkey = key.replaceAll("-.+", "");
                 try {
                     final EffectComponent child = ComponentRegistry.getComponent(type, mkey);
                     if (child != null) {

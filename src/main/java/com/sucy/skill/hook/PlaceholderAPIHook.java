@@ -21,13 +21,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     private SkillAPI plugin;
 
-    public PlaceholderAPIHook(SkillAPI plugin){
+    public PlaceholderAPIHook(SkillAPI plugin) {
         this.plugin = plugin;
-    }
-
-    @Override
-    public boolean persist(){
-        return true;
     }
 
     public static String format(final String message, final Player player) {
@@ -35,27 +30,32 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     }
 
     @Override
-    public boolean canRegister(){
+    public boolean persist() {
         return true;
     }
 
     @Override
-    public String getAuthor(){
+    public boolean canRegister() {
+        return true;
+    }
+
+    @Override
+    public String getAuthor() {
         return "Spark";
     }
 
     @Override
-    public String getIdentifier(){
+    public String getIdentifier() {
         return "sapi";
     }
 
     @Override
-    public String getVersion(){
+    public String getVersion() {
         return "1.0.0";
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String identifier){
+    public String onRequest(OfflinePlayer player, String identifier) {
 
         PlayerData playerData = SkillAPI.getPlayerData(player);
 

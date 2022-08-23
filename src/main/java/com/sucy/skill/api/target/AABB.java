@@ -10,139 +10,6 @@ import org.bukkit.util.Vector;
  * @author Kristian
  */
 public class AABB {
-    public static class Vec3D {
-        /**
-         * Point with the coordinate (1, 1, 1).
-         */
-        public static final Vec3D UNIT_MAX = new Vec3D(1, 1, 1);
-
-        /** X coordinate. */
-        public final double x;
-        /** Y coordinate. */
-        public final double y;
-        /** Z coordinate. */
-        public final double z;
-
-        /**
-         * Creates a new vector with the given coordinates.
-         * @param x the x
-         * @param y the y
-         * @param z the z
-         */
-        public Vec3D(double x, double y, double z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        /**
-         * Creates a new vector with the coordinates of the given vector.
-         * @param v vector to copy.
-         */
-        public Vec3D(Vec3D v) {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
-        }
-
-        /**
-         * Construct a vector from a Bukkit location.
-         * @param loc - the Bukkit location.
-         */
-        public static Vec3D fromLocation(Location loc) {
-            return new Vec3D(loc.getX(), loc.getY(), loc.getZ());
-        }
-
-        /**
-         * Construct a copy of our immutable vector from Bukkit's mutable vector.
-         * @param v - Bukkit vector.
-         * @return A copy of the given vector.
-         */
-        public static Vec3D fromVector(Vector v) {
-            return new Vec3D(v.getX(), v.getY(), v.getZ());
-        }
-
-        /**
-         * Add vector v and returns result as new vector.
-         *
-         * @param v vector to add
-         * @return result as new vector
-         */
-        public final Vec3D add(Vec3D v) {
-            return new Vec3D(x + v.x, y + v.y, z + v.z);
-        }
-
-        /**
-         * Scales vector uniformly and returns result as new vector.
-         *
-         * @param s scale factor
-         *
-         * @return new vector
-         */
-        public Vec3D scale(double s) {
-            return new Vec3D(x * s, y * s, z * s);
-        }
-
-        /**
-         * Normalizes the vector so that its magnitude = 1.
-         * @return The normalized vector.
-         */
-        public Vec3D normalize() {
-            double mag = Math.sqrt(x * x + y * y + z * z);
-
-            if (mag > 0)
-                return scale(1.0 / mag);
-            return this;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Vec3D) {
-                final Vec3D v = (Vec3D) obj;
-                return x == v.x && y == v.y && z == v.z;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(x, y, z);
-        }
-
-        public String toString() {
-            return String.format("{x: %g, y: %g, z: %g}", x, y, z);
-        }
-    }
-
-    public static class Ray3D extends Vec3D {
-        public final Vec3D dir;
-
-        public Ray3D(Vec3D origin, Vec3D direction) {
-            super(origin);
-            dir = direction.normalize();
-        }
-
-        /**
-         * Construct a 3D ray from a location.
-         * @param loc - the Bukkit location.
-         */
-        public Ray3D(Location loc) {
-            this(Vec3D.fromLocation(loc), Vec3D.fromVector(loc.getDirection()));
-        }
-
-        public Vec3D getDirection() {
-            return dir;
-        }
-
-        public Vec3D getPointAtDistance(double dist) {
-            return add(dir.scale(dist));
-        }
-
-        public String toString() {
-            return "origin: " + super.toString() + " dir: " + dir;
-        }
-    }
-
     private Vec3D max;
     private Vec3D min;
 
@@ -156,14 +23,20 @@ public class AABB {
 
     /**
      * Create a new AABB from a given block.
+     *
      * @param block - the block.
      */
     public AABB(Location block) {
         this(Vec3D.fromLocation(block), Vec3D.fromLocation(block).add(Vec3D.UNIT_MAX));
     }
 
-    public Vec3D getMax() { return max; }
-    public Vec3D getMin() { return min; }
+    public Vec3D getMax() {
+        return max;
+    }
+
+    public Vec3D getMin() {
+        return min;
+    }
 
     public void expand(double expand) {
         min = min.add(new Vec3D(-expand, -expand, -expand));
@@ -181,11 +54,11 @@ public class AABB {
      * Efficient and Robust Ray-Box Intersection Algorithm" Journal of graphics
      * tools, 10(1):49-54, 2005</code>
      *
-     * @param ray incident ray
+     * @param ray     incident ray
      * @param minDist
      * @param maxDist
      * @return intersection point on the bounding box (only the first is
-     *         returned) or null if no intersection
+     * returned) or null if no intersection
      */
     public Vec3D intersectsRay(Ray3D ray, float minDist, double maxDist) {
         Vec3D invDir = new Vec3D(1f / ray.dir.x, 1f / ray.dir.y, 1f / ray.dir.z);
@@ -231,5 +104,149 @@ public class AABB {
             return ray.getPointAtDistance(tmin);
         }
         return null;
+    }
+
+    public static class Vec3D {
+        /**
+         * Point with the coordinate (1, 1, 1).
+         */
+        public static final Vec3D UNIT_MAX = new Vec3D(1, 1, 1);
+
+        /**
+         * X coordinate.
+         */
+        public final double x;
+        /**
+         * Y coordinate.
+         */
+        public final double y;
+        /**
+         * Z coordinate.
+         */
+        public final double z;
+
+        /**
+         * Creates a new vector with the given coordinates.
+         *
+         * @param x the x
+         * @param y the y
+         * @param z the z
+         */
+        public Vec3D(double x, double y, double z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        /**
+         * Creates a new vector with the coordinates of the given vector.
+         *
+         * @param v vector to copy.
+         */
+        public Vec3D(Vec3D v) {
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+        }
+
+        /**
+         * Construct a vector from a Bukkit location.
+         *
+         * @param loc - the Bukkit location.
+         */
+        public static Vec3D fromLocation(Location loc) {
+            return new Vec3D(loc.getX(), loc.getY(), loc.getZ());
+        }
+
+        /**
+         * Construct a copy of our immutable vector from Bukkit's mutable vector.
+         *
+         * @param v - Bukkit vector.
+         * @return A copy of the given vector.
+         */
+        public static Vec3D fromVector(Vector v) {
+            return new Vec3D(v.getX(), v.getY(), v.getZ());
+        }
+
+        /**
+         * Add vector v and returns result as new vector.
+         *
+         * @param v vector to add
+         * @return result as new vector
+         */
+        public final Vec3D add(Vec3D v) {
+            return new Vec3D(x + v.x, y + v.y, z + v.z);
+        }
+
+        /**
+         * Scales vector uniformly and returns result as new vector.
+         *
+         * @param s scale factor
+         * @return new vector
+         */
+        public Vec3D scale(double s) {
+            return new Vec3D(x * s, y * s, z * s);
+        }
+
+        /**
+         * Normalizes the vector so that its magnitude = 1.
+         *
+         * @return The normalized vector.
+         */
+        public Vec3D normalize() {
+            double mag = Math.sqrt(x * x + y * y + z * z);
+
+            if (mag > 0)
+                return scale(1.0 / mag);
+            return this;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Vec3D) {
+                final Vec3D v = (Vec3D) obj;
+                return x == v.x && y == v.y && z == v.z;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(x, y, z);
+        }
+
+        public String toString() {
+            return String.format("{x: %g, y: %g, z: %g}", x, y, z);
+        }
+    }
+
+    public static class Ray3D extends Vec3D {
+        public final Vec3D dir;
+
+        public Ray3D(Vec3D origin, Vec3D direction) {
+            super(origin);
+            dir = direction.normalize();
+        }
+
+        /**
+         * Construct a 3D ray from a location.
+         *
+         * @param loc - the Bukkit location.
+         */
+        public Ray3D(Location loc) {
+            this(Vec3D.fromLocation(loc), Vec3D.fromVector(loc.getDirection()));
+        }
+
+        public Vec3D getDirection() {
+            return dir;
+        }
+
+        public Vec3D getPointAtDistance(double dist) {
+            return add(dir.scale(dist));
+        }
+
+        public String toString() {
+            return "origin: " + super.toString() + " dir: " + dir;
+        }
     }
 }

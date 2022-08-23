@@ -46,16 +46,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class GUITool implements ToolMenu {
     // Page buttons
-    private static final String                     NEXT_PAGE = "NEXT_PAGE";
-    private static final String                     PREV_PAGE = "PREV_PAGE";
-    private static final HashMap<String, GUIData>   setups    = new HashMap<>();
-    private static final HashMap<String, ItemStack> items     = new HashMap<>();
-    private static       boolean                    inUse     = false;
-    private static       CommentedConfig            config;
+    private static final String NEXT_PAGE = "NEXT_PAGE";
+    private static final String PREV_PAGE = "PREV_PAGE";
+    private static final HashMap<String, GUIData> setups = new HashMap<>();
+    private static final HashMap<String, ItemStack> items = new HashMap<>();
+    private static boolean inUse = false;
+    private static CommentedConfig config;
 
     private static ItemStack
             NEXT,
@@ -69,22 +74,22 @@ public class GUITool implements ToolMenu {
             NEXT_PROFESSION,
             PREV_PROFESSION;
 
-    private static RPGClass[]    availableClasses;
-    private static RPGClass[]    availableProfesses;
-    private static String[]      availableGroups;
-    private static GUIType       type;
-    private static int           classId;
-    private static int           professId;
-    private final  Player        player;
-    private        InventoryData data;
-    private        Inventory     inventory;
-    private        RPGClass      rpgClass;
-    private        Skill         skill;
-    private        GUIData       guiData;
-    private        ItemStack[]   playerContents;
-    private        ItemStack[]   inventoryContents;
-    private        int           i;
-    private        boolean       switching = false;
+    private static RPGClass[] availableClasses;
+    private static RPGClass[] availableProfesses;
+    private static String[] availableGroups;
+    private static GUIType type;
+    private static int classId;
+    private static int professId;
+    private final Player player;
+    private InventoryData data;
+    private Inventory inventory;
+    private RPGClass rpgClass;
+    private Skill skill;
+    private GUIData guiData;
+    private ItemStack[] playerContents;
+    private ItemStack[] inventoryContents;
+    private int i;
+    private boolean switching = false;
 
     public GUITool(Player player) {
         this.player = player;
@@ -111,7 +116,7 @@ public class GUITool implements ToolMenu {
 
         availableClasses = SkillAPI.getClasses().values().toArray(new RPGClass[SkillAPI.getClasses().size()]);
         Set<RPGClass> professes = new HashSet<>();
-        Set<String>   groups    = new HashSet<>();
+        Set<String> groups = new HashSet<>();
         professes.add(null);
         for (RPGClass c : availableClasses) {
             try {
@@ -155,9 +160,9 @@ public class GUITool implements ToolMenu {
     }
 
     public static ItemStack parseItem(DataSection data) {
-        Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
-        ItemStack item     = new ItemStack(material);
-        ItemMeta  meta     = item.getItemMeta();
+        Material material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(data.getInt("data"));
         if (meta instanceof Damageable) {
             ((Damageable) meta).setDamage(data.getInt("durability"));
@@ -258,7 +263,7 @@ public class GUITool implements ToolMenu {
 
     private static ItemStack make(Material mat, String name, String... lore) {
         ItemStack item = new ItemStack(mat);
-        ItemMeta  meta = item.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         meta.setLore(Arrays.asList(lore));
         item.setItemMeta(meta);
@@ -354,7 +359,7 @@ public class GUITool implements ToolMenu {
 
     private ItemStack toPlaceholder(String key, ItemStack custom) {
         ItemStack copy = custom.clone();
-        ItemMeta  meta = copy.getItemMeta();
+        ItemMeta meta = copy.getItemMeta();
         meta.setDisplayName(key);
         meta.setLore(new ArrayList<>());
         copy.setItemMeta(meta);
@@ -365,7 +370,7 @@ public class GUITool implements ToolMenu {
         playerContents[7] = PREV_PROFESSION;
         playerContents[8] = NEXT_PROFESSION;
 
-        GUIPage  page       = guiData.getPage();
+        GUIPage page = guiData.getPage();
         RPGClass profession = availableProfesses[professId];
         i = 9;
         for (RPGClass c : availableClasses) {
@@ -393,8 +398,8 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String group : availableGroups) {
-            ItemStack item  = make(Material.DRAGON_EGG, group, "", "Spot for the player's current", "class in the group should", "be placed in the GUI");
-            int       index = page.getIndex(group);
+            ItemStack item = make(Material.DRAGON_EGG, group, "", "Spot for the player's current", "class in the group should", "be placed in the GUI");
+            int index = page.getIndex(group);
             if (index != -1)
                 inventoryContents[index] = item;
             else if (!guiData.has(group) && i < playerContents.length)
@@ -409,7 +414,7 @@ public class GUITool implements ToolMenu {
         playerContents[8] = NEXT_CLASS;
 
         RPGClass current = availableClasses[classId];
-        GUIPage  page    = guiData.getPage();
+        GUIPage page = guiData.getPage();
         i = 9;
         while (current != null) {
             for (Skill skill : current.getSkills()) {
@@ -430,8 +435,8 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String key : SkillAPI.getAttributeManager().getKeys()) {
-            AttributeManager.Attribute attr  = SkillAPI.getAttributeManager().getAttribute(key);
-            int                        index = page.getIndex(attr.getKey());
+            AttributeManager.Attribute attr = SkillAPI.getAttributeManager().getAttribute(key);
+            int index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();
             else if (!guiData.has(attr.getKey()) && i < playerContents.length) {

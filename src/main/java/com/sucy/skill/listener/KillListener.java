@@ -128,7 +128,7 @@ public class KillListener extends SkillAPIListener {
                 target.setKiller(damager);
             }
             if (d instanceof Tameable tameable) {
-                if (tameable.getOwner()!=null)
+                if (tameable.getOwner() != null)
                     target.setKiller(Bukkit.getPlayer(tameable.getOwner().getUniqueId()));
             }
         }

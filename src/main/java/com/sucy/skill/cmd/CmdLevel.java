@@ -92,7 +92,9 @@ public class CmdLevel implements IFunction {
             int amount = NumberParser.parseInt(args[numberIndex]);
 
             // Invalid amount of levels
-            if (amount == 0) { return; }
+            if (amount == 0) {
+                return;
+            }
 
             int lastArg = args.length - 1;
             boolean message = IS_BOOL.matcher(args[lastArg]).matches();

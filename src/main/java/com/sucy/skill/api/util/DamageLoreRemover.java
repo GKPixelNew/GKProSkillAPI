@@ -99,7 +99,7 @@ public class DamageLoreRemover {
         if (NBT_BASE == null) setup();
         try {
             item = item.clone();
-            Object nmsStack    = AS_NMS.invoke(null, item);
+            Object nmsStack = AS_NMS.invoke(null, item);
             Object nbtCompound = GET_TAG.invoke(nmsStack);
 
             // Disable durability if needed

@@ -12,20 +12,9 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerSkillCastFailedEvent extends Event {
 
-    public enum Cause {
-        CANCELED,
-        CASTER_DEAD,
-        EFFECT_FAILED,
-        NO_MANA,
-        NO_TARGET,
-        NOT_UNLOCKED,
-        ON_COOLDOWN,
-        SPECTATOR
-    }
-
     private static final HandlerList handlers = new HandlerList();
     private PlayerSkill skill;
-    private Cause       cause;
+    private Cause cause;
 
     private PlayerSkillCastFailedEvent(final PlayerSkill skill, final Cause cause) {
         this.skill = skill;
@@ -35,6 +24,15 @@ public class PlayerSkillCastFailedEvent extends Event {
     public static boolean invoke(final PlayerSkill skill, final Cause cause) {
         Bukkit.getPluginManager().callEvent(new PlayerSkillCastFailedEvent(skill, cause));
         return false;
+    }
+
+    /**
+     * Retrieves the handlers for the event
+     *
+     * @return list of event handlers
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     /**
@@ -68,12 +66,14 @@ public class PlayerSkillCastFailedEvent extends Event {
         return handlers;
     }
 
-    /**
-     * Retrieves the handlers for the event
-     *
-     * @return list of event handlers
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
+    public enum Cause {
+        CANCELED,
+        CASTER_DEAD,
+        EFFECT_FAILED,
+        NO_MANA,
+        NO_TARGET,
+        NOT_UNLOCKED,
+        ON_COOLDOWN,
+        SPECTATOR
     }
 }

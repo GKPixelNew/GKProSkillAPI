@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.FlagApplyEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,13 +34,12 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a flag is applied to an entity
  */
-public class FlagApplyEvent extends Event implements Cancellable
-{
+public class FlagApplyEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private LivingEntity entity;
-    private String       flag;
-    private boolean      cancelled;
-    private int          ticks;
+    private String flag;
+    private boolean cancelled;
+    private int ticks;
 
     /**
      * Constructor
@@ -49,8 +48,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      * @param flag   the flag that is to be applied
      * @param ticks  the ticks the flag is to be applied for
      */
-    public FlagApplyEvent(LivingEntity entity, String flag, int ticks)
-    {
+    public FlagApplyEvent(LivingEntity entity, String flag, int ticks) {
         this.entity = entity;
         this.flag = flag;
         this.ticks = ticks;
@@ -58,12 +56,18 @@ public class FlagApplyEvent extends Event implements Cancellable
     }
 
     /**
+     * @return gets the handlers for the event
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    /**
      * Retrieves the entity that the flag is being applied to
      *
      * @return the entity having the flag applied to
      */
-    public LivingEntity getEntity()
-    {
+    public LivingEntity getEntity() {
         return entity;
     }
 
@@ -72,8 +76,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      *
      * @return the flag being applied
      */
-    public String getFlag()
-    {
+    public String getFlag() {
         return flag;
     }
 
@@ -82,8 +85,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      *
      * @return the number of ticks
      */
-    public int getTicks()
-    {
+    public int getTicks() {
         return ticks;
     }
 
@@ -93,8 +95,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -104,8 +105,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      * @param cancelled true if cancelled, false otherwise
      */
     @Override
-    public void setCancelled(boolean cancelled)
-    {
+    public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
@@ -113,16 +113,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      * @return gets the handlers for the event
      */
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    /**
-     * @return gets the handlers for the event
-     */
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

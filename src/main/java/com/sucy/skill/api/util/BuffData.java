@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.BuffData
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,8 +39,7 @@ import java.util.Map;
 /**
  * Represents buffs set on an entity
  */
-public class BuffData
-{
+public class BuffData {
     private final Map<String, Map<String, Buff>> buffs = new HashMap<String, Map<String, Buff>>();
 
     private LivingEntity entity;
@@ -50,8 +49,7 @@ public class BuffData
      *
      * @param entity entity to initialize for
      */
-    public BuffData(LivingEntity entity)
-    {
+    public BuffData(LivingEntity entity) {
         this.entity = entity;
     }
 
@@ -147,8 +145,8 @@ public class BuffData
      */
     public double apply(final BuffType type, final String category, final double value) {
         return category == null || category.length() == 0
-            ? doApply(value, type.name())
-            : doApply(value, type.name(), type.name() + category);
+                ? doApply(value, type.name())
+                : doApply(value, type.name(), type.name() + category);
     }
 
     private double doApply(final double value, final String... types) {
@@ -210,31 +208,35 @@ public class BuffData
         return Math.max(0, multiplier);
     }
 
-    /** @deprecated use {@link BuffData#apply(BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffData#apply(BuffType, double)} instead
+     */
     @Deprecated
-    public double modifyDealtDamage(double damage)
-    {
+    public double modifyDealtDamage(double damage) {
         return apply(BuffType.DAMAGE, damage);
     }
 
-    /** @deprecated use {@link BuffData#apply(BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffData#apply(BuffType, double)} instead
+     */
     @Deprecated
-    public double modifyTakenDamage(double damage)
-    {
+    public double modifyTakenDamage(double damage) {
         return apply(BuffType.DEFENSE, damage);
     }
 
-    /** @deprecated use {@link BuffData#apply(BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffData#apply(BuffType, double)} instead
+     */
     @Deprecated
-    public double modifySkillDealtDamage(double damage)
-    {
+    public double modifySkillDealtDamage(double damage) {
         return apply(BuffType.SKILL_DAMAGE, damage);
     }
 
-    /** @deprecated use {@link BuffData#apply(BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffData#apply(BuffType, double)} instead
+     */
     @Deprecated
-    public double modifySkillTakenDamage(double damage)
-    {
+    public double modifySkillTakenDamage(double damage) {
         return apply(BuffType.SKILL_DEFENSE, damage);
     }
 
@@ -251,22 +253,18 @@ public class BuffData
         BuffManager.clearData(entity);
     }
 
-    private class BuffTask extends BukkitRunnable
-    {
+    private class BuffTask extends BukkitRunnable {
         private final String type;
         private final String key;
 
-        BuffTask(final String type, final String key)
-        {
+        BuffTask(final String type, final String key) {
             this.type = type;
             this.key = key;
         }
 
         @Override
-        public void run()
-        {
-            if (!entity.isValid() || entity.isDead())
-            {
+        public void run() {
+            if (!entity.isValid() || entity.isDead()) {
                 BuffManager.clearData(entity);
                 return;
             }

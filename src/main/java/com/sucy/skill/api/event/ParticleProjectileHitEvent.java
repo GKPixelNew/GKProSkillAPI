@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.ParticleProjectileHitEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,12 +34,11 @@ import org.bukkit.event.HandlerList;
 /**
  * <p>An event for when a particle projectile hits something.</p>
  */
-public class ParticleProjectileHitEvent extends Event
-{
+public class ParticleProjectileHitEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final ParticleProjectile projectile;
-    private final LivingEntity       target;
+    private final LivingEntity target;
 
     /**
      * <p>Initializes a new event.</p>
@@ -47,10 +46,18 @@ public class ParticleProjectileHitEvent extends Event
      * @param projectile the projectile that hit something
      * @param target     the thing that the projectile hit
      */
-    public ParticleProjectileHitEvent(ParticleProjectile projectile, LivingEntity target)
-    {
+    public ParticleProjectileHitEvent(ParticleProjectile projectile, LivingEntity target) {
         this.projectile = projectile;
         this.target = target;
+    }
+
+    /**
+     * <p>Bukkit method for taking care of the event handlers.</p>
+     *
+     * @return list of event handlers
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     /**
@@ -58,8 +65,7 @@ public class ParticleProjectileHitEvent extends Event
      *
      * @return the projectile that hit something
      */
-    public ParticleProjectile getProjectile()
-    {
+    public ParticleProjectile getProjectile() {
         return projectile;
     }
 
@@ -68,8 +74,7 @@ public class ParticleProjectileHitEvent extends Event
      *
      * @return the thing hit by the projectile
      */
-    public LivingEntity getTarget()
-    {
+    public LivingEntity getTarget() {
         return target;
     }
 
@@ -79,18 +84,7 @@ public class ParticleProjectileHitEvent extends Event
      * @return list of event handlers
      */
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    /**
-     * <p>Bukkit method for taking care of the event handlers.</p>
-     *
-     * @return list of event handlers
-     */
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

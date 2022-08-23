@@ -60,7 +60,6 @@ public class ItemChecker {
      * @param level     level of the effect
      * @param component effect component checking for
      * @param remove    whether or not to remove matching items
-     *
      * @return true if all conditions met, false otherwise
      */
     public static boolean check(Player player, int level, EffectComponent component, boolean remove) {
@@ -116,7 +115,6 @@ public class ItemChecker {
      * @param item     item to check
      * @param level    level of the effect
      * @param settings settings to apply
-     *
      * @return true if passes all conditions, false otherwise
      */
     public static boolean check(ItemStack item, int level, Settings settings) {
@@ -146,7 +144,6 @@ public class ItemChecker {
      * @param item   item to check
      * @param target display name desired
      * @param regex  whether or not the target is a regex pattern
-     *
      * @return true if matches, false otherwise
      */
     public static boolean checkName(ItemStack item, String target, boolean regex) {
@@ -172,7 +169,6 @@ public class ItemChecker {
      * @param item   item to check
      * @param target lore text desired
      * @param regex  whether or not the target is a regex pattern
-     *
      * @return true if matches, false otherwise
      */
     public static boolean checkLore(ItemStack item, String target, boolean regex) {

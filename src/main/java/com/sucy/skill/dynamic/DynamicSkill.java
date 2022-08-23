@@ -35,7 +35,6 @@ import com.sucy.skill.dynamic.trigger.TriggerComponent;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,18 +52,18 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getTrigger;
  * A skill implementation for the Dynamic system
  */
 public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, Listener {
-    private static final HashMap<Integer, HashMap<String, Object>> castData   = new HashMap<>();
-    private final        List<TriggerHandler>                      triggers   = new ArrayList<>();
-    private final        Map<String, EffectComponent>              attribKeys = new HashMap<>();
-    private final        Map<Integer, Integer>                     active     = new HashMap<>();
-    private final        List<Integer>                             forced     = new ArrayList<>();
-    private              TriggerComponent                          castTrigger;
-    private              TriggerComponent                          initializeTrigger;
-    private              TriggerComponent                          cleanupTrigger;
+    private static final HashMap<Integer, HashMap<String, Object>> castData = new HashMap<>();
+    private final List<TriggerHandler> triggers = new ArrayList<>();
+    private final Map<String, EffectComponent> attribKeys = new HashMap<>();
+    private final Map<Integer, Integer> active = new HashMap<>();
+    private final List<Integer> forced = new ArrayList<>();
+    private TriggerComponent castTrigger;
+    private TriggerComponent initializeTrigger;
+    private TriggerComponent cleanupTrigger;
 
-    private boolean cancel     = false;
-    private double  multiplier = 1;
-    private double  bonus      = 0;
+    private boolean cancel = false;
+    private double multiplier = 1;
+    private double bonus = 0;
 
     /**
      * Initializes a new dynamic skill
@@ -311,7 +310,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         // Dynamic attribute paths use periods
         if (key.contains(".")) {
             final String[] path = key.split("\\.");
-            final String   attr = path[1].toLowerCase();
+            final String attr = path[1].toLowerCase();
             if (attribKeys.containsKey(path[0]) && attribKeys.get(path[0]).settings.has(attr)) {
                 return format(attribKeys.get(path[0]).parseValues(caster, attr, level, 0));
             } else {

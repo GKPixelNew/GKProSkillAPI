@@ -32,10 +32,9 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
-public class ParticleEffectMechanic extends MechanicComponent
-{
+public class ParticleEffectMechanic extends MechanicComponent {
     private static final String DURATION = "duration";
-    private static final String KEY      = "effect-key";
+    private static final String KEY = "effect-key";
 
     @Override
     public String getKey() {
@@ -43,8 +42,7 @@ public class ParticleEffectMechanic extends MechanicComponent
     }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force)
-    {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String key = settings.getString(KEY, skill.getName());
         int duration = (int) (20 * parseValues(caster, DURATION, level, 5));
 

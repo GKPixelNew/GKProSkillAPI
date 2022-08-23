@@ -37,7 +37,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -97,22 +101,22 @@ public class ItemSerializer {
             .put("RIPTIDE", 82)
             .put("CHANNELING", 83)
             .build();
-    private static       boolean                initialized = false;
-    private static       Constructor<?>         nbtTagListConstructor;
-    private static       Constructor<?>         nbtTagCompoundConstructor;
-    private static       Constructor<?>         craftItemConstructor;
-    private static       Constructor<?>         craftItemNMSConstructor;
-    private static       Constructor<?>         nmsItemConstructor;
-    private static       Method                 itemStack_save;
-    private static       Method                 nbtTagList_add;
-    private static       Method                 nbtTagList_size;
-    private static       Method                 nbtTagList_get;
-    private static       Method                 nbtCompressedStreamTools_write;
-    private static       Method                 nbtCompressedStreamTools_read;
-    private static       Method                 nbtTagCompound_set;
-    private static       Method                 nbtTagCompound_getList;
-    private static       Method                 nbtTagCompound_isEmpty;
-    private static       Field                  craftItemStack_getHandle;
+    private static boolean initialized = false;
+    private static Constructor<?> nbtTagListConstructor;
+    private static Constructor<?> nbtTagCompoundConstructor;
+    private static Constructor<?> craftItemConstructor;
+    private static Constructor<?> craftItemNMSConstructor;
+    private static Constructor<?> nmsItemConstructor;
+    private static Method itemStack_save;
+    private static Method nbtTagList_add;
+    private static Method nbtTagList_size;
+    private static Method nbtTagList_get;
+    private static Method nbtCompressedStreamTools_write;
+    private static Method nbtCompressedStreamTools_read;
+    private static Method nbtTagCompound_set;
+    private static Method nbtTagCompound_getList;
+    private static Method nbtTagCompound_isEmpty;
+    private static Field craftItemStack_getHandle;
 
     private static void initialize() {
         if (initialized)
@@ -183,13 +187,13 @@ public class ItemSerializer {
         }
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            DataOutputStream      dataOutput   = new DataOutputStream(outputStream);
-            Object                itemList     = Reflex.invokeConstructor(nbtTagListConstructor);
+            DataOutputStream dataOutput = new DataOutputStream(outputStream);
+            Object itemList = Reflex.invokeConstructor(nbtTagListConstructor);
 
             // Save every element in the list
             for (ItemStack item : items) {
                 Object outputObject = Reflex.invokeConstructor(nbtTagCompoundConstructor);
-                Object craft        = getCraftVersion(item);
+                Object craft = getCraftVersion(item);
 
                 // Convert the item stack to a NBT compound
                 if (craft != null)
@@ -217,11 +221,11 @@ public class ItemSerializer {
             return basicDeserialize(data);
         }
         try {
-            ByteArrayInputStream inputStream     = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
-            DataInputStream      dataInputStream = new DataInputStream(inputStream);
-            Object               wrapper         = Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
-            Object               itemList        = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
-            ItemStack[]          items           = new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
+            DataInputStream dataInputStream = new DataInputStream(inputStream);
+            Object wrapper = Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
+            Object itemList = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
+            ItemStack[] items = new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
 
             for (int i = 0; i < items.length; i++) {
                 Object inputObject = Reflex.invokeMethod(nbtTagList_get, itemList, i);
@@ -314,26 +318,26 @@ public class ItemSerializer {
         String[] serializedBlocks = invString.split(";");
         if (serializedBlocks.length == 0)
             return null;
-        String      invInfo               = serializedBlocks[0];
+        String invInfo = serializedBlocks[0];
         ItemStack[] deserializedInventory = new ItemStack[Integer.valueOf(invInfo)];
 
         for (int i = 1; i <= deserializedInventory.length && i < serializedBlocks.length; i++) {
             String[] serializedBlock = serializedBlocks[i].split("#");
-            int      stackPosition   = Integer.valueOf(serializedBlock[0]);
+            int stackPosition = Integer.valueOf(serializedBlock[0]);
 
             if (stackPosition >= deserializedInventory.length) {
                 continue;
             }
 
-            ItemStack is               = null;
-            Boolean   createdItemStack = false;
+            ItemStack is = null;
+            Boolean createdItemStack = false;
 
             String[] serializedItemStack = serializedBlock[1].split(":");
             for (String itemInfo : serializedItemStack) {
                 String[] itemAttribute = itemInfo.split("@");
                 if (itemAttribute[0].equals("t")) {
                     if (VersionManager.isVersionAtLeast(11605)) {
-                        String         id  = String.valueOf(itemAttribute[1]);
+                        String id = String.valueOf(itemAttribute[1]);
                         final Material mat = Material.getMaterial(id);
                         is = new ItemStack(mat);
                         createdItemStack = true;
@@ -356,7 +360,7 @@ public class ItemSerializer {
                     meta.setDisplayName(itemAttribute[1]);
                     is.setItemMeta(meta);
                 } else if (itemAttribute[0].equals("l") && createdItemStack) {
-                    ItemMeta     meta = is.getItemMeta();
+                    ItemMeta meta = is.getItemMeta();
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
                     if (itemAttribute.length >= 1)

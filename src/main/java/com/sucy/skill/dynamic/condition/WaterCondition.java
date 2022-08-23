@@ -40,11 +40,11 @@ public class WaterCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final boolean  in    = settings.getString(STATE).equalsIgnoreCase("in water");
+        final boolean in = settings.getString(STATE).equalsIgnoreCase("in water");
         final Material block = target.getLocation().getBlock().getType();
 
-        final Block b             = target.getLocation().getBlock();
-        boolean     isWaterLogged = false;
+        final Block b = target.getLocation().getBlock();
+        boolean isWaterLogged = false;
 
         if (VersionManager.isVersionAtLeast(11300)) {
             if (b.getBlockData() instanceof Waterlogged) {

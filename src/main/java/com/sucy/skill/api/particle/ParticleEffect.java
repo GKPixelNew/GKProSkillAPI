@@ -37,7 +37,6 @@ import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.log.Logger;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -51,17 +50,17 @@ import java.util.Set;
 public class ParticleEffect {
     private static final XZHandler flatRot = (XZHandler) Directions.byName("XZ");
 
-    private final PolarSettings    shape;
-    private final PolarSettings    animation;
+    private final PolarSettings shape;
+    private final PolarSettings animation;
     private final ParticleSettings particle;
-    private final IValue           size;
-    private final IValue           animSize;
+    private final IValue size;
+    private final IValue animSize;
 
     private final DirectionHandler shapeDir;
     private final DirectionHandler animDir;
 
-    private final boolean  withRotation;
-    private final double   initialRotation;
+    private final boolean withRotation;
+    private final double initialRotation;
     private final Matrix3D rotMatrix;
 
     private final String name;
@@ -168,36 +167,36 @@ public class ParticleEffect {
     public void play(Location loc, int frame, int level) {
         frame = frame % animation.getSteps();
         try {
-            int       next        = (frame + 1) * animation.getCopies();
-            Point3D[] animPoints  = animation.getPoints(animDir);
+            int next = (frame + 1) * animation.getCopies();
+            Point3D[] animPoints = animation.getPoints(animDir);
             Point3D[] shapePoints = shape.getPoints(shapeDir);
-            Point2D[] trig        = animation.getTrig(frame);
+            Point2D[] trig = animation.getTrig(frame);
 
             Point2D cs = trig[0];
-            double  t  = animation.getT(frame);
-            double  p  = (double) frame / animation.getSteps();
+            double t = animation.getT(frame);
+            double p = (double) frame / animation.getSteps();
 
             int j = 0;
 
             World world = Objects.requireNonNull(loc.getWorld());
             Set<Player> players = ParticleHelper.filterPlayers(world.getPlayers(), loc, view);
 
-            Particle effect   = this.particle.type;
-            int                 count      = this.particle.amount;
-            double              dx         = this.particle.dx;
-            double              dy         = this.particle.dy;
-            double              dz         = this.particle.dz;
-            float               speed      = this.particle.speed;
-            Object              object     = this.particle.object;
+            Particle effect = this.particle.type;
+            int count = this.particle.amount;
+            double dx = this.particle.dx;
+            double dy = this.particle.dy;
+            double dz = this.particle.dz;
+            float speed = this.particle.speed;
+            Object object = this.particle.object;
 
             for (int i = frame * this.animation.getCopies(); i < next; ++i) {
-                Point3D p1       = animPoints[i];
-                double  animSize = this.animSize.compute(t, p, cs.x, cs.y, p1.x, p1.y, p1.z, level);
+                Point3D p1 = animPoints[i];
+                double animSize = this.animSize.compute(t, p, cs.x, cs.y, p1.x, p1.y, p1.z, level);
 
                 for (Point3D p2 : shapePoints) {
                     double size = this.size.compute(t, p, cs.x, cs.y, p2.x, p2.y, p2.z, level);
                     if (initialRotation != 0) p2 = flatRot.rotateAboutY(p2, rotMatrix);
-                    if (withRotation) {
+                    if (withRotation) { //TODO apply this to animations as well after i learn trigonometry, calculus and polar coordinates
                         double yaw = Math.toRadians(-loc.getYaw());
                         p2 = flatRot.rotateAboutY(p2, yaw);
                     }

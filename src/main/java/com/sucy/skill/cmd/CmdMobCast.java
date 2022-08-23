@@ -50,8 +50,8 @@ import java.util.regex.Pattern;
 public class CmdMobCast implements IFunction, Listener {
     private static final Pattern INTEGER = Pattern.compile("-?[0-9]+");
 
-    private static final String NOT_ENTITY    = "not-entity";
-    private static final String WRONG_SKILL   = "wrong-skill";
+    private static final String NOT_ENTITY = "not-entity";
+    private static final String WRONG_SKILL = "wrong-skill";
     private static final String INVALID_SKILL = "invalid-skill";
 
     /**
@@ -75,8 +75,8 @@ public class CmdMobCast implements IFunction, Listener {
 
             LivingEntity entity = (LivingEntity) ent;
 
-            String name  = args[1];
-            int    level = 1;
+            String name = args[1];
+            int level = 1;
             for (int i = 2; i < args.length; i++) {
                 if (i == args.length - 1 && SkillAPI.getSkill(name) != null && INTEGER.matcher(args[i]).matches()) {
                     level = Integer.parseInt(args[i]);

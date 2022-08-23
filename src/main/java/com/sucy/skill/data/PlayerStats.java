@@ -46,7 +46,8 @@ public class PlayerStats implements StatHolder {
     private static final String POINTS = "points";
     private static final String ATTRIB = "attrib";
     private static final HashMap<String, String> statMap = new HashMap<String, String>();
-    private final        PlayerClass             player;
+    private final PlayerClass player;
+
     /**
      * Constructor
      *

@@ -57,10 +57,10 @@ public class RegistrationManager {
     private static final String CLASS_FOLDER = "dynamic" + File.separator + "class";
     private static final String SKILL_DIR = SKILL_FOLDER + File.separator;
     private static final String CLASS_DIR = CLASS_FOLDER + File.separator;
-    private final SkillAPI        api;
+    private final SkillAPI api;
     private final CommentedConfig skillConfig;
     private final CommentedConfig classConfig;
-    private       Mode            mode = Mode.STARTUP;
+    private Mode mode = Mode.STARTUP;
 
     /**
      * <p>Creates a new Registration Manager for handling registering new
@@ -194,7 +194,7 @@ public class RegistrationManager {
                         }
                     } catch (Exception ex) {
                         Logger.invalid("Failed to load skill: " + name + " - " + ex.getMessage());
-                        if(ex instanceof NullPointerException)
+                        if (ex instanceof NullPointerException)
                             Logger.log("Please check that " + (SKILL_DIR + name) + ".yml exists");
                         ex.printStackTrace();
                     }
@@ -313,7 +313,6 @@ public class RegistrationManager {
      * registered skills.</p>
      *
      * @param skill skill to validate
-     *
      * @return the class if valid, null otherwise
      */
     public Skill validate(Skill skill) {
@@ -371,7 +370,6 @@ public class RegistrationManager {
      * registered classes.</p>
      *
      * @param rpgClass class to validate
-     *
      * @return the class if valid, null otherwise
      */
     public RPGClass validate(RPGClass rpgClass) {

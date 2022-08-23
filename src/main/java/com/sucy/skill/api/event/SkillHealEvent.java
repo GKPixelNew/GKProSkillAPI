@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.SkillHealEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,14 +35,13 @@ import org.bukkit.event.HandlerList;
  * An event for when an entity is healed by
  * another entity with the use of a skill.
  */
-public class SkillHealEvent extends Event implements Cancellable
-{
+public class SkillHealEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private LivingEntity healer;
     private LivingEntity target;
-    private double       damage;
-    private boolean      cancelled;
+    private double damage;
+    private boolean cancelled;
 
     /**
      * Initializes a new event
@@ -51,8 +50,7 @@ public class SkillHealEvent extends Event implements Cancellable
      * @param target entity receiving the damage
      * @param damage the amount of damage dealt
      */
-    public SkillHealEvent(LivingEntity healer, LivingEntity target, double damage)
-    {
+    public SkillHealEvent(LivingEntity healer, LivingEntity target, double damage) {
         this.healer = healer;
         this.target = target;
         this.damage = damage;
@@ -60,12 +58,20 @@ public class SkillHealEvent extends Event implements Cancellable
     }
 
     /**
+     * Retrieves the handlers for the event
+     *
+     * @return list of event handlers
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    /**
      * Retrieves the entity that dealt the damage
      *
      * @return entity that dealt the damage
      */
-    public LivingEntity getHealer()
-    {
+    public LivingEntity getHealer() {
         return healer;
     }
 
@@ -74,8 +80,7 @@ public class SkillHealEvent extends Event implements Cancellable
      *
      * @return entity that received the damage
      */
-    public LivingEntity getTarget()
-    {
+    public LivingEntity getTarget() {
         return target;
     }
 
@@ -84,8 +89,7 @@ public class SkillHealEvent extends Event implements Cancellable
      *
      * @return amount of damage dealt
      */
-    public double getAmount()
-    {
+    public double getAmount() {
         return damage;
     }
 
@@ -94,8 +98,7 @@ public class SkillHealEvent extends Event implements Cancellable
      *
      * @param amount amount of damage dealt
      */
-    public void setAmount(double amount)
-    {
+    public void setAmount(double amount) {
         damage = amount;
     }
 
@@ -105,8 +108,7 @@ public class SkillHealEvent extends Event implements Cancellable
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -116,8 +118,7 @@ public class SkillHealEvent extends Event implements Cancellable
      * @param cancelled the cancelled state of the event
      */
     @Override
-    public void setCancelled(boolean cancelled)
-    {
+    public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
@@ -127,18 +128,7 @@ public class SkillHealEvent extends Event implements Cancellable
      * @return list of event handlers
      */
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    /**
-     * Retrieves the handlers for the event
-     *
-     * @return list of event handlers
-     */
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

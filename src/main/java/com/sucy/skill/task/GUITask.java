@@ -55,7 +55,7 @@ public class GUITask extends RepeatThreadTask {
     private final boolean oldHealth;
 
     private final boolean useAction;
-    private final String  actionText;
+    private final String actionText;
 
     /**
      * Sets up the task, running if any of the GUI options are enabled
@@ -168,9 +168,9 @@ public class GUITask extends RepeatThreadTask {
                         .replace("{attr}", "" + data.getAttributePoints())
                         .replace("{sp}", "" + main.getPoints());
                 while (filtered.contains("{value:")) {
-                    int    index = filtered.indexOf("{value:");
-                    int    end   = filtered.indexOf('}', index);
-                    String key   = filtered.substring(index + 7, end);
+                    int index = filtered.indexOf("{value:");
+                    int end = filtered.indexOf('}', index);
+                    String key = filtered.substring(index + 7, end);
                     Object value = DynamicSkill.getCastData(player).get(key);
                     filtered = filtered.replace("{value:" + key + "}", (value == null ? "None" : value.toString()));
                 }

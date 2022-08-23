@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.BuffManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,8 +34,7 @@ import java.util.UUID;
 /**
  * The manager for temporary entity buff data
  */
-public class BuffManager
-{
+public class BuffManager {
     private static final HashMap<UUID, BuffData> data = new HashMap<UUID, BuffData>();
 
     /**
@@ -43,7 +42,6 @@ public class BuffManager
      * no existing data is found.
      *
      * @param entity entity to retrieve the data for
-     *
      * @return the buff data for the entity
      */
     public static BuffData getBuffData(final LivingEntity entity) {
@@ -144,8 +142,7 @@ public class BuffManager
      *
      * @return modified number
      */
-    public static double apply(final LivingEntity entity, final BuffType type, final double amount)
-    {
+    public static double apply(final LivingEntity entity, final BuffType type, final double amount) {
         final BuffData data = getBuffData(entity, false);
         return data == null ? amount : data.apply(type, amount);
     }
@@ -161,8 +158,7 @@ public class BuffManager
      *
      * @return modified number
      */
-    public static double apply(final LivingEntity entity, final BuffType type, final String category, final double amount)
-    {
+    public static double apply(final LivingEntity entity, final BuffType type, final String category, final double amount) {
         final BuffData data = getBuffData(entity, false);
         return data == null ? amount : data.apply(type, category, amount);
     }

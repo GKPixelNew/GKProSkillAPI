@@ -25,7 +25,7 @@ public class ExperienceListener extends SkillAPIListener {
 
     private static final String CONFIG_KEY = "unnatural";
 
-    boolean         track;
+    boolean track;
     HashSet<String> unnatural = new HashSet<String>();
 
     public ExperienceListener() {

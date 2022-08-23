@@ -45,11 +45,11 @@ public class PlayerSkillBar {
     private static final String
             UNASSIGNED = "e";
 
-    private final HashMap<Integer, String> slots    = new HashMap<Integer, String>();
-    private final HashSet<Integer>         reserved = new HashSet<Integer>();
-    private final PlayerData               player;
-    private       boolean                  enabled  = true;
-    private       boolean                  setup    = false;
+    private final HashMap<Integer, String> slots = new HashMap<Integer, String>();
+    private final HashSet<Integer> reserved = new HashSet<Integer>();
+    private final PlayerData player;
+    private boolean enabled = true;
+    private boolean setup = false;
 
     /**
      * Initial constructor
@@ -124,8 +124,8 @@ public class PlayerSkillBar {
      * @return number of items in the skill slots
      */
     public int getItemsInSkillSlots() {
-        int    count = 0;
-        Player p     = player.getPlayer();
+        int count = 0;
+        Player p = player.getPlayer();
         if (p == null)
             return -1;
 
@@ -144,8 +144,8 @@ public class PlayerSkillBar {
      * @return open slots in the players inventory
      */
     public int countOpenSlots() {
-        int    count = 0;
-        Player p     = player.getPlayer();
+        int count = 0;
+        Player p = player.getPlayer();
         if (p == null)
             return -1;
 

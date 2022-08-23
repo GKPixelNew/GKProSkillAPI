@@ -59,7 +59,7 @@ public class TriggerMechanic extends MechanicComponent {
     public boolean execute(
             final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
 
-        final int ticks = (int)(20 * parseValues(caster, DURATION, level, 5));
+        final int ticks = (int) (20 * parseValues(caster, DURATION, level, 5));
 
         boolean worked = false;
         for (final LivingEntity target : targets) {

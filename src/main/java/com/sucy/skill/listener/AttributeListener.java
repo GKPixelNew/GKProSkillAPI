@@ -29,7 +29,12 @@ package com.sucy.skill.listener;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.enums.ManaSource;
-import com.sucy.skill.api.event.*;
+import com.sucy.skill.api.event.PhysicalDamageEvent;
+import com.sucy.skill.api.event.PlayerExperienceGainEvent;
+import com.sucy.skill.api.event.PlayerLevelUpEvent;
+import com.sucy.skill.api.event.PlayerManaGainEvent;
+import com.sucy.skill.api.event.PlayerUpAttributeEvent;
+import com.sucy.skill.api.event.SkillDamageEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.hook.CitizensHook;
 import com.sucy.skill.log.LogType;
@@ -171,8 +176,8 @@ public class AttributeListener extends SkillAPIListener {
                 event.setDamage(data.scaleStat(AttributeManager.PHYSICAL_DAMAGE, event.getDamage()));
             } else {
                 final String classified = AttributeManager.SKILL_DAMAGE + "-" + event.getClassification();
-                final double firstPass  = data.scaleStat(classified, event.getDamage());
-                final double newAmount  = data.scaleStat(AttributeManager.SKILL_DAMAGE, firstPass);
+                final double firstPass = data.scaleStat(classified, event.getDamage());
+                final double newAmount = data.scaleStat(AttributeManager.SKILL_DAMAGE, firstPass);
                 event.setDamage(newAmount);
             }
         }
@@ -189,8 +194,8 @@ public class AttributeListener extends SkillAPIListener {
                 event.setDamage(data.scaleStat(AttributeManager.PHYSICAL_DEFENSE, event.getDamage()));
             } else {
                 final String classified = AttributeManager.SKILL_DEFENSE + "-" + event.getClassification();
-                final double firstPass  = data.scaleStat(classified, event.getDamage());
-                final double newAmount  = data.scaleStat(AttributeManager.SKILL_DEFENSE, firstPass);
+                final double firstPass = data.scaleStat(classified, event.getDamage());
+                final double newAmount = data.scaleStat(AttributeManager.SKILL_DEFENSE, firstPass);
                 event.setDamage(newAmount);
             }
         }
@@ -234,7 +239,7 @@ public class AttributeListener extends SkillAPIListener {
         final Player player = (Player) event.getEntity();
         if (event.getFoodLevel() < player.getFoodLevel()) {
             final PlayerData data = SkillAPI.getPlayerData(player);
-            final int        lost = data.subtractHungerValue(player.getFoodLevel() - event.getFoodLevel());
+            final int lost = data.subtractHungerValue(player.getFoodLevel() - event.getFoodLevel());
             event.setFoodLevel(player.getFoodLevel() - lost);
         }
     }
@@ -243,9 +248,9 @@ public class AttributeListener extends SkillAPIListener {
     public void onHungerHeal(final EntityRegainHealthEvent event) {
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED
                 && event.getEntity() instanceof Player) {
-            final Player     player = (Player) event.getEntity();
-            final PlayerData data   = SkillAPI.getPlayerData(player);
-            final double     scaled = data.scaleStat(AttributeManager.HUNGER_HEAL, event.getAmount());
+            final Player player = (Player) event.getEntity();
+            final PlayerData data = SkillAPI.getPlayerData(player);
+            final double scaled = data.scaleStat(AttributeManager.HUNGER_HEAL, event.getAmount());
             event.setAmount(scaled);
         }
     }

@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class CooldownMechanic extends MechanicComponent {
     private static final String SKILL = "skill";
-    private static final String TYPE  = "type";
+    private static final String TYPE = "type";
     private static final String VALUE = "value";
 
     @Override
@@ -59,10 +59,12 @@ public class CooldownMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {return false;}
+        if (!(caster instanceof Player)) {
+            return false;
+        }
 
         String skill = settings.getString(SKILL, "");
-        String type  = settings.getString(TYPE, "all").toLowerCase();
+        String type = settings.getString(TYPE, "all").toLowerCase();
         double value = parseValues(caster, VALUE, level, 0);
 
         PlayerData playerData = SkillAPI.getPlayerData((Player) caster);

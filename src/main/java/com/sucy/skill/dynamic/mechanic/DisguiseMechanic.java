@@ -31,7 +31,6 @@ import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.listener.MechanicListener;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
@@ -41,12 +40,12 @@ import java.util.List;
  * Disguises each target
  */
 public class DisguiseMechanic extends MechanicComponent {
-    private static final String TYPE     = "type";
-    private static final String MOB      = "mob";
-    private static final String ADULT    = "adult";
-    private static final String PLAYER   = "player";
-    private static final String MISC     = "misc";
-    private static final String DATA     = "data";
+    private static final String TYPE = "type";
+    private static final String MOB = "mob";
+    private static final String ADULT = "adult";
+    private static final String PLAYER = "player";
+    private static final String MISC = "misc";
+    private static final String DATA = "data";
     private static final String MATERIAL = "mat";
     private static final String DURATION = "duration";
     private static final String CHANGE_NAME = "change_name";

@@ -30,7 +30,6 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -40,7 +39,12 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Mechanic that destroys a selection of blocks at the location of the target
@@ -67,7 +71,9 @@ public class MineMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) { return false; }
+        if (targets.size() == 0) {
+            return false;
+        }
 
         boolean drop = settings.getBool(DROP, true);
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
@@ -90,14 +96,14 @@ public class MineMechanic extends MechanicComponent {
         double upward = parseValues(caster, UPWARD, level, 0);
         double right = parseValues(caster, RIGHT, level, 0);
 
-        Map<LivingEntity,List<Block>> blockMap = new HashMap<>();
+        Map<LivingEntity, List<Block>> blockMap = new HashMap<>();
         World w = caster.getWorld();
 
         // Determine blocks to be mined
         if (sphere) {
             double radius = parseValues(caster, RADIUS, level, 2);
             double x, y, z, dx, dy, dz;
-            double rSq = radius*radius;
+            double rSq = radius * radius;
             for (LivingEntity t : targets) {
                 List<Block> blocks = new ArrayList<>();
                 blockMap.put(t, blocks);
@@ -112,13 +118,13 @@ public class MineMechanic extends MechanicComponent {
                 z = loc.getBlockZ();
                 String originMaterial = loc.getBlock().getType().name();
 
-                for (int i = (int) (x-radius)+1; i < (int) (x+radius); i++) {
-                    for (int j = (int) (y-radius)+1; j < (int) (y+radius); j++) {
-                        for (int k = (int) (z-radius)+1; k < (int) (z+radius); k++) {
-                            dx = x-i;
-                            dy = y-j;
-                            dz = z-k;
-                            if (dx*dx+dy*dy+dz*dz < rSq) {
+                for (int i = (int) (x - radius) + 1; i < (int) (x + radius); i++) {
+                    for (int j = (int) (y - radius) + 1; j < (int) (y + radius); j++) {
+                        for (int k = (int) (z - radius) + 1; k < (int) (z + radius); k++) {
+                            dx = x - i;
+                            dy = y - j;
+                            dz = z - k;
+                            if (dx * dx + dy * dy + dz * dz < rSq) {
                                 Block b = w.getBlockAt(i, j, k);
                                 Material material = b.getType();
                                 String materialName = material.name();
@@ -132,9 +138,9 @@ public class MineMechanic extends MechanicComponent {
                 }
             }
         } else {
-            double width = (parseValues(caster, WIDTH, level, 5)-1)/2;
-            double height = (parseValues(caster, HEIGHT, level, 5)-1)/2;
-            double depth = (parseValues(caster, DEPTH, level, 5)-1)/2;
+            double width = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
+            double height = (parseValues(caster, HEIGHT, level, 5) - 1) / 2;
+            double depth = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
             double x, y, z;
 
             for (LivingEntity t : targets) {
@@ -154,9 +160,9 @@ public class MineMechanic extends MechanicComponent {
                 z = facingZ ? loc.getZ() : loc.getX();
                 String originMaterial = loc.getBlock().getType().name();
 
-                for (double i = x-width; i <= x+width+0.01; i++) {
-                    for (double j = y-height; j <= y+height+0.01; j++) {
-                        for (double k = z-depth; k <= z+depth+0.01; k++) {
+                for (double i = x - width; i <= x + width + 0.01; i++) {
+                    for (double j = y - height; j <= y + height + 0.01; j++) {
+                        for (double k = z - depth; k <= z + depth + 0.01; k++) {
                             Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
                             Material material = b.getType();
                             String materialName = material.name();
@@ -178,19 +184,26 @@ public class MineMechanic extends MechanicComponent {
             ItemStack tool = null;
             if (toolString.equals("CASTER")) {
                 EntityEquipment equipment = caster.getEquipment();
-                if (equipment != null) { tool = equipment.getItemInMainHand(); }
+                if (equipment != null) {
+                    tool = equipment.getItemInMainHand();
+                }
             } else if (!targetTool) {
                 try {
                     tool = new ItemStack(Material.valueOf(toolString));
-                } catch (IllegalArgumentException ignored) { }
+                } catch (IllegalArgumentException ignored) {
+                }
             }
-            for (Map.Entry<LivingEntity,List<Block>> entry : blockMap.entrySet()) {
+            for (Map.Entry<LivingEntity, List<Block>> entry : blockMap.entrySet()) {
                 if (targetTool) {
                     tool = null;
                     EntityEquipment equipment = entry.getKey().getEquipment();
-                    if (equipment != null) { tool = equipment.getItemInMainHand(); }
+                    if (equipment != null) {
+                        tool = equipment.getItemInMainHand();
+                    }
                 }
-                if (tool == null) { tool = new ItemStack(Material.AIR); }
+                if (tool == null) {
+                    tool = new ItemStack(Material.AIR);
+                }
                 List<Block> blocks = entry.getValue();
                 success = success || blocks.size() > 0;
                 for (Block block : blocks) {
@@ -203,8 +216,8 @@ public class MineMechanic extends MechanicComponent {
                 for (Block block : blocks) {
                     BlockData blockState = block.getBlockData();
                     block.setType(blockState instanceof Waterlogged && ((Waterlogged) blockState).isWaterlogged() ?
-                                          Material.WATER :
-                                          Material.AIR);
+                            Material.WATER :
+                            Material.AIR);
                 }
             }
         }

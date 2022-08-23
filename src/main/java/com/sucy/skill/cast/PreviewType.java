@@ -45,10 +45,6 @@ public enum PreviewType {
         this.key = key;
     }
 
-    public String getKey() {
-        return key;
-    }
-
     /**
      * Gets the indicator type by key
      *
@@ -56,10 +52,18 @@ public enum PreviewType {
      * @return indicator type
      */
     public static PreviewType getByKey(String key) {
-        if (key == null) { return NONE; } else if (key.equalsIgnoreCase("3D")) {
+        if (key == null) {
+            return NONE;
+        } else if (key.equalsIgnoreCase("3D")) {
             return DIM_3;
         } else if (key.equalsIgnoreCase("2D")) {
             return DIM_2;
-        } else { return NONE; }
+        } else {
+            return NONE;
+        }
+    }
+
+    public String getKey() {
+        return key;
     }
 }

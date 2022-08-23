@@ -100,7 +100,7 @@ public class CmdRefund implements IFunction {
                 PlayerData playerData = SkillAPI.getPlayerData(player1);
 
                 playerData.refundAttributes();
-                cmd.sendMessage(sender, REFUNDED_OTHER_ALL, "&2Refunded &6"+args[0]+"&2's attribute points");
+                cmd.sendMessage(sender, REFUNDED_OTHER_ALL, "&2Refunded &6" + args[0] + "&2's attribute points");
             }
         }
         // Console doesn't have profession options

@@ -27,7 +27,7 @@ Accounts:
   # must be in the format '<permission>:<accounts>'
   # Note that you can use 'skillapi.max_accounts.<accounts> instead'
   perm-accounts:
-  - 'skillapi.account.admin:10'
+    - 'skillapi.account.admin:10'
 #
 # While targeting settings aren't necessary most of the time,
 # they can help make running ally checks much faster if
@@ -155,25 +155,25 @@ Skills:
   # Blocks to ignore when using the Block mechanic in dynamic skills
   # End values in an * to do all materials containing the value
   block-filter:
-  - 'chest'
-  - 'ender chest'
-  - 'trapped chest'
-  - 'redstone*'
-  - 'oak sign'
-  - 'spruce sign'
-  - 'birch sign'
-  - 'jungle sign'
-  - 'acacia sign'
-  - 'dark oak sign'
-  - 'crimson sign'
-  - 'warped sign'
-  - 'spruce wall sign'
-  - 'birch wall sign'
-  - 'jungle wall sign'
-  - 'acacia wall sign'
-  - 'dark oak wall sign'
-  - 'crimson wall sign'
-  - 'warped wall sign'
+    - 'chest'
+    - 'ender chest'
+    - 'trapped chest'
+    - 'redstone*'
+    - 'oak sign'
+    - 'spruce sign'
+    - 'birch sign'
+    - 'jungle sign'
+    - 'acacia sign'
+    - 'dark oak sign'
+    - 'crimson sign'
+    - 'warped sign'
+    - 'spruce wall sign'
+    - 'birch wall sign'
+    - 'jungle wall sign'
+    - 'acacia wall sign'
+    - 'dark oak wall sign'
+    - 'crimson wall sign'
+    - 'warped wall sign'
 #
 Items:
   #
@@ -220,11 +220,11 @@ Items:
   # 39 = helmet
   # 40 = off hand
   slots:
-  - 36
-  - 37
-  - 38
-  - 39
-  - 40
+    - 36
+    - 37
+    - 38
+    - 39
+    - 40
 #
 GUI:
   #
@@ -289,8 +289,8 @@ GUI:
   #   exp_lost
   #   status
   title-messages:
-  - level_up
-  - exp_lost
+    - level_up
+    - exp_lost
   #
   # Whether to display class information on a scoreboard
   scoreboard-enabled: true
@@ -381,10 +381,10 @@ Casting:
     durability: 0
     name: '&dSkills'
     lore:
-    - ''
-    - '&6Left Click&2 - First skill set'
-    - '&6Right Click&2 - Second skill set'
-    - '&6Q&2 - Organize skills'
+      - ''
+      - '&6Left Click&2 - First skill set'
+      - '&6Right Click&2 - Second skill set'
+      - '&6Q&2 - Organize skills'
   #
   # The item used in the bar GUI to describe the hover bar
   hover-item:
@@ -393,12 +393,12 @@ Casting:
     durability: 0
     name: '&6Hover Bar'
     lore:
-    - ''
-    - 'Skills in this row will'
-    - 'be usable via left clicking'
-    - 'the cast item and will let'
-    - 'you see where they will hit'
-    - 'before casting them.'
+      - ''
+      - 'Skills in this row will'
+      - 'be usable via left clicking'
+      - 'the cast item and will let'
+      - 'you see where they will hit'
+      - 'before casting them.'
   #
   # The item used in the bar GUI to describe the instant bar
   instant-item:
@@ -407,12 +407,12 @@ Casting:
     durability: 0
     name: '&6Instant Bar'
     lore:
-    - ''
-    - 'Skills in this row will'
-    - 'be usable via right clicking'
-    - 'the cast item and will be'
-    - 'cast immediately when switching'
-    - 'to their slot.'
+      - ''
+      - 'Skills in this row will'
+      - 'be usable via right clicking'
+      - 'the cast item and will be'
+      - 'cast immediately when switching'
+      - 'to their slot.'
 #
 Click Combos:
   #
@@ -542,7 +542,7 @@ Experience:
   #
   # Worlds where experience is not lost on death
   lose-exp-blacklist:
-  - 'pvpWorld'
+    - 'pvpWorld'
   #
   # The formula used for calculating required experience
   # The formula is: x*lvl*lvl + y*lvl + z
@@ -622,4 +622,4 @@ Worlds:
   #
   # The worlds to include in the enable/disable list
   worlds:
-  - world
+    - world

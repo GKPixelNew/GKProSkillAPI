@@ -34,7 +34,12 @@ import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.CirclePreview;
+import com.sucy.skill.cast.CylinderPreview;
+import com.sucy.skill.cast.Preview;
+import com.sucy.skill.cast.PreviewSettings;
+import com.sucy.skill.cast.PreviewType;
+import com.sucy.skill.cast.ProjectilePreview;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -55,15 +60,15 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     private static final String GROUP = "group";
     private static final String VELOCITY = "velocity";
     private static final String LIFESPAN = "lifespan";
-    private static final String SPREAD  = "spread";
-    private static final String AMOUNT  = "amount";
-    private static final String ANGLE   = "angle";
-    private static final String HEIGHT  = "height";
-    private static final String RADIUS  = "rain-radius";
-    private static final String LEVEL    = "skill_level";
-    private static final String FORWARD  = "forward";
-    private static final String UPWARD   = "upward";
-    private static final String RIGHT    = "right";
+    private static final String SPREAD = "spread";
+    private static final String AMOUNT = "amount";
+    private static final String ANGLE = "angle";
+    private static final String HEIGHT = "height";
+    private static final String RADIUS = "rain-radius";
+    private static final String LEVEL = "skill_level";
+    private static final String FORWARD = "forward";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
     private static final String TARGET_BLOCKS = "target-blocks";
 
     private static final String USE_EFFECT = "use-effect";
@@ -78,10 +83,12 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         targetBlocks = settings.getBool(TARGET_BLOCKS, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
-        double speed  = parseValues(caster, VELOCITY, level, 1);
+        double speed = parseValues(caster, VELOCITY, level, 1);
         String spread = settings.getString(SPREAD, "cone").toLowerCase();
         double radius = parseValues(caster, RADIUS, level, 2.0);
 
@@ -140,9 +147,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
-        int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-        String  spread = settings.getString(SPREAD, "cone").toLowerCase();
-        boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
+        int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+        String spread = settings.getString(SPREAD, "cone").toLowerCase();
+        boolean ally = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
         int life = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
 
@@ -164,12 +171,12 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             } else {
                 Vector dir = target.getLocation().getDirection();
 
-                double right   = parseValues(caster, RIGHT, level, 0);
-                double upward  = parseValues(caster, UPWARD, level, 0);
+                double right = parseValues(caster, RIGHT, level, 0);
+                double upward = parseValues(caster, UPWARD, level, 0);
                 double forward = parseValues(caster, FORWARD, level, 0);
 
                 Vector looking = dir.clone().setY(0).normalize();
-                Vector normal  = looking.clone().crossProduct(UP);
+                Vector normal = looking.clone().crossProduct(UP);
                 looking.multiply(forward).add(normal.multiply(right));
 
                 if (spread.equals("horizontal cone")) {
@@ -223,7 +230,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
-        if (hit instanceof TempEntity&&!targetBlocks) return;
+        if (hit instanceof TempEntity && !targetBlocks) return;
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));

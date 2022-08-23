@@ -10,13 +10,17 @@ import com.sucy.skill.dynamic.DynamicSkill;
  */
 public abstract class PhysicalTrigger implements Trigger<PhysicalDamageEvent> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<PhysicalDamageEvent> getEvent() {
         return PhysicalDamageEvent.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(final PhysicalDamageEvent event, final int level, final Settings settings) {
         final String type = settings.getString("type", "both");

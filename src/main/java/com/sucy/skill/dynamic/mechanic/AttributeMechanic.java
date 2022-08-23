@@ -44,10 +44,10 @@ import java.util.Map;
  * Applies a flag to each target
  */
 public class AttributeMechanic extends MechanicComponent {
-    private static final String KEY       = "key";
+    private static final String KEY = "key";
     private static final String OPERATION = "operation";
-    private static final String AMOUNT    = "amount";
-    private static final String SECONDS   = "seconds";
+    private static final String AMOUNT = "amount";
+    private static final String SECONDS = "seconds";
     private static final String STACKABLE = "stackable";
 
     private final Map<Integer, Map<String, AttribTask>> tasks = new HashMap<>();
@@ -82,17 +82,17 @@ public class AttributeMechanic extends MechanicComponent {
         }
 
         final Map<String, AttribTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final int                     amount      = (int) parseValues(caster, AMOUNT, level, 5);
-        final double                  seconds     = parseValues(caster, SECONDS, level, 3.0);
-        final boolean                 stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
-        final int                     ticks       = (int) (seconds * 20);
-        final String                  operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
+        final int amount = (int) parseValues(caster, AMOUNT, level, 5);
+        final double seconds = parseValues(caster, SECONDS, level, 3.0);
+        final boolean stackable = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
+        final int ticks = (int) (seconds * 20);
+        final String operation = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData        data     = SkillAPI.getPlayerData((Player) target);
+                final PlayerData data = SkillAPI.getPlayerData((Player) target);
                 PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic", amount, Operation.valueOf(operation), false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
@@ -119,11 +119,11 @@ public class AttributeMechanic extends MechanicComponent {
 
     private class AttribTask extends BukkitRunnable {
 
-        private final PlayerData              data;
+        private final PlayerData data;
         private final PlayerAttributeModifier modifier;
-        private final int                     id;
-        private       boolean                 running = false;
-        private       boolean                 stopped = false;
+        private final int id;
+        private boolean running = false;
+        private boolean stopped = false;
 
         AttribTask(int id, PlayerData data, PlayerAttributeModifier modifier) {
             this.id = id;

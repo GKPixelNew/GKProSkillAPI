@@ -31,7 +31,7 @@ import mc.promcteam.engine.mccore.gui.MapFont;
 import mc.promcteam.engine.mccore.gui.MapMenuManager;
 import mc.promcteam.engine.mccore.gui.MapScheme;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.File;
 
 /**

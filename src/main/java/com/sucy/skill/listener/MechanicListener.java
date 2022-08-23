@@ -32,18 +32,32 @@ import com.sucy.skill.api.event.FlagExpireEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
-import com.sucy.skill.dynamic.mechanic.*;
+import com.sucy.skill.dynamic.mechanic.BlockMechanic;
+import com.sucy.skill.dynamic.mechanic.FireMechanic;
+import com.sucy.skill.dynamic.mechanic.LightningMechanic;
+import com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic;
+import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -57,15 +71,15 @@ import java.util.UUID;
  * The listener for handling events related to dynamic mechanics
  */
 public class MechanicListener extends SkillAPIListener {
-    public static final String SUMMON_DAMAGE     = "sapiSumDamage";
-    public static final String P_CALL            = "pmCallback";
+    public static final String SUMMON_DAMAGE = "sapiSumDamage";
+    public static final String P_CALL = "pmCallback";
     public static final String POTION_PROJECTILE = "potionProjectile";
-    public static final String ITEM_PROJECTILE   = "itemProjectile";
-    public static final String SKILL_LEVEL       = "skill_level";
-    public static final String SKILL_CASTER      = "caster";
-    public static final String SPEED_KEY         = "sapiSpeedKey";
-    public static final String DISGUISE_KEY      = "sapiDisguiseKey";
-    public static final String ARMOR_STAND       = "asMechanic";
+    public static final String ITEM_PROJECTILE = "itemProjectile";
+    public static final String SKILL_LEVEL = "skill_level";
+    public static final String SKILL_CASTER = "caster";
+    public static final String SPEED_KEY = "sapiSpeedKey";
+    public static final String DISGUISE_KEY = "sapiDisguiseKey";
+    public static final String ARMOR_STAND = "asMechanic";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
 
@@ -136,7 +150,7 @@ public class MechanicListener extends SkillAPIListener {
                 VaultHook.removePermission((Player) event.getEntity(), event.getFlag().substring(5));
             else if (event.getFlag().startsWith(SPEED_KEY + ":")) {
                 Player player = (Player) event.getEntity();
-                UUID   uuid   = UUID.fromString(event.getFlag().split(":")[1]);
+                UUID uuid = UUID.fromString(event.getFlag().split(":")[1]);
 
                 PlayerData data = SkillAPI.getPlayerData(player);
                 data.removeStatModifier(uuid, false);

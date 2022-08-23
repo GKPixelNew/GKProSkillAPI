@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /**
  * Series of fixes/improvements created by EvrimSen and touched up by Eniripsa96
- *
+ * <p>
  * See https://www.spigotmc.org/resources/addonforskillapi.55857/ for extra features
  */
 public class AddonListener extends SkillAPIListener {
@@ -56,6 +56,7 @@ public class AddonListener extends SkillAPIListener {
 
     /**
      * Tracks when a player changes worlds for avoiding accidental skill casts
+     *
      * @see AddonListener#onSkillUse(PlayerCastSkillEvent)
      */
     @EventHandler
@@ -65,6 +66,7 @@ public class AddonListener extends SkillAPIListener {
 
     /**
      * Tracks when a player joins for avoiding accidental skill casts
+     *
      * @see AddonListener#onSkillUse(PlayerCastSkillEvent)
      */
     @EventHandler

@@ -12,11 +12,15 @@ public class KeyPressEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
-    private final Key    key;
+    private final Key key;
 
     public KeyPressEvent(final Player player, final Key key) {
         this.player = player;
         this.key = key;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public Player getPlayer() {
@@ -29,10 +33,6 @@ public class KeyPressEvent extends Event {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 

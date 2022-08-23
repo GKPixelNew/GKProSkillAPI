@@ -43,84 +43,95 @@ import java.util.List;
 public class GroupSettings {
     private static final int[] POINTS = new int[]{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 
-    private static final String  PROFESS_RESET             = "profess-reset";
-    private static final String  PROFESS_REFUND_SKILLS     = "profess-refund-skills";
-    private static final String  PROFESS_REFUND_ATTRIBUTES = "profess-refund-attributes";
-    private static final String  CAN_RESET                 = "can-reset";
-    private static final String  EXP_LOST                  = "exp-lost-on-death";
-    private static final String  STARTING_POINTS           = "starting-points";
-    private static final String  POINTS_PER_LEVEL          = "points-per-level";
-    private static final String  PERMISSION                = "permission";
-    private static final String  FRIENDLY                  = "friendly";
-    private static final String  DEFAULT                   = "default";
-    private static final String  STARTING_ATTRIBS          = "starting-attribs";
-    private static final String  ATTRIB_PER_LEVEL          = "attribs-per-level";
-    private static final String  SCOREBOARD                = "show-scoreboard";
-    private static final String  CUSTOM_POINTS             = "use-custom-points";
-    private static final String  DEFINED_POINTS            = "custom-points";
-    private static final String  CUSTOM_ATTRIBS            = "use-custom-attribute-points";
-    private static final String  DEFINED_ATTRIBS           = "custom-attribute-points";
-    private              String  defaultClass              = "none";
-    private              String  permission                = "none";
+    private static final String PROFESS_RESET = "profess-reset";
+    private static final String PROFESS_REFUND_SKILLS = "profess-refund-skills";
+    private static final String PROFESS_REFUND_ATTRIBUTES = "profess-refund-attributes";
+    private static final String CAN_RESET = "can-reset";
+    private static final String EXP_LOST = "exp-lost-on-death";
+    private static final String STARTING_POINTS = "starting-points";
+    private static final String POINTS_PER_LEVEL = "points-per-level";
+    private static final String PERMISSION = "permission";
+    private static final String FRIENDLY = "friendly";
+    private static final String DEFAULT = "default";
+    private static final String STARTING_ATTRIBS = "starting-attribs";
+    private static final String ATTRIB_PER_LEVEL = "attribs-per-level";
+    private static final String SCOREBOARD = "show-scoreboard";
+    private static final String CUSTOM_POINTS = "use-custom-points";
+    private static final String DEFINED_POINTS = "custom-points";
+    private static final String CUSTOM_ATTRIBS = "use-custom-attribute-points";
+    private static final String DEFINED_ATTRIBS = "custom-attribute-points";
+    private String defaultClass = "none";
+    private String permission = "none";
     /**
      * Checks whether classes reset upon profession in the group
      *
      * @return true if resets upon profession, false otherwise
      */
-    @Getter private      boolean professReset              = false;
-    @Getter private      boolean professRefundSkills       = false;
-    @Getter private      boolean professRefundAttributes   = false;
+    @Getter
+    private boolean professReset = false;
+    @Getter
+    private boolean professRefundSkills = false;
+    @Getter
+    private boolean professRefundAttributes = false;
     /**
      * @return Whether to show the scoreboard or not
      */
-    @Getter private      boolean showScoreboard            = true;
+    @Getter
+    private boolean showScoreboard = true;
     /**
      * @return true if the group is allowed to reset, false otherwise
      */
     @Getter
     @Accessors(fluent = true)
-    private              boolean canReset                  = true;
+    private boolean canReset = true;
     /**
      * @return true if players with the same class under this group are allies
      */
-    @Getter private      boolean friendly                  = false;
-    private              boolean useCustomPoints           = false;
-    private              boolean useCustomAttribs          = false;
-    private              int[]   customPoints              = POINTS;
-    private              int[]   customAttribs             = POINTS;
+    @Getter
+    private boolean friendly = false;
+    private boolean useCustomPoints = false;
+    private boolean useCustomAttribs = false;
+    private int[] customPoints = POINTS;
+    private int[] customAttribs = POINTS;
     /**
      * Retrieves the death penalty for classes in this group
      *
      * @return death penalty
      */
-    @Getter private      double  deathPenalty              = 0;
+    @Getter
+    private double deathPenalty = 0;
     /**
      * Retrieves the number of skill points classes in this group start with
      *
      * @return starting skill points
      */
-    @Getter private      int     startingPoints            = 1;
+    @Getter
+    private int startingPoints = 1;
     /**
      * Retrieves the number of skill points gained in the group per level
      *
      * @return skill points per level
      */
-    @Getter private      double  pointsPerLevel            = 1;
+    @Getter
+    private double pointsPerLevel = 1;
     /**
      * Retrieves the number of attribute points gained each level
      *
      * @return attribute points gained each level
      */
-    @Getter private      double  attribsPerLevel           = 1;
+    @Getter
+    private double attribsPerLevel = 1;
     /**
      * @return attribute points classes in the group start with
      */
-    @Getter private      int     startingAttribs           = 0;
+    @Getter
+    private int startingAttribs = 0;
 
     /**
      * Initializes group settings with default settings
      */
-    public GroupSettings() {}
+    public GroupSettings() {
+    }
 
     /**
      * Initializes a new set of settings for a class group by
@@ -158,7 +169,9 @@ public class GroupSettings {
                     if (level < points.size()) {
                         points.set(level, data.getInt(key, 0));
                     } else {
-                        while (level > points.size()) {points.add(0);}
+                        while (level > points.size()) {
+                            points.add(0);
+                        }
                         points.add(data.getInt(key, 0));
                     }
                 } catch (final NumberFormatException ex) {
@@ -222,10 +235,14 @@ public class GroupSettings {
     private int computePoints(int newLevel, int oldLevel, boolean custom, int[] data, double perLevel) {
         if (custom) {
             int newPoints = 0;
-            for (int i = 1; i < data.length && i <= newLevel; i++) { newPoints += data[i]; }
+            for (int i = 1; i < data.length && i <= newLevel; i++) {
+                newPoints += data[i];
+            }
 
             int oldPoints = 0;
-            for (int i = 1; i < data.length && i <= oldLevel; i++) { oldPoints += data[i]; }
+            for (int i = 1; i < data.length && i <= oldLevel; i++) {
+                oldPoints += data[i];
+            }
 
             return newPoints - oldPoints;
         } else {
@@ -345,7 +362,9 @@ public class GroupSettings {
 
     private void savePoints(final DataSection destination, final int[] points) {
         for (int i = 0; i < points.length; i++) {
-            if (points[i] > 0) {destination.set(Integer.toString(i), points[i]);}
+            if (points[i] > 0) {
+                destination.set(Integer.toString(i), points[i]);
+            }
         }
     }
 }

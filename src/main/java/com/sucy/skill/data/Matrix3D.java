@@ -27,21 +27,39 @@ public class Matrix3D {
         data[2][2] = z3;
     }
 
-    public double getX1() {return data[0][0];}
+    public double getX1() {
+        return data[0][0];
+    }
 
-    public double getX2() {return data[1][0];}
+    public double getX2() {
+        return data[1][0];
+    }
 
-    public double getX3() {return data[2][0];}
+    public double getX3() {
+        return data[2][0];
+    }
 
-    public double getY1() {return data[0][1];}
+    public double getY1() {
+        return data[0][1];
+    }
 
-    public double getY2() {return data[1][1];}
+    public double getY2() {
+        return data[1][1];
+    }
 
-    public double getY3() {return data[2][1];}
+    public double getY3() {
+        return data[2][1];
+    }
 
-    public double getZ1() {return data[0][2];}
+    public double getZ1() {
+        return data[0][2];
+    }
 
-    public double getZ2() {return data[1][2];}
+    public double getZ2() {
+        return data[1][2];
+    }
 
-    public double getZ3() {return data[2][2];}
+    public double getZ3() {
+        return data[2][2];
+    }
 }

@@ -36,9 +36,9 @@ import java.util.List;
  * Executes child components after a delay
  */
 public class FireMechanic extends MechanicComponent {
-    public static final  String META_KEY = "fireMechanic";
-    private static final String SECONDS  = "seconds";
-    private static final String DAMAGE   = "damage";
+    public static final String META_KEY = "fireMechanic";
+    private static final String SECONDS = "seconds";
+    private static final String DAMAGE = "damage";
 
     @Override
     public String getKey() {
@@ -59,8 +59,8 @@ public class FireMechanic extends MechanicComponent {
         if (targets.size() == 0) return false;
 
         double seconds = parseValues(caster, SECONDS, level, 3.0);
-        double damage  = parseValues(caster, DAMAGE, level, 1);
-        int    ticks   = (int) (seconds * 20);
+        double damage = parseValues(caster, DAMAGE, level, 1);
+        int ticks = (int) (seconds * 20);
         targets.forEach(target -> {
             int newTicks = ticks <= 0 ? 0 : Math.max(ticks, target.getFireTicks());
             target.setFireTicks(newTicks);

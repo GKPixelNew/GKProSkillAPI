@@ -71,40 +71,40 @@ import java.util.List;
  * the class to extend when creating your own custom skills.
  */
 public abstract class Skill implements IconHolder {
-    private static final DecimalFormat     FORMAT           = new DecimalFormat("#########0.0#");
-    private static final String            NAME             = "name";
-    private static final String            TYPE             = "type";
-    private static final String            LAYOUT           = "icon-lore";
-    private static final String            MAX              = "max-level";
-    private static final String            REQ              = "skill-req";
-    private static final String            REQLVL           = "skill-req-lvl";
-    private static final String            MSG              = "msg";
-    private static final String            PERM             = "needs-permission";
-    private static final String            COOLDOWN_MESSAGE = "cooldown-message";
-    private static final String            DESC             = "desc";
-    private static final String            ATTR             = "attributes";
-    private static final String            COMBO            = "combo";
-    private static       boolean           skillDamage      = false;
+    private static final DecimalFormat FORMAT = new DecimalFormat("#########0.0#");
+    private static final String NAME = "name";
+    private static final String TYPE = "type";
+    private static final String LAYOUT = "icon-lore";
+    private static final String MAX = "max-level";
+    private static final String REQ = "skill-req";
+    private static final String REQLVL = "skill-req-lvl";
+    private static final String MSG = "msg";
+    private static final String PERM = "needs-permission";
+    private static final String COOLDOWN_MESSAGE = "cooldown-message";
+    private static final String DESC = "desc";
+    private static final String ATTR = "attributes";
+    private static final String COMBO = "combo";
+    private static boolean skillDamage = false;
     /**
      * The settings for the skill which include configurable stats
      * for your mechanics and the defaults such as mana cost, level
      * requirement, skill point cost, and cooldown.
      */
-    protected final      Settings          settings         = new Settings();
-    private final        ArrayList<String> description      = new ArrayList<>();
-    private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
-    private final        String            key;
-    private              List<String>      iconLore;
-    private              ItemStack         indicator;
-    private              String            name;
-    private              String            type;
-    private              String            message;
-    private              String            skillReq;
-    private              int               maxLevel;
-    private              int               skillReqLevel;
-    private              boolean           needsPermission;
-    private              boolean           cooldownMessage;
-    private              int               combo;
+    protected final Settings settings = new Settings();
+    private final ArrayList<String> description = new ArrayList<>();
+    private final ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
+    private final String key;
+    private List<String> iconLore;
+    private ItemStack indicator;
+    private String name;
+    private String type;
+    private String message;
+    private String skillReq;
+    private int maxLevel;
+    private int skillReqLevel;
+    private boolean needsPermission;
+    private boolean cooldownMessage;
+    private int combo;
 
     /**
      * Initializes a new skill that doesn't require any other skill.
@@ -450,8 +450,8 @@ public abstract class Skill implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIndicator() {
-        ItemStack    item = new ItemStack(indicator.getType());
-        ItemMeta     meta = item.getItemMeta();
+        ItemStack item = new ItemStack(indicator.getType());
+        ItemMeta meta = item.getItemMeta();
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         if (meta.hasDisplayName())
             lore.add(0, meta.getDisplayName());
@@ -542,19 +542,19 @@ public abstract class Skill implements IconHolder {
 
         ArrayList<String> lore = new ArrayList<>();
 
-        String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
+        String MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
         String NOT_MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
         MET = MET.substring(0, MET.length() - 2);
         NOT_MET = NOT_MET.substring(0, NOT_MET.length() - 2);
 
-        final String lvlReq    = skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
-        final String costReq   = skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
-        final String spentReq  = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String lvlReq = skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
+        final String costReq = skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
+        final String spentReq = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
         final String branchReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
-        final String skillReq  = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String skillReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
 
         String attrChanging = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
-        String attrStatic   = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
+        String attrStatic = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
 
         for (String line : iconLore) {
             try {
@@ -573,9 +573,9 @@ public abstract class Skill implements IconHolder {
 
                 // Attributes
                 while (line.contains("{attr:")) {
-                    int    start     = line.indexOf("{attr:");
-                    int    end       = line.indexOf("}", start);
-                    String attr      = line.substring(start + 6, end);
+                    int start = line.indexOf("{attr:");
+                    int end = line.indexOf("}", start);
+                    String attr = line.substring(start + 6, end);
                     Object currValue = getAttr(player, attr, Math.max(1, skillData.getLevel()));
                     Object nextValue = getAttr(player, attr, Math.min(skillData.getLevel() + 1, maxLevel));
                     if (attr.equals("level") || attr.equals("cost"))
@@ -598,10 +598,10 @@ public abstract class Skill implements IconHolder {
 
                 // Description segments
                 if (line.contains("{desc:")) {
-                    int      start    = line.indexOf("{desc:");
-                    int      end      = line.indexOf("}", start);
-                    String   lineInfo = line.substring(start + 6, end);
-                    String[] split    = lineInfo.contains("-") ? lineInfo.split("-") : new String[]{lineInfo, lineInfo};
+                    int start = line.indexOf("{desc:");
+                    int end = line.indexOf("}", start);
+                    String lineInfo = line.substring(start + 6, end);
+                    String[] split = lineInfo.contains("-") ? lineInfo.split("-") : new String[]{lineInfo, lineInfo};
                     start = Integer.parseInt(split[0]) - 1;
                     end = (split[1].equals("x") ? description.size() : Integer.parseInt(split[1]));
                     for (int i = start; i < end && i < description.size(); i++) {
@@ -812,7 +812,8 @@ public abstract class Skill implements IconHolder {
      * @param level  the level of the skill to create for
      * @param step   the current progress of the indicator
      */
-    public void playPreview(Player player, int level, int step) {}
+    public void playPreview(Player player, int level, int step) {
+    }
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data

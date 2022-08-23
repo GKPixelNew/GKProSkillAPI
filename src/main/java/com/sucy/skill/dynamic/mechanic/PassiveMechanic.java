@@ -51,7 +51,6 @@ public class PassiveMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -62,8 +61,8 @@ public class PassiveMechanic extends MechanicComponent {
         }
 
         if (targets.size() > 0) {
-            final int         period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
-            final PassiveTask task   = new PassiveTask(caster, level, targets, period);
+            final int period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
+            final PassiveTask task = new PassiveTask(caster, level, targets, period);
             tasks.put(caster.getEntityId(), task);
 
             return true;
@@ -86,8 +85,8 @@ public class PassiveMechanic extends MechanicComponent {
 
     private class PassiveTask extends BukkitRunnable {
         private final List<LivingEntity> targets;
-        private final LivingEntity       caster;
-        private       int                level;
+        private final LivingEntity caster;
+        private int level;
 
         PassiveTask(LivingEntity caster, int level, List<LivingEntity> targets, int period) {
             this.targets = new ArrayList<>(targets);

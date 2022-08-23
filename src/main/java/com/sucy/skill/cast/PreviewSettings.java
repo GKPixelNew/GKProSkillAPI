@@ -44,7 +44,7 @@ public class PreviewSettings {
         enabled = data.getBoolean("enabled");
         density = data.getDouble("density");
         animation = data.getDouble("animation");
-        interval = (int) Math.ceil(20/data.getDouble("frequency"));
+        interval = (int) Math.ceil(20 / data.getDouble("frequency"));
         particle = new ParticleSettings(data.getSection("particle"));
     }
 }

@@ -19,14 +19,18 @@ public class ArmorStandPoseMechanic extends MechanicComponent {
         if (string.equals("")) return null;
         Double[] doubles;
         try {
-            doubles = Arrays.stream(string.split(",",3)).map(Double::valueOf).toArray(Double[]::new);
-        } catch (NumberFormatException e) { return null; }
+            doubles = Arrays.stream(string.split(",", 3)).map(Double::valueOf).toArray(Double[]::new);
+        } catch (NumberFormatException e) {
+            return null;
+        }
         if (doubles.length != 3) return null;
         return new EulerAngle(doubles[0], doubles[1], doubles[2]);
     }
 
     @Override
-    public String getKey() { return "armor stand pose"; }
+    public String getKey() {
+        return "armor stand pose";
+    }
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {

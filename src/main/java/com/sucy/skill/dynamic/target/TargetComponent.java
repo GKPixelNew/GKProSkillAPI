@@ -2,7 +2,9 @@ package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.CirclePreview;
+import com.sucy.skill.cast.PreviewType;
+import com.sucy.skill.cast.SpherePreview;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.EffectComponent;
@@ -24,23 +26,20 @@ import java.util.function.Function;
  */
 public abstract class TargetComponent extends EffectComponent {
 
-    private static final String ALLY   = "group";
-    private static final String WALL   = "wall";
-    private static final String CASTER = "caster";
-    private static final String MAX    = "max";
-
     protected static final SpherePreview spherePreview = new SpherePreview(0.5);
     protected static final CirclePreview circlePreview = new CirclePreview(0.5);
-
+    private static final String ALLY = "group";
+    private static final String WALL = "wall";
+    private static final String CASTER = "caster";
+    private static final String MAX = "max";
     boolean everyone;
     boolean allies;
     boolean throughWall;
+    IncludeCaster self;
 
     public IncludeCaster getSelf() {
         return self;
     }
-
-    IncludeCaster self;
 
     @Override
     public ComponentType getType() {
@@ -53,7 +52,6 @@ public abstract class TargetComponent extends EffectComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -81,7 +79,9 @@ public abstract class TargetComponent extends EffectComponent {
 
     abstract void playPreview(final Player caster, final int level, final LivingEntity target, int step);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         new BukkitRunnable() {
@@ -118,7 +118,7 @@ public abstract class TargetComponent extends EffectComponent {
 
             for (LivingEntity entity : found) {
                 if (count >= max) break;
-                if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster==entity)) {
+                if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster == entity)) {
                     list.add(entity);
                     count++;
                 }

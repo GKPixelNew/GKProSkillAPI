@@ -46,12 +46,12 @@ public abstract class TargetHelper {
      * @return all entities in the player's vision line
      */
     public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance) {
-        List<Entity>                  list    = source.getNearbyEntities(range, range, range);
+        List<Entity> list = source.getNearbyEntities(range, range, range);
         TreeMap<Double, LivingEntity> targets = new TreeMap<>();
 
-        Location   location = source.getEyeLocation();
-        Vector     origin   = location.toVector();
-        AABB.Ray3D ray      = new AABB.Ray3D(location);
+        Location location = source.getEyeLocation();
+        Vector origin = location.toVector();
+        AABB.Ray3D ray = new AABB.Ray3D(location);
 
         for (Entity entity : list) {
             if (!isInFront(source, entity) || !(entity instanceof LivingEntity)) continue;
@@ -103,14 +103,14 @@ public abstract class TargetHelper {
      */
     public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range) {
         List<LivingEntity> targets = new ArrayList<>();
-        List<Entity>       list    = source.getNearbyEntities(range, range, range);
+        List<Entity> list = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
 
         // Initialize values
         Location sourceLocation = source.getEyeLocation();
-        Vector   dir            = sourceLocation.getDirection();
+        Vector dir = sourceLocation.getDirection();
         dir.setY(0);
-        double cos   = Math.cos(arc * Math.PI / 180);
+        double cos = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
 
         // Get the targets in the cone
@@ -126,7 +126,7 @@ public abstract class TargetHelper {
                 else {
                     Vector relative = entity.getLocation().clone().add(0, getHeight(entity) * 0.5, 0).subtract(sourceLocation).toVector();
                     relative.setY(0);
-                    double dot   = relative.dot(dir);
+                    double dot = relative.dot(dir);
                     double value = dot * dot / relative.lengthSquared();
                     if (arc < 180 && dot > 0 && value >= cosSq) targets.add((LivingEntity) entity);
                     else if (arc >= 180 && (dot > 0 || dot <= cosSq)) targets.add((LivingEntity) entity);
@@ -173,7 +173,7 @@ public abstract class TargetHelper {
 
         // Get the necessary data
         double dotTarget = Math.cos(angle);
-        Vector facing    = entity.getLocation().getDirection();
+        Vector facing = entity.getLocation().getDirection();
         Vector relative = target.getLocation().clone()
                 .add(0, getHeight(entity) * -0.5, 0)
                 .subtract(entity.getLocation())
@@ -218,7 +218,7 @@ public abstract class TargetHelper {
             return false;
         }
         Vector slope = loc2.clone().subtract(loc1).toVector();
-        int    steps = (int) (slope.length() * 4) + 1;
+        int steps = (int) (slope.length() * 4) + 1;
         slope.multiply(1.0 / steps);
         Location temp = loc1.clone();
         for (int i = 0; i < steps; i++) {
@@ -246,7 +246,7 @@ public abstract class TargetHelper {
 
         // Common data
         Vector slope = loc2.clone().subtract(loc1).toVector();
-        int    steps = (int) (slope.length() * 4) + 1;
+        int steps = (int) (slope.length() * 4) + 1;
         slope.multiply(1.0 / steps);
 
         // Going through walls starts at the end and traverses backwards
@@ -295,7 +295,8 @@ public abstract class TargetHelper {
                 FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
                 return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())), origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
         double halfWidth = entity.getWidth() / 2;
         return new AABB(origin.add(new AABB.Vec3D(-halfWidth, 0, -halfWidth)), origin.add(new AABB.Vec3D(halfWidth, entity.getHeight(), halfWidth)));
     }

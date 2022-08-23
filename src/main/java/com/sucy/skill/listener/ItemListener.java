@@ -41,7 +41,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -61,10 +65,10 @@ public class ItemListener extends SkillAPIListener {
     public static final Set<Material> ARMOR_TYPES = getArmorMaterials();
 
     private static Set<Material> getArmorMaterials() {
-        final Set<String>                    armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
-        final ImmutableSet.Builder<Material> builder       = ImmutableSet.builder();
+        final Set<String> armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
+        final ImmutableSet.Builder<Material> builder = ImmutableSet.builder();
         for (Material material : Material.values()) {
-            final int    index  = material.name().lastIndexOf('_') + 1;
+            final int index = material.name().lastIndexOf('_') + 1;
             final String suffix = material.name().substring(index);
             if (armorSuffixes.contains(suffix)) {
                 builder.add(material);
@@ -86,7 +90,7 @@ public class ItemListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())) {
-            Player     player     = event.getPlayer();
+            Player player = event.getPlayer();
             PlayerData playerData = SkillAPI.getPlayerData(player);
             playerData.getEquips().update(player);
             playerData.updatePlayerStat(player);
@@ -212,8 +216,8 @@ public class ItemListener extends SkillAPIListener {
 
     @EventHandler
     public void armorEquip(ArmorEquipEvent event) {
-        Player    player = event.getPlayer();
-        ItemStack item   = event.getNewArmorPiece();
+        Player player = event.getPlayer();
+        ItemStack item = event.getNewArmorPiece();
 
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())
                 && item != null && ARMOR_TYPES.contains(item.getType())) {
@@ -252,7 +256,7 @@ public class ItemListener extends SkillAPIListener {
             }
         }
         if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            Player        player   = (Player) event.getEntity();
+            Player player = (Player) event.getEntity();
             final boolean blocking = event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
             if (blocking && !SkillAPI.getPlayerData(player).getEquips().canBlock()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
@@ -293,7 +297,7 @@ public class ItemListener extends SkillAPIListener {
         }
         ProjectileSource shooter = event.getEntity().getShooter();
         if (shooter instanceof Player) {
-            Player             player = (Player) shooter;
+            Player player = (Player) shooter;
             final PlayerEquips equips = SkillAPI.getPlayerData(player).getEquips();
             if (!equips.canHit()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);

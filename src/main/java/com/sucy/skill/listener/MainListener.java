@@ -50,14 +50,29 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -66,8 +81,8 @@ import java.util.function.Consumer;
  * enabling/disabling passive abilities.
  */
 public class MainListener extends SkillAPIListener {
-    public static final  Map<UUID, BukkitTask>  loadingPlayers = new HashMap<>();
-    private static final List<Consumer<Player>> JOIN_HANDLERS  = new ArrayList<>();
+    public static final Map<UUID, BukkitTask> loadingPlayers = new HashMap<>();
+    private static final List<Consumer<Player>> JOIN_HANDLERS = new ArrayList<>();
     private static final List<Consumer<Player>> CLEAR_HANDLERS = new ArrayList<>();
 
     public static void registerJoin(final Consumer<Player> joinHandler) {

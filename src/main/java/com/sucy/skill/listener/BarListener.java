@@ -27,7 +27,11 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.*;
+import com.sucy.skill.api.event.PlayerAccountChangeEvent;
+import com.sucy.skill.api.event.PlayerClassChangeEvent;
+import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
+import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
+import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
@@ -49,7 +53,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -222,7 +230,7 @@ public class BarListener extends SkillAPIListener {
             final PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
             if (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(event.getHotbarButton())) {
                 final SkillHandler handler = (SkillHandler) event.getInventory().getHolder();
-                final Skill        skill   = handler.get(event.getSlot());
+                final Skill skill = handler.get(event.getSlot());
                 if (skill != null && skill.canCast()) {
                     data.getSkillBar().assign(data.getSkill(skill.getName()), event.getHotbarButton());
                 }
@@ -238,7 +246,7 @@ public class BarListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onToggle(InventoryClickEvent event) {
         // Must click on an active skill bar
-        PlayerData           data     = SkillAPI.getPlayerData((Player) event.getWhoClicked());
+        PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
         final PlayerSkillBar skillBar = data.getSkillBar();
         if (!skillBar.isSetup())
             return;
@@ -270,8 +278,8 @@ public class BarListener extends SkillAPIListener {
      */
     @EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
-        PlayerData data    = SkillAPI.getPlayerData(event.getPlayer());
-        boolean    enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
+        boolean enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
             ignored.add(event.getPlayer().getUniqueId());
         if (enabled)

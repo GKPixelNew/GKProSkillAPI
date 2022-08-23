@@ -39,9 +39,9 @@ import java.util.Map;
  * Executes child components multiple times
  */
 public class RepeatMechanic extends MechanicComponent {
-    private static final String REPETITIONS  = "repetitions";
-    private static final String DELAY        = "delay";
-    private static final String PERIOD       = "period";
+    private static final String REPETITIONS = "repetitions";
+    private static final String DELAY = "delay";
+    private static final String PERIOD = "period";
     private static final String STOP_ON_FAIL = "stop-on-fail";
 
     private final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
@@ -52,7 +52,6 @@ public class RepeatMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -64,10 +63,10 @@ public class RepeatMechanic extends MechanicComponent {
                 return false;
             }
 
-            final int        delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
-            final int        period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
-            final boolean    stopOnFail = settings.getBool(STOP_ON_FAIL, false);
-            final RepeatTask task       = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
+            final int delay = (int) (settings.getDouble(DELAY, 0.0) * 20);
+            final int period = (int) (settings.getDouble(PERIOD, 1.0) * 20);
+            final boolean stopOnFail = settings.getBool(STOP_ON_FAIL, false);
+            final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
             tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
 
             return true;
@@ -90,9 +89,9 @@ public class RepeatMechanic extends MechanicComponent {
 
     private class RepeatTask extends BukkitRunnable {
         private final List<LivingEntity> targets;
-        private final LivingEntity       caster;
-        private final boolean            stopOnFail;
-        private final boolean            force;
+        private final LivingEntity caster;
+        private final boolean stopOnFail;
+        private final boolean force;
 
         private int count;
 
@@ -141,8 +140,8 @@ public class RepeatMechanic extends MechanicComponent {
                 return;
             }
 
-            final int level   = skill.getActiveLevel(caster);
-            boolean   success = executeChildren(caster, level, targets, force);
+            final int level = skill.getActiveLevel(caster);
+            boolean success = executeChildren(caster, level, targets, force);
 
             if (--count <= 0 || (!success && stopOnFail)) {
                 cancel();

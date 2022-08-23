@@ -27,7 +27,11 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.*;
+import com.sucy.skill.api.event.PlayerAccountChangeEvent;
+import com.sucy.skill.api.event.PlayerClassChangeEvent;
+import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
+import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
+import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
@@ -46,7 +50,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -88,7 +96,7 @@ public class CastCombatListener extends SkillAPIListener {
         PlayerData data = SkillAPI.getPlayerData(player);
         if (data.getExtraData().has(ITEM_SAVE_KEY)) {
             ItemStack[] items;
-            if(data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
+            if (data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
                 items = ItemSerializer.fromBase64(data.getExtraData().getString(ITEM_SAVE_KEY));
             } else {
                 items = ItemUT.fromBase64(data.getExtraData().getList(ITEM_SAVE_KEY));
@@ -105,8 +113,8 @@ public class CastCombatListener extends SkillAPIListener {
             backup.put(player.getUniqueId(), new ItemStack[9]);
 
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerInventory inv  = player.getInventory();
-            ItemStack       item = inv.getItem(slot);
+            PlayerInventory inv = player.getInventory();
+            ItemStack item = inv.getItem(slot);
             inv.setItem(slot, SkillAPI.getSettings().getCastItem());
             if (item != null && item.getType() != Material.AIR) {
                 for (ItemStack overflow : inv.addItem(item).values())
@@ -126,13 +134,13 @@ public class CastCombatListener extends SkillAPIListener {
 
     private void cleanup(Player player) {
         ignored.remove(player.getUniqueId());
-        PlayerData     data = SkillAPI.getPlayerData(player);
-        PlayerSkillBar bar  = data.getSkillBar();
+        PlayerData data = SkillAPI.getPlayerData(player);
+        PlayerSkillBar bar = data.getSkillBar();
         if (bar.isSetup())
             toggle(player);
         player.getInventory().setItem(slot, null);
-        ItemStack[]  restore = backup.remove(player.getUniqueId());
-        List<String> base64  = ItemUT.toBase64(restore);
+        ItemStack[] restore = backup.remove(player.getUniqueId());
+        List<String> base64 = ItemUT.toBase64(restore);
 
         data.getExtraData().set(ITEM_SAVE_KEY, base64);
     }
@@ -143,7 +151,7 @@ public class CastCombatListener extends SkillAPIListener {
             items = new ItemStack[9];
         }
         ItemStack[] temp = new ItemStack[9];
-        PlayerData  data = SkillAPI.getPlayerData(player);
+        PlayerData data = SkillAPI.getPlayerData(player);
         for (int i = 0; i < items.length; i++) {
             if (i == slot)
                 continue;
@@ -246,7 +254,7 @@ public class CastCombatListener extends SkillAPIListener {
             final PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
             if (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(event.getHotbarButton())) {
                 final SkillHandler handler = (SkillHandler) event.getInventory().getHolder();
-                final Skill        skill   = handler.get(event.getSlot());
+                final Skill skill = handler.get(event.getSlot());
                 if (skill != null && skill.canCast()) {
                     data.getSkillBar().assign(data.getSkill(skill.getName()), event.getHotbarButton());
                 }
@@ -315,7 +323,7 @@ public class CastCombatListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onToggle(InventoryClickEvent event) {
         // Must click on an active skill bar
-        PlayerData           data     = SkillAPI.getPlayerData((Player) event.getWhoClicked());
+        PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
         final PlayerSkillBar skillBar = data.getSkillBar();
         if (!skillBar.isSetup())
             return;
@@ -348,9 +356,9 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChangeWorld(PlayerChangedWorldEvent event) {
-        PlayerData data       = SkillAPI.getPlayerData(event.getPlayer());
-        boolean    enabled    = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
-        boolean    wasEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
+        PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
+        boolean enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        boolean wasEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
             ignored.add(event.getPlayer().getUniqueId());
         if (enabled && !wasEnabled)
@@ -384,8 +392,8 @@ public class CastCombatListener extends SkillAPIListener {
         }
 
         // Must be a skill slot when the bar is set up
-        PlayerData     data = SkillAPI.getPlayerData(event.getPlayer());
-        PlayerSkillBar bar  = data.getSkillBar();
+        PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
+        PlayerSkillBar bar = data.getSkillBar();
         if (!bar.isWeaponSlot(event.getNewSlot()) && bar.isSetup()) {
             event.setCancelled(true);
             if (ignored.remove(event.getPlayer().getUniqueId()))

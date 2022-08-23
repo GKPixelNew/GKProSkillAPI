@@ -47,14 +47,14 @@ import java.util.Map;
  * A command that displays the list of available profess options
  */
 public class CmdOptions implements IFunction {
-    private static final String TITLE      = "title";
-    private static final String CATEGORY   = "category";
-    private static final String OPTION     = "option";
-    private static final String SEPARATOR  = "separator";
-    private static final String END        = "end";
+    private static final String TITLE = "title";
+    private static final String CATEGORY = "category";
+    private static final String OPTION = "option";
+    private static final String SEPARATOR = "separator";
+    private static final String END = "end";
     private static final String CANNOT_USE = "cannot-use";
     private static final String NO_OPTIONS = "no-options";
-    private static final String DISABLED   = "world-disabled";
+    private static final String DISABLED = "world-disabled";
 
     /**
      * Runs the command
@@ -73,12 +73,12 @@ public class CmdOptions implements IFunction {
             // Only players have profession options
         else if (sender instanceof Player) {
             cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " Profess Options " + ChatColor.DARK_GRAY + "-----------");
-            PlayerData data             = SkillAPI.getPlayerData((Player) sender);
-            String     categoryTemplate = cmd.getMessage(CATEGORY, ChatColor.GOLD + "{category}" + ChatColor.GRAY + ": ");
-            String     optionTemplate   = cmd.getMessage(OPTION, ChatColor.LIGHT_PURPLE + "{option}" + ChatColor.GRAY);
-            String     separator        = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
-            String     none             = cmd.getMessage(NO_OPTIONS, ChatColor.GRAY + "None");
-            boolean    first            = true;
+            PlayerData data = SkillAPI.getPlayerData((Player) sender);
+            String categoryTemplate = cmd.getMessage(CATEGORY, ChatColor.GOLD + "{category}" + ChatColor.GRAY + ": ");
+            String optionTemplate = cmd.getMessage(OPTION, ChatColor.LIGHT_PURPLE + "{option}" + ChatColor.GRAY);
+            String separator = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
+            String none = cmd.getMessage(NO_OPTIONS, ChatColor.GRAY + "None");
+            boolean first = true;
 
             if (data != null) {
                 Map<String, List<String>> groupList = new HashMap<>();
@@ -106,9 +106,9 @@ public class CmdOptions implements IFunction {
                     if (first) first = false;
                     else sender.sendMessage(separator);
 
-                    String        group   = entry.getKey();
-                    List<String>  options = entry.getValue();
-                    StringBuilder list    = new StringBuilder();
+                    String group = entry.getKey();
+                    List<String> options = entry.getValue();
+                    StringBuilder list = new StringBuilder();
                     list.append(categoryTemplate.replace("{category}", TextFormatter.format(group)));
                     if (options.size() > 0)
                         list.append(String.join(", ", options));

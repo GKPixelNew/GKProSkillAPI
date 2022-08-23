@@ -321,8 +321,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             hit.add(entity.getEntityId());
 
             boolean ally = SkillAPI.getSettings().isAlly(getShooter(), entity);
-            if (entity instanceof Player player){
-                if(player.getGameMode() == GameMode.SPECTATOR){
+            if (entity instanceof Player player) {
+                if (player.getGameMode() == GameMode.SPECTATOR) {
                     continue;
                 }
             }

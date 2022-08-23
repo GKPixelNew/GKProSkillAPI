@@ -15,9 +15,9 @@ public class BuffMechanic extends MechanicComponent {
 
     private static final String MODIFIER = "modifier";
     private static final String CATEGORY = "category";
-    private static final String TYPE     = "type";
-    private static final String VALUE    = "value";
-    private static final String SECONDS  = "seconds";
+    private static final String TYPE = "type";
+    private static final String VALUE = "value";
+    private static final String SECONDS = "seconds";
     private static final String IMMEDIATE = "immediate";
 
     @Override
@@ -31,7 +31,6 @@ public class BuffMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */

@@ -35,11 +35,11 @@ import java.util.UUID;
  */
 public class PlayerStatModifier {
 
-    private final UUID      uuid;
-    private final String    name;
-    private final double    amount;
+    private final UUID uuid;
+    private final String name;
+    private final double amount;
     private final Operation operation;
-    private final boolean   persistent;
+    private final boolean persistent;
 
     /**
      * Initializes a new PlayerStatModifier.

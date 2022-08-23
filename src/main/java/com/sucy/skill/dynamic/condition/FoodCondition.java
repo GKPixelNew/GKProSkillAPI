@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 
 public class FoodCondition extends ConditionComponent {
     private static final String TYPE = "type";
-    private static final String MIN  = "min-value";
-    private static final String MAX  = "max-value";
+    private static final String MIN = "min-value";
+    private static final String MAX = "max-value";
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {

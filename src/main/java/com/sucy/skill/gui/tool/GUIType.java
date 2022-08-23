@@ -34,7 +34,14 @@ public enum GUIType {
     SKILL_TREE(2, "st"),
     ATTRIBUTES(3, "a");
 
-    private int    id;
+    private static final GUIType[] ORDERED = new GUIType[]
+            {
+                    CLASS_SELECTION,
+                    CLASS_DETAILS,
+                    SKILL_TREE,
+                    ATTRIBUTES
+            };
+    private int id;
     private String prefix;
 
     GUIType(int id, String prefix) {
@@ -64,12 +71,4 @@ public enum GUIType {
     public String getPrefix() {
         return prefix;
     }
-
-    private static final GUIType[] ORDERED = new GUIType[]
-            {
-                    CLASS_SELECTION,
-                    CLASS_DETAILS,
-                    SKILL_TREE,
-                    ATTRIBUTES
-            };
 }

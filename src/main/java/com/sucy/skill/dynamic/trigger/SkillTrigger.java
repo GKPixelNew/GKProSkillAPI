@@ -12,13 +12,17 @@ import java.util.List;
  */
 public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<SkillDamageEvent> getEvent() {
         return SkillDamageEvent.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(final SkillDamageEvent event, final int level, final Settings settings) {
         final double min = settings.getDouble("dmg-min");

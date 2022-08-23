@@ -45,11 +45,11 @@ public enum Click {
     Q(7, "Q"),
     F(8, "F");
 
-    public static final int BITS           = 4;
-    public static final int BIT_MASK       = (1 << BITS) - 1;
+    public static final int BITS = 4;
+    public static final int BIT_MASK = (1 << BITS) - 1;
     public static final int MAX_COMBO_SIZE = 32 / BITS;
 
-    private static final Click[]            CLICKS    = new Click[]{
+    private static final Click[] CLICKS = new Click[]{
             null,
             LEFT,
             RIGHT,
@@ -66,8 +66,8 @@ public enum Click {
             put(click.key.toLowerCase(), click);
         }
     }};
-    private final        int                id;
-    private final        String             key;
+    private final int id;
+    private final String key;
 
     Click(int id, String key) {
         this.id = id;

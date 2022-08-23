@@ -42,19 +42,19 @@ import java.util.List;
  * Plays a particle effect
  */
 public class ParticleAnimationMechanic extends MechanicComponent {
-    public static final  String WITH_ROTATION = "-with-rotation";
-    private static final String FORWARD       = "forward";
-    private static final String UPWARD        = "upward";
-    private static final String RIGHT         = "right";
-    private static final String STEPS         = "steps";
-    private static final String FREQ          = "frequency";
-    private static final String ANGLE         = "angle";
-    private static final String START         = "start";
-    private static final String DURATION      = "duration";
-    private static final String H_TRANS       = "h-translation";
-    private static final String V_TRANS       = "v-translation";
-    private static final String H_CYCLES      = "h-cycles";
-    private static final String V_CYCLES      = "v-cycles";
+    public static final String WITH_ROTATION = "-with-rotation";
+    private static final String FORWARD = "forward";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
+    private static final String STEPS = "steps";
+    private static final String FREQ = "frequency";
+    private static final String ANGLE = "angle";
+    private static final String START = "start";
+    private static final String DURATION = "duration";
+    private static final String H_TRANS = "h-translation";
+    private static final String V_TRANS = "v-translation";
+    private static final String H_CYCLES = "h-cycles";
+    private static final String V_CYCLES = "v-cycles";
 
     @Override
     public String getKey() {
@@ -87,30 +87,30 @@ public class ParticleAnimationMechanic extends MechanicComponent {
     private class ParticleTask extends BukkitRunnable {
         private final Skill skill;
         private final List<LivingEntity> targets;
-        private final double[]           rots;
-        private final Vector             offset;
-        private final Vector             dir;
+        private final double[] rots;
+        private final Vector offset;
+        private final Vector dir;
 
         private final double forward;
         private final double right;
         private final double upward;
 
-        private final int      steps;
-        private final int      freq;
-        private final int      angle;
-        private final int      startAngle;
-        private final int      duration;
-        private final int      hc;
-        private final int      vc;
-        private final int      hl;
-        private final int      vl;
-        private final double   ht;
-        private final double   vt;
-        private final double   cos;
+        private final int steps;
+        private final int freq;
+        private final int angle;
+        private final int startAngle;
+        private final int duration;
+        private final int hc;
+        private final int vc;
+        private final int hl;
+        private final int vl;
+        private final double ht;
+        private final double vt;
+        private final double cos;
         private final Settings settings;
-        private final double   sin;
-        private       int      life;
-        private       boolean  withRotation = false;
+        private final double sin;
+        private int life;
+        private boolean withRotation = false;
 
         ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings, Skill skill) {
             this.skill = skill;
@@ -179,7 +179,7 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         try {
                             ParticleHelper.play(loc, settings);
                         } catch (IllegalArgumentException e) {
-                            Logger.invalid("Invalid particle while trying to cast "+ this.skill.getName() +": " +
+                            Logger.invalid("Invalid particle while trying to cast " + this.skill.getName() + ": " +
                                     settings.getString(ParticleHelper.PARTICLE_KEY));
                             cancel();
                         }
@@ -194,7 +194,7 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         try {
                             ParticleHelper.play(loc, settings);
                         } catch (IllegalArgumentException e) {
-                            Logger.invalid("Invalid particle while trying to cast "+ this.skill.getName() +": " +
+                            Logger.invalid("Invalid particle while trying to cast " + this.skill.getName() + ": " +
                                     settings.getString(ParticleHelper.PARTICLE_KEY));
                             cancel();
                         }

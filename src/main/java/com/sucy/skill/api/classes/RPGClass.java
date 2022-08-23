@@ -60,28 +60,28 @@ import java.util.List;
  * the class to extend when creating your own classes.
  */
 public abstract class RPGClass implements IconHolder {
-    private static final String                 SKILLS     = "skills";
-    private static final String                 PARENT     = "parent";
-    private static final String                 NAME       = "name";
-    private static final String                 PREFIX     = "prefix";
-    private static final String                 ACTION_BAR = "action-bar";
-    private static final String                 GROUP      = "group";
-    private static final String                 MANA       = "mana";
-    private static final String                 MAX        = "max-level";
-    private static final String                 EXP        = "exp-source";
-    private static final String                 REGEN      = "mana-regen";
-    private static final String                 PERM       = "needs-permission";
-    private static final String                 ATTR       = "attributes";
-    private static final String                 TREE       = "tree";
-    private static final String                 BLACKLIST  = "blacklist";
+    private static final String SKILLS = "skills";
+    private static final String PARENT = "parent";
+    private static final String NAME = "name";
+    private static final String PREFIX = "prefix";
+    private static final String ACTION_BAR = "action-bar";
+    private static final String GROUP = "group";
+    private static final String MANA = "mana";
+    private static final String MAX = "max-level";
+    private static final String EXP = "exp-source";
+    private static final String REGEN = "mana-regen";
+    private static final String PERM = "needs-permission";
+    private static final String ATTR = "attributes";
+    private static final String TREE = "tree";
+    private static final String BLACKLIST = "blacklist";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
      */
-    protected final      Settings               settings   = new Settings();
-    private final        HashMap<String, Skill> skillMap   = new HashMap<>();
-    private final        ArrayList<Skill>       skills     = new ArrayList<>();
-    private final        HashSet<Material>      blacklist  = new HashSet<>();
+    protected final Settings settings = new Settings();
+    private final HashMap<String, Skill> skillMap = new HashMap<>();
+    private final ArrayList<Skill> skills = new ArrayList<>();
+    private final HashSet<Material> blacklist = new HashSet<>();
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -94,24 +94,24 @@ public abstract class RPGClass implements IconHolder {
      * in order to be professed into
      */
     @Getter
-    protected     boolean          needsPermission;
+    protected boolean needsPermission;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Accessor Methods                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    protected     String           actionBar        = "";
-    private       InventoryTree    skillTree;
-    private       String           parent;
-    private       ItemStack        icon;
-    private       TreeType         tree;
-    private       String           name;
-    private       String           prefix;
-    private       String           group;
-    private       String           mana;
-    private       int              maxLevel;
-    private       int              expSources;
-    private       double           manaRegen;
+    protected String actionBar = "";
+    private InventoryTree skillTree;
+    private String parent;
+    private ItemStack icon;
+    private TreeType tree;
+    private String name;
+    private String prefix;
+    private String group;
+    private String mana;
+    private int maxLevel;
+    private int expSources;
+    private double manaRegen;
 
     /**
      * Initializes a class template that does not profess from other
@@ -311,10 +311,10 @@ public abstract class RPGClass implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIcon() {
-        ItemStack    item     = new ItemStack(icon.getType());
-        ItemMeta     iconMeta = icon.getItemMeta();
-        ItemMeta     meta     = item.getItemMeta();
-        List<String> lore     = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
+        ItemStack item = new ItemStack(icon.getType());
+        ItemMeta iconMeta = icon.getItemMeta();
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
         if (iconMeta.hasDisplayName())
             lore.add(0, iconMeta.getDisplayName());
         meta.setDisplayName(name);
@@ -485,6 +485,7 @@ public abstract class RPGClass implements IconHolder {
 
     /**
      * Retrieves the list of skills this class provides a player
+     *
      * @param includeParent Whether to include the parent skills or not
      * @return list of skills provided by the class
      */
