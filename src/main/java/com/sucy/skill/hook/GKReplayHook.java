@@ -3,7 +3,6 @@ package com.sucy.skill.hook;
 import com.sucy.skill.api.event.BlockChangeEvent;
 import dev.robothanzo.gk.replay.api.IReplayHook;
 import dev.robothanzo.gk.replay.api.ReplayAPI;
-import dev.robothanzo.gk.replay.replaysystem.Replay;
 import dev.robothanzo.gk.replay.replaysystem.data.ActionData;
 import dev.robothanzo.gk.replay.replaysystem.data.types.BlockChangeData;
 import dev.robothanzo.gk.replay.replaysystem.data.types.ItemData;
@@ -21,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GKReplayHook implements Listener, IReplayHook {
-    private final List<PacketData> records = new LinkedList<>();
+    private volatile List<PacketData> records = new LinkedList<>();
 
     public GKReplayHook(JavaPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -37,7 +36,9 @@ public class GKReplayHook implements Listener, IReplayHook {
 
     @Override
     public List<PacketData> onRecord(String playerName) {
-        return records;
+        var r = records;
+        records = new LinkedList<>();
+        return r;
     }
 
     @Override
