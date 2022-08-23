@@ -50,7 +50,7 @@ tasks {
 
         filesMatching("**/plugin.yml") {
             filter {
-                it.replace("{project.version}", version as String)
+                it.replace("%project.version%", version as String)
             }
         }
     }

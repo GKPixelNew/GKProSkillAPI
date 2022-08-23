@@ -1135,21 +1135,21 @@ public class Settings {
         dropWeapon = config.getBoolean(ITEM_DROP);
         checkSkills = config.getBoolean(ITEM_SKILLS);
         checkAttributes = config.getBoolean(ITEM_ATTRIBS);
-        loreClassText = config.getString(ITEM_CLASS).toLowerCase();
-        loreLevelText = config.getString(ITEM_LEVEL).toLowerCase();
-        loreExcludeText = config.getString(ITEM_EXCLUDE).toLowerCase();
+        loreClassText = config.getString(ITEM_CLASS, "").toLowerCase();
+        loreLevelText = config.getString(ITEM_LEVEL, "").toLowerCase();
+        loreExcludeText = config.getString(ITEM_EXCLUDE, "").toLowerCase();
 
-        String temp = config.getString(ITEM_SKILL).toLowerCase();
+        String temp = config.getString(ITEM_SKILL, "").toLowerCase();
         int index = temp.indexOf('{');
         skillPre = temp.substring(0, index);
         skillPost = temp.substring(index + 7);
 
-        temp = config.getString(ITEM_ATTR).toLowerCase();
+        temp = config.getString(ITEM_ATTR, "").toLowerCase();
         index = temp.indexOf('{');
         attrReqPre = temp.substring(0, index);
         attrReqPost = temp.substring(index + 6);
 
-        temp = config.getString(ITEM_STATS).toLowerCase();
+        temp = config.getString(ITEM_STATS, "").toLowerCase();
         index = temp.indexOf('{');
         attrPre = temp.substring(0, index);
         attrPost = temp.substring(index + 6);
