@@ -14,7 +14,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.md-5.net/content/groups/public/")
-    maven("https://repo.maven.apache.org/maven2/")
+    maven("https://maven.gkpixel.com/repository/anon-public/")
 }
 
 dependencies {
@@ -31,6 +31,7 @@ dependencies {
     compileOnly("com.github.promcteam:proskillapiparties:master-SNAPSHOT")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
     compileOnly("org.projectlombok:lombok:1.18.24")
+    compileOnly("dev.robothanzo.gk:GKReplay:1.8.2")
     annotationProcessor("org.projectlombok:lombok:1.18.24")
 }
 

@@ -40,6 +40,7 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.BungeeHook;
+import com.sucy.skill.hook.GKReplayHook;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.mimic.MimicHook;
@@ -705,6 +706,11 @@ public class SkillAPI extends JavaPlugin {
         // Copy the quests module if the plugin is loaded.
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
             ResourceManager.copyQuestsModule();
+        }
+
+        if (Bukkit.getServer().getPluginManager().getPlugin("GKReplay") != null) {
+            new GKReplayHook(this);
+            getLogger().info("ProSkillAPI hook into GKReplay: " + ChatColor.GREEN + "success.");
         }
 
         loaded = true;

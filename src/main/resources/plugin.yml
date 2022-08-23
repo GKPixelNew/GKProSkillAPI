@@ -13,6 +13,7 @@ softdepend:
   - WorldGuard
   - WorldEdit
   - Mimic
+  - GKReplay
 loadbefore: [ Quests ]
 api-version: 1.19
 
