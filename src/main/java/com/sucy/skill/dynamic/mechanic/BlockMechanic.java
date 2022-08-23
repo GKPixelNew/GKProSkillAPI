@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.event.BlockChangeEvent;
 import com.sucy.skill.log.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -235,6 +237,16 @@ public class BlockMechanic extends MechanicComponent {
         // Change blocks
         ArrayList<Location> states = new ArrayList<>();
         for (Block b : blocks) {
+            BlockState state = b.getState();
+            state.setType(block.get(random.nextInt(block.size())));
+
+            var event = new BlockChangeEvent(b.getState(), state);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                state.setType(b.getState().getType());
+                continue;
+            }
+
             // Increment the counter
             Location loc = b.getLocation();
             if (pending.containsKey(loc)) {
@@ -245,8 +257,6 @@ public class BlockMechanic extends MechanicComponent {
             }
 
             states.add(b.getLocation());
-            BlockState state = b.getState();
-            state.setType(block.get(random.nextInt(block.size())));
             state.update(true, false);
             if (blockDamage > 0) {
                 for (var player : Bukkit.getOnlinePlayers()) {
@@ -286,7 +296,10 @@ public class BlockMechanic extends MechanicComponent {
                 int count = pending.remove(loc);
 
                 if (count == 1) {
-                    original.remove(loc).update(true, false);
+                    var event = new BlockChangeEvent(loc.getBlock().getState(), original.remove(loc));
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) continue;
+                    event.getTo().update(true, false);
                 } else {
                     pending.put(loc, count - 1);
                 }
