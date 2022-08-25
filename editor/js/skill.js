@@ -281,8 +281,10 @@ function deleteSkill() {
             newSkill();
         }
         index = Math.min(index, skills.length - 1);
-        activeSkill = skills[index];
-
+        activeSkill = skills[index - 1];
+        if (activeSkill == null) {
+            activeSkill = skills[0];
+        }
         activeSkill.apply();
         showSkillPage('builder');
         vue.updateSkills(skills);
