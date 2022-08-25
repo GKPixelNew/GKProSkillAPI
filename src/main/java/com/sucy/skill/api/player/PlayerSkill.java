@@ -29,7 +29,6 @@ package com.sucy.skill.api.player;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.SkillStatus;
 import com.sucy.skill.api.skills.Skill;
-import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -266,8 +265,7 @@ public final class PlayerSkill {
      * Starts the cooldown of the skill
      */
     public void startCooldown() {
-        long cd = (long) player.scaleStat(AttributeManager.COOLDOWN, skill.getCooldown(level) * 1000L);
-        cooldown = System.currentTimeMillis() + cd;
+        cooldown = System.currentTimeMillis() + (long) Math.floor(skill.getCooldown(level, player) * 1000L);
     }
 
     /**

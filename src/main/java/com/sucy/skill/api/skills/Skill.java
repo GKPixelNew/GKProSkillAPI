@@ -45,6 +45,7 @@ import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.language.SkillNodes;
 import com.sucy.skill.log.Logger;
+import com.sucy.skill.manager.AttributeManager;
 import mc.promcteam.engine.mccore.config.Filter;
 import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -393,8 +394,12 @@ public abstract class Skill implements IconHolder {
      * @param level current level of the skill
      * @return cooldown
      */
-    public double getCooldown(int level) {
-        return settings.getAttr(SkillAttribute.COOLDOWN, level);
+    public double getCooldown(int level, PlayerData player) {
+        return player.scaleStat(AttributeManager.COOLDOWN, settings.getAttr(SkillAttribute.COOLDOWN, level));
+    }
+
+    public double getCooldown(int level, Player player) {
+        return getCooldown(level, SkillAPI.getPlayerData(player));
     }
 
     /**
