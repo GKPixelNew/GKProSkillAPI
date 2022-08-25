@@ -36,7 +36,7 @@ dependencies {
 }
 
 group = "mc.promcteam"
-version = "1.1.7.18"
+version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks {
