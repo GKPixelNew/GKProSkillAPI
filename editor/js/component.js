@@ -2147,6 +2147,7 @@ function MechanicDisguise() {
     );
 
     this.data.push(new ListValue('Mob', 'mob', ['Bat',
+        'Axolotl',
         'Blaze',
         'Cave Spider',
         'Chicken',
@@ -2244,7 +2245,6 @@ function MechanicDisguise() {
         .requireValue('misc', ['Area Effect Cloud',
             'Armor Stand',
             'Arrow',
-            'Axolotl',
             'Boat',
             'Dragon Fireball',
             'Egg',
