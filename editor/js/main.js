@@ -46,8 +46,12 @@ depend('data/data', function () {
             showSkillPage('skillForm');
         });
         document.getElementById('saveSkill').addEventListener('click', function (e) {
-            activeComponent.update();
-            document.getElementById('skillForm').removeChild(activeComponent.form);
+            if (activeComponent) {
+                activeComponent.update();
+                try {
+                    document.getElementById('skillForm').removeChild(activeComponent.form);
+                } catch (e) {}
+            }
             showSkillPage('builder');
             saveToFile(activeSkill.data[0].value + '.yml', activeSkill.getSaveString());
         });
