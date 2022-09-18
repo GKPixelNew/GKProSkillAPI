@@ -157,6 +157,7 @@ var Mechanic = {
     ITEM_PROJECTILE: {name: 'Item Projectile', container: true, construct: MechanicItemProjectile},
     ITEM_REMOVE: {name: 'Item Remove', container: false, construct: MechanicItemRemove},
     LAUNCH: {name: 'Launch', container: false, construct: MechanicLaunch},
+    LAUNCH_TO: {name: 'Launch to', container: false, construct: MechanicLaunchTo},
     LIGHTNING: {name: 'Lightning', container: true, construct: MechanicLightning},
     MANA: {name: 'Mana', container: false, construct: MechanicMana},
     MESSAGE: {name: 'Message', container: false, construct: MechanicMessage},
@@ -2575,6 +2576,24 @@ function MechanicLaunch() {
     this.data.push(new AttributeValue('Right Speed', 'right', 0, 0)
         .setTooltip('The speed to give the target to their right')
     );
+}
+
+extend('MechanicLaunchTo', 'Component');
+
+function MechanicLaunchTo() {
+    this.super('LaunchTo', Type.MECHANIC, false);
+
+    this.description = 'Launches target to caster or caster to target.'
+
+    this.data.push(new ListValue('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
+        .setTooltip('Determines launches target to caster or launches caster to target')
+    );
+    this.data.push(new AttributeValue('Speed', 'speed', 1, 0)
+        .setTooltip('The speed when player been launching. If higher, player will be launched farther')
+    );
+    this.data.push(new AttributeValue('Height', 'height', 1, 0)
+        .setTooltip('The height when launching')
+    )
 }
 
 extend('MechanicLightning', 'Component');
