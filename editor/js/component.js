@@ -157,7 +157,7 @@ var Mechanic = {
     ITEM_PROJECTILE: {name: 'Item Projectile', container: true, construct: MechanicItemProjectile},
     ITEM_REMOVE: {name: 'Item Remove', container: false, construct: MechanicItemRemove},
     LAUNCH: {name: 'Launch', container: false, construct: MechanicLaunch},
-    LAUNCH_TO: {name: 'Launch to', container: false, construct: MechanicLaunchTo},
+    LAUNCHTO: {name: 'Launch to', container: false, construct: MechanicLaunchTo},
     LIGHTNING: {name: 'Lightning', container: true, construct: MechanicLightning},
     MANA: {name: 'Mana', container: false, construct: MechanicMana},
     MESSAGE: {name: 'Message', container: false, construct: MechanicMessage},
