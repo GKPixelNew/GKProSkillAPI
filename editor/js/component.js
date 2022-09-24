@@ -157,7 +157,7 @@ var Mechanic = {
     ITEM_PROJECTILE: {name: 'Item Projectile', container: true, construct: MechanicItemProjectile},
     ITEM_REMOVE: {name: 'Item Remove', container: false, construct: MechanicItemRemove},
     LAUNCH: {name: 'Launch', container: false, construct: MechanicLaunch},
-    LAUNCHTO: {name: 'Launch to', container: false, construct: MechanicLaunchTo},
+    LAUNCH_TO: {name: 'Launch To', container: false, construct: MechanicLaunchTo},
     LIGHTNING: {name: 'Lightning', container: true, construct: MechanicLightning},
     MANA: {name: 'Mana', container: false, construct: MechanicMana},
     MESSAGE: {name: 'Message', container: false, construct: MechanicMessage},
@@ -2581,7 +2581,7 @@ function MechanicLaunch() {
 extend('MechanicLaunchTo', 'Component');
 
 function MechanicLaunchTo() {
-    this.super('LaunchTo', Type.MECHANIC, false);
+    this.super('Launch To', Type.MECHANIC, false);
 
     this.description = 'Launches target to caster or caster to target.'
 
