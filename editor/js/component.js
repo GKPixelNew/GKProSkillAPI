@@ -2591,7 +2591,7 @@ function MechanicLaunchTo() {
     this.data.push(new AttributeValue('Speed', 'speed', 1, 0)
         .setTooltip('The speed when player been launching. If higher, player will be launched farther')
     );
-    this.data.push(new AttributeValue('Height', 'height', 1, 0)
+    this.data.push(new AttributeValue('Height', 'height', 1.0, 0)
         .setTooltip('The height when launching')
     )
 }
@@ -2815,6 +2815,9 @@ function MechanicParticleProjectile() {
     );
     this.data.push(new ListValue('Pierce through blocks', 'pierce-blocks', ['True', 'False'], 'False')
         .setTooltip('Whether this projectile should pierce through blocks')
+    );
+    this.data.push(new ListValue('Ignore hitting player', 'ignore-hitting-player', ['True', 'False'], 'False')
+        .setTooltip('Whether this projectile should ignore hitting player')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
