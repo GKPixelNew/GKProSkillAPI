@@ -89,6 +89,7 @@ var Condition = {
     ELEVATION: {name: 'Elevation', container: true, construct: ConditionElevation},
     ELSE: {name: 'Else', container: true, construct: ConditionElse},
     ENTITY_TYPE: {name: 'Entity Type', container: true, construct: ConditionEntityType},
+    NOT_ENTITY: {name: 'Not Entity', container: true, construct: ConditionNotEntity},
     FIRE: {name: 'Fire', container: true, construct: ConditionFire},
     FLAG: {name: 'Flag', container: true, construct: ConditionFlag},
     FOOD: {name: 'Food', container: true, construct: ConditionFood},
@@ -321,6 +322,7 @@ Component.prototype.createBuilderHTML = function (target) {
             }
             comp.childrenHidden = !comp.childrenHidden;
         });
+        div.appendChild(vision);
         div.appendChild(vision);
         this.childrenHidden = false;
     }
@@ -1521,6 +1523,14 @@ function ConditionName() {
     this.data.push(new StringValue('Text', 'text', 'text')
         .setTooltip('The text to look for in the target\'s name')
     );
+}
+
+extend('ConditionNotEntity', 'Component');
+
+function ConditionNotEntity(){
+    this.super('Not Entity', Type.CONDITION, true);
+
+    this.description = 'Applies child components when the target is not an entity.';
 }
 
 extend('ConditionOffhand', 'Component');
