@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.target.TargetComponent
  */
 public abstract class TargetComponent extends EffectComponent {
@@ -32,9 +32,9 @@ public abstract class TargetComponent extends EffectComponent {
     private static final String WALL = "wall";
     private static final String CASTER = "caster";
     private static final String MAX = "max";
-    boolean everyone;
-    boolean allies;
-    boolean throughWall;
+    boolean       everyone;
+    boolean       allies;
+    boolean       throughWall;
     IncludeCaster self;
 
     public IncludeCaster getSelf() {
@@ -114,7 +114,7 @@ public abstract class TargetComponent extends EffectComponent {
         final List<LivingEntity> list = new ArrayList<>();
         from.forEach(target -> {
             final List<LivingEntity> found = conversion.apply(target);
-            int count = 0;
+            int                      count = 0;
 
             for (LivingEntity entity : found) {
                 if (count >= max) break;
@@ -132,7 +132,7 @@ public abstract class TargetComponent extends EffectComponent {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
         if (target instanceof Player && (
-                ((Player) target).getGameMode() == GameMode.SPECTATOR
+                ((Player) target).getGameMode() == GameMode.SPECTATOR || ((Player) target).getGameMode() == GameMode.CREATIVE
         )) return false;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)

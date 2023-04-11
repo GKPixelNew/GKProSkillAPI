@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.List;
 
@@ -38,7 +39,8 @@ public class DamageMechanic extends MechanicComponent {
     private static final String DAMAGE = "value";
     private static final String TRUE = "true";
     private static final String CLASSIFIER = "classifier";
-    private static final String KNOCKBACK = "knockback";
+    private static final String KNOCKBACK  = "knockback";
+    private static final String CAUSE      = "cause";
 
     @Override
     public String getKey() {
@@ -51,20 +53,19 @@ public class DamageMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String pString = settings.getString(TYPE, "damage").toLowerCase();
-        boolean percent = pString.equals("multiplier") || pString.equals("percent");
-        boolean missing = pString.equals("percent missing");
-        boolean left = pString.equals("percent left");
-        boolean trueDmg = settings.getBool(TRUE, false);
-        double damage = parseValues(caster, DAMAGE, level, 1.0);
-        boolean knockback = settings.getBool(KNOCKBACK, true);
-        String classification = settings.getString(CLASSIFIER, "default");
+        String  pString        = settings.getString(TYPE, "damage").toLowerCase();
+        boolean percent        = pString.equals("multiplier") || pString.equals("percent");
+        boolean missing        = pString.equals("percent missing");
+        boolean left           = pString.equals("percent left");
+        boolean trueDmg        = settings.getBool(TRUE, false);
+        double  damage         = parseValues(caster, DAMAGE, level, 1.0);
+        boolean knockback      = settings.getBool(KNOCKBACK, true);
+        String  classification = settings.getString(CLASSIFIER, "default");
         if (damage < 0) {
             return false;
         }
@@ -84,7 +85,7 @@ public class DamageMechanic extends MechanicComponent {
             if (trueDmg) {
                 skill.trueDamage(target, amount, caster);
             } else {
-                skill.damage(target, amount, caster, classification, knockback);
+                skill.damage(target, amount, caster, classification, knockback, EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack").toUpperCase().replace(' ', '_')));
             }
         }
         return targets.size() > 0;

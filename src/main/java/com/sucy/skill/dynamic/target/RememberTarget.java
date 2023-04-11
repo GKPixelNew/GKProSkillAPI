@@ -71,6 +71,13 @@ public class RememberTarget extends TargetComponent {
         return remember(caster, settings.getString(KEY));
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<LivingEntity> remember(final LivingEntity caster, final String key) {
+        final Object data = DynamicSkill.getCastData(caster).get(key);
+        //proper skill setup should cause this to work
+        return data == null ? ImmutableList.of() : (List<LivingEntity>) data;
+    }
+
     @Override
     public String getKey() {
         return "remember";

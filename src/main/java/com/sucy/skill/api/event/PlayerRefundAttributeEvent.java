@@ -81,7 +81,7 @@ public class PlayerRefundAttributeEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the event is cancelled
+     * Sets whether the event is cancelled
      *
      * @param value true if cancelled, false otherwise
      */

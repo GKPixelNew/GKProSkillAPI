@@ -37,11 +37,11 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerSkillUpgradeEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
-    private PlayerData player;
-    private PlayerSkill upgradedSkill;
-    private boolean cancelled = false;
-    private int cost;
+    private static final HandlerList handlers  = new HandlerList();
+    private              PlayerData player;
+    private              PlayerSkill upgradedSkill;
+    private              boolean     cancelled = false;
+    private              int         cost;
 
     /**
      * Constructor
@@ -93,7 +93,7 @@ public class PlayerSkillUpgradeEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the event is cancelled
+     * Sets whether the event is cancelled
      *
      * @param value true if cancelled, false otherwise
      */

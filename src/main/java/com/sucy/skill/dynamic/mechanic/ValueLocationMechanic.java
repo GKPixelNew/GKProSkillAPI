@@ -58,7 +58,7 @@ public class ValueLocationMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
+        String                  key  = settings.getString(KEY);
         HashMap<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation());
         return true;

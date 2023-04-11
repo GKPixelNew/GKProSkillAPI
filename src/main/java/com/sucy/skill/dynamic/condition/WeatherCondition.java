@@ -5,7 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.condition.Weather
  */
 public class WeatherCondition extends ConditionComponent {
@@ -13,10 +13,10 @@ public class WeatherCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String type = settings.getString(TYPE).toLowerCase();
-        final World world = target.getWorld();
-        final Location loc = target.getLocation();
-        final double temperature = loc.getBlock().getTemperature();
+        final String   type        = settings.getString(TYPE).toLowerCase();
+        final World    world       = target.getWorld();
+        final Location loc         = target.getLocation();
+        final double   temperature = loc.getBlock().getTemperature();
 
         switch (type) {
             case "thunder":

@@ -2,19 +2,28 @@ package com.sucy.skill.hook;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
+import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.hook.PlaceholderAPIHook
  */
 public class PlaceholderAPIHook extends PlaceholderExpansion {
@@ -34,6 +43,27 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         return true;
     }
 
+    public static String format(final String message, final Player player) {
+        return PlaceholderAPI.setPlaceholders(player, message);
+    }
+
+    public static ItemStack processPlaceholders(ItemStack item, Player player) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta.hasDisplayName()) {
+            meta.setDisplayName(format(meta.getDisplayName(), player));
+        }
+
+        if (meta.hasLore()) {
+            List<String> lore = meta.getLore()
+                    .stream().map(line -> format(line, player))
+                    .collect(Collectors.toList());
+            meta.setLore(lore);
+        }
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
     @Override
     public boolean canRegister() {
         return true;
@@ -51,18 +81,19 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
     public String onRequest(OfflinePlayer player, String identifier) {
+        identifier = PlaceholderAPI.setBracketPlaceholders(player, identifier);
 
         PlayerData playerData = SkillAPI.getPlayerData(player);
 
         if (identifier.startsWith("group_")) {
             if (!SkillAPI.getClasses().isEmpty()) {
                 for (RPGClass group : SkillAPI.getClasses().values()) {
-                    String groupName = group.getGroup().toLowerCase();
+                    String      groupName   = group.getGroup().toLowerCase();
                     PlayerClass playerClass = playerData.getClass(groupName);
 
                     if (identifier.equals("group_" + groupName + "_basehealth")) {
@@ -202,6 +233,19 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             }
         }
 
+        String[] args = identifier.split("_");
+        if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player") && !args[1].equals("account"))) {
+            // Another player
+            String playerName = args[args.length - 1];
+            UUID   uuid       = null;
+            try {
+                uuid = UUID.fromString(playerName);
+            } catch (IllegalArgumentException ignored) {
+            }
+            player = uuid == null ? Bukkit.getOfflinePlayer(playerName) : Bukkit.getOfflinePlayer(uuid);
+            identifier = identifier.substring(0, identifier.length() - playerName.length() - 1);
+        }
+
         if (player == null) {
             return "0";
         }
@@ -270,8 +314,14 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             if (identifier.equals("default_currentgroupname")) {
                 return String.valueOf(data.getMainClass().getData().getName());
             }
-            if (identifier.equals("default_currentavailableattributepoints")) {
+            if (identifier.equals("default_currentavailableattributepoints")
+                    || identifier.equals("default_attributepoints")) {
                 return String.valueOf(data.getMainClass().getPlayerData().getAttributePoints());
+            }
+            if (identifier.equals("default_currentavailableskillpoints")
+                    || identifier.equals("default_skillpoints")
+                    || identifier.equals("default_currentlyavailablesuperawesomeultramegagigaamazingskillpoints")) {
+                return String.valueOf(data.getMainClass().getPoints());
             }
             if (identifier.equals("default_currentprefix")) {
                 return String.valueOf(data.getMainClass().getData().getPrefix());
@@ -294,78 +344,107 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         }
 
         if (identifier.startsWith("player_")) {
-            if (!data.getClasses().isEmpty()) {
-                for (PlayerClass group : data.getClasses()) {
-                    String groupName = group.getData().getGroup();
-                    PlayerClass playerClass = playerData.getClass(groupName);
+            if (identifier.startsWith("player_account_")) {
+                PlayerAccounts accounts = SkillAPI.getPlayerAccountData(player);
+                Pattern        pattern  = Pattern.compile("player_account_(\\d+)");
+                Matcher        matcher  = pattern.matcher(identifier);
+                if (matcher.find()) {
+                    int accNum = Integer.parseInt(matcher.group(1));
+                    data = accounts.getData(accNum);
 
-                    if (identifier.startsWith("player_" + groupName + "_attribute:")) {
-                        String[] idSplit = identifier.split(":");
-                        try {
-                            return String.valueOf(group.getPlayerData().getAttribute(idSplit[1]));
-                        } catch (Exception e) {
-                            return "0";
-                        }
-                    }
-                    if (identifier.equals("player_" + groupName + "_availableattributepoints")) {
-                        return String.valueOf(playerClass.getPlayerData().getAttributePoints());
-                    }
-                    if (identifier.startsWith("player_" + groupName + "_investedattributepoints:")) {
-                        String[] idSplit = identifier.split(":");
-                        try {
-                            return String.valueOf(playerClass.getPlayerData().getInvestedAttribute(idSplit[1]));
-                        } catch (Exception e) {
-                            return "0";
-                        }
-                    }
-                    if (identifier.equals("player_" + groupName + "_mainclass")) {
-                        return String.valueOf(playerClass.getPlayerData().getMainClass().getData().getName());
-                    }
+                    if (data == null) return ChatColor.GRAY + "Not Professed";
 
-                    if (identifier.equals("player_" + groupName + "_currentexp")) {
-                        return String.valueOf(playerClass.getExp());
-                    }
-                    if (identifier.equals("player_" + groupName + "_requiredexp")) {
-                        return String.valueOf(playerClass.getRequiredExp());
-                    }
-                    if (identifier.equals("player_" + groupName + "_scurrentexp")) {
-                        return String.valueOf((int) playerClass.getExp());
-                    }
-                    if (identifier.equals("player_" + groupName + "_srequiredexp")) {
-                        return String.valueOf((int) playerClass.getRequiredExp());
-                    }
-                    if (identifier.equals("player_" + groupName + "_level")) {
-                        return String.valueOf(playerClass.getLevel());
-                    }
-                    if (identifier.equals("player_" + groupName + "_currentmana")) {
-                        return String.valueOf(playerClass.getPlayerData().getMana());
-                    }
-                    if (identifier.equals("player_" + groupName + "_maxmana")) {
-                        return String.valueOf(playerClass.getPlayerData().getMaxMana());
-                    }
-                    if (identifier.equals("player_" + groupName + "_scurrentmana")) {
-                        return String.valueOf((int) playerClass.getPlayerData().getMana());
-                    }
-                    if (identifier.equals("player_" + groupName + "_smaxmana")) {
-                        return String.valueOf((int) playerClass.getPlayerData().getMaxMana());
-                    }
-                    if (identifier.equals("player_" + groupName + "_scurrenthealth")) {
-                        double currentHP = player.getPlayer().getHealth();
-                        return String.valueOf((int) currentHP);
-                    }
-                    if (identifier.equals("player_" + groupName + "_smaxhealth")) {
-                        double maxHP = player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-                        return String.valueOf((int) maxHP);
-                    }
-                    if (identifier.startsWith("player_" + groupName + "_skillevel:")) {
-                        String[] idSplit = identifier.split(":");
-                        try {
-                            return String.valueOf(playerClass.getPlayerData().getSkillLevel(idSplit[1]));
-                        } catch (Exception e) {
-                            return "0";
-                        }
-                    }
+                    identifier = identifier.replace("player_account_" + accNum + "_", "");
+                    return getPlaceholder(player, identifier, data.getMainClass());
                 }
+            } else if (!data.getClasses().isEmpty()) {
+                for (PlayerClass group : data.getClasses()) {
+                    String      groupName   = group.getData().getGroup();
+                    PlayerClass playerClass = playerData.getClass(groupName);
+                    if (!identifier.startsWith("player_" + groupName)) continue;
+
+                    identifier = identifier.replace("player_" + groupName + "_", "");
+                    return getPlaceholder(player, identifier, playerClass);
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getPlaceholder(OfflinePlayer player, String identifier, PlayerClass playerClass) {
+        if (identifier.startsWith("attribute:")) {
+            String[] idSplit = identifier.split(":");
+            try {
+                return String.valueOf(playerClass.getPlayerData().getAttribute(idSplit[1]));
+            } catch (Exception e) {
+                return "0";
+            }
+        }
+        if (identifier.equals("availableattributepoints")
+                || identifier.equals("attributepoints")) {
+            return String.valueOf(playerClass.getPlayerData().getAttributePoints());
+        }
+        if (identifier.equals("availableskillpoints")
+                || identifier.equals("skillpoints")
+                || identifier.equals("availablesuperawesomeultramegagigaamazingskillpoints")) {
+            return String.valueOf(playerClass.getPoints());
+        }
+        if (identifier.startsWith("investedattributepoints:")) {
+            String[] idSplit = identifier.split(":");
+            try {
+                return String.valueOf(playerClass.getPlayerData().getInvestedAttribute(idSplit[1]));
+            } catch (Exception e) {
+                return "0";
+            }
+        }
+        if (identifier.equals("mainclass")) {
+            return String.valueOf(playerClass.getPlayerData().getMainClass().getData().getName());
+        }
+        if (identifier.equals("class")) {
+            return String.valueOf(playerClass.getData().getName());
+        }
+
+        if (identifier.equals("currentexp")) {
+            return String.valueOf(playerClass.getExp());
+        }
+        if (identifier.equals("requiredexp")) {
+            return String.valueOf(playerClass.getRequiredExp());
+        }
+        if (identifier.equals("scurrentexp")) {
+            return String.valueOf((int) playerClass.getExp());
+        }
+        if (identifier.equals("srequiredexp")) {
+            return String.valueOf((int) playerClass.getRequiredExp());
+        }
+        if (identifier.equals("level")) {
+            return String.valueOf(playerClass.getLevel());
+        }
+        if (identifier.equals("currentmana")) {
+            return String.valueOf(playerClass.getPlayerData().getMana());
+        }
+        if (identifier.equals("maxmana")) {
+            return String.valueOf(playerClass.getPlayerData().getMaxMana());
+        }
+        if (identifier.equals("scurrentmana")) {
+            return String.valueOf((int) playerClass.getPlayerData().getMana());
+        }
+        if (identifier.equals("smaxmana")) {
+            return String.valueOf((int) playerClass.getPlayerData().getMaxMana());
+        }
+        if (identifier.equals("scurrenthealth")) {
+            double currentHP = player.getPlayer().getHealth();
+            return String.valueOf((int) currentHP);
+        }
+        if (identifier.equals("smaxhealth")) {
+            double maxHP = player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+            return String.valueOf((int) maxHP);
+        }
+        if (identifier.startsWith("skillevel:")) {
+            String[] idSplit = identifier.split(":");
+            try {
+                return String.valueOf(playerClass.getPlayerData().getSkillLevel(idSplit[1]));
+            } catch (Exception e) {
+                return "0";
             }
         }
         return null;

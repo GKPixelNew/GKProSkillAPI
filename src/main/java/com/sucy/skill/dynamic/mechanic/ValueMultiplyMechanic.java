@@ -60,9 +60,9 @@ public class ValueMultiplyMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
-        double multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        String                  key        = settings.getString(KEY);
+        double                  multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        HashMap<String, Object> data       = DynamicSkill.getCastData(caster);
         if (data.containsKey(key)) {
             data.put(key, multiplier * (Double) data.get(key));
         }

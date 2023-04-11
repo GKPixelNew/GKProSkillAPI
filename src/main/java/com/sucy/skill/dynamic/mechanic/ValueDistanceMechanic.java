@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.ValueDistanceMechanic
  */
 public class ValueDistanceMechanic extends MechanicComponent {
@@ -34,7 +34,7 @@ public class ValueDistanceMechanic extends MechanicComponent {
             return false;
         }
 
-        final String key = settings.getString(KEY);
+        final String                  key  = settings.getString(KEY);
         final HashMap<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation().distance(caster.getLocation()));
         return true;

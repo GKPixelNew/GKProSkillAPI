@@ -37,8 +37,8 @@ public class LightCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final double min = parseValues(caster, MIN, level, 0);
-        final double max = parseValues(caster, MAX, level, 0);
+        final double min   = parseValues(caster, MIN, level, 0);
+        final double max   = parseValues(caster, MAX, level, 0);
         final double light = target.getLocation().getBlock().getLightLevel();
         return light >= min && light <= max;
     }

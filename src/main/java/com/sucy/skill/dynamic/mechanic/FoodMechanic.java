@@ -6,11 +6,11 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.FoodMechanic
  */
 public class FoodMechanic extends MechanicComponent {
-    private static final String FOOD = "food";
+    private static final String FOOD       = "food";
     private static final String SATURATION = "saturation";
 
     @Override
@@ -29,7 +29,7 @@ public class FoodMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        double food = parseValues(caster, FOOD, level, 1.0);
+        double food       = parseValues(caster, FOOD, level, 1.0);
         double saturation = parseValues(caster, SATURATION, level, 1.0);
         for (LivingEntity target : targets) {
             if (target instanceof Player) {

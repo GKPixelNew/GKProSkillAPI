@@ -60,8 +60,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -112,7 +112,7 @@ public class TempEntity implements LivingEntity {
 
     @NotNull
     public Location getEyeLocation() {
-        return getLocation().add(0, 1, 0);
+        return getLocation().add(0, 0, 0);
     }
 
     @NotNull
@@ -338,6 +338,12 @@ public class TempEntity implements LivingEntity {
     public boolean isCustomNameVisible() {
         return false;
     }
+
+    @Override
+    public void setVisibleByDefault(boolean b) { }
+
+    @Override
+    public boolean isVisibleByDefault() { return true; }
 
     public void setCustomNameVisible(boolean b) {
 
@@ -585,6 +591,53 @@ public class TempEntity implements LivingEntity {
 
     @Override
     public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {
+    }
+
+    @Nullable
+    @Override
+    public Sound getHurtSound() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Sound getDeathSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSound(int i) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSoundSmall() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getFallDamageSoundBig() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getEatingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
     }
 
     @Override
@@ -961,6 +1014,24 @@ public class TempEntity implements LivingEntity {
     @NotNull
     public EntityType getType() {
         return EntityType.CHICKEN;
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimSplashSound() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Sound getSwimHighSpeedSplashSound() {
+        return null;
     }
 
     public boolean isInsideVehicle() {

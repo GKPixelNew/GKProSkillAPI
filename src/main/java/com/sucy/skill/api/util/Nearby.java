@@ -30,9 +30,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Fetches nearby entities by going through possible chunks
@@ -70,7 +69,6 @@ public class Nearby {
      *
      * @param loc    location centered around
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<LivingEntity> getLivingNearby(Location loc, double radius) {
@@ -82,7 +80,8 @@ public class Nearby {
     }
 
     private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius, boolean includeCaster) {
-        TreeMap<Double, LivingEntity> result = new TreeMap<>();
+        List<LivingEntity> result    = new ArrayList<>();
+        Map<UUID, Double>  distances = new HashMap<>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
         int maxX = (int) (loc.getX() + radius) >> 4;
@@ -97,10 +96,14 @@ public class Nearby {
                     if ((includeCaster || entity != source)
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
-                            && entity.getLocation().distanceSquared(loc) < radius)
-                        result.put(entity.getLocation().distance(loc), (LivingEntity) entity);
+                            && entity.getLocation().distanceSquared(loc) < radius) {
+                        result.add((LivingEntity) entity);
+                        distances.put(entity.getUniqueId(), entity.getLocation().distance(loc));
+                    }
 
-        return new ArrayList<>(result.values());
+        return result.stream().sorted(
+                Comparator.comparingDouble(entity -> distances.get(entity.getUniqueId()))
+        ).collect(Collectors.toList());
     }
 
     /**
@@ -108,7 +111,6 @@ public class Nearby {
      *
      * @param entity entity to get nearby ones for
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<Entity> getNearby(Entity entity, double radius) {
@@ -120,7 +122,6 @@ public class Nearby {
      *
      * @param entity entity to get nearby ones for
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<LivingEntity> getLivingNearby(Entity entity, double radius) {

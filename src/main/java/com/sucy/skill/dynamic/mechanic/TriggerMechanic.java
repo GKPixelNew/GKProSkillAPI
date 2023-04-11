@@ -17,27 +17,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.TriggerMechanic
  */
 public class TriggerMechanic extends MechanicComponent {
 
-    private static final String TRIGGER = "trigger";
-    private static final String DURATION = "duration";
+    private static final String TRIGGER   = "trigger";
+    private static final String DURATION  = "duration";
     private static final String STACKABLE = "stackable";
-    private static final String ONCE = "once";
+    private static final String ONCE      = "once";
 
     private final Map<Integer, List<Context>> CASTER_MAP = new HashMap<Integer, List<Context>>();
 
     private TriggerHandler triggerHandler;
-    private boolean once;
-    private boolean stackable;
+    private boolean        once;
+    private boolean        stackable;
 
     @Override
     public void load(final DynamicSkill skill, final DataSection dataSection) {
         super.load(skill, dataSection);
 
-        final String name = settings.getString(TRIGGER, "DEATH");
+        final String  name    = settings.getString(TRIGGER, "DEATH");
         final Trigger trigger = ComponentRegistry.getTrigger(name);
         if (trigger == null) {
             throw new IllegalArgumentException("Skill is using invalid trigger for mechanic: " + name);
@@ -92,7 +92,7 @@ public class TriggerMechanic extends MechanicComponent {
 
     private static class Context {
         public final LivingEntity caster;
-        public final int level;
+        public final int          level;
 
         public Context(final LivingEntity caster, final int level) {
             this.caster = caster;
@@ -116,7 +116,7 @@ public class TriggerMechanic extends MechanicComponent {
     private class StopTask implements Runnable {
 
         private final LivingEntity target;
-        private final Context context;
+        private final Context      context;
 
         public StopTask(final LivingEntity target, final Context context) {
             this.target = target;

@@ -60,9 +60,9 @@ public class ValueSetMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
-        double value = parseValues(caster, VALUE, level, 1);
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        String                  key   = settings.getString(KEY);
+        double                  value = parseValues(caster, VALUE, level, 1);
+        HashMap<String, Object> data  = DynamicSkill.getCastData(caster);
         data.put(key, value);
         return true;
     }

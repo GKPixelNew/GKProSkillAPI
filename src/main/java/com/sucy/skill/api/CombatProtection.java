@@ -9,14 +9,29 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.AllyChecker
  */
 public interface CombatProtection {
     static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly) {
+        return CombatProtection.canAttack(attacker, target, passiveAlly, EntityDamageEvent.DamageCause.CUSTOM);
+    }
+
+    static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly, EntityDamageEvent.DamageCause cause) {
         if (attacker == target) {
             return false;
         } else {
+            // If the attacking entity is owned by another player, use that player for logic instead
+            if (attacker instanceof Tameable) {
+                Tameable entity = (Tameable) target;
+                if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer) {
+                    OfflinePlayer owner = (OfflinePlayer) entity.getOwner();
+                    if (owner.isOnline()) {
+                        attacker = owner.getPlayer();
+                    }
+                }
+            }
+
             if (target instanceof Tameable entity) {
                 if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer owner) {
                     if (owner.isOnline()) {
@@ -27,7 +42,7 @@ public interface CombatProtection {
                 return false;
             }
 
-            DefaultCombatProtection.FakeEntityDamageByEntityEvent event = new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0D);
+            DefaultCombatProtection.FakeEntityDamageByEntityEvent event = new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, cause, 1.0D);
             Bukkit.getPluginManager().callEvent(event);
             boolean attackable = !event.isExternallyCancelled();
 
@@ -42,5 +57,11 @@ public interface CombatProtection {
     boolean canAttack(final Player attacker, final LivingEntity defender);
 
     boolean canAttack(final LivingEntity attacker, final LivingEntity defender);
+
+    boolean canAttack(final Player attacker, final Player defender, EntityDamageEvent.DamageCause cause);
+
+    boolean canAttack(final Player attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
+
+    boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
 
 }

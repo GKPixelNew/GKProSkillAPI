@@ -135,6 +135,7 @@ public class GUITool implements ToolMenu {
         config = SkillAPI.getConfig("gui");
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
+            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) { continue; }
             try {
                 GUIData loaded = new GUIData(data.getSection(key));
                 if (loaded.isValid())
@@ -309,6 +310,15 @@ public class GUITool implements ToolMenu {
     private void update() {
         inventoryContents = inventory.getContents();
         guiData.load(inventoryContents);
+        if (type == GUIType.SKILL_TREE) {
+            RPGClass rpgClass = availableClasses[classId];
+            String name = GUIType.SKILL_TREE.getPrefix()+rpgClass.getName();
+            guiData.save(config.getConfig().createSection(name));
+            config.save();
+            rpgClass.reloadSkillTree();
+            guiData = new GUIData(rpgClass.getSkillTree());
+            setups.put(name, guiData);
+        }
     }
 
     private String populate() {
@@ -452,42 +462,42 @@ public class GUITool implements ToolMenu {
         if (event.getAction() == InventoryAction.HOTBAR_SWAP
                 || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
             event.setCancelled(true);
-        else if (event.getRawSlot() < event.getView().getTopInventory().getSize()) {
-            if (guiData.getPages() == 1)
-                return;
-
-            if (guiData.getSize() > 9) {
-                switch (event.getSlot()) {
-                    case 8:
-                        update();
-                        guiData.prev();
-                        setType(type);
-                        event.setCancelled(true);
-                        break;
-                    case 17:
-                        update();
-                        guiData.next();
-                        setType(type);
-                        event.setCancelled(true);
-                        break;
-                }
-            } else {
-                switch (event.getSlot()) {
-                    case 7:
-                        update();
-                        guiData.prev();
-                        setType(type);
-                        event.setCancelled(true);
-                        break;
-                    case 8:
-                        update();
-                        guiData.next();
-                        setType(type);
-                        event.setCancelled(true);
-                        break;
+        else if (event.getRawSlot() < event.getView().getTopInventory().getSize()) { // Clicked upper inventory
+            if (guiData.getPages() > 1) { // Check if clicked next or prev buttons
+                if (guiData.getSize() > 9) { // Next and prev buttons are placed vertically
+                    switch (event.getSlot()) {
+                        case 8 -> {
+                            update();
+                            guiData.prev();
+                            setType(type);
+                            event.setCancelled(true);
+                        }
+                        case 17 -> {
+                            update();
+                            guiData.next();
+                            setType(type);
+                            event.setCancelled(true);
+                        }
+                    }
+                } else { // Next and prev buttons are placed horizontally
+                    switch (event.getSlot()) {
+                        case 7 -> {
+                            update();
+                            guiData.prev();
+                            setType(type);
+                            event.setCancelled(true);
+                        }
+                        case 8 -> {
+                            update();
+                            guiData.next();
+                            setType(type);
+                            event.setCancelled(true);
+                        }
+                    }
                 }
             }
-        } else {
+            if (!this.guiData.isEditable()) { event.setCancelled(true); }
+        } else { // Clicked lower inventory
             if (event.getSlot() < 9) {
                 update();
                 event.setCancelled(true);
@@ -501,10 +511,12 @@ public class GUITool implements ToolMenu {
                     break;
                 case 2:
                     guiData.shrink();
+                    update();
                     setType(type);
                     break;
                 case 3:
                     guiData.grow();
+                    update();
                     setType(type);
                     break;
                 case 4:

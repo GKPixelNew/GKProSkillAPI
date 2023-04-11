@@ -65,8 +65,8 @@ public class ParticleMechanic extends MechanicComponent {
         }
 
         double forward = settings.getDouble(FORWARD, 0);
-        double upward = settings.getDouble(UPWARD, 0);
-        double right = settings.getDouble(RIGHT, 0);
+        double upward  = settings.getDouble(UPWARD, 0);
+        double right   = settings.getDouble(RIGHT, 0);
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
@@ -74,9 +74,9 @@ public class ParticleMechanic extends MechanicComponent {
         copy.set("level", level);
 
         for (LivingEntity target : targets) {
-            Location loc = target.getLocation();
-            Vector dir = loc.getDirection().setY(0).normalize();
-            Vector side = dir.clone().crossProduct(UP);
+            Location loc  = target.getLocation();
+            Vector   dir  = loc.getDirection().setY(0).normalize();
+            Vector   side = dir.clone().crossProduct(UP);
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             ParticleHelper.play(loc, copy);

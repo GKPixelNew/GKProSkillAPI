@@ -70,6 +70,8 @@ public class BlockMechanic extends MechanicComponent {
     private static final String BLOCK_DAMAGE_TYPE = "block_damage_TYPE";
     private static final String BLOCK_DAMAGE = "block_damage";
     private static final Random random = new Random();
+    private static final String DATA      = "data";
+    private static final String RESET_YAW = "reset-yaw";
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
     private static final HashMap<Location, BlockState> original = new HashMap<>();
@@ -77,7 +79,7 @@ public class BlockMechanic extends MechanicComponent {
     private final Map<Integer, List<RevertTask>> tasks = new HashMap<>();
 
     /**
-     * Checks whether or not the location is modified by a block mechanic
+     * Checks whether the location is modified by a block mechanic
      *
      * @param loc location to check
      * @return true if modified, false otherwise
@@ -143,6 +145,8 @@ public class BlockMechanic extends MechanicComponent {
         boolean solid = type.equals("solid");
         boolean air = type.equals("air");
         boolean fill = settings.getBool(FILL, false);
+        Material matType = !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
+        boolean resetYaw = settings.getBool(RESET_YAW, false);
 
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward = parseValues(caster, UPWARD, level, 0);
@@ -161,8 +165,10 @@ public class BlockMechanic extends MechanicComponent {
             double rSq = radius * radius;
             for (LivingEntity t : targets) {
                 // Get the center with offsets included
-                Location loc = t.getLocation();
-                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Location loc    = t.getLocation();
+                Location dirLoc = t.getLocation().clone();
+                if (resetYaw) dirLoc.setYaw(0);
+                Vector dir = dirLoc.getDirection().setY(0).normalize();
                 Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
@@ -182,8 +188,9 @@ public class BlockMechanic extends MechanicComponent {
                                 dz = z - k;
                                 if (dx * dx + dy * dy + dz * dz < rSq) {
                                     Block b = w.getBlockAt(i, j, k);
-                                    if ((!solid || b.getType().isSolid())
-                                            && (!air || b.getType() == Material.AIR)
+                                    if ((matType == null || matType == b.getType())
+                                        && (!solid || b.getType().isSolid())
+                                            && (!air || b.getType().isAir())
                                             && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
                                         blocks.add(b);
                                     }
@@ -201,28 +208,38 @@ public class BlockMechanic extends MechanicComponent {
 
             for (LivingEntity t : targets) {
                 // Get the location with offsets included
-                Location loc = t.getLocation();
-                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Location loc    = t.getLocation();
+                Location dirLoc = t.getLocation().clone();
+                if (resetYaw) dirLoc.setYaw(0);
+                Vector dir = dirLoc.getDirection().setY(0).normalize();
                 Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
+
+                x = loc.getX();
+                y = loc.getY();
+                z = loc.getZ();
+
                 double yaw = loc.getYaw();
                 boolean facingZ = Math.abs(yaw) < 45 || Math.abs(yaw) > 135;
-
-                x = facingZ ? loc.getX() : loc.getZ();
-                y = loc.getY();
-                z = facingZ ? loc.getZ() : loc.getX();
+                if (!resetYaw) {
+                    x = facingZ ? loc.getX() : loc.getZ();
+                    z = facingZ ? loc.getZ() : loc.getX();
+                }
 
                 // Get all blocks in the area
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
+                            int   blockX = (int) Math.floor(resetYaw || facingZ ? i : k);
+                            int   blockY = (int) Math.floor(j);
+                            int   blockZ = (int) Math.floor(resetYaw || facingZ ? k : i);
                             if (fill || i == x + width || j == y + height || k == z + depth
                                     || i == x - width || j == y - height || k == z - depth) {
-                                Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
+                                Block b      = w.getBlockAt(blockX, blockY, blockZ);
                                 if ((!solid || b.getType().isSolid())
-                                        && (!air || b.getType() == Material.AIR)
+                                        && (!air || b.getType().isAir())
                                         && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
                                     blocks.add(b);
                                 }

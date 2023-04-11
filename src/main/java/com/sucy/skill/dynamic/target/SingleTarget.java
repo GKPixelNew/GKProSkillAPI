@@ -48,7 +48,7 @@ public class SingleTarget extends TargetComponent {
     /** {@inheritDoc} */
     @Override
     public void playPreview(Player caster, int level, LivingEntity target, int step) {
-        double arc = parseValues(caster, TOLERANCE, level, 4.0) * Math.PI / 180;
+        double arc    = parseValues(caster, TOLERANCE, level, 4.0) * Math.PI / 180;
         double radius = parseValues(caster, RANGE, level, 3.0);
         if (preview == null || preview.getArc() != arc || preview.getRadius() != radius) {
             preview = new ConePreview(arc, radius);
@@ -61,7 +61,7 @@ public class SingleTarget extends TargetComponent {
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
 
-        double range = parseValues(caster, RANGE, level, 5.0);
+        double range     = parseValues(caster, RANGE, level, 5.0);
         double tolerance = parseValues(caster, TOLERANCE, level, 4.0);
         return determineTargets(caster, level, targets, t -> {
             final LivingEntity target = TargetHelper.getLivingTarget(t, range, tolerance);

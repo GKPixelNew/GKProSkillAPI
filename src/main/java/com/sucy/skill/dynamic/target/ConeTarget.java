@@ -49,7 +49,7 @@ public class ConeTarget extends TargetComponent {
      */
     @Override
     void playPreview(Player caster, int level, LivingEntity target, int step) {
-        double arc = parseValues(caster, ANGLE, level, 90.0) * Math.PI / 180;
+        double arc    = parseValues(caster, ANGLE, level, 90.0) * Math.PI / 180;
         double radius = parseValues(caster, RANGE, level, 3.0);
         if (preview == null || preview.getArc() != arc || preview.getRadius() != radius) {
             preview = new ConePreview(arc, radius);

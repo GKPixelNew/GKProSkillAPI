@@ -34,6 +34,7 @@ import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.dynamic.mechanic.CleanseMechanic;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -62,6 +63,17 @@ public class StatusListener extends SkillAPIListener {
     private static final HashSet<String> interrupts = new HashSet<String>() {{
         add(StatusFlag.STUN);
         add(StatusFlag.SILENCE);
+    }};
+
+    private static final HashMap<String, String> messageMap = new HashMap<String, String>() {{
+        put(StatusFlag.STUN, "stunned");
+        put(StatusFlag.ROOT, "rooted");
+        put(StatusFlag.INVINCIBLE, "invincible");
+        put(StatusFlag.ABSORB, "absorbed");
+        put(StatusFlag.DISARM, "disarmed");
+        put(StatusFlag.SILENCE, "silenced");
+        put(StatusFlag.CHANNELING, "channeling");
+        put(StatusFlag.CHANNEL, "channeling");
     }};
 
     private final Vector ZERO = new Vector(0, 0, 0);

@@ -123,8 +123,14 @@ public class CastCombatListener extends SkillAPIListener {
             inv.getItem(slot).setAmount(1);
 
             int playerSlot = player.getInventory().getHeldItemSlot();
+            int tries      = 0;
             while (!data.getSkillBar().isWeaponSlot(playerSlot) || slot == playerSlot) {
                 playerSlot = (playerSlot + 1) % 9;
+                if (++tries > 9) {
+                    SkillAPI.inst().getLogger().warning("You appear to have casting bars enabled, but don't have a slot for the player to equip a weapon. We're disabling cast bars until this is resolved.");
+                    SkillAPI.getSettings().setCastBars(false);
+                    break; // It's unknown that kind of behavior this will cause... but we need to break the loop sometime.
+                }
             }
             if (playerSlot != player.getInventory().getHeldItemSlot()) {
                 player.getInventory().setHeldItemSlot(playerSlot);
@@ -338,7 +344,9 @@ public class CastCombatListener extends SkillAPIListener {
         // Prevent moving skill icons
         int slot = event.getSlot();
         if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize()) {
-            if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
+            if (event.getSlot() == this.slot)
+                event.setCancelled(true);
+            else if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
             else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)
                     && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)))) {

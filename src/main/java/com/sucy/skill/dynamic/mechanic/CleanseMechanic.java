@@ -38,16 +38,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
  * Cleanses a target of negative potion or status effects
  */
 public class CleanseMechanic extends MechanicComponent {
-    public static final Set<String> NEGATIVE_POTIONS = ImmutableSet.of(
-            "BLINDNESS", "CONFUSION", "HUNGER", "LEVITATION", "POISON",
-            "SLOW", "SLOW_DIGGING", "WEAKNESS", "WITHER", "GLOWING"
+    public static final Set<PotionEffectType> NEGATIVE_POTIONS = ImmutableSet.of(
+            PotionEffectType.BLINDNESS,
+            PotionEffectType.CONFUSION,
+            PotionEffectType.HUNGER,
+            PotionEffectType.LEVITATION,
+            PotionEffectType.POISON,
+            PotionEffectType.SLOW,
+            PotionEffectType.SLOW_DIGGING,
+            PotionEffectType.WEAKNESS,
+            PotionEffectType.WITHER
     );
 
     private static final String STATUS = "status";

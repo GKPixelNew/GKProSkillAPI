@@ -46,16 +46,16 @@ public class SkillDamageEvent extends Event implements Cancellable {
      * @return entity that dealt the damage
      */
     @Getter
-    private final LivingEntity damager;
+    private final        LivingEntity damager;
     /**
      * Retrieves the entity that received the damage
      *
      * @return entity that received the damage
      */
     @Getter
-    private final LivingEntity target;
+    private final        LivingEntity target;
     @Getter
-    private final String classification;
+    private final        String classification;
     /**
      * @return skill used to deal the damage
      */
@@ -114,7 +114,7 @@ public class SkillDamageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */

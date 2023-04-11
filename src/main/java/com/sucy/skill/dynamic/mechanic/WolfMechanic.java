@@ -97,15 +97,15 @@ public class WolfMechanic extends MechanicComponent {
 
         cleanUp(caster);
 
-        String color = settings.getString(COLOR);
-        double health = parseValues(player, HEALTH, level, 10.0);
-        String name = TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
-        double damage = parseValues(player, DAMAGE, level, 3.0);
-        double amount = parseValues(player, AMOUNT, level, 1.0);
-        boolean sitting = settings.getBool(SITTING, false);
+        String       color   = settings.getString(COLOR);
+        double       health  = parseValues(player, HEALTH, level, 10.0);
+        String       name    = TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
+        double       damage  = parseValues(player, DAMAGE, level, 3.0);
+        double       amount  = parseValues(player, AMOUNT, level, 1.0);
+        boolean      sitting = settings.getBool(SITTING, false);
         boolean silent = settings.getBool(SILENT, true);
         boolean noAI = settings.getBool(NO_AI, false);
-        List<String> skills = settings.getStringList(SKILLS);
+        List<String> skills  = settings.getStringList(SKILLS);
 
         DyeColor dye = null;
         if (color != null) {
@@ -114,9 +114,9 @@ public class WolfMechanic extends MechanicComponent {
             } catch (Exception ex) { /* Invalid color */ }
         }
 
-        double seconds = parseValues(player, SECONDS, level, 10.0);
-        int ticks = (int) (seconds * 20);
-        List<LivingEntity> wolves = new ArrayList<>();
+        double             seconds = parseValues(player, SECONDS, level, 10.0);
+        int                ticks   = (int) (seconds * 20);
+        List<LivingEntity> wolves  = new ArrayList<>();
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
             aggroTargets = aggroTarget.getTargets(caster, level, targets);

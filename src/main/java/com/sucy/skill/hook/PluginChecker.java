@@ -26,8 +26,10 @@
  */
 package com.sucy.skill.hook;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.SkillAPIListener;
+import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -36,7 +38,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 /**
- * Handler for checking whether or not hooked plugins are present
+ * Handler for checking whether hooked plugins are present
  * and active before using related code.
  */
 public class PluginChecker extends SkillAPIListener {
@@ -49,6 +51,7 @@ public class PluginChecker extends SkillAPIListener {
     private static boolean worldGuard;
     private static boolean parties;
     private static boolean mimic;
+    private static boolean rpgItems;
 
     /**
      * Checks if vault permissions is active on the server
@@ -70,7 +73,7 @@ public class PluginChecker extends SkillAPIListener {
 
 
     /**
-     * Checks whether or not Lib's Disguises is active
+     * Checks whether Lib's Disguises is active
      *
      * @return true if active
      */
@@ -79,7 +82,7 @@ public class PluginChecker extends SkillAPIListener {
     }
 
     /**
-     * Checks whether or not NoCheatPlus is active on the server
+     * Checks whether NoCheatPlus is active on the server
      *
      * @return true if active, false otherwise
      */
@@ -92,7 +95,7 @@ public class PluginChecker extends SkillAPIListener {
     }
 
     /**
-     * Checks whether or not bungee is present
+     * Checks whether bungee is present
      *
      * @return true if present, false otherwise
      */
@@ -107,6 +110,8 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isWorldGuardActive() {
         return worldGuard;
     }
+
+    public static boolean isRPGItemsActive() {return rpgItems;}
 
     public static boolean isPartiesActive() {
         return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");
@@ -174,6 +179,9 @@ public class PluginChecker extends SkillAPIListener {
                 break;
             case "Mimic":
                 mimic = isEnabled;
+                break;
+            case "ProRPGItems":
+                rpgItems = isEnabled;
                 break;
         }
     }

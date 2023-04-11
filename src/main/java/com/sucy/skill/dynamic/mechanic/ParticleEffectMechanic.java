@@ -43,8 +43,8 @@ public class ParticleEffectMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String key = settings.getString(KEY, skill.getName());
-        int duration = (int) (20 * parseValues(caster, DURATION, level, 5));
+        String key      = settings.getString(KEY, skill.getName());
+        int    duration = (int) (20 * parseValues(caster, DURATION, level, 5));
 
         EffectPlayer player = new EffectPlayer(settings);
         for (LivingEntity target : targets)

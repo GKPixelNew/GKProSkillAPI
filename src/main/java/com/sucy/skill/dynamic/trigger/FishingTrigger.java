@@ -13,10 +13,10 @@ public abstract class FishingTrigger implements Trigger<PlayerFishEvent> {
      */
     @Override
     public Class<PlayerFishEvent> getEvent() {
-        return PlayerFishEvent.class;
-    }
+        return PlayerFishEvent.class;}
 
-    /**
+/**
+    *
      * {@inheritDoc}
      */
     @Override

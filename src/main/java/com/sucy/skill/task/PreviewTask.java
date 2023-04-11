@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 public class PreviewTask extends RepeatThreadTask {
     private Player player;
     private PlayerData data;
-    private int step = 0;
+    private int        step = 0;
 
     public PreviewTask(Player player) {
         super(0, PreviewSettings.interval);

@@ -30,8 +30,8 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.exception.SkillTreeException;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.gui.tool.GUIType;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,6 +40,36 @@ import java.util.List;
  * <p>This is still in development to make it work as intended</p>
  */
 public class FloodTree extends InventoryTree {
+    /**
+     * Constructor
+     *
+     * @param api  api reference
+     * @param tree class reference
+     */
+    public FloodTree(SkillAPI api, RPGClass tree) {
+        super(api, tree);
+    }
+
+    /**
+     * Arranges the skill tree
+     *
+     * @param skills skills to arrange
+     *
+     * @throws com.sucy.skill.api.exception.SkillTreeException
+     */
+    @Override
+    protected void arrange(List<Skill> skills) throws SkillTreeException {
+        skillSlots.clear();
+        skills.sort(levelComparator);
+        int i = 0;
+        for (Skill skill : skills) {
+            if (i%9 == 8) { i++; }
+            skillSlots.put(i, skill);
+            i++;
+        }
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", (skills.size()+7)/8), 6));
+    }
+
     /**
      * Comparator for skills for level trees
      */

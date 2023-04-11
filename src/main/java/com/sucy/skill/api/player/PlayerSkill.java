@@ -44,6 +44,7 @@ public final class PlayerSkill {
     private Material bind;
     private long cooldown;
     private int level;
+    private boolean     external;
 
     /**
      * Constructs a new PlayerSkill. You should not need to use
@@ -58,10 +59,28 @@ public final class PlayerSkill {
         this.player = player;
         this.skill = skill;
         this.parent = parent;
+        this.external = false;
     }
 
     /**
-     * Checks whether or not the skill is currently unlocked
+     * Constructs a new PlayerSkill. You should not need to use
+     * this constructor as it is provided by the API. Get instances
+     * through the PlayerData object.
+     *
+     * @param player owning player data
+     * @param skill  skill template
+     * @param parent owning player class
+     * @param external whether the skill was added by an external plugin
+     */
+    public PlayerSkill(PlayerData player, Skill skill, PlayerClass parent, boolean external) {
+        this.player = player;
+        this.skill = skill;
+        this.parent = parent;
+        this.external = external;
+    }
+
+    /**
+     * Checks whether the skill is currently unlocked
      * for the player. This requires the skill to be at least
      * level 1.
      *
@@ -138,6 +157,13 @@ public final class PlayerSkill {
     }
 
     /**
+     * Retrieves whether the skill was added by an external plugin
+     *
+     * @return whether the skill was added by an external plugin
+     */
+    public boolean isExternal() { return external; }
+
+    /**
      * Retrieves the cost to upgrade the skill to the next level
      *
      * @return cost to upgrade the skill to the next level
@@ -179,7 +205,7 @@ public final class PlayerSkill {
     }
 
     /**
-     * Checks whether or not the skill is currently on cooldown
+     * Checks whether the skill is currently on cooldown
      *
      * @return true if on cooldown, false otherwise
      */
@@ -188,7 +214,7 @@ public final class PlayerSkill {
     }
 
     /**
-     * Checks whether or not the skill is at its maximum level
+     * Checks whether the skill is at its maximum level
      *
      * @return true if at max level, false otherwise
      */

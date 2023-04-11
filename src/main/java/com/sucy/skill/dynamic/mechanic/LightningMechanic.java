@@ -43,9 +43,9 @@ import java.util.List;
 public class LightningMechanic extends MechanicComponent {
     private static final Vector up = new Vector(0, 1, 0);
 
-    private static final String DAMAGE = "damage";
-    private static final String GROUP = "group";
-    private static final String CASTER = "caster";
+    private static final String DAMAGE  = "damage";
+    private static final String GROUP   = "group";
+    private static final String CASTER  = "caster";
     private static final String FORWARD = "forward";
     private static final String RIGHT = "right";
 
@@ -70,11 +70,11 @@ public class LightningMechanic extends MechanicComponent {
             return false;
         }
         double forward = parseValues(caster, FORWARD, level, 0);
-        double right = parseValues(caster, RIGHT, level, 0);
+        double right   = parseValues(caster, RIGHT, level, 0);
         for (LivingEntity target : targets) {
-            Vector dir = target.getLocation().getDirection().setY(0).normalize();
-            Vector nor = dir.clone().crossProduct(up);
-            Location loc = target.getLocation().add(dir.multiply(forward).add(nor.multiply(right)));
+            Vector          dir       = target.getLocation().getDirection().setY(0).normalize();
+            Vector          nor       = dir.clone().crossProduct(up);
+            Location        loc       = target.getLocation().add(dir.multiply(forward).add(nor.multiply(right)));
             LightningStrike lightning = target.getWorld().strikeLightning(loc);
             SkillAPI.setMeta(lightning, MechanicListener.P_CALL, new Callback(caster, level, force));
         }
@@ -82,9 +82,9 @@ public class LightningMechanic extends MechanicComponent {
     }
 
     public class Callback {
-        private final LivingEntity caster;
-        private final int level;
-        private final boolean force;
+        private final LivingEntity       caster;
+        private final int                level;
+        private final boolean            force;
         private final List<LivingEntity> struckEntities = new ArrayList<>();
 
         public Callback(LivingEntity caster, int level, boolean force) {

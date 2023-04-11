@@ -37,18 +37,18 @@ import org.bukkit.entity.Player;
  */
 public class ParticleSettings {
     private static final String
-            PARTICLE_KEY = "particle",
-            MATERIAL_KEY = "material",
-            DURABILITY_KEY = "durability",
-            DATA_KEY = "type",
-            AMOUNT_KEY = "amount",
-            DX_KEY = "dx",
-            DY_KEY = "dy",
-            DZ_KEY = "dz",
-            SPEED_KEY = "speed",
-            DUST_COLOR = "dust-color",
+            PARTICLE_KEY     = "particle",
+            MATERIAL_KEY     = "material",
+            DURABILITY_KEY   = "durability",
+            DATA_KEY         = "type",
+            AMOUNT_KEY       = "amount",
+            DX_KEY           = "dx",
+            DY_KEY           = "dy",
+            DZ_KEY           = "dz",
+            SPEED_KEY        = "speed",
+            DUST_COLOR       = "dust-color",
             FINAL_DUST_COLOR = "final-dust-color",
-            DUST_SIZE = "dust-size",
+            DUST_SIZE        = "dust-size",
             ANGLE = "angle",
             DELAY = "delay";
 
@@ -91,7 +91,7 @@ public class ParticleSettings {
             Color dustColor,
             Color toColor,
             float dustSize,
-            double angle,
+    double angle,
             int delay) {
         this.type = type;
         this.dx = dx;

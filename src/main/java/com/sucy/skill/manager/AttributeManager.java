@@ -231,7 +231,7 @@ public class AttributeManager {
          */
         public Attribute(DataSection data, String key) {
             this.key = key.toLowerCase();
-            this.display = data.getString(DISPLAY, key).toLowerCase();
+            this.display = data.getString(DISPLAY, key);
             this.icon = Data.parseIcon(data);
             this.max = data.getInt(MAX, 999);
 
@@ -459,7 +459,7 @@ public class AttributeManager {
         }
 
         /**
-         * Checks whether or not the formula should be applied to the component
+         * Checks whether the formula should be applied to the component
          *
          * @param component component to check for conditions against
          * @return true if passes the conditions

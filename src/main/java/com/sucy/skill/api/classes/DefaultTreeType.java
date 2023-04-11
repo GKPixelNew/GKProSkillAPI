@@ -44,7 +44,9 @@ public enum DefaultTreeType implements TreeType {
     LEVEL_HORIZONTAL,
     LEVEL_VERTICAL,
     FLOOD,
-    REQUIREMENT;
+    REQUIREMENT,
+    CUSTOM,
+    ;
 
     /**
      * Retrieves a tree type by enum value name
@@ -79,8 +81,25 @@ public enum DefaultTreeType implements TreeType {
                 return new FloodTree(api, parent);
             case REQUIREMENT:
                 return new RequirementTree(api, parent);
+            case CUSTOM:
+                return new CustomTree(api, parent);
             default:
                 return null;
+        }
+    }
+
+    /**
+     * Retrieves a tree type by enum value name
+     *
+     * @param name enum value name
+     *
+     * @return corresponding tree type or the default REQUIREMENT if invalid
+     */
+    public static DefaultTreeType getByName(String name) {
+        try {
+            return Enum.valueOf(DefaultTreeType.class, name.toUpperCase().replace(' ', '_'));
+        } catch (Exception ex) {
+            return REQUIREMENT;
         }
     }
 }

@@ -63,10 +63,10 @@ public class ValueLoreMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
-        double multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        boolean offhand = settings.getString(HAND, "").equalsIgnoreCase("offhand");
-        String regex = settings.getString(REGEX, "Damage: {value}");
+        String  key        = settings.getString(KEY);
+        double  multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        boolean offhand    = settings.getString(HAND, "").equalsIgnoreCase("offhand");
+        String  regex      = settings.getString(REGEX, "Damage: {value}");
 
         if (caster.getEquipment() == null) {
             return false;

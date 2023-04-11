@@ -40,8 +40,13 @@ import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
+import com.sucy.skill.task.RemoveTask;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LightningStrike;
@@ -62,10 +67,12 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.BoundingBox;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * The listener for handling events related to dynamic mechanics
@@ -80,6 +87,7 @@ public class MechanicListener extends SkillAPIListener {
     public static final String SPEED_KEY = "sapiSpeedKey";
     public static final String DISGUISE_KEY = "sapiDisguiseKey";
     public static final String ARMOR_STAND = "asMechanic";
+    public static final String DAMAGE_CAUSE      = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
 
@@ -102,7 +110,7 @@ public class MechanicListener extends SkillAPIListener {
             return;
 
         boolean inMap = flying.containsKey(event.getPlayer().getUniqueId());
-        if (inMap == ((Entity) event.getPlayer()).isOnGround()) {
+        if (inMap == isOnGround(event.getTo())) {
             if (inMap) {
                 double maxHeight = flying.remove(event.getPlayer().getUniqueId());
                 Bukkit.getPluginManager().callEvent(new PlayerLandEvent(event.getPlayer(), maxHeight - event.getPlayer().getLocation().getY()));
@@ -112,6 +120,79 @@ public class MechanicListener extends SkillAPIListener {
             double y = flying.get(event.getPlayer().getUniqueId());
             flying.put(event.getPlayer().getUniqueId(), Math.max(y, event.getPlayer().getLocation().getY()));
         }
+    }
+
+    public boolean isOnGround(Location loc) {
+        loc = loc.clone();
+        Set<Block> blocksUnderneath = new HashSet<>();
+        double     dx               = loc.getX() % 1;
+        if (dx < 0) dx += 1;
+        double dz = loc.getZ() % 1;
+        if (dz < 0) dz += 1;
+
+        blocksUnderneath.add(loc.getBlock());
+        blocksUnderneath.add(loc.getBlock().getRelative(BlockFace.DOWN));
+        if (fuzzyEquals(loc.getY() % 1, 0.5))
+            loc.subtract(0, 0.5, 0);
+        loc.subtract(0, 0.07, 0);
+        if (dx < 0.3) {
+            blocksUnderneath.add(loc.clone().subtract(0.31, 0, 0).getBlock());
+            if (dz < 0.3) {
+                blocksUnderneath.add(loc.clone().subtract(0.31, 0, 0.31).getBlock());
+            } else if (dz > 0.7) {
+                blocksUnderneath.add(loc.clone().subtract(0.31, 0, -0.31).getBlock());
+            }
+        }
+
+        if (dz < 0.3) {
+            blocksUnderneath.add(loc.clone().subtract(0, 0, 0.31).getBlock());
+        }
+
+        if (dx > 0.7) {
+            blocksUnderneath.add(loc.clone().add(0.31, 0, 0).getBlock());
+            if (dz > 0.7) {
+                blocksUnderneath.add(loc.clone().add(0.31, 0, 0.31).getBlock());
+            } else if (dz < 0.3) {
+                blocksUnderneath.add(loc.clone().add(0.31, 0, -0.31).getBlock());
+            }
+        }
+
+        if (dz > 0.7) {
+            blocksUnderneath.add(loc.clone().add(0, 0, 0.31).getBlock());
+        }
+
+        Location finalLoc = loc.clone();
+        return blocksUnderneath.stream()
+                .anyMatch(b -> {
+                    boolean     solid = !b.isPassable();
+                    BoundingBox box   = b.getBoundingBox();
+                    box.expandDirectional(0, isTaller(b) ? 0.5 : 0, 0);
+                    boolean bounded = isIntersecting(box, finalLoc);
+
+                    return solid && bounded;
+                });
+    }
+
+    private boolean isTaller(Block b) {
+        Material type    = b.getType();
+        String   typeStr = type.toString();
+        return typeStr.contains("WALL") || typeStr.contains("FENCE");
+    }
+
+    private boolean isIntersecting(BoundingBox box, Location loc) {
+        boolean xContains = box.getMinX() <= loc.getX() && loc.getX() <= box.getMaxX() || fuzzyEquals(box.getMinX(), loc.getX(), 0.3) || fuzzyEquals(box.getMaxX(), loc.getX(), 0.3);
+        boolean yContains = box.getMinY() <= loc.getY() && loc.getY() <= box.getMaxY();
+        boolean zContains = box.getMinZ() <= loc.getZ() && loc.getZ() <= box.getMaxZ() || fuzzyEquals(box.getMinZ(), loc.getZ(), 0.3) || fuzzyEquals(box.getMaxZ(), loc.getZ(), 0.3);
+
+        return xContains && yContains && zContains;
+    }
+
+    private boolean fuzzyEquals(double input, double expected) {
+        return fuzzyEquals(input, expected, 0.07);
+    }
+
+    private boolean fuzzyEquals(double input, double expected, double epsilon) {
+        return Math.abs(input - expected) < epsilon;
     }
 
     /**
@@ -209,7 +290,7 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
-        Entity entity = event.getEntity();
+        Entity entity  = event.getEntity();
         if (damager instanceof Projectile) {
             Projectile p = (Projectile) damager;
             if (p.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
@@ -274,6 +355,29 @@ public class MechanicListener extends SkillAPIListener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityDamageCause(EntityDamageEvent event) {
+        Entity              entity       = event.getEntity();
+        List<MetadataValue> metadataList = entity.getMetadata(DAMAGE_CAUSE);
+        if (metadataList.isEmpty()) {
+            return;
+        }
+        Object metadataValue = metadataList.get(0).value();
+        if (!(metadataValue instanceof EntityDamageEvent.DamageCause)) {
+            return;
+        }
+        if (event.getCause() != metadataValue) {
+            try {
+                Field causeField = EntityDamageEvent.class.getDeclaredField("cause");
+                causeField.setAccessible(true);
+                causeField.set(event, metadataValue);
+            } catch (Exception e) {
+                new UnsupportedOperationException("Failed to change DamageCause", e).printStackTrace();
+            }
+        }
+        entity.removeMetadata(DAMAGE_CAUSE, SkillAPI.inst());
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onEntityCombust(EntityCombustEvent event) {
         Entity entity = event.getEntity();
@@ -300,5 +404,19 @@ public class MechanicListener extends SkillAPIListener {
     public void onBlockFade(BlockFadeEvent event) {
         if (BlockMechanic.isPending(event.getBlock().getLocation()))
             event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        List<Entity> entities = new ArrayList<>();
+        for (Entity entity : event.getChunk().getEntities()) {
+            if (entity.hasMetadata(WolfMechanic.SKILL_META)
+                    || entity.hasMetadata(ARMOR_STAND)) {
+                entities.add(entity);
+            }
+        }
+        if (!entities.isEmpty()) {
+            new RemoveTask(entities, 1);
+        }
     }
 }

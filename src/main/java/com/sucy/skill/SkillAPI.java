@@ -15,7 +15,7 @@
  * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -38,6 +38,7 @@ import com.sucy.skill.data.io.IOManager;
 import com.sucy.skill.data.io.SQLIO;
 import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.exception.SkillAPINotEnabledException;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.BungeeHook;
 import com.sucy.skill.hook.GKReplayHook;
@@ -66,6 +67,8 @@ import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.listener.SkillAPIListener;
 import com.sucy.skill.listener.StatusListener;
 import com.sucy.skill.listener.ToolListener;
+import com.sucy.skill.listener.attribute.AttributeListener;
+import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.manager.ClassBoardManager;
 import com.sucy.skill.manager.CmdManager;
@@ -77,6 +80,7 @@ import com.sucy.skill.task.GUITask;
 import com.sucy.skill.task.ManaTask;
 import com.sucy.skill.task.SaveTask;
 import com.sucy.skill.thread.MainThread;
+import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
@@ -88,10 +92,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +132,14 @@ public class SkillAPI extends JavaPlugin {
     private boolean loaded = false;
     private boolean disabling = false;
 
+    public SkillAPI() {
+        super();
+    }
+
+    public SkillAPI(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
+
     /**
      * Checks whether SkillAPI has all its
      * data loaded and running.
@@ -137,11 +152,11 @@ public class SkillAPI extends JavaPlugin {
 
     /**
      * @return SkillAPI singleton if available
-     * @throws IllegalStateException if SkillAPI isn't enabled
+     * @throws SkillAPINotEnabledException if SkillAPI isn't enabled
      */
     public static SkillAPI inst() {
         if (singleton == null) {
-            throw new IllegalStateException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
+            throw new SkillAPINotEnabledException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
         }
         return singleton;
     }
@@ -207,7 +222,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered.
+     * Checks whether a skill is registered.
      *
      * @param name name of the skill
      * @return true if registered, false otherwise
@@ -217,7 +232,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered
+     * Checks whether a skill is registered
      *
      * @param skill the skill to check
      * @return true if registered, false otherwise
@@ -227,7 +242,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered
+     * Checks whether a skill is registered
      *
      * @param skill the skill to check
      * @return true if registered, false otherwise
@@ -276,7 +291,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param name name of the class
      * @return true if registered, false otherwise
@@ -286,7 +301,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param playerClass the class to check
      * @return true if registered, false otherwise
@@ -296,7 +311,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param rpgClass the class to check
      * @return true if registered, false otherwise
@@ -360,7 +375,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Do not use this method outside of onJoin. This will delete any progress a player
+     * Do not use this method outside onJoin. This will delete any progress a player
      * has made since joining.
      */
     public static void reloadPlayerData(final Player player) {
@@ -377,13 +392,13 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not SkillAPI currently has loaded data for the
+     * Checks whether SkillAPI currently has loaded data for the
      * given player. This returning false doesn't necessarily mean the
      * player doesn't have any data at all, just not data that is
      * currently loaded.
      *
      * @param player player to check for
-     * @return true if has loaded data, false otherwise
+     * @return true if data has loaded, false otherwise
      */
     public static boolean hasPlayerData(OfflinePlayer player) {
         return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId().toString().toLowerCase());
@@ -628,6 +643,17 @@ public class SkillAPI extends JavaPlugin {
         if (singleton != null) {
             throw new IllegalStateException("Cannot enable SkillAPI twice!");
         }
+
+        String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
+        boolean minCoreVersionMet = coreVersion.compareTo(DependencyRequirement.MIN_CORE_VERSION) >= 0;
+
+        if (!minCoreVersionMet) {
+            getLogger().warning("Missing required ProMCCore version. " + coreVersion + " installed. "
+                    + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         singleton = this;
 
         mainThread = new MainThread();
@@ -643,9 +669,6 @@ public class SkillAPI extends JavaPlugin {
         language.save();
 
         // Hook plugins
-        if (PluginChecker.isBungeeActive()) {
-            BungeeHook.init(this);
-        }
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPIHook(this).register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
@@ -692,6 +715,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
+        listen(new RPGAttributeListener(), getServer().getPluginManager().isPluginEnabled("ProRPGItems"));
 
 
         // Set up tasks
@@ -764,7 +788,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new skill with SkillAPI. If this is called outside of the method
+     * Registers a new skill with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerSkills" method.
      *
@@ -778,7 +802,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers multiple new skills with SkillAPI. If this is called outside of the method
+     * Registers multiple new skills with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerSkills" method.
      *
@@ -791,7 +815,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new class with SkillAPI. If this is called outside of the method
+     * Registers a new class with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerClasses" method.
      *
@@ -826,7 +850,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new class with SkillAPI. If this is called outside of the method
+     * Registers a new class with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerClasses" method.
      *

@@ -35,11 +35,11 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerCastSkillEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerData playerData;
-    private PlayerSkill skill;
-    private Player player;
-    private double manaCost;
-    private boolean cancelled;
+    private              PlayerData playerData;
+    private              PlayerSkill skill;
+    private              Player player;
+    private              double manaCost;
+    private              boolean cancelled;
 
     public PlayerCastSkillEvent(PlayerData playerData, PlayerSkill skill, Player player) {
         this.playerData = playerData;

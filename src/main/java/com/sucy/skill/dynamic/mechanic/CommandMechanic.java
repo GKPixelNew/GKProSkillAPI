@@ -60,18 +60,18 @@ public class CommandMechanic extends MechanicComponent {
             return false;
         }
 
-        String command = settings.getString(COMMAND);
-        String type = settings.getString(TYPE).toLowerCase();
-        boolean worked = false;
+        String  command = settings.getString(COMMAND);
+        String  type    = settings.getString(TYPE).toLowerCase();
+        boolean worked  = false;
 
         switch (type) {
             case "op":
                 for (LivingEntity t : targets) {
                     if (t instanceof Player) {
                         worked = true;
-                        String filteredCommand = filter(caster, t, command);
-                        Player p = (Player) t;
-                        boolean op = p.isOp();
+                        String  filteredCommand = filter(caster, t, command);
+                        Player  p               = (Player) t;
+                        boolean op              = p.isOp();
                         p.setOp(true);
                         Bukkit.getServer().dispatchCommand(p, filteredCommand);
                         p.setOp(op);

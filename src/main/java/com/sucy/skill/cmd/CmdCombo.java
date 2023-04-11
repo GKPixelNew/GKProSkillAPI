@@ -70,8 +70,8 @@ public class CmdCombo implements IFunction {
         } else if (args.length >= SkillAPI.getComboManager().getComboSize() + 1) {
             PlayerData player = SkillAPI.getPlayerData((Player) sender);
 
-            String name = args[0];
-            int comboSize = SkillAPI.getComboManager().getComboSize();
+            String name      = args[0];
+            int    comboSize = SkillAPI.getComboManager().getComboSize();
             for (int i = 1; i < args.length - comboSize; i++) {
                 name += ' ' + args[i];
             }

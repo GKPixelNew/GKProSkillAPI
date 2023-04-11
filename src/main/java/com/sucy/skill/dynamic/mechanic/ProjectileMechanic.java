@@ -27,12 +27,14 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
+import com.sucy.skill.task.RepeatingEntityTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -157,7 +159,7 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         // Fire from each target
-        ArrayList<Entity> projectiles = new ArrayList<>();
+        List<Projectile> projectiles = new ArrayList<>();
         for (LivingEntity target : targets) {
             // Apply the spread type
             if (spread.equals("rain")) {
@@ -237,6 +239,8 @@ public class ProjectileMechanic extends MechanicComponent {
                 }
             }
         }
+
+        new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
         new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20);
 
         return targets.size() > 0;

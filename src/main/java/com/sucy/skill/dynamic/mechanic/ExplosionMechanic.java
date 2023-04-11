@@ -59,8 +59,8 @@ public class ExplosionMechanic extends MechanicComponent {
         if (targets.size() == 0) {
             return false;
         }
-        double power = parseValues(caster, POWER, level, 4);
-        boolean fire = settings.getBool(FIRE, false);
+        double  power  = parseValues(caster, POWER, level, 4);
+        boolean fire   = settings.getBool(FIRE, false);
         boolean damage = settings.getBool(DAMAGE, false);
         for (LivingEntity target : targets) {
             Location loc = target.getLocation();

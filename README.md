@@ -1,5 +1,6 @@
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/publish.yml/badge.svg?branch=development)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
 
 # ProSkillAPI
 
@@ -15,8 +16,7 @@ You'll need to use this editor in order for your classes and skills to be compat
 
 ## Downloads
 
-You can download ProSkillAPI form our marketplace
-
+You can download ProSkillAPI from our marketplace
 * https://promcteam.com/resources/
 
 ## PROMCTEAM:
@@ -25,25 +25,18 @@ You can download ProSkillAPI form our marketplace
 
 # Development
 
-If you wish to use ProSkillAPI as a dependency in your projects, include the following in your `pom.xml`
+If you wish to use ProSkillAPI as a dependency in your projects, ProSkillAPI is available through Maven Central
+or snapshots through Sonatype.
 
 ```xml
 <repository>
-    <id>github</id>
-    <url>https://maven.pkg.github.com/promcteam/promccore</url>
+    <id>sonatype</id>
+    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
 </repository>
-        ...
+...
 <dependency>
-    <groupId>mc.promcteam</groupId>
+    <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>VERSION</version>
+    <version>1.1.8-R0.22-SNAPSHOT</version>
 </dependency>
 ```
-
-Find version numbers [here](https://github.com/promcteam/promccore/packages/1203744).
-
-Additionally, you'll need to make sure that you have properly
-configured [Authentication with GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#authenticating-to-github-packages)
-.
-
-You may also use JitPack!

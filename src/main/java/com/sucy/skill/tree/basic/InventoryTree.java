@@ -44,8 +44,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A skill tree manager for classes
@@ -54,7 +54,7 @@ public abstract class InventoryTree extends SkillTree {
     /**
      * Comparator for skills for most trees
      */
-    protected static final Comparator<Skill> comparator = new Comparator<Skill>() {
+    protected static final Comparator<Skill>       comparator    = new Comparator<Skill>() {
 
         /**
          * Compares skills based on their stats for skill tree arrangement
@@ -71,16 +71,16 @@ public abstract class InventoryTree extends SkillTree {
         public int compare(Skill skill1, Skill skill2) {
             return skill1.getSkillReq() != null && skill2.getSkillReq() == null ? 1
                     : skill1.getSkillReq() == null && skill2.getSkillReq() != null ? -1
-                    : skill1.getLevelReq(0) > skill2.getLevelReq(0) ? 1
-                    : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
-                    : skill1.getCost(0) > skill2.getCost(0) ? 1
-                    : skill1.getCost(0) < skill2.getCost(0) ? -1
-                    : skill1.getName().compareTo(skill2.getName());
+                            : skill1.getLevelReq(0) > skill2.getLevelReq(0) ? 1
+                                    : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
+                                            : skill1.getCost(0) > skill2.getCost(0) ? 1
+                                                    : skill1.getCost(0) < skill2.getCost(0) ? -1
+                                                            : skill1.getName().compareTo(skill2.getName());
         }
     };
-    private static final String INVENTORY_KEY = "SAPI_ST";
-    protected final HashMap<Integer, Skill> skillSlots = new HashMap<Integer, Skill>();
-    protected int height;
+    private static final   String                  INVENTORY_KEY = "SAPI_ST";
+    protected final        TreeMap<Integer, Skill> skillSlots    = new TreeMap<>();
+    protected              int                     height;
 
     /**
      * Constructor
@@ -135,7 +135,7 @@ public abstract class InventoryTree extends SkillTree {
      * Checks a click for actions
      *
      * @param slot slot that was clicked
-     * @return whether or not the click should be cancelled (when it was a skill or link)
+     * @return whether the click should be cancelled (when it was a skill or link)
      */
     public boolean checkClick(int slot) {
         return skillSlots.containsKey(slot);
@@ -168,7 +168,7 @@ public abstract class InventoryTree extends SkillTree {
      *
      * @return map of occupied skill slots
      */
-    public HashMap<Integer, Skill> getSkillSlots() {
+    public TreeMap<Integer, Skill> getSkillSlots() {
         return skillSlots;
     }
 

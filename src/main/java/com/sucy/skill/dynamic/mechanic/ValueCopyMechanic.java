@@ -6,7 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.ValueCopyMechanic
  */
 public class ValueCopyMechanic extends MechanicComponent {
@@ -27,9 +27,9 @@ public class ValueCopyMechanic extends MechanicComponent {
             return false;
         }
 
-        final String key = settings.getString(KEY);
-        final String destination = settings.getString(TARGET, key);
-        final boolean toTarget = settings.getString(TO_TARGET, "true").equalsIgnoreCase("true");
+        final String  key         = settings.getString(KEY);
+        final String  destination = settings.getString(TARGET, key);
+        final boolean toTarget    = settings.getString(TO_TARGET, "true").equalsIgnoreCase("true");
 
         if (toTarget) {
             targets.forEach(target -> apply(caster, target, key, destination));

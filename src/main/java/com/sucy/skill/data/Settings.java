@@ -28,8 +28,6 @@ package com.sucy.skill.data;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.sucy.party.Parties;
-import com.sucy.party.Party;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
@@ -40,9 +38,9 @@ import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
-import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -59,6 +57,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -109,7 +108,7 @@ public class Settings {
             TARGET_MONSTER = TARGET_BASE + "monsters-enemy",
             TARGET_PASSIVE = TARGET_BASE + "passive-ally",
             TARGET_PLAYER = TARGET_BASE + "player-ally",
-            TARGET_PARTIES = TARGET_BASE + "parties-ally",
+
             TARGET_NPC = TARGET_BASE + "affect-npcs",
             TARGET_STANDS = TARGET_BASE + "affect-armor-stands",
             SAVE_BASE = "Saving.",
@@ -231,7 +230,7 @@ public class Settings {
     private boolean monsterEnemy;
     private boolean passiveAlly;
     private boolean playerAlly;
-    private boolean partiesAlly;
+
     private boolean affectNpcs;
     private boolean affectArmorStands;
     private CombatProtection combatProtection = new DefaultCombatProtection();
@@ -375,7 +374,7 @@ public class Settings {
     private String skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
-    private List<String> titleMessages;
+    private List<String>  titleMessages;
     /**
      * Checks whether old health bars (fixed 10 hearts) are enabled
      *
@@ -480,7 +479,7 @@ public class Settings {
      * @return true if default casting is enabled
      */
     @Getter
-    private boolean castEnabled;
+    private boolean castEnabled;@Setter
     private boolean castBars;
     private boolean combatEnabled;
     /**
@@ -537,7 +536,7 @@ public class Settings {
      * @return number of seconds before a click combo resets
      */
     @Getter
-    private int clickTime;
+    private int clickTime;private List<Integer> levelsExp;
     private ExpFormula expFormula;
     private Formula expCustom;
     private boolean useCustomExp;
@@ -826,8 +825,22 @@ public class Settings {
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        return canAttack(attacker, target, EntityDamageEvent.DamageCause.CUSTOM);
+    }
+
+    /**
+     * Checks whether something can be attacked
+     *
+     * @param attacker the attacking entity
+     * @param target   the target entity
+     * @param cause    the cause of the damage, might affect death messages
+     * @return true if can be attacked, false otherwise
+     */
+    public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
+        if (attacker.equals(target)) return true;
         if (isTeammate(attacker, target))
             return false;
+
         if (attacker instanceof final Player player) {
             if (target instanceof Animals && !(target instanceof Tameable)) {
                 if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
@@ -839,18 +852,13 @@ public class Settings {
                 }
             } else if (target instanceof Player) {
                 if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+
                     return false;
                 }
 
-                if (PluginChecker.isPartiesActive() && partiesAlly) {
-                    final Parties parties = Parties.getPlugin(Parties.class);
-                    final Party p1 = parties.getJoinedParty(player);
-                    final Party p2 = parties.getJoinedParty((Player) target);
-                    return p1 == null || p1 != p2;
-                }
-                return combatProtection.canAttack(player, (Player) target);
+                return combatProtection.canAttack(player, (Player) target, cause);
             }
-            return combatProtection.canAttack(player, target);
+            return combatProtection.canAttack(player, target, cause);
         } else if (attacker instanceof Tameable tameable) {
             if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
                 return (tameable.getOwner() != target)
@@ -860,7 +868,7 @@ public class Settings {
             return !(target instanceof Monster);
         }
 
-        return combatProtection.canAttack(attacker, target);
+        return combatProtection.canAttack(attacker, target, cause);
     }
 
     public boolean isTeammate(LivingEntity a, LivingEntity b) {
@@ -933,7 +941,6 @@ public class Settings {
             playerAlly = config.getBoolean(TARGET_PLAYER);
         }
 
-        partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
         affectNpcs = config.getBoolean(TARGET_NPC);
     }
@@ -1249,6 +1256,9 @@ public class Settings {
      * @return required experience to gain a level
      */
     public int getRequiredExp(int level) {
+        if (levelsExp != null) {
+            return level - 1 >= levelsExp.size() ? levelsExp.get(levelsExp.size() - 1) : levelsExp.get(level - 1);
+        }
         if (useCustomExp) {
             double result = expCustom.compute(level, 0);
             return (int) result;
@@ -1290,14 +1300,32 @@ public class Settings {
         this.showLossLevelMessages = config.getBoolean(EXP_BASE + "lose-level-message");
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
-        DataSection formula = config.getSection(EXP_BASE + "formula");
-        int x = formula.getInt("x");
-        int y = formula.getInt("y");
-        int z = formula.getInt("z");
-        expFormula = new ExpFormula(x, y, z);
+        CommentedConfig levelsConfig = SkillAPI.getConfig("levels");
+        levelsConfig.saveDefaultConfig();
+        if (config.getBoolean(EXP_BASE + "use-levels", false)) {
+            List<Integer> levelsExp = new ArrayList<>();
+            try {
+                for (String line : levelsConfig.getConfig().getList("level-exp")) {
+                    levelsExp.add(Integer.parseInt(line));
+                }
+                if (levelsExp.size() < 1) {
+                    throw new IndexOutOfBoundsException();
+                }
+                this.levelsExp = levelsExp;
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                SkillAPI.inst().getLogger().warning("Failed to load levels.yml, resorting to exp formula");
+            }
+        }
+        if (this.levelsExp == null) {
+            DataSection formula = config.getSection(EXP_BASE + "formula");
+            int x = formula.getInt("x");
+            int y = formula.getInt("y");
+            int z = formula.getInt("z");
+            expFormula = new ExpFormula(x, y, z);
 
-        expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
-        useCustomExp = config.getBoolean(EXP_BASE + "use-custom") && expCustom.isValid();
+            expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
+            useCustomExp = config.getBoolean(EXP_BASE + "use-custom") && expCustom.isValid();
+        }
 
         DataSection yields = config.getSection(EXP_BASE + "yields");
         this.yields.clear();

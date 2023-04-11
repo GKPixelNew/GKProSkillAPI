@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.custom.EditorOption
  */
 public class EditorOption {
-    public final Type type;
-    public final String key;
-    public final String name;
-    public final String description;
+    public final Type                type;
+    public final String              key;
+    public final String              name;
+    public final String              description;
     public final Map<String, String> extra = new HashMap<>();
 
     private EditorOption(final Type type, final String key, final String name, final String description) {

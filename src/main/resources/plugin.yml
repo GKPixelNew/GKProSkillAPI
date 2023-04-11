@@ -13,8 +13,9 @@ softdepend:
   - WorldGuard
   - WorldEdit
   - Mimic
+  - ProRPGItems
   - GKReplay
-loadbefore: [ Quests ]
+loadbefore: [ Quests, TAB ]
 api-version: 1.19
 
 permissions:

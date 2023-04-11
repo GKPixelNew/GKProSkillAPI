@@ -44,6 +44,7 @@ import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.language.SkillNodes;
+import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
 import mc.promcteam.engine.mccore.config.Filter;
@@ -56,11 +57,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -214,20 +218,8 @@ public abstract class Skill implements IconHolder {
      * Checks whether the skill can automatically
      * level up to the next stage.
      *
-     * @return true if can level up automatically, false otherwise
-     * @deprecated use {@link Skill#canAutoLevel(int)} instead
-     */
-    @Deprecated
-    public boolean canAutoLevel() {
-        return getCost(0) == 0 && getCost(1) == 0;
-    }
-
-    /**
-     * Checks whether the skill can automatically
-     * level up to the next stage.
-     *
      * @param level - the current level of the skill
-     * @return true if can level up automatically to the next level, false otherwise
+     * @return true if skill can level up automatically to the next level, false otherwise
      */
     public boolean canAutoLevel(final int level) {
         return getCost(level) == 0;
@@ -736,17 +728,35 @@ public abstract class Skill implements IconHolder {
      * @param knockback      whether the damage should apply knockback
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
+        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+    }
+
+    /**
+     * Applies skill damage to the target, launching the skill damage event
+     *
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
+     * @param classification type of damage to deal
+     * @param knockback      whether the damage should apply knockback
+     * @param cause          the cause of the damage, might affect death messages
+     */
+    public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback, EntityDamageEvent.DamageCause cause) {
         if (target instanceof TempEntity) {
             return;
         }
+        if (target.equals(source)) knockback = false;
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
         // EntityDamageByEntityEvent unless we use knockback
-        if (!SkillAPI.getSettings().canAttack(source, target)) return;
+        if (!SkillAPI.getSettings().canAttack(source, target, cause)) {
+            return;
+        }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
+            target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
             if (source instanceof Player) {
                 Player player = (Player) source;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
@@ -805,7 +815,7 @@ public abstract class Skill implements IconHolder {
         TrueDamageEvent event = new TrueDamageEvent(this, source, target, damage);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
-            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getMaxHealth()), 0));
+            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         }
     }
 
@@ -844,7 +854,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Saves some of the skill data to the config, avoiding
+     * Saves some skill data to the config, avoiding
      * overwriting any pre-existing data
      *
      * @param config config to save to

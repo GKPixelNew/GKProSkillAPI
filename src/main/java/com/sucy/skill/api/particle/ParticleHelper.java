@@ -51,24 +51,25 @@ import java.util.Set;
  */
 public final class ParticleHelper {
 
-    public static final String ARRANGEMENT_KEY = "arrangement";
-    public static final String POINTS_KEY = "particles";
-    public static final String LEVEL = "level";
-    public static final String PARTICLE_KEY = "particle";
-    public static final String MATERIAL_KEY = "material";
-    public static final String CMD_KEY = "type";
-    public static final String DURABILITY_KEY = "durability";
-    public static final String RADIUS_KEY = "radius";
-    public static final String AMOUNT_KEY = "amount";
-    public static final String DIRECTION_KEY = "direction";
+    public static final String ARRANGEMENT_KEY    = "arrangement";
+    public static final String POINTS_KEY         = "particles";
+    public static final String LEVEL              = "level";
+    public static final String PARTICLE_KEY       = "particle";
+    public static final String MATERIAL_KEY       = "material";
+    public static final String CMD_KEY            = "type";
+    public static final String DURABILITY_KEY     = "durability";
+    public static final String RADIUS_KEY         = "radius";
+    public static final String AMOUNT_KEY         = "amount";
+    public static final String DIRECTION_KEY      = "direction";
     public static final String VISIBLE_RADIUS_KEY = "visible-radius";
-    public static final String DX_KEY = "dx";
-    public static final String DY_KEY = "dy";
-    public static final String DZ_KEY = "dz";
-    public static final String SPEED_KEY = "speed";
-    public static final String DUST_COLOR = "dust-color";
-    public static final String FINAL_DUST_COLOR = "final-dust-color";
-    public static final String DUST_SIZE = "dust-size";
+    public static final String DX_KEY             = "dx";
+    public static final String DY_KEY             = "dy";
+    public static final String DZ_KEY             = "dz";
+    public static final String SPEED_KEY          = "speed";
+    public static final String DATA_KEY           = "data";
+    public static final String DUST_COLOR         = "dust-color";
+    public static final String FINAL_DUST_COLOR   = "final-dust-color";
+    public static final String DUST_SIZE          = "dust-size";
     public static final String ANGLE = "angle";
     public static final String DELAY = "delay";
     private static final Random random = new Random();
@@ -84,18 +85,18 @@ public final class ParticleHelper {
      * Plays particles about the given location using the given settings
      */
     public static void play(Location loc, Settings settings) {
-        double visibleRadius = settings.getDouble(VISIBLE_RADIUS_KEY, 25);
-        Particle particle = ParticleHelper.getFromKey(settings.getString(PARTICLE_KEY, "Villager happy"));
-        int amount = settings.getInt(AMOUNT_KEY, 1);
-        double dx = settings.getDouble(DX_KEY, 0);
-        double dy = settings.getDouble(DY_KEY, 0);
-        double dz = settings.getDouble(DZ_KEY, 0);
-        float speed = (float) settings.getDouble(SPEED_KEY, 0.1);
-        Object object = makeObject(particle, settings);
+        double   visibleRadius = settings.getDouble(VISIBLE_RADIUS_KEY, 25);
+        Particle particle      = ParticleHelper.getFromKey(settings.getString(PARTICLE_KEY, "Villager happy"));
+        int      amount        = settings.getInt(AMOUNT_KEY, 1);
+        double   dx            = settings.getDouble(DX_KEY, 0);
+        double   dy            = settings.getDouble(DY_KEY, 0);
+        double   dz            = settings.getDouble(DZ_KEY, 0);
+        float    speed         = (float) settings.getDouble(SPEED_KEY, 0.1);
+        Object   object        = makeObject(particle, settings);
 
         String arrangement = settings.getString(ARRANGEMENT_KEY, "").toLowerCase();
-        int level = settings.getInt(LEVEL, 1);
-        int points = (int) settings.getAttr(POINTS_KEY, 0, 20);
+        int    level       = settings.getInt(LEVEL, 1);
+        int    points      = (int) settings.getAttr(POINTS_KEY, 0, 20);
         switch (arrangement) {
             case "circle" ->
                     fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
@@ -114,14 +115,14 @@ public final class ParticleHelper {
     public static void fillCircle(
             Location loc, Settings settings, int level, int points, double visibleRadius,
             Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double radius = settings.getAttr(RADIUS_KEY, level, 3.0);
-        World world = Objects.requireNonNull(loc.getWorld());
+        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+        World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
-        double rSquared = radius * radius;
-        double twoRadius = radius * 2;
+        double       rSquared     = radius * radius;
+        double       twoRadius    = radius * 2;
 
-        Location temp = loc.clone();
-        int index = 0;
+        Location temp  = loc.clone();
+        int      index = 0;
 
         Direction direction = null;
         if (settings.has(DIRECTION_KEY)) {
@@ -161,14 +162,14 @@ public final class ParticleHelper {
     public static void fillSphere(
             Location loc, Settings settings, int level, int points, double visibleRadius,
             Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double radius = settings.getAttr(RADIUS_KEY, level, 3.0);
-        World world = Objects.requireNonNull(loc.getWorld());
+        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+        World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
-        double rSquared = radius * radius;
-        double twoRadius = radius * 2;
+        double       rSquared     = radius * radius;
+        double       twoRadius    = radius * 2;
 
-        Location temp = loc.clone();
-        int index = 0;
+        Location temp  = loc.clone();
+        int      index = 0;
 
         // Play the particles
         while (index < points) {
@@ -192,14 +193,14 @@ public final class ParticleHelper {
     public static void fillHemisphere(
             Location loc, Settings settings, int level, int points, double visibleRadius,
             Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double radius = settings.getAttr(RADIUS_KEY, level, 3.0);
-        World world = Objects.requireNonNull(loc.getWorld());
+        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+        World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
-        double rSquared = radius * radius;
-        double twoRadius = radius * 2;
+        double       rSquared     = radius * radius;
+        double       twoRadius    = radius * 2;
 
-        Location temp = loc.clone();
-        int index = 0;
+        Location temp  = loc.clone();
+        int      index = 0;
 
         // Play the particles
         while (index < points) {
@@ -218,7 +219,9 @@ public final class ParticleHelper {
     }
 
     public static Object makeObject(Particle particle, Settings settings) {
-        return makeObject(particle,
+        return switch (particle) {
+            case SCULK_CHARGE -> Float.parseFloat(settings.getString(DATA_KEY, "0"));
+            default ->makeObject(particle,
                 Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
                 settings.getInt(CMD_KEY, 0),
                 settings.getInt(DURABILITY_KEY, 0),
@@ -227,6 +230,7 @@ public final class ParticleHelper {
                 (float) settings.getDouble(DUST_SIZE, 1),
                 settings.getDouble(ANGLE, 0),
                 settings.getInt(DELAY, 0));
+        };
     }
 
     public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor,

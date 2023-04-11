@@ -160,6 +160,13 @@ public class MainListener extends SkillAPIListener {
             SkillAPI.loadPlayerData(player);
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onReadyLogin(PlayerLoginEvent event) {
+        if (event.getResult() == PlayerLoginEvent.Result.ALLOWED) return;
+
+        SkillAPI.unloadPlayerData(event.getPlayer(), true);
+    }
+
     /**
      * Starts passives and applies class data when a player logs in.
      */
@@ -418,7 +425,7 @@ public class MainListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onWorldChange(PlayerChangedWorldEvent event) {
         if (event.getPlayer().hasMetadata("NPC"))
             return;

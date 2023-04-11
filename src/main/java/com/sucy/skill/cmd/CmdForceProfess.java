@@ -41,17 +41,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * A command that allows a player to profess through classes
  */
 public class CmdForceProfess implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
-    private static final String CANNOT_USE = "cannot-use";
-    private static final String INVALID_CLASS = "invalid-class";
-    private static final String SUCCESSS = "success";
-    private static final String PROFESSED = "professed";
+    private static final String NOT_PLAYER     = "not-player";
+    private static final String CANNOT_USE     = "cannot-use";
+    private static final String INVALID_CLASS  = "invalid-class";
+    private static final String SUCCESSS       = "success";
+    private static final String PROFESSED      = "professed";
     private static final String CANNOT_PROFESS = "cannot-profess";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED       = "world-disabled";
 
     /**
      * Runs the command
@@ -67,6 +70,11 @@ public class CmdForceProfess implements IFunction {
         if (args.length < 2) {
             CommandManager.displayUsage(cmd, sender);
         } else {
+            boolean silent = Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("-s"));
+            if (silent)
+                args = Arrays.stream(args).filter(s -> !s.equalsIgnoreCase("-s"))
+                        .collect(Collectors.toList()).toArray(new String[0]);
+
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
             if (player == null) {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
@@ -76,8 +84,8 @@ public class CmdForceProfess implements IFunction {
             String name = args[1];
             for (int i = 2; i < args.length; i++) name += ' ' + args[i];
 
-            PlayerData data = SkillAPI.getPlayerData(player);
-            RPGClass target = SkillAPI.getClass(name);
+            PlayerData data   = SkillAPI.getPlayerData(player);
+            RPGClass   target = SkillAPI.getClass(name);
 
             // Invalid class
             if (target == null) {
@@ -89,7 +97,9 @@ public class CmdForceProfess implements IFunction {
                 data.profess(target);
                 if (player.isOnline()) {
                     cmd.sendMessage(sender, SUCCESSS, ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " is now a " + ChatColor.GOLD + "{class}", Filter.PLAYER.setReplacement(player.getName()), RPGFilter.CLASS.setReplacement(target.getName()));
-                    cmd.sendMessage((Player) player, PROFESSED, ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}", RPGFilter.CLASS.setReplacement(target.getName()));
+                    if (!silent) {
+                        cmd.sendMessage((Player) player, PROFESSED, ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}", RPGFilter.CLASS.setReplacement(target.getName()));
+                    }
                 }
             }
 

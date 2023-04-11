@@ -211,7 +211,7 @@ public class PlayerClass {
     ///////////////////////////////////////////////////////
 
     /**
-     * <p>Checks whether or not the class has reached the max level.</p>
+     * <p>Checks whether the class has reached the max level.</p>
      *
      * @return true if max level, false otherwise
      */
@@ -320,7 +320,7 @@ public class PlayerClass {
      *
      * @param amount      amount of experience to give
      * @param source      type of the source of the experience
-     * @param showMessage whether or not to show the configured message if enabled
+     * @param showMessage whether to show the configured message if enabled
      */
     public void giveExp(double amount, ExpSource source, boolean showMessage) {
         // Cannot give a non-positive amount of exp
@@ -406,7 +406,7 @@ public class PlayerClass {
     }
 
     /**
-     * <p>Checks whether or not the player has leveled up based on
+     * <p>Checks whether the player has leveled up based on
      * their current experience.</p>
      */
     private void checkLevelUp() {

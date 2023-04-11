@@ -38,10 +38,10 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerExperienceGainEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerClass playerClass;
-    private boolean cancelled;
-    private ExpSource source;
-    private double amount;
+    private              PlayerClass playerClass;
+    private              boolean cancelled;
+    private              ExpSource source;
+    private              double amount;
 
     /**
      * Constructor
@@ -86,6 +86,13 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
     }
 
     /**
+     * @return where the experience came from
+     */
+    public ExpSource getSource() {
+        return source;
+    }
+
+    /**
      * Sets the amount of experience being gained
      *
      * @param amount new amount of experience
@@ -107,7 +114,7 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return whether or not the gain in experience is cancelled
+     * @return whether the gain in experience is cancelled
      */
     @Override
     public boolean isCancelled() {
@@ -115,7 +122,7 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the gain in experience is cancelled
+     * Sets whether the gain in experience is cancelled
      *
      * @param cancelled true/false
      */

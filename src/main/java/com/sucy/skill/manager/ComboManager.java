@@ -62,7 +62,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the click with the given ID is enabled
+     * Checks whether the click with the given ID is enabled
      *
      * @param id ID of the click
      * @return true if enabled, false otherwise
@@ -72,7 +72,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the combo is a valid one
+     * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
      *
@@ -90,7 +90,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the combo is a valid one
+     * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
      *
@@ -274,9 +274,9 @@ public class ComboManager {
         if (combo == null || combo.length() == 0)
             return -1;
 
-        String[] parts = combo.toLowerCase().split(" ");
-        Click[] clicks = new Click[parts.length];
-        int i = 0;
+        String[] parts  = combo.toLowerCase().split(" ");
+        Click[]  clicks = new Click[parts.length];
+        int      i      = 0;
         for (String part : parts) {
             clicks[i] = Click.getByName(part);
             if (clicks[i] == null) {

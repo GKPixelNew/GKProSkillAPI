@@ -72,7 +72,8 @@ public abstract class RPGClass implements IconHolder {
     private static final String REGEN = "mana-regen";
     private static final String PERM = "needs-permission";
     private static final String ATTR = "attributes";
-    private static final String TREE = "tree";
+    private static final String OLD_TREE   = "tree";
+    private static final String TREE = "skill-tree";
     private static final String BLACKLIST = "blacklist";
     /**
      * The settings for your class. This will include the
@@ -315,8 +316,7 @@ public abstract class RPGClass implements IconHolder {
         ItemMeta iconMeta = icon.getItemMeta();
         ItemMeta meta = item.getItemMeta();
         List<String> lore = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
-        if (iconMeta.hasDisplayName())
-            lore.add(0, iconMeta.getDisplayName());
+        if (iconMeta.hasDisplayName()) lore.add(0, iconMeta.getDisplayName());
         meta.setDisplayName(name);
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -339,7 +339,7 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not the class receives experience
+     * Checks whether the class receives experience
      * from the given source
      *
      * @param source source of experience to check
@@ -497,7 +497,7 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not this class has mana regeneration
+     * Checks whether this class has mana regeneration
      *
      * @return true if has mana regeneration, false otherwise
      */
@@ -658,7 +658,13 @@ public abstract class RPGClass implements IconHolder {
         expSources = config.getInt(EXP, expSources);
         manaRegen = config.getDouble(REGEN, manaRegen);
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
-        tree = DefaultTreeType.getByName(config.getString(TREE, "requirement"));
+        String skillTree = config.getString(TREE);
+        if (skillTree == null) { // Class is using old trees, load it as a custom tree to avoid losing customization
+            tree = DefaultTreeType.CUSTOM;
+            config.remove(OLD_TREE);
+        } else {
+            tree = DefaultTreeType.getByName(skillTree);
+        }
         for (final String type : config.getList(BLACKLIST)) {
             if (type.isEmpty()) continue;
             final Material mat = Material.matchMaterial(type.toUpperCase().replace(' ', '_'));
@@ -682,6 +688,11 @@ public abstract class RPGClass implements IconHolder {
         }
 
         this.skillTree = this.tree.getTree(SkillAPI.inst(), this);
+    }
+
+    public void reloadSkillTree() {
+        this.skillTree = this.tree.getTree(SkillAPI.inst(), this);
+        arrange();
     }
 
     /**

@@ -173,7 +173,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.ComponentRegistry
  */
 public class ComponentRegistry {
@@ -209,6 +209,7 @@ public class ComponentRegistry {
         register(new PhysicalTakenTrigger());
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
+        register(new SkillCastTrigger());
 
         // Targets
         register(new AreaTarget());
@@ -253,6 +254,7 @@ public class ComponentRegistry {
         register(new MoneyCondition());
         register(new MountedCondition());
         register(new MountingCondition());
+        register(new MythicMobTypeCondition());
         register(new NameCondition());
         register(new OffhandCondition());
         register(new PermissionCondition());
@@ -399,7 +401,7 @@ public class ComponentRegistry {
             builder.append(']');
         }
 
-        final File file = new File(SkillAPI.getPlugin(SkillAPI.class).getDataFolder(), "tool-config.json");
+        final File file = new File(SkillAPI.inst().getDataFolder(), "tool-config.json");
         try (final FileOutputStream out = new FileOutputStream(file)) {
             final BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
             write.write(builder.toString());

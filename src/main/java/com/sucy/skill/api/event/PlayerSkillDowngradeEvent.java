@@ -41,8 +41,8 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable {
 
     private PlayerData player;
     private PlayerSkill downgradedSkill;
-    private boolean cancelled = false;
-    private int refund;
+    private boolean     cancelled = false;
+    private int         refund;
 
     /**
      * Constructor
@@ -94,13 +94,21 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the event is cancelled
+     * Sets whether the event is cancelled
      *
      * @param value true if cancelled, false otherwise
      */
     @Override
     public void setCancelled(boolean value) {
         cancelled = value;
+    }
+
+
+    /**
+     * @return gets the handlers for the event
+     */
+    public HandlerList getHandlers() {
+        return handlers;
     }
 
     /**

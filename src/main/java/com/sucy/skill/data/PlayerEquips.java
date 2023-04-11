@@ -136,6 +136,8 @@ public class PlayerEquips {
                 player.getWorld().dropItemNaturally(player.getLocation(), to.item);
 
                 return false;
+            } else {
+                this.handHeldItem = to;
             }
         } else {
             this.handHeldItem = to;

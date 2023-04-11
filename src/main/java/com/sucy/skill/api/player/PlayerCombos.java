@@ -181,7 +181,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not there would be a conflict with the given combo ID
+     * Checks whether there would be a conflict with the given combo ID
      * if it were to be added
      *
      * @param id combo ID
@@ -193,7 +193,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not there would be a conflict with the given combo ID
+     * Checks whether there would be a conflict with the given combo ID
      * if it were to be added
      *
      * @param id combo ID
@@ -201,7 +201,7 @@ public class PlayerCombos {
      * @return ID of conflict or -1 if no conflict
      */
     public List<Integer> getConflicts(int id) {
-        ComboManager cm = SkillAPI.getComboManager();
+        ComboManager  cm        = SkillAPI.getComboManager();
         List<Integer> conflicts = new ArrayList<>();
         for (int taken : skills.keySet()) {
             if (cm.conflicts(id, taken)) {
@@ -231,9 +231,9 @@ public class PlayerCombos {
         }
 
         // Get next available combo
-        ComboManager cm = SkillAPI.getComboManager();
-        int combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
-        int max = (1 << (Click.BITS * cm.getComboSize())) - 1;
+        ComboManager cm    = SkillAPI.getComboManager();
+        int          combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
+        int          max   = (1 << (Click.BITS * cm.getComboSize())) - 1;
         while (combo <= max && (!cm.isValidDefaultCombo(combo) || hasConflict(combo))) {
             combo++;
         }
@@ -283,7 +283,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not the skill has a combo associated with it
+     * Checks whether the skill has a combo associated with it
      *
      * @param skill the skill to check
      *

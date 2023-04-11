@@ -10,9 +10,9 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerLevelDownEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerClass playerClass;
-    private int level;
-    private int amount;
+    private              PlayerClass playerClass;
+    private              int level;
+    private              int amount;
 
     /**
      * Constructor

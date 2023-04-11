@@ -50,7 +50,7 @@ public class LoreCondition extends ConditionComponent {
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
         final boolean regex = settings.getString(REGEX, "false").toLowerCase().equals("true");
-        final String str = settings.getString(STRING, "");
+        final String  str   = settings.getString(STRING, "");
         if (regex) {
             final Pattern pattern = Pattern.compile(str);
             test = line -> pattern.matcher(line).find();
@@ -62,11 +62,11 @@ public class LoreCondition extends ConditionComponent {
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final EntityEquipment items = target.getEquipment();
-        if (items == null || items.getItemInHand() == null || !items.getItemInHand().hasItemMeta()) {
+        if (items == null || items.getItemInMainHand() == null || !items.getItemInMainHand().hasItemMeta()) {
             return false;
         }
 
-        final List<String> lore = items.getItemInHand().getItemMeta().getLore();
+        final List<String> lore = items.getItemInMainHand().getItemMeta().getLore();
         return lore != null && lore.stream().anyMatch(test);
     }
 }

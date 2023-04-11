@@ -217,6 +217,15 @@ public class ParticleProjectile extends CustomProjectile {
     }
 
     /**
+     * Teleports the projectile to a location
+     *
+     * @param loc location to teleport to
+     */
+    public void teleport(Location loc) {
+        this.loc = loc;
+    }
+
+    /**
      * Sets the velocity of the projectile
      *
      * @param vel new velocity
@@ -264,5 +273,59 @@ public class ParticleProjectile extends CustomProjectile {
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
         }
+    }
+
+    /**
+     * Fires a spread of projectiles from the location.
+     *
+     * @param shooter  entity shooting the projectiles
+     * @param level    level to use for scaling the speed
+     * @param center   the center direction of the spread
+     * @param loc      location to shoot from
+     * @param settings settings to use when firing
+     * @param angle    angle of the spread
+     * @param amount   number of projectiles to fire
+     * @param callback optional callback for when projectiles hit
+     *
+     * @return list of fired projectiles
+     */
+    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan) {
+        ArrayList<Vector>             dirs = calcSpread(center, angle, amount);
+        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        for (Vector dir : dirs) {
+            Location l = loc.clone();
+            l.setDirection(dir);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            p.setCallback(callback);
+            list.add(p);
+        }
+        return list;
+    }
+
+    /**
+     * Fires a spread of projectiles from the location.
+     *
+     * @param shooter  entity shooting the projectiles
+     * @param level    level to use for scaling the speed
+     * @param center   the center location to rain on
+     * @param settings settings to use when firing
+     * @param radius   radius of the circle
+     * @param height   height above the center location
+     * @param amount   number of projectiles to fire
+     * @param callback optional callback for when projectiles hit
+     *
+     * @return list of fired projectiles
+     */
+    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan) {
+        Vector                        vel  = new Vector(0, 1, 0);
+        ArrayList<Location>           locs = calcRain(center, radius, height, amount);
+        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        for (Location l : locs) {
+            l.setDirection(vel);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            p.setCallback(callback);
+            list.add(p);
+        }
+        return list;
     }
 }

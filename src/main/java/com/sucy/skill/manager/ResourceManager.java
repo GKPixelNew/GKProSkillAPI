@@ -49,11 +49,11 @@ public class ResourceManager {
     public static void copyResource(String name, String folder) {
         try {
             // Prepare to copy the file
-            InputStream stream = ResourceManager.class.getResourceAsStream("/" + name);
+            InputStream  stream = ResourceManager.class.getResourceAsStream("/" + name);
             OutputStream resStreamOut;
-            int readBytes;
-            byte[] buffer = new byte[4096];
-            File dir = new File(folder);
+            int          readBytes;
+            byte[]       buffer = new byte[4096];
+            File         dir    = new File(folder);
             dir.mkdirs();
             resStreamOut = new FileOutputStream(new File(dir + File.separator + name));
 

@@ -35,6 +35,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
+import mc.promcteam.engine.utils.reflection.ReflectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
@@ -141,7 +142,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        setKiller(event.getTarget(), event.getDamager());
+        if (event.getDamager() instanceof Player)
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -151,7 +153,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        setKiller(event.getTarget(), event.getDamager());
+        if (event.getDamager() instanceof Player)
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -161,6 +164,7 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        setKiller(event.getTarget(), event.getDamager());
+        if (event.getDamager() instanceof Player)
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 }

@@ -35,10 +35,10 @@ public class CylinderPreview extends RoundPreview {
     private double height;
     private double sin;
     private double cos;
-    private int particles;
-    private int vertParticles;
+    private int    particles;
+    private int    vertParticles;
     private double vertOffset;
-    private int vert;
+    private int    vert;
 
     /**
      * @param radius radius of the circle
@@ -74,8 +74,8 @@ public class CylinderPreview extends RoundPreview {
 
         // Offset angle for animation
         double startAngle = step * PreviewSettings.animation / (20 * radius);
-        double rSin = Math.sin(startAngle) * radius;
-        double rCos = Math.cos(startAngle) * radius;
+        double rSin       = Math.sin(startAngle) * radius;
+        double rCos       = Math.cos(startAngle) * radius;
 
         // Make the packets
         for (int i = 0; i < particles; i++) {

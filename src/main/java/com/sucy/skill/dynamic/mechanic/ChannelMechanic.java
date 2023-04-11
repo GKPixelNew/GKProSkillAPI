@@ -62,7 +62,7 @@ public class ChannelMechanic extends MechanicComponent {
             return false;
         }
         boolean still = settings.getBool(STILL);
-        int ticks = (int) (20 * parseValues(caster, SECONDS, level, 2.0));
+        int     ticks = (int) (20 * parseValues(caster, SECONDS, level, 2.0));
         if (still) {
             FlagManager.addFlag(caster, StatusFlag.CHANNELING, ticks + 2);
         }

@@ -19,16 +19,16 @@ import java.util.Objects;
 import static com.sucy.skill.dynamic.ComponentRegistry.getExecutor;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.TriggerHandler
  */
 public class TriggerHandler implements Listener {
 
     private final HashMap<Integer, Integer> active = new HashMap<>();
 
-    private final DynamicSkill skill;
-    private final String key;
-    private final Trigger<?> trigger;
+    private final DynamicSkill     skill;
+    private final String           key;
+    private final Trigger<?>       trigger;
     private final TriggerComponent component;
 
     public TriggerHandler(
@@ -76,7 +76,8 @@ public class TriggerHandler implements Listener {
      */
     public void register(final SkillAPI plugin) {
 
-        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")) {
+        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")
+            || trigger.getEvent().getTypeName().contains("PlayerSwapHandItemsEvent")) {
             plugin.getServer().getPluginManager().registerEvent(
                     trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, false);
         } else {
@@ -114,10 +115,10 @@ public class TriggerHandler implements Listener {
         }
 
         if (user instanceof Player) {
-            final PlayerData data = SkillAPI.getPlayerData((Player) user);
+            final PlayerData  data  = SkillAPI.getPlayerData((Player) user);
             final PlayerSkill skill = data.getSkill(this.skill.getName());
-            final boolean cd = component.getSettings().getBool("cooldown", false);
-            final boolean mana = component.getSettings().getBool("mana", false);
+            final boolean     cd    = component.getSettings().getBool("cooldown", false);
+            final boolean     mana  = component.getSettings().getBool("mana", false);
 
             if ((cd || mana) && !data.check(skill, cd, mana)) {
                 return false;

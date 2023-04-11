@@ -39,8 +39,8 @@ public class AttributeCondition extends ConditionComponent {
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         int value = 0;
-        final int min = (int) parseValues(caster, MIN, level, 0);
-        final int max = (int) parseValues(caster, MAX, level, 999);
+        final int    min  = (int) parseValues(caster, MIN, level, 0);
+        final int    max  = (int) parseValues(caster, MAX, level, 999);
 
         if (target instanceof Player player) {
             final String attr = settings.getString(ATTR, null);
@@ -48,7 +48,6 @@ public class AttributeCondition extends ConditionComponent {
             final PlayerData data = SkillAPI.getPlayerData(player);
             value = data.getAttribute(attr);
         }
-
         return value >= min && value <= max;
     }
 

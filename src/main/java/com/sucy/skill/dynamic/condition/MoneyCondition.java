@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
  * Checks if the player's balance is within a range, using Vault
  */
 public class MoneyCondition extends ConditionComponent {
-    private static final String TYPE = "type";
+    private static final String TYPE      = "type";
     private static final String MIN_VALUE = "min-value";
     private static final String MAX_VALUE = "max-value";
 
@@ -50,8 +50,8 @@ public class MoneyCondition extends ConditionComponent {
         } catch (IllegalArgumentException ignored) {
         }
 
-        double balance = VaultHook.getBalance((Player) target);
-        boolean result = false;
+        double  balance = VaultHook.getBalance((Player) target);
+        boolean result  = false;
         switch (type) {
             case MIN:
                 result = balance >= parseValues(caster, MIN_VALUE, level, 0);

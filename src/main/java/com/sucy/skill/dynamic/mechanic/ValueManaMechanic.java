@@ -58,10 +58,10 @@ public class ValueManaMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(targets.get(0) instanceof Player)) return false;
 
-        final PlayerData player = SkillAPI.getPlayerData((Player) targets.get(0));
-        final String key = settings.getString(KEY);
-        final String type = settings.getString(TYPE, "current").toLowerCase();
-        final HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        final PlayerData              player = SkillAPI.getPlayerData((Player) targets.get(0));
+        final String                  key    = settings.getString(KEY);
+        final String                  type   = settings.getString(TYPE, "current").toLowerCase();
+        final HashMap<String, Object> data   = DynamicSkill.getCastData(caster);
 
         switch (type) {
             case "max":

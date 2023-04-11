@@ -36,9 +36,9 @@ public class PreviewSettings {
     public static ParticleSettings particle;
 
     public static boolean enabled;
-    public static double density;
-    public static double animation;
-    public static int interval;
+    public static double  density;
+    public static double  animation;
+    public static int     interval;
 
     public static void load(DataSection data) {
         enabled = data.getBoolean("enabled");

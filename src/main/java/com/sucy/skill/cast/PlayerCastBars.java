@@ -51,10 +51,10 @@ import java.util.Map;
  * Representation of cast bar data for a single player
  */
 public class PlayerCastBars implements InventoryHolder {
-    private HashMap<Integer, String> hoverBar = new HashMap<Integer, String>();
+    private HashMap<Integer, String> hoverBar   = new HashMap<Integer, String>();
     private HashMap<Integer, String> instantBar = new HashMap<Integer, String>();
 
-    private HashSet<String> used = new HashSet<String>();
+    private HashSet<String> used   = new HashSet<String>();
     private HashSet<String> unused = new HashSet<String>();
 
     private PlayerView view = PlayerView.INVENTORY;
@@ -184,11 +184,11 @@ public class PlayerCastBars implements InventoryHolder {
         fill(playerContents, instantBar, 24);
 
         // Make the inventory for unused skills
-        int size = Math.min(54, 9 * ((used.size() + unused.size() + 8) / 9));
-        Inventory inv = player.getServer().createInventory(this, size);
+        int         size     = Math.min(54, 9 * ((used.size() + unused.size() + 8) / 9));
+        Inventory   inv      = player.getServer().createInventory(this, size);
         ItemStack[] contents = new ItemStack[size];
-        int i = 0;
-        int j = 9;
+        int         i        = 0;
+        int         j        = 9;
         for (String skill : unused) {
             if (i < contents.length) {
                 contents[i++] = makeIndicator(skill);
@@ -233,8 +233,8 @@ public class PlayerCastBars implements InventoryHolder {
     private void update(ItemStack[] contents, HashMap<Integer, String> bar, int index) {
         for (int i = 0; i < 8; i++) {
             if (contents[i + index] != null) {
-                List<String> lore = contents[i + index].getItemMeta().getLore();
-                String skill = lore.get(lore.size() - 1);
+                List<String> lore  = contents[i + index].getItemMeta().getLore();
+                String       skill = lore.get(lore.size() - 1);
                 if (unused.contains(skill)) {
                     bar.put(i, skill);
                     used.add(skill);
@@ -254,8 +254,8 @@ public class PlayerCastBars implements InventoryHolder {
         if (skill == null) {
             return null;
         }
-        ItemStack item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
-        ItemMeta meta = item.getItemMeta();
+        ItemStack    item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
+        ItemMeta     meta = item.getItemMeta();
         List<String> lore = meta.getLore();
         lore.add(skill);
         meta.setLore(lore);
@@ -461,7 +461,7 @@ public class PlayerCastBars implements InventoryHolder {
      * Loads data from the config
      *
      * @param config config data
-     * @param hover  whether or not it's for the hover bar
+     * @param hover  whether it's for the hover bar
      */
     public void load(DataSection config, boolean hover) {
         if (config == null) {
@@ -478,7 +478,7 @@ public class PlayerCastBars implements InventoryHolder {
      * Saves data to the config
      *
      * @param config config data
-     * @param hover  whether or not it's for the hover bar
+     * @param hover  whether it's for the hover bar
      */
     public void save(DataSection config, boolean hover) {
         HashMap<Integer, String> bar = hover ? hoverBar : instantBar;

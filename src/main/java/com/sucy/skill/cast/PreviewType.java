@@ -62,8 +62,4 @@ public enum PreviewType {
             return NONE;
         }
     }
-
-    public String getKey() {
-        return key;
-    }
 }

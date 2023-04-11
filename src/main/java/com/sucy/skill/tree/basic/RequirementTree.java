@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.exception.SkillTreeException;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.gui.tool.GUIType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,9 +59,10 @@ public class RequirementTree extends InventoryTree {
      */
     @Override
     public void arrange(List<Skill> skills) throws SkillTreeException {
+        skillSlots.clear();
 
         // Organize skills into chained and unchained
-        List<Skill> chained = new ArrayList<Skill>();
+        List<Skill> chained   = new ArrayList<Skill>();
         List<Skill> unchained = new ArrayList<Skill>();
         for (Skill skill : skills) {
             if (isChained(skills, skill)) {
@@ -72,7 +74,7 @@ public class RequirementTree extends InventoryTree {
 
         // Determine the widths for each group
         int unchainedWidth = (unchained.size() + 5) / 6;
-        int chainedWidth = 8 - unchainedWidth;
+        int chainedWidth   = 7 - unchainedWidth;
         if (unchainedWidth == 0) {
             chainedWidth = 8;
         }
@@ -82,7 +84,7 @@ public class RequirementTree extends InventoryTree {
 
         // Fill in the unchained group
         int index = 0;
-        Collections.sort(unchained, comparator);
+        unchained.sort(comparator);
         for (Skill skill : unchained) {
             int x = index % unchainedWidth;
             int y = index / unchainedWidth;
@@ -91,9 +93,9 @@ public class RequirementTree extends InventoryTree {
         }
 
         // Fill in the chained group
-        HashMap<Skill, Integer> tier = new HashMap<Skill, Integer>();
+        HashMap<Skill, Integer> tier     = new HashMap<Skill, Integer>();
         HashMap<Skill, Integer> prevTier = new HashMap<Skill, Integer>();
-        int row = 0;
+        int                     row      = 0;
         index = 0;
 
         do {
@@ -135,11 +137,12 @@ public class RequirementTree extends InventoryTree {
         if (row + 1 > height) {
             height = row + 1;
         }
-        height = Math.max(height, 1);
+
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
     }
 
     /**
-     * Checks whether or not the skill is attached to a chain
+     * Checks whether the skill is attached to a chain
      *
      * @param skills skill list to check in
      * @param skill  skill to check for

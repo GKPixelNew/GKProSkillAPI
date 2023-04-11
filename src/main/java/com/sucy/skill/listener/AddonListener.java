@@ -44,7 +44,7 @@ public class AddonListener extends SkillAPIListener {
             final PlayerData defenderData = SkillAPI.getPlayerData((Player) event.getEntity());
 
             for (final String group : SkillAPI.getGroups()) {
-                final boolean friendly = SkillAPI.getSettings().getGroupSettings(group).isFriendly();
+                final boolean     friendly = SkillAPI.getSettings().getGroupSettings(group).isFriendly();
                 final PlayerClass attacker = attackerData.getClass(group);
                 final PlayerClass defender = defenderData.getClass(group);
                 if (friendly && attacker != null && defender != null && attacker.getData().getRoot() == defender.getData().getRoot()) {

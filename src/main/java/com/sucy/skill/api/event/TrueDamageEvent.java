@@ -36,12 +36,12 @@ import org.bukkit.event.HandlerList;
  * Event for when true damage is dealt (damage ignoring armor)
  */
 public class TrueDamageEvent extends Event implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
-    private LivingEntity damager;
-    private LivingEntity target;
-    private Skill skill;
-    private double damage;
-    private boolean cancelled;
+    private static final HandlerList  handlers = new HandlerList();
+    private              LivingEntity damager;
+    private              LivingEntity target;
+    private              Skill skill;
+    private              double damage;
+    private              boolean cancelled;
 
     /**
      * Initializes a new event
@@ -111,7 +111,7 @@ public class TrueDamageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */

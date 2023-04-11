@@ -83,8 +83,8 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
     @SuppressWarnings("unchecked")
     public void handleClick(InventoryClickEvent event) {
         event.setCancelled(true);
-        boolean top = event.getRawSlot() < event.getView().getTopInventory().getSize();
-        T result = get(event.getSlot());
+        boolean top    = event.getRawSlot() < event.getView().getTopInventory().getSize();
+        T       result = get(event.getSlot());
         if (top && result != null && result.isAllowed((Player) event.getWhoClicked())) {
             if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD || event.getAction() == InventoryAction.HOTBAR_SWAP)
                 onHotBar(result, event.getSlot(), event.getHotbarButton());

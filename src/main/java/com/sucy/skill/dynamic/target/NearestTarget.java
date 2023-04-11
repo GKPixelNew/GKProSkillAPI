@@ -33,6 +33,7 @@ import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.cast.PreviewType;
 import com.sucy.skill.cast.SpherePreview;
 import org.bukkit.GameMode;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -49,7 +50,7 @@ public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
 
     private Preview preview;
-    private double radius = 0;
+    private double  radius = 0;
 
     /**
      * {@inheritDoc}
@@ -57,7 +58,7 @@ public class NearestTarget extends TargetComponent {
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        final double radius = parseValues(caster, RADIUS, level, 3.0);
+        final double             radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
             final Comparator<LivingEntity> comparator = new DistanceComparator(target.getLocation());
@@ -66,7 +67,7 @@ public class NearestTarget extends TargetComponent {
                     .min(comparator)
                     .ifPresent(e -> {
                         GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
-                        if (gm == GameMode.SPECTATOR) return;
+                        if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return;
 
                         result.add(e);
                     });
