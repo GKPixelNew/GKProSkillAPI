@@ -49,7 +49,7 @@ public class ConePreview extends Preview {
         this.arc = arc;
         this.radius = Math.abs(radius);
         double perimeter = radius * arc + 2 * radius;
-        int    particles = (int) (PreviewSettings.density * perimeter);
+        int particles = (int) (PreviewSettings.density * perimeter);
 
         offset = perimeter / particles;
         angleOffset = offset / radius;
@@ -72,16 +72,16 @@ public class ConePreview extends Preview {
         double z = location.getZ();
 
         double yaw = location.getYaw() - Math.PI / 180;
-        double fx  = Math.sin(yaw);
-        double fz  = Math.cos(yaw);
+        double fx = Math.sin(yaw);
+        double fz = Math.cos(yaw);
         yaw = yaw + Math.PI / 4;
 
         double base = (PreviewSettings.animation * 0.05 * step) % offset;
 
         // Offset angle for animation
         double startAngle = ((radius - base) % offset) / radius;
-        double ii         = Math.sin(startAngle + yaw) * radius;
-        double jj         = Math.cos(startAngle + yaw) * radius;
+        double ii = Math.sin(startAngle + yaw) * radius;
+        double jj = Math.cos(startAngle + yaw) * radius;
 
         // Packets along the edges
         make(player, particle, x, y, z, base, fx * rCos + fz * rSin, fz * rCos - fx * rSin);

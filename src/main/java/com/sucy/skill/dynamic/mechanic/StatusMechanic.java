@@ -51,7 +51,6 @@ public class StatusMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -61,10 +60,10 @@ public class StatusMechanic extends MechanicComponent {
             return false;
         }
 
-        String key     = settings.getString(KEY, "stun").toLowerCase().replace(" ", "_");
+        String key = settings.getString(KEY, "stun").toLowerCase().replace(" ", "_");
         double seconds = parseValues(caster, DURATION, level, 3.0);
         boolean forceStatus = settings.getBool(FORCE, false);
-        int    ticks   = (int) (seconds * 20);
+        int ticks = (int) (seconds * 20);
         for (LivingEntity target : targets) {
             if (FlagManager.hasFlag(target, StatusFlag.BYPASS_NEGATIVE) && StatusFlag.NEGATIVE.contains(key) && !forceStatus) {
                 continue;

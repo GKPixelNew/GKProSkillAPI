@@ -80,8 +80,8 @@ public class Nearby {
     }
 
     private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius, boolean includeCaster) {
-        List<LivingEntity> result    = new ArrayList<>();
-        Map<UUID, Double>  distances = new HashMap<>();
+        List<LivingEntity> result = new ArrayList<>();
+        Map<UUID, Double> distances = new HashMap<>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
         int maxX = (int) (loc.getX() + radius) >> 4;

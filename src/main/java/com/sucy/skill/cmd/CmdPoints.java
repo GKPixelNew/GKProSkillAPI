@@ -45,12 +45,12 @@ import org.bukkit.plugin.Plugin;
  * A command that gives a player class experience
  */
 public class CmdPoints implements IFunction {
-    private static final String NOT_PLAYER   = "not-player";
-    private static final String NOT_NUMBER   = "not-number";
+    private static final String NOT_PLAYER = "not-player";
+    private static final String NOT_NUMBER = "not-number";
     private static final String NOT_POSITIVE = "not-positive";
-    private static final String GAVE_SP      = "gave-points";
-    private static final String RECEIVED_SP  = "received-points";
-    private static final String DISABLED     = "world-disabled";
+    private static final String GAVE_SP = "gave-points";
+    private static final String RECEIVED_SP = "received-points";
+    private static final String DISABLED = "world-disabled";
 
     /**
      * Runs the command

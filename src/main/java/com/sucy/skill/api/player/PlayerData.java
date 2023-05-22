@@ -29,24 +29,9 @@ package com.sucy.skill.api.player;
 import com.google.common.base.Preconditions;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.api.enums.ExpSource;
-import com.sucy.skill.api.enums.ManaCost;
-import com.sucy.skill.api.enums.ManaSource;
-import com.sucy.skill.api.enums.PointSource;
-import com.sucy.skill.api.enums.SkillStatus;
-import com.sucy.skill.api.event.PlayerCastSkillEvent;
-import com.sucy.skill.api.event.PlayerClassChangeEvent;
-import com.sucy.skill.api.event.PlayerExperienceLostEvent;
-import com.sucy.skill.api.event.PlayerManaGainEvent;
-import com.sucy.skill.api.event.PlayerManaLossEvent;
-import com.sucy.skill.api.event.PlayerPreClassChangeEvent;
-import com.sucy.skill.api.event.PlayerRefundAttributeEvent;
-import com.sucy.skill.api.event.PlayerSkillCastFailedEvent;
+import com.sucy.skill.api.enums.*;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause;
-import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
-import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
-import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
-import com.sucy.skill.api.event.PlayerUpAttributeEvent;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.skills.SkillShot;
@@ -90,14 +75,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 /**
  * Represents one account for a player which can contain one class from each group
@@ -111,7 +90,7 @@ public class PlayerData {
     public final HashMap<String, Integer> attributes = new HashMap<>();
     private final HashMap<String, PlayerClass> classes = new HashMap<>();
     private final HashMap<String, PlayerSkill> skills = new HashMap<>();
-    private final HashSet<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
+    private final HashSet<ExternallyAddedSkill> extSkills = new HashSet<>();
     private final HashMap<Material, PlayerSkill> binds = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>> statModifiers = new HashMap<>();
@@ -819,7 +798,7 @@ public class PlayerData {
             combos.addSkill(skill);
             forceUpSkill(data, level);
         } else if (existing.isExternal() && level > existing.getLevel()) {
-            forceUpSkill(existing, level-existing.getLevel());
+            forceUpSkill(existing, level - existing.getLevel());
         }
     }
 
@@ -831,7 +810,9 @@ public class PlayerData {
             ExternallyAddedSkill max = null;
             int maxLevel = Integer.MIN_VALUE;
             for (ExternallyAddedSkill extSkill : extSkills) {
-                if (!extSkill.getId().equals(key)) { continue; }
+                if (!extSkill.getId().equals(key)) {
+                    continue;
+                }
                 int level = extSkill.getLevel();
                 if (level > maxLevel) {
                     maxLevel = level;
@@ -843,7 +824,7 @@ public class PlayerData {
                 combos.removeSkill(existing.getData());
                 forceDownSkill(existing, existing.getLevel());
             } else {
-                forceDownSkill(existing, existing.getLevel()-maxLevel);
+                forceDownSkill(existing, existing.getLevel() - maxLevel);
             }
         }
     }
@@ -943,7 +924,9 @@ public class PlayerData {
 
     public void forceUpSkill(PlayerSkill skill, int amount) {
         Preconditions.checkArgument(amount >= 0);
-        if (amount == 0) { return; }
+        if (amount == 0) {
+            return;
+        }
         int oldLevel = skill.getLevel();
         skill.addLevels(amount);
 
@@ -1029,7 +1012,9 @@ public class PlayerData {
 
     public void forceDownSkill(PlayerSkill skill, int amount) {
         Preconditions.checkArgument(amount >= 0);
-        if (amount == 0) { return; }
+        if (amount == 0) {
+            return;
+        }
         skill.addLevels(-amount);
 
         // Passive calls
@@ -2328,9 +2313,9 @@ public class PlayerData {
     }
 
     private static class ExternallyAddedSkill {
-        private final String        id;
+        private final String id;
         private final NamespacedKey key;
-        private final int           level;
+        private final int level;
 
         public ExternallyAddedSkill(String id, NamespacedKey key, int level) {
             this.id = id;
@@ -2338,10 +2323,16 @@ public class PlayerData {
             this.level = level;
         }
 
-        public String getId() { return id; }
+        public String getId() {
+            return id;
+        }
 
-        public NamespacedKey getKey() { return key; }
+        public NamespacedKey getKey() {
+            return key;
+        }
 
-        public int getLevel() { return level; }
+        public int getLevel() {
+            return level;
+        }
     }
 }

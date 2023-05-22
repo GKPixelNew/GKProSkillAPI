@@ -26,7 +26,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -40,26 +39,28 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
-    private static org.slf4j.Logger                log              = LoggerFactory.getLogger(MockedTest.class);
-    protected      ServerMock                      server;
-    protected      NexEngine                       engine;
-    protected      SkillAPI                        plugin;
-    protected      List<PlayerMock>                players          = new ArrayList<>();
-    protected      Map<UUID, PlayerData>           activePlayerData = new HashMap<>();
-    protected      MockedStatic<Reflex>            reflex;
-    protected      MockedStatic<ReflectionUtil>    mockedReflection;
-    protected      MockedStatic<Reflection_1_17>   mockedReflection17;
-    protected      MockedStatic<NexEngine>         nexEngine;
-    protected      MockedStatic<Board>             board;
-    protected      MockedStatic<DamageLoreRemover> damageLoreRemover;
-    protected      HookManager                     hookManager;
-    protected      NMS                             nms;
-    protected      ActionsManager                  actionsManager;
-    protected      CoreLang                        coreLang;
-    private        Set<String>                     classesToLoad    = new HashSet<>();
-    protected      boolean                         loadClasses      = false;
+    private final static int BUFFER = 2048;
+    private static org.slf4j.Logger log = LoggerFactory.getLogger(MockedTest.class);
+    protected ServerMock server;
+    protected NexEngine engine;
+    protected SkillAPI plugin;
+    protected List<PlayerMock> players = new ArrayList<>();
+    protected Map<UUID, PlayerData> activePlayerData = new HashMap<>();
+    protected MockedStatic<Reflex> reflex;
+    protected MockedStatic<ReflectionUtil> mockedReflection;
+    protected MockedStatic<Reflection_1_17> mockedReflection17;
+    protected MockedStatic<NexEngine> nexEngine;
+    protected MockedStatic<Board> board;
+    protected MockedStatic<DamageLoreRemover> damageLoreRemover;
+    protected HookManager hookManager;
+    protected NMS nms;
+    protected ActionsManager actionsManager;
+    protected CoreLang coreLang;
+    protected boolean loadClasses = false;
+    private Set<String> classesToLoad = new HashSet<>();
 
-    public void preInit() {}
+    public void preInit() {
+    }
 
     public void loadClasses(String... classes) {
         loadClasses = true;
@@ -93,8 +94,8 @@ public abstract class MockedTest {
         coreLang = mock(CoreLang.class);
         when(coreLang.getEnum(any()))
                 .thenAnswer(args -> {
-                    Enum<?> e    = args.getArgument(0);
-                    String  path = e.getClass().getSimpleName() + "." + e.name();
+                    Enum<?> e = args.getArgument(0);
+                    String path = e.getClass().getSimpleName() + "." + e.name();
                     return path;
                 });
 
@@ -153,7 +154,7 @@ public abstract class MockedTest {
     @BeforeEach
     public void initClasses() {
         String sapiVersion = System.getProperty("PROSKILLAPI_VERSION");
-        File   classDir    = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class");
+        File classDir = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class");
         if (!classDir.exists()) classDir.mkdirs();
         try {
             FileUtils.cleanDirectory(classDir);
@@ -206,7 +207,6 @@ public abstract class MockedTest {
         return pd;
     }
 
-
     public PlayerMock genPlayer(String name) {
         return genPlayer(name, true);
     }
@@ -233,8 +233,6 @@ public abstract class MockedTest {
         server.getPluginManager().clearEvents();
     }
 
-    private final static int BUFFER = 2048;
-
     public boolean createZipArchive(File destFile, String srcFolder) {
         try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(destFile)))) {
             addFolder(srcFolder, "", out);
@@ -246,7 +244,7 @@ public abstract class MockedTest {
     }
 
     private void addFolder(String srcFolder, String baseFolder, ZipOutputStream out) throws IOException {
-        File   subDir       = new File(srcFolder);
+        File subDir = new File(srcFolder);
         String subdirList[] = subDir.list();
         for (String sd : subdirList) {
             // get a list of files from current directory
@@ -261,8 +259,8 @@ public abstract class MockedTest {
 
     @NotNull
     private void addFile(FileInputStream f, String sd, ZipOutputStream out) throws IOException {
-        byte            data[] = new byte[BUFFER];
-        FileInputStream fi     = f;
+        byte data[] = new byte[BUFFER];
+        FileInputStream fi = f;
         try (BufferedInputStream origin = new BufferedInputStream(fi, BUFFER)) {
             ZipEntry entry = new ZipEntry(sd);
             out.putNextEntry(entry);

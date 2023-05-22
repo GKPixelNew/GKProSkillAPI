@@ -174,8 +174,8 @@ public class RegistrationManager {
                     String name = path.getFileName().toString().replace(".yml", "");
                     try {
                         CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + longName);
-                        DynamicSkill    skill   = new DynamicSkill(name);
-                        DataSection     section = getBaseSection(sConfig, name);
+                        DynamicSkill skill = new DynamicSkill(name);
+                        DataSection section = getBaseSection(sConfig, name);
                         skill.load(section);
                         if (!SkillAPI.isSkillRegistered(skill.getName())) {
                             api.addDynamicSkill(skill);
@@ -262,8 +262,8 @@ public class RegistrationManager {
                     String name = path.getFileName().toString().replace(".yml", "");
                     try {
                         CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + longName);
-                        DynamicClass    tree    = new DynamicClass(api, name);
-                        DataSection     section = getBaseSection(cConfig, name);
+                        DynamicClass tree = new DynamicClass(api, name);
+                        DataSection section = getBaseSection(cConfig, name);
                         tree.load(section);
                         if (!SkillAPI.isClassRegistered(tree.getName())) {
                             api.addDynamicClass(tree);
@@ -324,7 +324,7 @@ public class RegistrationManager {
      */
     private DataSection getBaseSection(CommentedConfig config, String name) throws ConfigurationException {
         DataSection configSection = config.getConfig();
-        String      sectionName   = name;
+        String sectionName = name;
         if (name == null || name.isBlank() || !configSection.has(name)) {
             sectionName = configSection.keys().stream().findFirst().orElseThrow(() -> new ConfigurationException(name + ".yml does not appear to contain any class data"));
         }
@@ -360,7 +360,7 @@ public class RegistrationManager {
         else {
 
             CommentedConfig singleFile = new CommentedConfig(api, "skill" + File.separator + skill.getName());
-            DataSection     config     = singleFile.getConfig();
+            DataSection config = singleFile.getConfig();
 
             try {
                 // Soft save to ensure optional data starts off in the config
@@ -417,7 +417,7 @@ public class RegistrationManager {
         else {
 
             CommentedConfig singleFile = new CommentedConfig(api, "class" + File.separator + rpgClass.getName());
-            DataSection     config     = singleFile.getConfig();
+            DataSection config = singleFile.getConfig();
 
             try {
 

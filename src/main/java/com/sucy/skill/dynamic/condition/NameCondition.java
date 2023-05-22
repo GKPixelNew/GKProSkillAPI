@@ -41,8 +41,8 @@ public class NameCondition extends ConditionComponent {
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         boolean contains = !settings.getString(CONTAINS, "true").toLowerCase().equals("false");
-        boolean regex    = settings.getString(REGEX, "false").toLowerCase().equals("true");
-        String  str      = settings.getString(STRING, "");
+        boolean regex = settings.getString(REGEX, "false").toLowerCase().equals("true");
+        String str = settings.getString(STRING, "");
 
         String name = target.getCustomName();
         return name != null && (regex

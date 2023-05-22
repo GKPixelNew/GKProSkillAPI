@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ArmorStandPoseMechanic extends MechanicComponent {
-    private static final String HEAD      = "head";
-    private static final String BODY      = "body";
-    private static final String LEFT_ARM  = "left-arm";
+    private static final String HEAD = "head";
+    private static final String BODY = "body";
+    private static final String LEFT_ARM = "left-arm";
     private static final String RIGHT_ARM = "right-arm";
-    private static final String LEFT_LEG  = "left-leg";
+    private static final String LEFT_LEG = "left-leg";
     private static final String RIGHT_LEG = "right-leg";
 
     private static EulerAngle eulerAngle(String string) {
@@ -34,11 +34,11 @@ public class ArmorStandPoseMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        EulerAngle head     = eulerAngle(settings.getString(HEAD, ""));
-        EulerAngle body     = eulerAngle(settings.getString(BODY, ""));
-        EulerAngle leftArm  = eulerAngle(settings.getString(LEFT_ARM, ""));
+        EulerAngle head = eulerAngle(settings.getString(HEAD, ""));
+        EulerAngle body = eulerAngle(settings.getString(BODY, ""));
+        EulerAngle leftArm = eulerAngle(settings.getString(LEFT_ARM, ""));
         EulerAngle rightArm = eulerAngle(settings.getString(RIGHT_ARM, ""));
-        EulerAngle leftLeg  = eulerAngle(settings.getString(LEFT_LEG, ""));
+        EulerAngle leftLeg = eulerAngle(settings.getString(LEFT_LEG, ""));
         EulerAngle rightLeg = eulerAngle(settings.getString(RIGHT_LEG, ""));
 
         for (LivingEntity target : targets) {

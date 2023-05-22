@@ -13,8 +13,8 @@ import org.bukkit.event.HandlerList;
 public class PlayerSkillCastFailedEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private              PlayerSkill skill;
-    private              Cause cause;
+    private PlayerSkill skill;
+    private Cause cause;
 
     private PlayerSkillCastFailedEvent(final PlayerSkill skill, final Cause cause) {
         this.skill = skill;

@@ -37,8 +37,8 @@ import java.util.List;
  * Deals damage to each target
  */
 public class MoneyMechanic extends MechanicComponent {
-    private static final String TYPE            = "type";
-    private static final String AMOUNT          = "amount";
+    private static final String TYPE = "type";
+    private static final String AMOUNT = "amount";
     private static final String ALLOWS_NEGATIVE = "allows_negative";
 
     @Override
@@ -52,7 +52,6 @@ public class MoneyMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -64,7 +63,7 @@ public class MoneyMechanic extends MechanicComponent {
 
         boolean multiply = settings.getString(TYPE, "add").equalsIgnoreCase("multiply");
 
-        double  amount         = parseValues(caster, AMOUNT, level, 1);
+        double amount = parseValues(caster, AMOUNT, level, 1);
         boolean allowsNegative = settings.getBool(ALLOWS_NEGATIVE, false);
 
         boolean worked = false;
@@ -72,7 +71,7 @@ public class MoneyMechanic extends MechanicComponent {
             if (!(target instanceof Player)) {
                 continue;
             }
-            Player player  = (Player) target;
+            Player player = (Player) target;
             double balance = VaultHook.getBalance(player);
 
             double difference = multiply ? balance * (amount - 1) : amount;

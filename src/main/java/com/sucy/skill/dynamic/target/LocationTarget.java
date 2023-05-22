@@ -44,16 +44,18 @@ import java.util.List;
  * Applies child components to a location using the caster's faced direction
  */
 public class LocationTarget extends TargetComponent {
-    private static final String RANGE    = "range";
+    private static final String RANGE = "range";
     private static final String ENTITIES = "entities";
-    private static final String FLUIDS   = "fluids";
+    private static final String FLUIDS = "fluids";
     private static final String PASSABLE = "passable";
-    private static final String CENTER   = "center";
+    private static final String CENTER = "center";
 
     //LEGACY
     private static final String GROUND = "ground";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final LivingEntity loc = getTargets(caster, level, ImmutableList.of(target)).get(0);
@@ -67,15 +69,17 @@ public class LocationTarget extends TargetComponent {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        final double  range    = parseValues(caster, RANGE, level, 5.0);
+        final double range = parseValues(caster, RANGE, level, 5.0);
         final boolean entities = settings.getBool(ENTITIES, true);
-        final boolean fluids   = settings.getBool(FLUIDS, false);
+        final boolean fluids = settings.getBool(FLUIDS, false);
         final boolean passable = settings.has(PASSABLE) ? settings.getBool(PASSABLE) : settings.getBool(GROUND, true);
-        final boolean center   = settings.getBool(CENTER, false);
+        final boolean center = settings.getBool(CENTER, false);
         return determineTargets(caster, level, targets, t -> getTargetLoc(caster, t, range, entities, fluids, passable, center));
     }
 
@@ -87,10 +91,10 @@ public class LocationTarget extends TargetComponent {
             final boolean fluids,
             final boolean passable,
             final boolean center) {
-        World              world         = t.getWorld();
-        Location           startLocation = t.getEyeLocation();
-        Vector             direction     = startLocation.getDirection();
-        FluidCollisionMode fluidMode     = fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER;
+        World world = t.getWorld();
+        Location startLocation = t.getEyeLocation();
+        Vector direction = startLocation.getDirection();
+        FluidCollisionMode fluidMode = fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER;
         RayTraceResult rayTrace = entities ?
                 world.rayTrace(startLocation, direction, range, fluidMode, !passable, 0, entity -> entity != caster) :
                 world.rayTraceBlocks(startLocation, direction, range, fluidMode, !passable);

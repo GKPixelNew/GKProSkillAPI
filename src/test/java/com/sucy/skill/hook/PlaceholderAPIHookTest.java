@@ -6,7 +6,6 @@ import com.sucy.skill.testutil.MockedTest;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -18,8 +17,8 @@ import static org.mockito.Mockito.mockStatic;
 
 public class PlaceholderAPIHookTest extends MockedTest {
 
-    private PlayerMock                   player;
-    private PlaceholderAPIHook           hook;
+    private PlayerMock player;
+    private PlaceholderAPIHook hook;
     private MockedStatic<PlaceholderAPI> placeholderApiMock;
 
     @Override

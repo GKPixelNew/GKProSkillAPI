@@ -17,9 +17,9 @@ import static org.mockito.Mockito.spy;
 
 public class DeathListenerTest extends MockedTest {
 
-    private PlayerMock                 player;
-    private PlayerMock                 target;
-    private DeathListener              deathListener;
+    private PlayerMock player;
+    private PlayerMock target;
+    private DeathListener deathListener;
     private MockedStatic<KillListener> killListener;
 
     @BeforeEach
@@ -35,7 +35,7 @@ public class DeathListenerTest extends MockedTest {
         killListener.close();
         killListener = null;
     }
-    
+
     @Test
     public void onSpell() {
     }
@@ -49,7 +49,7 @@ public class DeathListenerTest extends MockedTest {
         EntityDeathEvent event = new EntityDeathEvent(target, new ArrayList<>());
         event.callEvent();
 
-       killListener
-               .verify(() -> KillListener.giveExp(any(), any(), anyInt()));
+        killListener
+                .verify(() -> KillListener.giveExp(any(), any(), anyInt()));
     }
 }

@@ -26,10 +26,8 @@
  */
 package com.sucy.skill.hook;
 
-import com.sucy.skill.SkillAPI;
 import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.SkillAPIListener;
-import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -111,7 +109,9 @@ public class PluginChecker extends SkillAPIListener {
         return worldGuard;
     }
 
-    public static boolean isRPGItemsActive() {return rpgItems;}
+    public static boolean isRPGItemsActive() {
+        return rpgItems;
+    }
 
     public static boolean isPartiesActive() {
         return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");

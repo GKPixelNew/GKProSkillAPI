@@ -68,8 +68,8 @@ public class CirclePreview extends RoundPreview {
 
         // Offset angle for animation
         double startAngle = step * PreviewSettings.animation / (20 * radius);
-        double ii         = Math.sin(startAngle) * radius;
-        double jj         = Math.cos(startAngle) * radius;
+        double ii = Math.sin(startAngle) * radius;
+        double jj = Math.cos(startAngle) * radius;
 
         // Make the packets
         for (int i = 0; i < particles; i++) {

@@ -48,12 +48,12 @@ import java.util.regex.Pattern;
  */
 public class CmdExp implements IFunction {
     private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
-    private static final Pattern IS_BOOL   = Pattern.compile("(true)|(false)");
+    private static final Pattern IS_BOOL = Pattern.compile("(true)|(false)");
 
     private static final String NOT_PLAYER = "not-player";
-    private static final String GAVE_EXP   = "gave-exp";
-    private static final String TOOK_EXP   = "took-exp";
-    private static final String DISABLED   = "world-disabled";
+    private static final String GAVE_EXP = "gave-exp";
+    private static final String TOOK_EXP = "took-exp";
+    private static final String DISABLED = "world-disabled";
 
     /**
      * Runs the command
@@ -90,8 +90,8 @@ public class CmdExp implements IFunction {
                 return;
             }
 
-            int     lastArg     = args.length - 1;
-            boolean message     = IS_BOOL.matcher(args[lastArg]).matches();
+            int lastArg = args.length - 1;
+            boolean message = IS_BOOL.matcher(args[lastArg]).matches();
             boolean showMessage = !message || Boolean.parseBoolean(args[lastArg]);
             if (message) lastArg--;
 

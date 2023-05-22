@@ -27,11 +27,7 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.api.event.PlayerClassChangeEvent;
-import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
-import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
-import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
@@ -53,11 +49,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashSet;
 import java.util.UUID;

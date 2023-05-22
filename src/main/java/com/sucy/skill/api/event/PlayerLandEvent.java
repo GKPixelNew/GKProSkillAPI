@@ -35,8 +35,8 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerLandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private              Player      player;
-    private              double      distance;
+    private Player player;
+    private double distance;
 
     /**
      * Constructor

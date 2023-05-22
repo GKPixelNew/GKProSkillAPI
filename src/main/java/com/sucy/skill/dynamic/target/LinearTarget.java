@@ -40,16 +40,20 @@ public class LinearTarget extends TargetComponent {
     private static final String RANGE = "range";
     private static final String TOLERANCE = "tolerance";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         final double tolerance = parseValues(caster, TOLERANCE, level, 4.0);
-        final double range     = parseValues(caster, RANGE, level, 5.0);
+        final double range = parseValues(caster, RANGE, level, 5.0);
         return determineTargets(caster, level, targets, t -> TargetHelper.getLivingTargets(t, range, tolerance));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void playPreview(final Player caster, final int level, final LivingEntity target, int step) {
         // TODO - add indicators for linear targeting

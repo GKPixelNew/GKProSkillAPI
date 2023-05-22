@@ -26,22 +26,8 @@
  */
 package com.sucy.skill.data.formula;
 
-import com.sucy.skill.data.formula.func.Abs;
-import com.sucy.skill.data.formula.func.Ceil;
-import com.sucy.skill.data.formula.func.Cos;
-import com.sucy.skill.data.formula.func.Floor;
-import com.sucy.skill.data.formula.func.Root;
-import com.sucy.skill.data.formula.func.Sign;
-import com.sucy.skill.data.formula.func.Sin;
-import com.sucy.skill.data.formula.func.Square;
-import com.sucy.skill.data.formula.func.Tan;
-import com.sucy.skill.data.formula.operator.Addition;
-import com.sucy.skill.data.formula.operator.Division;
-import com.sucy.skill.data.formula.operator.Exponent;
-import com.sucy.skill.data.formula.operator.Log;
-import com.sucy.skill.data.formula.operator.Modulo;
-import com.sucy.skill.data.formula.operator.Multiplication;
-import com.sucy.skill.data.formula.operator.Subtraction;
+import com.sucy.skill.data.formula.func.*;
+import com.sucy.skill.data.formula.operator.*;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.data.formula.value.ValueNum;
 import com.sucy.skill.log.Logger;

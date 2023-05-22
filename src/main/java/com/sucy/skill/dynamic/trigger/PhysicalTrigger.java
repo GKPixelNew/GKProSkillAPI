@@ -23,9 +23,9 @@ public abstract class PhysicalTrigger implements Trigger<PhysicalDamageEvent> {
      */
     @Override
     public boolean shouldTrigger(final PhysicalDamageEvent event, final int level, final Settings settings) {
-        final String  type       = settings.getString("type", "both");
-        final double  min        = settings.getDouble("dmg-min");
-        final double  max        = settings.getDouble("dmg-max");
+        final String type = settings.getString("type", "both");
+        final double min = settings.getDouble("dmg-min");
+        final double max = settings.getDouble("dmg-max");
         final boolean projectile = event.isProjectile();
         return event.getDamage() >= min && event.getDamage() <= max &&
                 (type.equalsIgnoreCase("both") || type.equalsIgnoreCase("projectile") == projectile);

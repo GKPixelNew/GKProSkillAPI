@@ -40,8 +40,8 @@ public class BlockCondition extends ConditionComponent {
     private static final String STANDING = "standing";
 
     private Set<String> types;
-    private boolean     negated;
-    private boolean     in;
+    private boolean negated;
+    private boolean in;
 
     @Override
     public String getKey() {
@@ -61,7 +61,7 @@ public class BlockCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final Block in     = target.getLocation().getBlock();
+        final Block in = target.getLocation().getBlock();
         final Block tested = this.in ? in : in.getRelative(BlockFace.DOWN);
         return negated != types.contains(tested.getType().name());
     }

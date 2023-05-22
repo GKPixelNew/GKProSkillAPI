@@ -38,10 +38,10 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerGainSkillPointsEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private              PlayerClass playerClass;
-    private              boolean cancelled;
-    private              PointSource source;
-    private              double amount;
+    private PlayerClass playerClass;
+    private boolean cancelled;
+    private PointSource source;
+    private double amount;
 
     /**
      * Constructor
@@ -83,13 +83,6 @@ public class PlayerGainSkillPointsEvent extends Event implements Cancellable {
      */
     public double getAmount() {
         return amount;
-    }
-
-    /**
-     * @return where the experience came from
-     */
-    public PointSource getSource() {
-        return source;
     }
 
     /**

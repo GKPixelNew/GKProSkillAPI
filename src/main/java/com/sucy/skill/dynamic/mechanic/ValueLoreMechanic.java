@@ -53,7 +53,6 @@ public class ValueLoreMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -63,10 +62,10 @@ public class ValueLoreMechanic extends MechanicComponent {
             return false;
         }
 
-        String  key        = settings.getString(KEY);
-        double  multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        boolean offhand    = settings.getString(HAND, "").equalsIgnoreCase("offhand");
-        String  regex      = settings.getString(REGEX, "Damage: {value}");
+        String key = settings.getString(KEY);
+        double multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        boolean offhand = settings.getString(HAND, "").equalsIgnoreCase("offhand");
+        String regex = settings.getString(REGEX, "Damage: {value}");
 
         if (caster.getEquipment() == null) {
             return false;

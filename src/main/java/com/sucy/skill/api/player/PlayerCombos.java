@@ -97,7 +97,6 @@ public class PlayerCombos {
      * no skill is bound to the ID, this will instead return null.
      *
      * @param id combo ID to get the bound skill for
-     *
      * @return skill name bound to the ID or null if none
      */
     public String getSkillName(int id) {
@@ -185,7 +184,6 @@ public class PlayerCombos {
      * if it were to be added
      *
      * @param id combo ID
-     *
      * @return true if conflict, false otherwise
      */
     public boolean hasConflict(int id) {
@@ -197,11 +195,10 @@ public class PlayerCombos {
      * if it were to be added
      *
      * @param id combo ID
-     *
      * @return ID of conflict or -1 if no conflict
      */
     public List<Integer> getConflicts(int id) {
-        ComboManager  cm        = SkillAPI.getComboManager();
+        ComboManager cm = SkillAPI.getComboManager();
         List<Integer> conflicts = new ArrayList<>();
         for (int taken : skills.keySet()) {
             if (cm.conflicts(id, taken)) {
@@ -231,9 +228,9 @@ public class PlayerCombos {
         }
 
         // Get next available combo
-        ComboManager cm    = SkillAPI.getComboManager();
-        int          combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
-        int          max   = (1 << (Click.BITS * cm.getComboSize())) - 1;
+        ComboManager cm = SkillAPI.getComboManager();
+        int combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
+        int max = (1 << (Click.BITS * cm.getComboSize())) - 1;
         while (combo <= max && (!cm.isValidDefaultCombo(combo) || hasConflict(combo))) {
             combo++;
         }
@@ -264,7 +261,6 @@ public class PlayerCombos {
      * for the player.
      *
      * @param id ID of the combo
-     *
      * @return true if active, false otherwise
      */
     public boolean isComboUsed(int id) {
@@ -275,7 +271,6 @@ public class PlayerCombos {
      * Checks if the combo ID is a valid combo
      *
      * @param id ID of the combo
-     *
      * @return true if valid, false otherwise
      */
     public boolean isValidCombo(int id) {
@@ -286,7 +281,6 @@ public class PlayerCombos {
      * Checks whether the skill has a combo associated with it
      *
      * @param skill the skill to check
-     *
      * @return true if has a combo, false otherwise
      */
     public boolean hasCombo(Skill skill) {
@@ -301,7 +295,6 @@ public class PlayerCombos {
      *
      * @param skill skill to set the combo for
      * @param id    ID of the combo to use
-     *
      * @return true if set successfully, false otherwise
      */
     public boolean setSkill(Skill skill, int id) {
@@ -341,7 +334,6 @@ public class PlayerCombos {
      * according to the player's personal settings.
      *
      * @param skill skill to get the string for
-     *
      * @return combo string
      */
     public String getComboString(Skill skill) {

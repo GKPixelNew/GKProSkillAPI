@@ -67,15 +67,17 @@ public class BasicVerticalTree extends InventoryTree {
         // at the far left, and branch their children to the right
         for (int i = 0, size = skills.size(); i < size; i++) {
             Skill skill = skills.get(i);
-            if (skill.getSkillReq() != null) { continue; }
+            if (skill.getSkillReq() != null) {
+                continue;
+            }
             if (i == 8) {
-                SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName()+" for "+this.tree.getName()+" would be too big and could not be completed. Try changing the tree type of the class.");
+                SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName() + " for " + this.tree.getName() + " would be too big and could not be completed. Try changing the tree type of the class.");
                 break;
             }
             skillSlots.put(i, skill);
             width = placeChildren(skills, skill, i + 9, 0);
         }
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", skillSlots.size() == 0 ? 1 : (skillSlots.lastKey()+9)/9), 6));
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", skillSlots.size() == 0 ? 1 : (skillSlots.lastKey() + 9) / 9), 6));
     }
 
     /**
@@ -85,9 +87,8 @@ public class BasicVerticalTree extends InventoryTree {
      * @param skill  skill to add the children of
      * @param slot   slot ID for the first child
      * @param depth  current depth of recursion
-     *
      */
-    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth)  {
+    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) {
 
         // Update tree height
         if (depth + 1 > height) {
@@ -101,8 +102,8 @@ public class BasicVerticalTree extends InventoryTree {
                 continue;
             }
             if (s.getSkillReq().equalsIgnoreCase(skill.getName())) {
-                if ((slot+width)%9 == 8) {
-                    SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName()+" for "+this.tree.getName()+" would be too big and could not be completed. Try changing the tree type of the class.");
+                if ((slot + width) % 9 == 8) {
+                    SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName() + " for " + this.tree.getName() + " would be too big and could not be completed. Try changing the tree type of the class.");
                     break;
                 }
                 skillSlots.put(slot + width, s);

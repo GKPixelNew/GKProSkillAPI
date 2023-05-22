@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DependencyResolver {
-    private static Logger       log          = LoggerFactory.getLogger(DependencyResolver.class);
+    private static Logger log = LoggerFactory.getLogger(DependencyResolver.class);
     private static List<String> repositories = List.of("https://s01.oss.sonatype.org/content/repositories/snapshots/", "https://repo1.maven.org/maven2");
 
     public static File resolve(String dependency) throws FileNotFoundException {
@@ -35,7 +35,7 @@ public class DependencyResolver {
         try (BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream fileOS = new FileOutputStream(artifact + ".jar")) {
             byte data[] = new byte[1024];
-            int  byteContent;
+            int byteContent;
             while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
                 fileOS.write(data, 0, byteContent);
             }
@@ -50,8 +50,8 @@ public class DependencyResolver {
 
     private static String findArtifactUrl(String groupId, String artifact, String version) throws FileNotFoundException {
         for (String rep : repositories) {
-            StringBuilder html       = new StringBuilder();
-            String        repository = rep + (groupId + "/" + artifact).replace('.', '/') + "/" + version + "/";
+            StringBuilder html = new StringBuilder();
+            String repository = rep + (groupId + "/" + artifact).replace('.', '/') + "/" + version + "/";
             try (BufferedReader read = new BufferedReader(new InputStreamReader(new URL(repository).openStream()))) {
                 String line;
                 while ((line = read.readLine()) != null) {
@@ -73,7 +73,7 @@ public class DependencyResolver {
                             + "-?[^>]*?(?<!sources)(?<!javadocs)"
                             + "\\.jar)\">");
             Matcher mat = pat.matcher(text);
-            String  url = "NO_URL";
+            String url = "NO_URL";
             while (mat.find()) {
                 url = mat.group(1);
             }

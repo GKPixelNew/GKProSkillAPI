@@ -75,7 +75,6 @@ public class ComboManager {
      * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
-     *
      * @return true if valid, false otherwise
      */
     public boolean isValidCombo(int id) {
@@ -93,7 +92,6 @@ public class ComboManager {
      * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
-     *
      * @return true if valid, false otherwise
      */
     public boolean isValidDefaultCombo(int id) {
@@ -104,7 +102,6 @@ public class ComboManager {
      * Converts a combo ID to clicks
      *
      * @param id combo ID
-     *
      * @return click combination or null if invalid
      */
     public List<Click> convertId(int id) {
@@ -124,7 +121,6 @@ public class ComboManager {
      *
      * @param c1 first combo ID
      * @param c2 second combo ID
-     *
      * @return true if conflicts, false otherwise
      */
     public boolean conflicts(int c1, int c2) {
@@ -144,7 +140,6 @@ public class ComboManager {
      * Reverses a combo order
      *
      * @param id combo ID
-     *
      * @return reversed combo ID
      */
     public int reverse(int id) {
@@ -162,7 +157,6 @@ public class ComboManager {
      *
      * @param clicks clicks to convert
      * @param amount number of clicks to convert
-     *
      * @return combo ID
      */
     public int convertCombo(Click[] clicks, int amount) {
@@ -178,7 +172,6 @@ public class ComboManager {
      * Converts a click combination to an ID
      *
      * @param clicks clicks to convert
-     *
      * @return combo ID
      */
     public int convertCombo(Click[] clicks) {
@@ -194,7 +187,6 @@ public class ComboManager {
      * Converts a click combination to an ID
      *
      * @param clicks clicks to convert
-     *
      * @return combo ID
      */
     public int convertCombo(Collection<Click> clicks) {
@@ -206,7 +198,6 @@ public class ComboManager {
      * based on the language config
      *
      * @param combo the ID of the combo
-     *
      * @return formatted string for the combo
      */
     public String getComboString(int combo) {
@@ -219,7 +210,6 @@ public class ComboManager {
      * based on the language config
      *
      * @param clicks clicks of the combo
-     *
      * @return formatted string for the combo
      */
     public String getComboString(List<Click> clicks) {
@@ -239,7 +229,6 @@ public class ComboManager {
      * used to save the combo to disk
      *
      * @param combo the ID of the combo
-     *
      * @return formatted string for the combo
      */
     public String getSaveString(int combo) {
@@ -251,7 +240,6 @@ public class ComboManager {
      * used to save the combo to disk
      *
      * @param clicks clicks of the combo
-     *
      * @return formatted string for the combo
      */
     public String getSaveString(List<Click> clicks) {
@@ -267,16 +255,15 @@ public class ComboManager {
      * Parses a combo from a string using spaces as breaks
      *
      * @param combo combo string
-     *
      * @return ID of the combo or -1 if invalid
      */
     public int parseCombo(String combo) {
         if (combo == null || combo.length() == 0)
             return -1;
 
-        String[] parts  = combo.toLowerCase().split(" ");
-        Click[]  clicks = new Click[parts.length];
-        int      i      = 0;
+        String[] parts = combo.toLowerCase().split(" ");
+        Click[] clicks = new Click[parts.length];
+        int i = 0;
         for (String part : parts) {
             clicks[i] = Click.getByName(part);
             if (clicks[i] == null) {

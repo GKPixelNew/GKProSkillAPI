@@ -59,8 +59,8 @@ public class ItemProjectile extends CustomProjectile {
     private static int NEXT = 0;
     private final Item item;
     private final boolean walls;
-    private final double  halfHeight;
-    private final double  halfWidth;
+    private final double halfHeight;
+    private final double halfWidth;
     private int life;
 
     /**
@@ -279,66 +279,5 @@ public class ItemProjectile extends CustomProjectile {
     public void cancel() {
         super.cancel();
         item.remove();
-    }
-
-    /**
-     * Fires a spread of projectiles from the location.
-     *
-     * @param shooter  entity shooting the projectiles
-     * @param center   the center velocity of the spread
-     * @param loc      location to shoot from
-     * @param item     the item to use for the projectile
-     * @param angle    angle of the spread
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
-     * @param lifespan maximum duration of the projectile
-     * @param collideWalls whether to consider wall collisions as the projectiles landing
-     *
-     * @return list of fired projectiles
-     */
-    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls) {
-        double speed = center.length();
-        center.normalize();
-        ArrayList<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
-        ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
-        for (Vector dir : dirs) {
-            Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan, collideWalls);
-            p.setCallback(callback);
-            list.add(p);
-        }
-        return list;
-    }
-
-    /**
-     * Fires a spread of projectiles from the location.
-     *
-     * @param shooter  entity shooting the projectiles
-     * @param center   the center location to rain on
-     * @param item     the item to use for the projectile
-     * @param radius   radius of the circle
-     * @param height   height above the center location
-     * @param speed    speed of the projectiles
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
-     * @param lifespan maximum duration of the projectile
-     * @param collideWalls whether to consider wall collisions as the projectiles landing
-     *
-     * @return list of fired projectiles
-     */
-    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls) {
-        Vector vel = new Vector(0, speed, 0);
-        if (vel.getY() == 0) {
-            vel.setY(1);
-        }
-        ArrayList<Location>       locs = calcRain(center, radius, height, amount);
-        ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
-        for (Location l : locs) {
-            l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan, collideWalls);
-            p.setCallback(callback);
-            list.add(p);
-        }
-        return list;
     }
 }

@@ -1,9 +1,6 @@
 package com.sucy.skill.dynamic.condition;
 
 import org.bukkit.entity.LivingEntity;
-import com.sucy.skill.dynamic.DynamicSkill;
-import mc.promcteam.engine.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
 
 public class AltitudeCondition extends ConditionComponent {
 
@@ -11,14 +8,12 @@ public class AltitudeCondition extends ConditionComponent {
     private static final String MAX = "max";
 
 
-
     @Override
     public boolean test(LivingEntity caster, int level, LivingEntity target) {
-double min = parseValues(target, MIN, level, settings.getInt(MIN, 0));
+        double min = parseValues(target, MIN, level, settings.getInt(MIN, 0));
         double max = parseValues(target, MAX, level, settings.getInt(MAX, 0));
         return target.getLocation().getY() >= min && target.getLocation().getY() <= max;
     }
-
 
 
     @Override

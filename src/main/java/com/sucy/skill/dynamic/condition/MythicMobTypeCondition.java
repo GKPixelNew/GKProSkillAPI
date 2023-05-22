@@ -33,10 +33,12 @@ public class MythicMobTypeCondition extends ConditionComponent {
     }
 
     @Override
-    public String getKey() {return "mythicmob type";}
+    public String getKey() {
+        return "mythicmob type";
+    }
 
     @Override
-    boolean test(LivingEntity caster, int level, LivingEntity target) {
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
         if (!PluginChecker.isMythicMobsActive()) {
             return false;
         }

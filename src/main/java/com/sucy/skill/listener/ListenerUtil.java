@@ -60,7 +60,7 @@ public class ListenerUtil {
     }
 
     public static Inventory getClickedInventory(InventoryClickEvent event) {
-        int           slot = event.getRawSlot();
+        int slot = event.getRawSlot();
         InventoryView view = event.getView();
         if (slot < 0) {
             return null;

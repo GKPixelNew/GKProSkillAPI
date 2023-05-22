@@ -16,6 +16,7 @@ softdepend:
   - ProRPGItems
   - GKReplay
 loadbefore: [ Quests, TAB ]
+provides: [ SkillAPI ]
 api-version: 1.19
 
 permissions:

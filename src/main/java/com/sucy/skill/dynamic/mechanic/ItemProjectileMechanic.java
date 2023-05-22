@@ -33,12 +33,7 @@ import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ItemProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.api.util.ItemStackReader;
-import com.sucy.skill.cast.CirclePreview;
-import com.sucy.skill.cast.CylinderPreview;
-import com.sucy.skill.cast.Preview;
-import com.sucy.skill.cast.PreviewSettings;
-import com.sucy.skill.cast.PreviewType;
-import com.sucy.skill.cast.ProjectilePreview;
+import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -85,7 +80,6 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     }
 
     /**
-     *
      * {@inheritDoc}
      */
     @Override
@@ -102,7 +96,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 }
             } else {
                 CylinderPreview cylinderPreview = (CylinderPreview) preview;
-                double          height          = parseValues(caster, HEIGHT, level, 8.0);
+                double height = parseValues(caster, HEIGHT, level, 8.0);
                 if (preview == null || cylinderPreview.getRadius() != radius || cylinderPreview.getHeight() != height) {
                     preview = new CylinderPreview(radius, height);
                 }
@@ -111,7 +105,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
             });
         } else {
-            int               amount            = (int) parseValues(caster, AMOUNT, level, 1.0);
+            int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
             ProjectilePreview projectilePreview = (ProjectilePreview) preview;
             if (preview == null || projectilePreview.getSpeed() != speed) {
                 preview = new ProjectilePreview(speed, 0);
@@ -121,8 +115,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 if (spread.equals("horizontal cone")) {
                     location.setDirection(location.getDirection().setY(0).normalize());
                 }
-                double            angle = parseValues(caster, ANGLE, level, 30.0);
-                ArrayList<Vector> dirs  = CustomProjectile.calcSpread(location.getDirection(), angle, amount);
+                double angle = parseValues(caster, ANGLE, level, 30.0);
+                ArrayList<Vector> dirs = CustomProjectile.calcSpread(location.getDirection(), angle, amount);
                 for (Vector d : dirs) {
                     Location spreadLocation = location.clone();
                     spreadLocation.setDirection(d);

@@ -53,7 +53,7 @@ public class PlayerAccounts {
     @Getter
     @Setter
     @Accessors(fluent = true)
-    private       boolean                      isLoaded  = false;
+    private boolean isLoaded = false;
 
     /**
      * Initializes a new container for player account data.

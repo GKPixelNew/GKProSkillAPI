@@ -46,8 +46,8 @@ public class DamageLoreMechanic extends MechanicComponent {
     private static final String HAND = "hand";
     private static final String TRUE = "true";
     private static final String CLASSIFIER = "classifier";
-    private static final String KNOCKBACK  = "knockback";
-    private static final String CAUSE      = "cause";
+    private static final String KNOCKBACK = "knockback";
+    private static final String CAUSE = "cause";
 
     @Override
     public String getKey() {

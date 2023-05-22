@@ -27,11 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.util.Nearby;
-import com.sucy.skill.cast.CirclePreview;
-import com.sucy.skill.cast.PreviewSettings;
-import com.sucy.skill.cast.PreviewType;
-import com.sucy.skill.cast.RoundPreview;
-import com.sucy.skill.cast.SpherePreview;
+import com.sucy.skill.cast.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -49,17 +45,21 @@ public class AreaTarget extends TargetComponent {
     private final Random random = new Random();
     private RoundPreview preview;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
 
-        final double  radius = parseValues(caster, RADIUS, level, 3.0);
+        final double radius = parseValues(caster, RADIUS, level, 3.0);
         final boolean random = settings.getBool(RANDOM, false);
         return determineTargets(caster, level, targets, t -> shuffle(Nearby.getLivingNearby(t, radius, true), random));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         double radius = parseValues(caster, RADIUS, level, 3.0);

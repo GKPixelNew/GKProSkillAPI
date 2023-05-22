@@ -17,8 +17,8 @@ public class ClickRightTrigger extends ClickTrigger {
 
     /**
      * {@inheritDoc}
-
-    */@Override
+     */
+    @Override
     public boolean shouldTrigger(PlayerInteractEvent event, int level, Settings settings) {
 
         if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)

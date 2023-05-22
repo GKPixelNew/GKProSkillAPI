@@ -34,12 +34,7 @@ import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
-import com.sucy.skill.cast.CirclePreview;
-import com.sucy.skill.cast.CylinderPreview;
-import com.sucy.skill.cast.Preview;
-import com.sucy.skill.cast.PreviewSettings;
-import com.sucy.skill.cast.PreviewType;
-import com.sucy.skill.cast.ProjectilePreview;
+import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -57,7 +52,7 @@ import java.util.List;
 public class ParticleProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final Vector UP = new Vector(0, 1, 0);
 
-    private static final String GROUP    = "group";
+    private static final String GROUP = "group";
     private static final String VELOCITY = "velocity";
     private static final String LIFESPAN = "lifespan";
     private static final String SPREAD = "spread";
@@ -84,7 +79,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     }
 
     /**
-     *
      * {@inheritDoc}
      */
     @Override
@@ -101,7 +95,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 }
             } else {
                 CylinderPreview cylinderPreview = (CylinderPreview) preview;
-                double          height          = parseValues(caster, HEIGHT, level, 8.0);
+                double height = parseValues(caster, HEIGHT, level, 8.0);
                 if (preview == null || cylinderPreview.getRadius() != radius || cylinderPreview.getHeight() != height) {
                     preview = new CylinderPreview(radius, height);
                 }
@@ -110,7 +104,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
             });
         } else {
-            int               amount            = (int) parseValues(caster, AMOUNT, level, 1.0);
+            int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
             ProjectilePreview projectilePreview = (ProjectilePreview) preview;
             if (preview == null || projectilePreview.getSpeed() != speed) {
                 preview = new ProjectilePreview(speed, 0);
@@ -120,8 +114,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 if (spread.equals("horizontal cone")) {
                     location.setDirection(location.getDirection().setY(0).normalize());
                 }
-                double            angle = parseValues(caster, ANGLE, level, 30.0);
-                ArrayList<Vector> dirs  = CustomProjectile.calcSpread(location.getDirection(), angle, amount);
+                double angle = parseValues(caster, ANGLE, level, 30.0);
+                ArrayList<Vector> dirs = CustomProjectile.calcSpread(location.getDirection(), angle, amount);
                 for (Vector d : dirs) {
                     Location spreadLocation = location.clone();
                     spreadLocation.setDirection(d);

@@ -28,12 +28,7 @@ package com.sucy.skill.hook;
 
 import com.sucy.skill.log.Logger;
 import me.libraryaddict.disguise.DisguiseAPI;
-import me.libraryaddict.disguise.disguisetypes.Disguise;
-import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
-import me.libraryaddict.disguise.disguisetypes.MobDisguise;
-import me.libraryaddict.disguise.disguisetypes.ModdedDisguise;
-import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.libraryaddict.disguise.disguisetypes.*;
 import me.libraryaddict.disguise.disguisetypes.watchers.ArmorStandWatcher;
 import me.libraryaddict.disguise.disguisetypes.watchers.SlimeWatcher;
 import me.libraryaddict.disguise.utilities.DisguiseValues;
@@ -56,9 +51,9 @@ public class DisguiseHook {
      */
     public static void disguiseMob(LivingEntity target, String type, boolean adult) {
         try {
-            String       name        = target.getCustomName();
-            DisguiseType disguise    = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
-            MobDisguise  mobDisguise = new MobDisguise(disguise, adult);
+            String name = target.getCustomName();
+            DisguiseType disguise = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
+            MobDisguise mobDisguise = new MobDisguise(disguise, adult);
             DisguiseAPI.disguiseToAll(target, mobDisguise);
             if (name != null)
                 target.setCustomName(name);
@@ -96,8 +91,8 @@ public class DisguiseHook {
      */
     public static void disguiseMisc(LivingEntity target, String type, int data) {
         try {
-            String       name         = target.getCustomName();
-            DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
+            String name = target.getCustomName();
+            DisguiseType disguise = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, data);
             DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
@@ -116,8 +111,8 @@ public class DisguiseHook {
      */
     public static void disguiseMisc(LivingEntity target, String type, Material mat) {
         try {
-            String       name         = target.getCustomName();
-            DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
+            String name = target.getCustomName();
+            DisguiseType disguise = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, mat);
             DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
@@ -144,7 +139,7 @@ public class DisguiseHook {
             if (values == null) return null;
             else return values.getAdultBox();
         } else if (disguise instanceof MobDisguise mobDisguise) {
-            DisguiseValues values      = DisguiseValues.getDisguiseValues(mobDisguise.getType());
+            DisguiseValues values = DisguiseValues.getDisguiseValues(mobDisguise.getType());
             if (values != null && values.getAdultBox() != null) {
                 if (!mobDisguise.isAdult() && values.getBabyBox() != null) {
                     return values.getBabyBox();

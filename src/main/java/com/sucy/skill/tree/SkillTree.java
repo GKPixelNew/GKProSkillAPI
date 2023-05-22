@@ -100,7 +100,6 @@ public abstract class SkillTree {
      * Checks if the class has the skill registered
      *
      * @param skill skill to check
-     *
      * @return true if registered, false otherwise
      */
     public abstract boolean hasSkill(Skill skill);

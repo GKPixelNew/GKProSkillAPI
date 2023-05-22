@@ -56,7 +56,6 @@ public class WarpMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -68,14 +67,14 @@ public class WarpMechanic extends MechanicComponent {
 
         // Get the world
         boolean throughWalls = settings.getString(WALL, "false").equalsIgnoreCase("true");
-        double  forward      = parseValues(caster, FORWARD, level, 0.0);
-        double  upward       = parseValues(caster, UPWARD, level, 0.0);
-        double  right        = parseValues(caster, RIGHT, level, 0.0);
+        double forward = parseValues(caster, FORWARD, level, 0.0);
+        double upward = parseValues(caster, UPWARD, level, 0.0);
+        double right = parseValues(caster, RIGHT, level, 0.0);
 
         for (LivingEntity target : targets) {
-            Vector   dir  = target.getLocation().getDirection();
-            Vector   side = dir.clone().crossProduct(UP).multiply(right);
-            Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0).add(0, 1, 0);
+            Vector dir = target.getLocation().getDirection();
+            Vector side = dir.clone().crossProduct(UP).multiply(right);
+            Location loc = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0).add(0, 1, 0);
             loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
             if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
                 loc.add(0, 1, 0);

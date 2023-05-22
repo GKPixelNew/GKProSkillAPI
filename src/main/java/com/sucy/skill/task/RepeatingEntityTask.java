@@ -38,7 +38,7 @@ import java.util.List;
  * A simple task for performing an action on a list of entities every tick
  */
 public class RepeatingEntityTask<T extends Entity> extends BukkitRunnable {
-    private List<T>       entities;
+    private List<T> entities;
     private EntityTask<T> entityTask;
 
     /**

@@ -50,7 +50,6 @@ public class PermissionMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -60,9 +59,9 @@ public class PermissionMechanic extends MechanicComponent {
             return false;
         }
 
-        String key     = settings.getString(PERM);
+        String key = settings.getString(PERM);
         double seconds = parseValues(caster, SECONDS, level, 3.0);
-        int    ticks   = (int) (seconds * 20);
+        int ticks = (int) (seconds * 20);
         for (LivingEntity target : targets) {
             if (!target.hasPermission(key)) {
                 FlagManager.addFlag(target, "perm:" + key, ticks);

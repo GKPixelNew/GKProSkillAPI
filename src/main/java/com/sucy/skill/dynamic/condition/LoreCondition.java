@@ -50,7 +50,7 @@ public class LoreCondition extends ConditionComponent {
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
         final boolean regex = settings.getString(REGEX, "false").toLowerCase().equals("true");
-        final String  str   = settings.getString(STRING, "");
+        final String str = settings.getString(STRING, "");
         if (regex) {
             final Pattern pattern = Pattern.compile(str);
             test = line -> pattern.matcher(line).find();

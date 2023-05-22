@@ -178,7 +178,7 @@ public class ParticleEffect {
 
             int j = 0;
 
-            World       world   = Objects.requireNonNull(loc.getWorld());
+            World world = Objects.requireNonNull(loc.getWorld());
             Set<Player> players = ParticleHelper.filterPlayers(world.getPlayers(), loc, view);
 
             Particle effect = this.particle.type;

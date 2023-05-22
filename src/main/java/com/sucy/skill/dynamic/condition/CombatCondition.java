@@ -41,7 +41,7 @@ public class CombatCondition extends ConditionComponent {
     private static final String SECONDS = "seconds";
 
     private boolean combat;
-    private double  seconds;
+    private double seconds;
 
     @Override
     public String getKey() {

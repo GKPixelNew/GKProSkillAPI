@@ -39,12 +39,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Mechanic that destroys a selection of blocks at the location of the target
@@ -53,16 +48,16 @@ public class MineMechanic extends MechanicComponent {
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String MATERIALS = "materials";
-    private static final String DROP      = "drop";
-    private static final String TOOL      = "tool";
-    private static final String SHAPE     = "shape";
-    private static final String RADIUS    = "radius";
-    private static final String WIDTH     = "width";
-    private static final String HEIGHT    = "height";
-    private static final String DEPTH     = "depth";
-    private static final String FORWARD   = "forward";
-    private static final String UPWARD    = "upward";
-    private static final String RIGHT     = "right";
+    private static final String DROP = "drop";
+    private static final String TOOL = "tool";
+    private static final String SHAPE = "shape";
+    private static final String RADIUS = "radius";
+    private static final String WIDTH = "width";
+    private static final String HEIGHT = "height";
+    private static final String DEPTH = "depth";
+    private static final String FORWARD = "forward";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
 
     @Override
     public String getKey() {
@@ -75,12 +70,12 @@ public class MineMechanic extends MechanicComponent {
             return false;
         }
 
-        boolean drop   = settings.getBool(DROP, true);
+        boolean drop = settings.getBool(DROP, true);
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
 
         Set<String> materials = new HashSet<>();
-        boolean     any;
-        boolean     origin    = false;
+        boolean any;
+        boolean origin = false;
         {
             List<String> materialList = settings.getStringList(MATERIALS);
             any = materialList.stream().anyMatch(material -> material.equalsIgnoreCase("any"));
@@ -93,23 +88,23 @@ public class MineMechanic extends MechanicComponent {
         }
 
         double forward = parseValues(caster, FORWARD, level, 0);
-        double upward  = parseValues(caster, UPWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
+        double upward = parseValues(caster, UPWARD, level, 0);
+        double right = parseValues(caster, RIGHT, level, 0);
 
         Map<LivingEntity, List<Block>> blockMap = new HashMap<>();
-        World                          w        = caster.getWorld();
+        World w = caster.getWorld();
 
         // Determine blocks to be mined
         if (sphere) {
             double radius = parseValues(caster, RADIUS, level, 2);
             double x, y, z, dx, dy, dz;
-            double rSq    = radius * radius;
+            double rSq = radius * radius;
             for (LivingEntity t : targets) {
                 List<Block> blocks = new ArrayList<>();
                 blockMap.put(t, blocks);
                 Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
+                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
@@ -125,9 +120,9 @@ public class MineMechanic extends MechanicComponent {
                             dy = y - j;
                             dz = z - k;
                             if (dx * dx + dy * dy + dz * dz < rSq) {
-                                Block    b            = w.getBlockAt(i, j, k);
-                                Material material     = b.getType();
-                                String   materialName = material.name();
+                                Block b = w.getBlockAt(i, j, k);
+                                Material material = b.getType();
+                                String materialName = material.name();
                                 if (!SkillAPI.getSettings().getFilteredBlocks().contains(material) && !b.isLiquid() &&
                                         (any || (origin && materialName.equals(originMaterial)) || materials.contains(materialName))) {
                                     blocks.add(b);
@@ -138,21 +133,21 @@ public class MineMechanic extends MechanicComponent {
                 }
             }
         } else {
-            double width  = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
+            double width = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
             double height = (parseValues(caster, HEIGHT, level, 5) - 1) / 2;
-            double depth  = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
+            double depth = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
             double x, y, z;
 
             for (LivingEntity t : targets) {
                 List<Block> blocks = new ArrayList<>();
                 blockMap.put(t, blocks);
                 Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
+                Vector dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
-                double  yaw     = loc.getYaw();
+                double yaw = loc.getYaw();
                 boolean facingZ = Math.abs(yaw) < 45 || Math.abs(yaw) > 135;
 
                 x = facingZ ? loc.getX() : loc.getZ();
@@ -163,9 +158,9 @@ public class MineMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            Block    b            = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
-                            Material material     = b.getType();
-                            String   materialName = material.name();
+                            Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
+                            Material material = b.getType();
+                            String materialName = material.name();
                             if (!SkillAPI.getSettings().getFilteredBlocks().contains(material) && !b.isLiquid() &&
                                     (any || (origin && materialName.equals(originMaterial)) || materials.contains(materialName))) {
                                 blocks.add(b);
@@ -179,9 +174,9 @@ public class MineMechanic extends MechanicComponent {
         // Mine blocks
         boolean success = false;
         if (drop) {
-            String    toolString = settings.getString(TOOL, "CASTER").toUpperCase().replace(' ', '_');
-            boolean   targetTool = toolString.equals("TARGET");
-            ItemStack tool       = null;
+            String toolString = settings.getString(TOOL, "CASTER").toUpperCase().replace(' ', '_');
+            boolean targetTool = toolString.equals("TARGET");
+            ItemStack tool = null;
             if (toolString.equals("CASTER")) {
                 EntityEquipment equipment = caster.getEquipment();
                 if (equipment != null) {

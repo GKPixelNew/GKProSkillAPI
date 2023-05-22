@@ -32,7 +32,8 @@ import org.bukkit.scheduler.BukkitTask;
  * Represents a buff given to an entity
  */
 public class Buff {
-    private double  value;
+    BukkitTask task;
+    private double value;
     private boolean percent;
     private String key;
 

@@ -23,9 +23,9 @@ public class WorldGuardHook {
 
     private static Method regionMethod;
 
-    private static Class<?>       vectorClass;
+    private static Class<?> vectorClass;
     private static Constructor<?> vectorConstructor;
-    private static Method         applicableRegionsMethod;
+    private static Method applicableRegionsMethod;
 
     /**
      * Fetches the list of region IDs applicable to a given location

@@ -61,8 +61,8 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        String                  key  = settings.getString(KEY);
-        String                  attr = settings.getString(ATTR);
+        String key = settings.getString(KEY);
+        String attr = settings.getString(ATTR);
         HashMap<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
         return true;

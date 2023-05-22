@@ -57,9 +57,9 @@ public class ProjectilePreview extends Preview {
      */
     @Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
-        double x         = location.getX();
-        double y         = location.getY();
-        double z         = location.getZ();
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         Vector direction = location.getDirection();
 
         double px = x + direction.getX() * tBase;

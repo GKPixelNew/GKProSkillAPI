@@ -39,7 +39,7 @@ public class LaunchMechanic extends MechanicComponent {
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
     private static final String RELATIVE = "relative";
-    private              Vector up       = new Vector(0, 1, 0);
+    private Vector up = new Vector(0, 1, 0);
 
     @Override
     public String getKey() {
@@ -52,7 +52,6 @@ public class LaunchMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -62,9 +61,9 @@ public class LaunchMechanic extends MechanicComponent {
             return false;
         }
 
-        double forward  = parseValues(caster, FORWARD, level, 0);
-        double upward   = parseValues(caster, UPWARD, level, 0);
-        double right    = parseValues(caster, RIGHT, level, 0);
+        double forward = parseValues(caster, FORWARD, level, 0);
+        double upward = parseValues(caster, UPWARD, level, 0);
+        double right = parseValues(caster, RIGHT, level, 0);
         String relative = settings.getString(RELATIVE, "target").toLowerCase();
         for (LivingEntity target : targets) {
             final Vector dir;

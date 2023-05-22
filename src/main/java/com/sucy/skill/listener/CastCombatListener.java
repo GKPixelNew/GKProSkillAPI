@@ -27,11 +27,7 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.api.event.PlayerClassChangeEvent;
-import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
-import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
-import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
@@ -50,11 +46,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -123,7 +115,7 @@ public class CastCombatListener extends SkillAPIListener {
             inv.getItem(slot).setAmount(1);
 
             int playerSlot = player.getInventory().getHeldItemSlot();
-            int tries      = 0;
+            int tries = 0;
             while (!data.getSkillBar().isWeaponSlot(playerSlot) || slot == playerSlot) {
                 playerSlot = (playerSlot + 1) % 9;
                 if (++tries > 9) {

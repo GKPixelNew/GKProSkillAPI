@@ -35,16 +35,16 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
-import mc.promcteam.engine.utils.reflection.ReflectionManager;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Tracks who kills what entities and awards experience accordingly
@@ -52,6 +52,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class KillListener extends SkillAPIListener {
     private static final String S_TYPE = "sType";
     private static final int SPAWNER = 0, EGG = 1;
+
+    private Method handle;
+    private Field killer;
+    private Field damageTime;
+
 
     public static void giveExp(LivingEntity entity, Player killer, int exp) {
 
@@ -123,16 +128,13 @@ public class KillListener extends SkillAPIListener {
             SkillAPI.setMeta(event.getEntity(), S_TYPE, EGG);
     }
 
-    private void setKiller(LivingEntity t, LivingEntity d) {
-        if (t instanceof Player target) {
-            if (d instanceof Player damager) {
-                target.setKiller(damager);
-            }
-            if (d instanceof Tameable tameable) {
-                if (tameable.getOwner() != null)
-                    target.setKiller(Bukkit.getPlayer(tameable.getOwner().getUniqueId()));
-            }
-        }
+    private void setKiller(LivingEntity entity, Player player) {
+        try {
+            Object hit = handle.invoke(entity);
+            Object source = handle.invoke(player);
+            killer.set(hit, source);
+            damageTime.set(hit, 100);
+        } catch (Exception ex) { /* */ }
     }
 
     /**
@@ -142,8 +144,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player p)
+            setKiller(event.getTarget(), p);
     }
 
     /**
@@ -153,8 +155,8 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player p)
+            setKiller(event.getTarget(), p);
     }
 
     /**
@@ -164,7 +166,7 @@ public class KillListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player p)
+            setKiller(event.getTarget(), p);
     }
 }

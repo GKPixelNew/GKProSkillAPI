@@ -47,29 +47,16 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>The management class for SkillAPI's config.yml settings.</p>
@@ -108,7 +95,6 @@ public class Settings {
             TARGET_MONSTER = TARGET_BASE + "monsters-enemy",
             TARGET_PASSIVE = TARGET_BASE + "passive-ally",
             TARGET_PLAYER = TARGET_BASE + "player-ally",
-
             TARGET_NPC = TARGET_BASE + "affect-npcs",
             TARGET_STANDS = TARGET_BASE + "affect-armor-stands",
             SAVE_BASE = "Saving.",
@@ -230,7 +216,6 @@ public class Settings {
     private boolean monsterEnemy;
     private boolean passiveAlly;
     private boolean playerAlly;
-
     private boolean affectNpcs;
     private boolean affectArmorStands;
     private CombatProtection combatProtection = new DefaultCombatProtection();
@@ -374,7 +359,7 @@ public class Settings {
     private String skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
-    private List<String>  titleMessages;
+    private List<String> titleMessages;
     /**
      * Checks whether old health bars (fixed 10 hearts) are enabled
      *
@@ -479,7 +464,8 @@ public class Settings {
      * @return true if default casting is enabled
      */
     @Getter
-    private boolean castEnabled;@Setter
+    private boolean castEnabled;
+    @Setter
     private boolean castBars;
     private boolean combatEnabled;
     /**
@@ -536,7 +522,8 @@ public class Settings {
      * @return number of seconds before a click combo resets
      */
     @Getter
-    private int clickTime;private List<Integer> levelsExp;
+    private int clickTime;
+    private List<Integer> levelsExp;
     private ExpFormula expFormula;
     private Formula expCustom;
     private boolean useCustomExp;
@@ -838,10 +825,8 @@ public class Settings {
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
         if (attacker.equals(target)) return true;
-        if (isTeammate(attacker, target))
-            return false;
 
-        if (attacker instanceof final Player player) {
+        if (attacker instanceof Player player) {
             if (target instanceof Animals && !(target instanceof Tameable)) {
                 if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
                     return false;
@@ -852,7 +837,6 @@ public class Settings {
                 }
             } else if (target instanceof Player) {
                 if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
-
                     return false;
                 }
 
@@ -869,19 +853,6 @@ public class Settings {
         }
 
         return combatProtection.canAttack(attacker, target, cause);
-    }
-
-    public boolean isTeammate(LivingEntity a, LivingEntity b) {
-        if (a instanceof OfflinePlayer playerA && b instanceof OfflinePlayer playerB) {
-            var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-            if (playerA.getName() == null || playerB.getName() == null) {
-                return false;
-            }
-            var teamA = scoreboard.getEntryTeam(playerA.getName());
-            var teamB = scoreboard.getEntryTeam(playerB.getName());
-            return Objects.equals(teamA, teamB);
-        }
-        return false;
     }
 
     /**
@@ -1151,12 +1122,12 @@ public class Settings {
         skillPre = temp.substring(0, index);
         skillPost = temp.substring(index + 7);
 
-        temp = config.getString(ITEM_ATTR, "").toLowerCase();
+        temp = config.getString(ITEM_ATTR).toLowerCase();
         index = temp.indexOf('{');
         attrReqPre = temp.substring(0, index);
         attrReqPost = temp.substring(index + 6);
 
-        temp = config.getString(ITEM_STATS, "").toLowerCase();
+        temp = config.getString(ITEM_STATS).toLowerCase();
         index = temp.indexOf('{');
         attrPre = temp.substring(0, index);
         attrPost = temp.substring(index + 6);
@@ -1369,7 +1340,7 @@ public class Settings {
         DataSection layout = bar.getSection("layout");
         int skillCount = 0;
         for (int i = 0; i < 9; i++) {
-            DataSection slot = layout.getSection((i + 1) + "");
+            DataSection slot = layout.getSection(String.valueOf(i + 1));
             defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
             lockedSlots[i] = slot.getBoolean("locked", false);
             if (isUsingCombat() && i == castSlot) {

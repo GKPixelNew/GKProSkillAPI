@@ -27,13 +27,7 @@
 package com.sucy.skill.api.classes;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.tree.basic.BasicHorizontalTree;
-import com.sucy.skill.tree.basic.BasicVerticalTree;
-import com.sucy.skill.tree.basic.FloodTree;
-import com.sucy.skill.tree.basic.InventoryTree;
-import com.sucy.skill.tree.basic.LevelHorizontalTree;
-import com.sucy.skill.tree.basic.LevelVerticalTree;
-import com.sucy.skill.tree.basic.RequirementTree;
+import com.sucy.skill.tree.basic.*;
 
 /**
  * Types of SkillTrees that are available for classes/skills to use
@@ -85,21 +79,6 @@ public enum DefaultTreeType implements TreeType {
                 return new CustomTree(api, parent);
             default:
                 return null;
-        }
-    }
-
-    /**
-     * Retrieves a tree type by enum value name
-     *
-     * @param name enum value name
-     *
-     * @return corresponding tree type or the default REQUIREMENT if invalid
-     */
-    public static DefaultTreeType getByName(String name) {
-        try {
-            return Enum.valueOf(DefaultTreeType.class, name.toUpperCase().replace(' ', '_'));
-        } catch (Exception ex) {
-            return REQUIREMENT;
         }
     }
 }

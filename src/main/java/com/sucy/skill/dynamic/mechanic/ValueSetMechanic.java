@@ -50,7 +50,6 @@ public class ValueSetMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -60,9 +59,9 @@ public class ValueSetMechanic extends MechanicComponent {
             return false;
         }
 
-        String                  key   = settings.getString(KEY);
-        double                  value = parseValues(caster, VALUE, level, 1);
-        HashMap<String, Object> data  = DynamicSkill.getCastData(caster);
+        String key = settings.getString(KEY);
+        double value = parseValues(caster, VALUE, level, 1);
+        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, value);
         return true;
     }

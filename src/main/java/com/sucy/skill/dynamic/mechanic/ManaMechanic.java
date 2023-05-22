@@ -53,14 +53,13 @@ public class ManaMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         boolean percent = settings.getString(TYPE, "mana").toLowerCase().equals("percent");
-        double  value   = parseValues(caster, VALUE, level, 1.0);
+        double value = parseValues(caster, VALUE, level, 1.0);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
@@ -71,7 +70,7 @@ public class ManaMechanic extends MechanicComponent {
             worked = true;
 
             PlayerData data = SkillAPI.getPlayerData((Player) target);
-            double     amount;
+            double amount;
             if (percent) {
                 amount = data.getMaxMana() * value / 100;
             } else {

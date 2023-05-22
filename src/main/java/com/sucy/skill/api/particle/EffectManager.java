@@ -46,8 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EffectManager {
     private static Map<EffectTarget, EffectData> instances = new ConcurrentHashMap<EffectTarget, EffectData>();
-    private static Map<String, ParticleEffect>   effects   = new HashMap<String, ParticleEffect>();
-    private static Map<String, PolarSettings>    formulas  = new HashMap<String, PolarSettings>();
+    private static Map<String, ParticleEffect> effects = new HashMap<String, ParticleEffect>();
+    private static Map<String, PolarSettings> formulas = new HashMap<String, PolarSettings>();
 
     /**
      * Initializes the utility, loading formulas from the config file

@@ -39,7 +39,7 @@ public class ToolCondition extends ConditionComponent {
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final String material = settings.getString(MATERIAL, "").toUpperCase();
-        final String tool     = "_" + settings.getString(TOOL, "").toUpperCase().replace("SHOVEL", "SPADE");
+        final String tool = "_" + settings.getString(TOOL, "").toUpperCase().replace("SHOVEL", "SPADE");
 
         final EntityEquipment equipment = target.getEquipment();
         if (equipment == null || equipment.getItemInMainHand() == null) return false;

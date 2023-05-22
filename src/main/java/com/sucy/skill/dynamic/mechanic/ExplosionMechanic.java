@@ -50,7 +50,6 @@ public class ExplosionMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -59,8 +58,8 @@ public class ExplosionMechanic extends MechanicComponent {
         if (targets.size() == 0) {
             return false;
         }
-        double  power  = parseValues(caster, POWER, level, 4);
-        boolean fire   = settings.getBool(FIRE, false);
+        double power = parseValues(caster, POWER, level, 4);
+        boolean fire = settings.getBool(FIRE, false);
         boolean damage = settings.getBool(DAMAGE, false);
         for (LivingEntity target : targets) {
             Location loc = target.getLocation();

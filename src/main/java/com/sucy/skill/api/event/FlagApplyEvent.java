@@ -35,11 +35,11 @@ import org.bukkit.event.HandlerList;
  * Event called when a flag is applied to an entity
  */
 public class FlagApplyEvent extends Event implements Cancellable {
-    private static final HandlerList  handlers = new HandlerList();
-    private              LivingEntity entity;
-    private              String flag;
-    private              boolean cancelled;
-    private              int ticks;
+    private static final HandlerList handlers = new HandlerList();
+    private LivingEntity entity;
+    private String flag;
+    private boolean cancelled;
+    private int ticks;
 
     /**
      * Constructor

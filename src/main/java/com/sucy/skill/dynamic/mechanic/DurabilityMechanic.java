@@ -30,9 +30,9 @@ public class DurabilityMechanic extends MechanicComponent {
             return false;
         }
 
-        final Player  player  = (Player) caster;
+        final Player player = (Player) caster;
         final boolean offhand = settings.getBool(OFFHAND, false);
-        final short   amount  = (short) (parseValues(caster, AMOUNT, level, 1) * targets.size());
+        final short amount = (short) (parseValues(caster, AMOUNT, level, 1) * targets.size());
 
         final ItemStack item;
         if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {

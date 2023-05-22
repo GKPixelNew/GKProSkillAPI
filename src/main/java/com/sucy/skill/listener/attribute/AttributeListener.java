@@ -29,16 +29,9 @@ package com.sucy.skill.listener.attribute;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.enums.ManaSource;
-import com.sucy.skill.api.event.PhysicalDamageEvent;
-import com.sucy.skill.api.event.PlayerExperienceGainEvent;
-import com.sucy.skill.api.event.PlayerLevelUpEvent;
-import com.sucy.skill.api.event.PlayerManaGainEvent;
-import com.sucy.skill.api.event.PlayerUpAttributeEvent;
-import com.sucy.skill.api.event.SkillDamageEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.hook.CitizensHook;
-import com.sucy.skill.hook.PluginChecker;
-import com.sucy.skill.hook.RPGItemsHook;
 import com.sucy.skill.listener.MainListener;
 import com.sucy.skill.listener.SkillAPIListener;
 import com.sucy.skill.log.LogType;
@@ -129,10 +122,9 @@ public class AttributeListener extends SkillAPIListener {
     public void onPhysicalDamage(PhysicalDamageEvent event) {
         // Physical Damage
         if (event.getDamager() instanceof Player) {
-            Player    player = (Player) event.getDamager();
+            Player player = (Player) event.getDamager();
             ItemStack item = player.getInventory().getItemInMainHand();
             // If it's an RPGItem, we'll handle this in RPGAttributeListener
-            if(PluginChecker.isRPGItemsActive() && RPGItemsHook.isRPGItem(item)) return;
             if (CitizensHook.isNPC(player)) return;
 
             PlayerData data = SkillAPI.getPlayerData(player);

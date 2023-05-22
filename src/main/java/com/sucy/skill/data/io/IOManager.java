@@ -28,12 +28,7 @@ package com.sucy.skill.data.io;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.api.player.PlayerAccounts;
-import com.sucy.skill.api.player.PlayerClass;
-import com.sucy.skill.api.player.PlayerCombos;
-import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.api.player.PlayerSkill;
-import com.sucy.skill.api.player.PlayerSkillBar;
+import com.sucy.skill.api.player.*;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.listener.MainListener;
 import com.sucy.skill.log.Logger;
@@ -294,7 +289,9 @@ public abstract class IOManager {
                 // Save skills
                 DataSection skills = account.createSection(SKILLS);
                 for (PlayerSkill skill : acc.getSkills()) {
-                    if (skill.isExternal()) { continue; }
+                    if (skill.isExternal()) {
+                        continue;
+                    }
                     DataSection skillSection = skills.createSection(skill.getData().getName());
                     skillSection.set(LEVEL, skill.getLevel());
                     if (skill.isOnCooldown())

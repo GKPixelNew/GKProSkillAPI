@@ -41,36 +41,6 @@ import java.util.List;
  */
 public class FloodTree extends InventoryTree {
     /**
-     * Constructor
-     *
-     * @param api  api reference
-     * @param tree class reference
-     */
-    public FloodTree(SkillAPI api, RPGClass tree) {
-        super(api, tree);
-    }
-
-    /**
-     * Arranges the skill tree
-     *
-     * @param skills skills to arrange
-     *
-     * @throws com.sucy.skill.api.exception.SkillTreeException
-     */
-    @Override
-    protected void arrange(List<Skill> skills) throws SkillTreeException {
-        skillSlots.clear();
-        skills.sort(levelComparator);
-        int i = 0;
-        for (Skill skill : skills) {
-            if (i%9 == 8) { i++; }
-            skillSlots.put(i, skill);
-            i++;
-        }
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", (skills.size()+7)/8), 6));
-    }
-
-    /**
      * Comparator for skills for level trees
      */
     private static final Comparator<Skill> levelComparator = new Comparator<Skill>() {
@@ -112,10 +82,16 @@ public class FloodTree extends InventoryTree {
      */
     @Override
     protected void arrange(List<Skill> skills) throws SkillTreeException {
-        Collections.sort(skills, levelComparator);
-        for (int i = 0; i < skills.size(); i++) {
-            skillSlots.put(i, skills.get(i));
+        skillSlots.clear();
+        skills.sort(levelComparator);
+        int i = 0;
+        for (Skill skill : skills) {
+            if (i % 9 == 8) {
+                i++;
+            }
+            skillSlots.put(i, skill);
+            i++;
         }
-        height = Math.max((skills.size() + 8) / 9, 1);
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", (skills.size() + 7) / 8), 6));
     }
 }

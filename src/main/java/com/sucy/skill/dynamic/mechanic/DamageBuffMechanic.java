@@ -53,7 +53,6 @@ public class DamageBuffMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -63,11 +62,11 @@ public class DamageBuffMechanic extends MechanicComponent {
             return false;
         }
 
-        boolean skill   = settings.getString(SKILL, "false").equalsIgnoreCase("true");
+        boolean skill = settings.getString(SKILL, "false").equalsIgnoreCase("true");
         boolean percent = settings.getString(TYPE, "flat").toLowerCase().equals("multiplier");
-        double  value   = parseValues(caster, VALUE, level, 1.0);
-        double  seconds = parseValues(caster, SECONDS, level, 3.0);
-        int     ticks   = (int) (seconds * 20);
+        double value = parseValues(caster, VALUE, level, 1.0);
+        double seconds = parseValues(caster, SECONDS, level, 3.0);
+        int ticks = (int) (seconds * 20);
         for (LivingEntity target : targets) {
             BuffManager.addBuff(
                     target,

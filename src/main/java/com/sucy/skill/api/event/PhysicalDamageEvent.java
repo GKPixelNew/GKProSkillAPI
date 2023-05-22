@@ -36,12 +36,12 @@ import org.bukkit.event.HandlerList;
  * use of skills such as melee attacks or projectiles.
  */
 public class PhysicalDamageEvent extends Event implements Cancellable {
-    private static final HandlerList  handlers = new HandlerList();
-    private              LivingEntity damager;
-    private              LivingEntity target;
-    private              double damage;
-    private              boolean projectile;
-    private              boolean cancelled;
+    private static final HandlerList handlers = new HandlerList();
+    private LivingEntity damager;
+    private LivingEntity target;
+    private double damage;
+    private boolean projectile;
+    private boolean cancelled;
 
     /**
      * Initializes a new event

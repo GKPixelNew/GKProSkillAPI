@@ -70,7 +70,6 @@ public class Combat {
      *
      * @param player  player to check for
      * @param seconds seconds before being counted as out of combat
-     *
      * @return true if out of combat, false otherwise
      */
     public static boolean isOutOfCombat(Player player, double seconds) {

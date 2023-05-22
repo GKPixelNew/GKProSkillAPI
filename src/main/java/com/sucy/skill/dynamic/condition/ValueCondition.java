@@ -48,9 +48,9 @@ public class ValueCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String key  = settings.getString(KEY);
-        final double min  = parseValues(caster, MIN, level, 1);
-        final double max  = parseValues(caster, MAX, level, 999);
+        final String key = settings.getString(KEY);
+        final double min = parseValues(caster, MIN, level, 1);
+        final double max = parseValues(caster, MAX, level, 999);
         final Object data = DynamicSkill.getCastData(caster).get(key);
 
         if (data != null) {

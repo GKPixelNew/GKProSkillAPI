@@ -71,9 +71,10 @@ public class RepeatMechanic extends MechanicComponent {
                 while (count > 0) {
                     count = execute(caster, targets, count, stopOnFail, force);
                 }
-            } else {final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
-            tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
-}
+            } else {
+                final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
+                tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
+            }
             return true;
         }
         return false;
@@ -90,8 +91,8 @@ public class RepeatMechanic extends MechanicComponent {
             return 0;
         }
 
-        final int level   = skill.getActiveLevel(caster);
-        boolean   success = executeChildren(caster, level, targets, force);
+        final int level = skill.getActiveLevel(caster);
+        boolean success = executeChildren(caster, level, targets, force);
 
         if (--count <= 0 || (!success && stopOnFail)) {
             return 0;

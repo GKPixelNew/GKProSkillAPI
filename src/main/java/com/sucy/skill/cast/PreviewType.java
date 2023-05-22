@@ -38,7 +38,6 @@ public enum PreviewType {
 
     // No effect
     NONE("None");
-
     private String key;
 
     PreviewType(String key) {
@@ -61,5 +60,9 @@ public enum PreviewType {
         } else {
             return NONE;
         }
+    }
+
+    public String getKey() {
+        return key;
     }
 }

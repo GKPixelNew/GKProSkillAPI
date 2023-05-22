@@ -27,12 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.util.Nearby;
-import com.sucy.skill.cast.CirclePreview;
-import com.sucy.skill.cast.Preview;
-import com.sucy.skill.cast.PreviewSettings;
-import com.sucy.skill.cast.PreviewType;
-import com.sucy.skill.cast.SpherePreview;
-import org.bukkit.GameMode;
+import com.sucy.skill.cast.*;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -50,7 +45,7 @@ public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
 
     private Preview preview;
-    private double  radius = 0;
+    private double radius = 0;
 
     /**
      * {@inheritDoc}
@@ -58,7 +53,7 @@ public class NearestTarget extends TargetComponent {
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        final double             radius = parseValues(caster, RADIUS, level, 3.0);
+        final double radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
             final Comparator<LivingEntity> comparator = new DistanceComparator(target.getLocation());

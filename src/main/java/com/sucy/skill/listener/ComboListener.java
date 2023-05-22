@@ -32,11 +32,7 @@ import com.sucy.skill.api.player.PlayerCombos;
 import com.sucy.skill.data.Click;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.HashSet;

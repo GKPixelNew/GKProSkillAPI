@@ -75,11 +75,11 @@ public class WarpLocMechanic extends MechanicComponent {
         }
 
         // Get the other values
-        double x     = settings.getDouble(X, 0.0);
-        double y     = settings.getDouble(Y, 0.0);
-        double z     = settings.getDouble(Z, 0.0);
-        float  yaw   = (float) settings.getDouble(YAW, 0.0);
-        float  pitch = (float) settings.getDouble(PITCH, 0.0);
+        double x = settings.getDouble(X, 0.0);
+        double y = settings.getDouble(Y, 0.0);
+        double z = settings.getDouble(Z, 0.0);
+        float yaw = (float) settings.getDouble(YAW, 0.0);
+        float pitch = (float) settings.getDouble(PITCH, 0.0);
 
         Location loc = new Location(w, x, y, z, yaw, pitch);
 

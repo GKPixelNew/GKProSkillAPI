@@ -41,7 +41,7 @@ public class DirectionCondition extends ConditionComponent {
     private static final String DIRECTION = "direction";
 
     private BiPredicate<LivingEntity, LivingEntity> test;
-    private boolean                                 towards;
+    private boolean towards;
 
     @Override
     public String getKey() {

@@ -62,7 +62,9 @@ public class OffsetTarget extends TargetComponent {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
@@ -71,9 +73,9 @@ public class OffsetTarget extends TargetComponent {
 
     private TempEntity getTargetLoc(LivingEntity caster, int level, LivingEntity t) {
         final boolean horizontal = settings.getBool(HORIZONTAL, false);
-        final double  forward    = parseValues(caster, FORWARD, level, 0);
-        final double  upward     = parseValues(caster, UPWARD, level, 0);
-        final double  right      = parseValues(caster, RIGHT, level, 0);
+        final double forward = parseValues(caster, FORWARD, level, 0);
+        final double upward = parseValues(caster, UPWARD, level, 0);
+        final double right = parseValues(caster, RIGHT, level, 0);
 
         final Vector dir = t.getLocation().getDirection().setY(0).normalize();
         if (horizontal) {

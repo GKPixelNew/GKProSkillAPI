@@ -32,11 +32,7 @@ import com.sucy.skill.api.event.FlagExpireEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
-import com.sucy.skill.dynamic.mechanic.BlockMechanic;
-import com.sucy.skill.dynamic.mechanic.FireMechanic;
-import com.sucy.skill.dynamic.mechanic.LightningMechanic;
-import com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic;
-import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
+import com.sucy.skill.dynamic.mechanic.*;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
@@ -47,22 +43,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -87,7 +73,7 @@ public class MechanicListener extends SkillAPIListener {
     public static final String SPEED_KEY = "sapiSpeedKey";
     public static final String DISGUISE_KEY = "sapiDisguiseKey";
     public static final String ARMOR_STAND = "asMechanic";
-    public static final String DAMAGE_CAUSE      = "damageCause";
+    public static final String DAMAGE_CAUSE = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
 
@@ -125,7 +111,7 @@ public class MechanicListener extends SkillAPIListener {
     public boolean isOnGround(Location loc) {
         loc = loc.clone();
         Set<Block> blocksUnderneath = new HashSet<>();
-        double     dx               = loc.getX() % 1;
+        double dx = loc.getX() % 1;
         if (dx < 0) dx += 1;
         double dz = loc.getZ() % 1;
         if (dz < 0) dz += 1;
@@ -164,8 +150,8 @@ public class MechanicListener extends SkillAPIListener {
         Location finalLoc = loc.clone();
         return blocksUnderneath.stream()
                 .anyMatch(b -> {
-                    boolean     solid = !b.isPassable();
-                    BoundingBox box   = b.getBoundingBox();
+                    boolean solid = !b.isPassable();
+                    BoundingBox box = b.getBoundingBox();
                     box.expandDirectional(0, isTaller(b) ? 0.5 : 0, 0);
                     boolean bounded = isIntersecting(box, finalLoc);
 
@@ -174,8 +160,8 @@ public class MechanicListener extends SkillAPIListener {
     }
 
     private boolean isTaller(Block b) {
-        Material type    = b.getType();
-        String   typeStr = type.toString();
+        Material type = b.getType();
+        String typeStr = type.toString();
         return typeStr.contains("WALL") || typeStr.contains("FENCE");
     }
 
@@ -290,7 +276,7 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
-        Entity entity  = event.getEntity();
+        Entity entity = event.getEntity();
         if (damager instanceof Projectile) {
             Projectile p = (Projectile) damager;
             if (p.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
@@ -357,7 +343,7 @@ public class MechanicListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDamageCause(EntityDamageEvent event) {
-        Entity              entity       = event.getEntity();
+        Entity entity = event.getEntity();
         List<MetadataValue> metadataList = entity.getMetadata(DAMAGE_CAUSE);
         if (metadataList.isEmpty()) {
             return;

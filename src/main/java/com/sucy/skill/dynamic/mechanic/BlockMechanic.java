@@ -39,12 +39,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Mechanic that changes blocks for a duration before
@@ -70,7 +65,7 @@ public class BlockMechanic extends MechanicComponent {
     private static final String BLOCK_DAMAGE_TYPE = "block_damage_TYPE";
     private static final String BLOCK_DAMAGE = "block_damage";
     private static final Random random = new Random();
-    private static final String DATA      = "data";
+    private static final String DATA = "data";
     private static final String RESET_YAW = "reset-yaw";
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
@@ -165,7 +160,7 @@ public class BlockMechanic extends MechanicComponent {
             double rSq = radius * radius;
             for (LivingEntity t : targets) {
                 // Get the center with offsets included
-                Location loc    = t.getLocation();
+                Location loc = t.getLocation();
                 Location dirLoc = t.getLocation().clone();
                 if (resetYaw) dirLoc.setYaw(0);
                 Vector dir = dirLoc.getDirection().setY(0).normalize();
@@ -189,7 +184,7 @@ public class BlockMechanic extends MechanicComponent {
                                 if (dx * dx + dy * dy + dz * dz < rSq) {
                                     Block b = w.getBlockAt(i, j, k);
                                     if ((matType == null || matType == b.getType())
-                                        && (!solid || b.getType().isSolid())
+                                            && (!solid || b.getType().isSolid())
                                             && (!air || b.getType().isAir())
                                             && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
                                         blocks.add(b);
@@ -208,7 +203,7 @@ public class BlockMechanic extends MechanicComponent {
 
             for (LivingEntity t : targets) {
                 // Get the location with offsets included
-                Location loc    = t.getLocation();
+                Location loc = t.getLocation();
                 Location dirLoc = t.getLocation().clone();
                 if (resetYaw) dirLoc.setYaw(0);
                 Vector dir = dirLoc.getDirection().setY(0).normalize();
@@ -232,12 +227,12 @@ public class BlockMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            int   blockX = (int) Math.floor(resetYaw || facingZ ? i : k);
-                            int   blockY = (int) Math.floor(j);
-                            int   blockZ = (int) Math.floor(resetYaw || facingZ ? k : i);
+                            int blockX = (int) Math.floor(resetYaw || facingZ ? i : k);
+                            int blockY = (int) Math.floor(j);
+                            int blockZ = (int) Math.floor(resetYaw || facingZ ? k : i);
                             if (fill || i == x + width || j == y + height || k == z + depth
                                     || i == x - width || j == y - height || k == z - depth) {
-                                Block b      = w.getBlockAt(blockX, blockY, blockZ);
+                                Block b = w.getBlockAt(blockX, blockY, blockZ);
                                 if ((!solid || b.getType().isSolid())
                                         && (!air || b.getType().isAir())
                                         && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {

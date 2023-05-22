@@ -28,12 +28,25 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.3")
     compileOnly("com.sk89q.worldedit:worldedit-core:7.1.0")
-    compileOnly("com.promcteam:promccore:1.0.4.2-SNAPSHOT")
+    compileOnly("com.promcteam:promccore:1.0.4-R0.5-SNAPSHOT")
     compileOnly("com.promcteam:proskillapiparties:1.1.0.2-SNAPSHOT")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
     compileOnly("org.projectlombok:lombok:1.18.26")
     compileOnly("dev.robothanzo.gk:GKReplay:1.8.2")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.19:2.138.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testImplementation("org.mockito:mockito-inline:4.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.8.0")
+    testImplementation("org.slf4j:slf4j-reload4j:2.0.7")
+    testImplementation("commons-io:commons-io:2.11.0")
+}
+
+configurations {
+    testImplementation {
+        extendsFrom(configurations.compileOnly.get())
+    }
 }
 
 group = "mc.promcteam"

@@ -72,7 +72,7 @@ public abstract class RPGClass implements IconHolder {
     private static final String REGEN = "mana-regen";
     private static final String PERM = "needs-permission";
     private static final String ATTR = "attributes";
-    private static final String OLD_TREE   = "tree";
+    private static final String OLD_TREE = "tree";
     private static final String TREE = "skill-tree";
     private static final String BLACKLIST = "blacklist";
     /**

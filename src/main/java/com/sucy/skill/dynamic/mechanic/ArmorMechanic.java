@@ -39,13 +39,13 @@ public class ArmorMechanic extends MechanicComponent {
         } catch (IllegalArgumentException exception) {
             return false;
         }
-        ItemStack item      = ItemStackReader.read(settings);
-        boolean   overwrite = settings.getBool(OVERWRITE, false);
+        ItemStack item = ItemStackReader.read(settings);
+        boolean overwrite = settings.getBool(OVERWRITE, false);
 
         boolean success = false;
         for (LivingEntity target : targets) {
             EntityEquipment equipment = Objects.requireNonNull(target.getEquipment());
-            boolean         proceed   = overwrite;
+            boolean proceed = overwrite;
             if (!overwrite) {
                 switch (slot) {
                     case FEET:

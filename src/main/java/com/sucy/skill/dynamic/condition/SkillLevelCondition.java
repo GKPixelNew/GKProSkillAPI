@@ -51,7 +51,7 @@ public class SkillLevelCondition extends ConditionComponent {
         final int min = settings.getInt(MIN_LEVEL, 1);
         final int max = settings.getInt(MAX_LEVEL, 99);
 
-        final String      skill          = settings.getString(SKILL, "");
+        final String skill = settings.getString(SKILL, "");
         final PlayerSkill triggeredSkill = getSkillData(caster);
         if (triggeredSkill == null) {
             return false;

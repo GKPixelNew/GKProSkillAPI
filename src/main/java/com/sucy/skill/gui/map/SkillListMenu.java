@@ -29,13 +29,7 @@ package com.sucy.skill.gui.map;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import mc.promcteam.engine.mccore.gui.MapBuffer;
-import mc.promcteam.engine.mccore.gui.MapMenu;
-import mc.promcteam.engine.mccore.gui.MapMenuManager;
-import mc.promcteam.engine.mccore.gui.MapObject;
-import mc.promcteam.engine.mccore.gui.MapScene;
-import mc.promcteam.engine.mccore.gui.MapScheme;
-import mc.promcteam.engine.mccore.gui.MapString;
+import mc.promcteam.engine.mccore.gui.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -47,11 +41,11 @@ public class SkillListMenu extends MapMenu {
     private static final String AVAILABLE = "sapi_available";
 
     // Scene keys
-    private static final String   PLATE    = "plate";
-    private static final String   NAME     = "name";
-    private static final String   SELECTOR = "selector";
-    private static final String   TITLE    = "title";
-    private              SkillAPI api;
+    private static final String PLATE = "plate";
+    private static final String NAME = "name";
+    private static final String SELECTOR = "selector";
+    private static final String TITLE = "title";
+    private SkillAPI api;
 
     public SkillListMenu(SkillAPI api) {
         this.api = api;
@@ -64,8 +58,8 @@ public class SkillListMenu extends MapMenu {
      * @return player's selection or null if hasn't selected one
      */
     public static PlayerSkill getSkill(Player player) {
-        Object                 skill = getData(player, SELECTION);
-        ArrayList<PlayerSkill> list  = getSkills(player);
+        Object skill = getData(player, SELECTION);
+        ArrayList<PlayerSkill> list = getSkills(player);
 
         if (skill == null || list == null) return null;
         return list.get((Integer) skill);
@@ -99,7 +93,7 @@ public class SkillListMenu extends MapMenu {
      * @param i      amount to move the selection by
      */
     private void move(Player player, int i) {
-        int id     = getId(player);
+        int id = getId(player);
         int scroll = getScroll(player);
         int skills = getSkills(player).size();
 
@@ -183,9 +177,9 @@ public class SkillListMenu extends MapMenu {
     public void setup(Player player) {
         MapScheme scheme = MapScheme.get(api, SkillAPI.getPlayerData(player).getScheme());
 
-        MapScene               scene      = getScene(player);
-        PlayerData             playerData = SkillAPI.getPlayerData(player);
-        ArrayList<PlayerSkill> skills     = new ArrayList<PlayerSkill>();
+        MapScene scene = getScene(player);
+        PlayerData playerData = SkillAPI.getPlayerData(player);
+        ArrayList<PlayerSkill> skills = new ArrayList<PlayerSkill>();
         for (PlayerSkill skill : playerData.getSkills()) {
             if (skill.getPlayerClass().getData().getSkillTree().canShow(player, skill.getData())) {
                 int id = skills.size();
@@ -207,8 +201,8 @@ public class SkillListMenu extends MapMenu {
     public void render(MapBuffer mapBuffer, Player player) {
         MapScene scene = getScene(player);
 
-        int                    id     = getId(player);
-        int                    scroll = getScroll(player);
+        int id = getId(player);
+        int scroll = getScroll(player);
         ArrayList<PlayerSkill> skills = getSkills(player);
 
         // Draw skill list

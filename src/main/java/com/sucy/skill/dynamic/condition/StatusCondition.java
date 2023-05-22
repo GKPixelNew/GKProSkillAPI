@@ -42,7 +42,7 @@ public class StatusCondition extends ConditionComponent {
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final boolean active = !settings.getString(TYPE, "active").equals("not active");
-        final String  status = settings.getString(STATUS).toLowerCase();
+        final String status = settings.getString(STATUS).toLowerCase();
 
         if (status.equals("any")) {
             return active == Arrays.stream(StatusFlag.ALL).anyMatch(flag -> FlagManager.hasFlag(target, flag));

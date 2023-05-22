@@ -35,10 +35,10 @@ import org.bukkit.entity.Player;
  */
 public class SpherePreview extends RoundPreview {
     private static final double COS_45 = Math.cos(Math.PI / 4);
-    private              double radius;
-    private              double sin, cos;
+    private double radius;
+    private double sin, cos;
     private double angleStep;
-    private int    particles;
+    private int particles;
 
     /**
      * @param radius radius of the circle

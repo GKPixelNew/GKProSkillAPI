@@ -92,7 +92,7 @@ public class BuffData {
 
     private void doAddBuff(final String type, final Buff buff, final int ticks) {
         final Map<String, Buff> typeBuffs = buffs.computeIfAbsent(type, t -> new HashMap<>());
-        final Buff              conflict  = typeBuffs.remove(buff.getKey());
+        final Buff conflict = typeBuffs.remove(buff.getKey());
         if (conflict != null)
             conflict.task.cancel();
 
@@ -163,7 +163,7 @@ public class BuffData {
         if (value <= 0) return value;
 
         double multiplier = 1;
-        double bonus      = 0;
+        double bonus = 0;
         Logger.log(LogType.BUFF, 1, "Buffs:");
         for (final String type : types) {
             final Map<String, Buff> typeBuffs = buffs.get(type);

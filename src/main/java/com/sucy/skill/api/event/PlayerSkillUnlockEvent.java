@@ -37,8 +37,8 @@ import org.bukkit.event.HandlerList;
 public class PlayerSkillUnlockEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private              PlayerData player;
-    private              PlayerSkill unlockedSkill;
+    private PlayerData player;
+    private PlayerSkill unlockedSkill;
 
     /**
      * Constructor

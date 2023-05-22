@@ -78,13 +78,6 @@ public class PlayerManaGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return source of the gained mana
-     */
-    public ManaSource getSource() {
-        return source;
-    }
-
-    /**
      * Sets the amount of experience being gained
      *
      * @param amount new amount of experience

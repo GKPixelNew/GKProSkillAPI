@@ -38,7 +38,9 @@ import java.util.List;
  */
 public class SelfTarget extends TargetComponent {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         switch (previewType) {
@@ -51,7 +53,9 @@ public class SelfTarget extends TargetComponent {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {

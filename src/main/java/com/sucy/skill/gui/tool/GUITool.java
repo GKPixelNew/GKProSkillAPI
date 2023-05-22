@@ -46,12 +46,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GUITool implements ToolMenu {
     // Page buttons
@@ -135,7 +130,9 @@ public class GUITool implements ToolMenu {
         config = SkillAPI.getConfig("gui");
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
-            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) { continue; }
+            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) {
+                continue;
+            }
             try {
                 GUIData loaded = new GUIData(data.getSection(key));
                 if (loaded.isValid())
@@ -312,7 +309,7 @@ public class GUITool implements ToolMenu {
         guiData.load(inventoryContents);
         if (type == GUIType.SKILL_TREE) {
             RPGClass rpgClass = availableClasses[classId];
-            String name = GUIType.SKILL_TREE.getPrefix()+rpgClass.getName();
+            String name = GUIType.SKILL_TREE.getPrefix() + rpgClass.getName();
             guiData.save(config.getConfig().createSection(name));
             config.save();
             rpgClass.reloadSkillTree();
@@ -496,7 +493,9 @@ public class GUITool implements ToolMenu {
                     }
                 }
             }
-            if (!this.guiData.isEditable()) { event.setCancelled(true); }
+            if (!this.guiData.isEditable()) {
+                event.setCancelled(true);
+            }
         } else { // Clicked lower inventory
             if (event.getSlot() < 9) {
                 update();

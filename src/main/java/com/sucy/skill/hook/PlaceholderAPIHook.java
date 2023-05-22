@@ -28,19 +28,10 @@ import java.util.stream.Collectors;
  */
 public class PlaceholderAPIHook extends PlaceholderExpansion {
 
-    private SkillAPI plugin;
+    private final SkillAPI plugin;
 
     public PlaceholderAPIHook(SkillAPI plugin) {
         this.plugin = plugin;
-    }
-
-    public static String format(final String message, final Player player) {
-        return PlaceholderAPI.setPlaceholders(player, message);
-    }
-
-    @Override
-    public boolean persist() {
-        return true;
     }
 
     public static String format(final String message, final Player player) {
@@ -62,6 +53,11 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
         item.setItemMeta(meta);
         return item;
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
     }
 
     @Override
@@ -93,7 +89,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (identifier.startsWith("group_")) {
             if (!SkillAPI.getClasses().isEmpty()) {
                 for (RPGClass group : SkillAPI.getClasses().values()) {
-                    String      groupName   = group.getGroup().toLowerCase();
+                    String groupName = group.getGroup().toLowerCase();
                     PlayerClass playerClass = playerData.getClass(groupName);
 
                     if (identifier.equals("group_" + groupName + "_basehealth")) {
@@ -237,7 +233,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player") && !args[1].equals("account"))) {
             // Another player
             String playerName = args[args.length - 1];
-            UUID   uuid       = null;
+            UUID uuid = null;
             try {
                 uuid = UUID.fromString(playerName);
             } catch (IllegalArgumentException ignored) {
@@ -346,8 +342,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (identifier.startsWith("player_")) {
             if (identifier.startsWith("player_account_")) {
                 PlayerAccounts accounts = SkillAPI.getPlayerAccountData(player);
-                Pattern        pattern  = Pattern.compile("player_account_(\\d+)");
-                Matcher        matcher  = pattern.matcher(identifier);
+                Pattern pattern = Pattern.compile("player_account_(\\d+)");
+                Matcher matcher = pattern.matcher(identifier);
                 if (matcher.find()) {
                     int accNum = Integer.parseInt(matcher.group(1));
                     data = accounts.getData(accNum);
@@ -359,7 +355,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                 }
             } else if (!data.getClasses().isEmpty()) {
                 for (PlayerClass group : data.getClasses()) {
-                    String      groupName   = group.getData().getGroup();
+                    String groupName = group.getData().getGroup();
                     PlayerClass playerClass = playerData.getClass(groupName);
                     if (!identifier.startsWith("player_" + groupName)) continue;
 
@@ -414,7 +410,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             return String.valueOf((int) playerClass.getExp());
         }
         if (identifier.equals("srequiredexp")) {
-            return String.valueOf((int) playerClass.getRequiredExp());
+            return String.valueOf(playerClass.getRequiredExp());
         }
         if (identifier.equals("level")) {
             return String.valueOf(playerClass.getLevel());

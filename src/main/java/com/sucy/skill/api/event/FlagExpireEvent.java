@@ -34,10 +34,10 @@ import org.bukkit.event.HandlerList;
  * Event called when a flag expired on an entity
  */
 public class FlagExpireEvent extends Event {
-    private static final HandlerList  handlers = new HandlerList();
-    private              LivingEntity entity;
-    private              String flag;
-    private              ExpireReason reason;
+    private static final HandlerList handlers = new HandlerList();
+    private LivingEntity entity;
+    private String flag;
+    private ExpireReason reason;
 
     /**
      * Constructor

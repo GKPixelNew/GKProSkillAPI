@@ -40,41 +40,13 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.exception.SkillAPINotEnabledException;
 import com.sucy.skill.gui.tool.GUITool;
-import com.sucy.skill.hook.BungeeHook;
 import com.sucy.skill.hook.GKReplayHook;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.mimic.MimicHook;
-import com.sucy.skill.listener.AddonListener;
-import com.sucy.skill.listener.AttributeListener;
-import com.sucy.skill.listener.BarListener;
-import com.sucy.skill.listener.BindListener;
-import com.sucy.skill.listener.BuffListener;
-import com.sucy.skill.listener.CastCombatListener;
-import com.sucy.skill.listener.CastItemListener;
-import com.sucy.skill.listener.CastListener;
-import com.sucy.skill.listener.CastOffhandListener;
-import com.sucy.skill.listener.ClickListener;
-import com.sucy.skill.listener.CombatProtectionListener;
-import com.sucy.skill.listener.ComboListener;
-import com.sucy.skill.listener.DeathListener;
-import com.sucy.skill.listener.ExperienceListener;
-import com.sucy.skill.listener.ItemListener;
-import com.sucy.skill.listener.KillListener;
-import com.sucy.skill.listener.LingeringPotionListener;
-import com.sucy.skill.listener.MainListener;
-import com.sucy.skill.listener.MechanicListener;
-import com.sucy.skill.listener.SkillAPIListener;
-import com.sucy.skill.listener.StatusListener;
-import com.sucy.skill.listener.ToolListener;
+import com.sucy.skill.listener.*;
 import com.sucy.skill.listener.attribute.AttributeListener;
-import com.sucy.skill.listener.attribute.RPGAttributeListener;
-import com.sucy.skill.manager.AttributeManager;
-import com.sucy.skill.manager.ClassBoardManager;
-import com.sucy.skill.manager.CmdManager;
-import com.sucy.skill.manager.ComboManager;
-import com.sucy.skill.manager.RegistrationManager;
-import com.sucy.skill.manager.ResourceManager;
+import com.sucy.skill.manager.*;
 import com.sucy.skill.task.CooldownTask;
 import com.sucy.skill.task.GUITask;
 import com.sucy.skill.task.ManaTask;
@@ -644,7 +616,7 @@ public class SkillAPI extends JavaPlugin {
             throw new IllegalStateException("Cannot enable SkillAPI twice!");
         }
 
-        String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
+        String coreVersion = NexEngine.getEngine().getDescription().getVersion();
         boolean minCoreVersionMet = coreVersion.compareTo(DependencyRequirement.MIN_CORE_VERSION) >= 0;
 
         if (!minCoreVersionMet) {
@@ -715,7 +687,6 @@ public class SkillAPI extends JavaPlugin {
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
-        listen(new RPGAttributeListener(), getServer().getPluginManager().isPluginEnabled("ProRPGItems"));
 
 
         // Set up tasks

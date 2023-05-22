@@ -52,7 +52,6 @@ public class ValueRandomMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -62,13 +61,13 @@ public class ValueRandomMechanic extends MechanicComponent {
             return false;
         }
 
-        String  key        = settings.getString(KEY);
+        String key = settings.getString(KEY);
         boolean triangular = settings.getString(TYPE).toUpperCase().equals("triangular");
-        double  min        = parseValues(caster, MIN, level, 1);
-        double  max        = parseValues(caster, MAX, level, 1);
+        double min = parseValues(caster, MIN, level, 1);
+        double max = parseValues(caster, MAX, level, 1);
 
         HashMap<String, Object> data = DynamicSkill.getCastData(caster);
-        double                  rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
+        double rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
         data.put(key, rand * (max - min) + min);
         return true;
     }

@@ -67,7 +67,7 @@ public class RemoveTask extends BukkitRunnable {
         for (Entity entity : entities) {
             if (entity.hasMetadata(WolfMechanic.SKILL_META)) {
                 final List<String> skills = (List<String>) SkillAPI.getMeta(entity, WolfMechanic.SKILL_META);
-                final int          level  = SkillAPI.getMetaInt(entity, WolfMechanic.LEVEL);
+                final int level = SkillAPI.getMetaInt(entity, WolfMechanic.LEVEL);
                 for (final String skillName : skills) {
                     final Skill skill = SkillAPI.getSkill(skillName);
                     if (skill instanceof PassiveSkill) {

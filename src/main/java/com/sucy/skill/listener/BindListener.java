@@ -53,8 +53,8 @@ public class BindListener extends SkillAPIListener {
             return;
         }
 
-        PlayerData data     = SkillAPI.getPlayerData(player);
-        Material   heldItem = player.getInventory().getItemInMainHand().getType();
+        PlayerData data = SkillAPI.getPlayerData(player);
+        Material heldItem = player.getInventory().getItemInMainHand().getType();
 
         // Must be right clicking with an item
         if (event.getKey() != KeyPressEvent.Key.RIGHT || heldItem == Material.AIR) {

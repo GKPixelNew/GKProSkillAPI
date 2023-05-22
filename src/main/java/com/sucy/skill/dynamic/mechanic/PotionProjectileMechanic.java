@@ -45,9 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.sucy.skill.listener.MechanicListener.POTION_PROJECTILE;
-import static com.sucy.skill.listener.MechanicListener.SKILL_CASTER;
-import static com.sucy.skill.listener.MechanicListener.SKILL_LEVEL;
+import static com.sucy.skill.listener.MechanicListener.*;
 
 /**
  * Heals each target
@@ -56,7 +54,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     private static final String POTION = "type";
     private static final String ALLY = "group";
     private static final String LINGER = "linger";
-    private static final String COLOR  = "color";
+    private static final String COLOR = "color";
 
     @Override
     public String getKey() {
@@ -76,7 +74,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
         String potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
-        String     color  = settings.getString(COLOR);
+        String color = settings.getString(COLOR);
         boolean linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
         PotionType type;
         try {

@@ -38,10 +38,10 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerExperienceGainEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private              PlayerClass playerClass;
-    private              boolean cancelled;
-    private              ExpSource source;
-    private              double amount;
+    private PlayerClass playerClass;
+    private boolean cancelled;
+    private ExpSource source;
+    private double amount;
 
     /**
      * Constructor
@@ -83,13 +83,6 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
      */
     public double getExp() {
         return amount;
-    }
-
-    /**
-     * @return where the experience came from
-     */
-    public ExpSource getSource() {
-        return source;
     }
 
     /**

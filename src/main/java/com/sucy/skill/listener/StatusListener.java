@@ -34,7 +34,6 @@ import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.dynamic.mechanic.CleanseMechanic;
 import mc.promcteam.engine.mccore.util.VersionManager;
-import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

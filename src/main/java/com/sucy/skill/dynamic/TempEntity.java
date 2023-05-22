@@ -33,35 +33,23 @@ import com.sucy.skill.api.particle.target.EffectTarget;
 import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.particle.target.FixedTarget;
 import com.sucy.skill.api.util.Nearby;
+import io.papermc.paper.entity.TeleportFlag;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.World;
+import net.kyori.adventure.util.TriState;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityCategory;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Pose;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SpawnCategory;
+import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -71,6 +59,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -126,17 +115,22 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public @Nullable Block getTargetBlock(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+    public @Nullable Block getTargetBlock(int maxDistance, TargetBlockInfo.FluidMode fluidMode) {
         return null;
     }
 
     @Override
-    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, TargetBlockInfo.FluidMode fluidMode) {
         return null;
     }
 
     @Override
-    public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+    public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, TargetBlockInfo.FluidMode fluidMode) {
         return null;
     }
 
@@ -147,6 +141,11 @@ public class TempEntity implements LivingEntity {
 
     @Override
     public @Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance, boolean ignoreBlocks) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(int maxDistance, boolean ignoreBlocks) {
         return null;
     }
 
@@ -207,6 +206,11 @@ public class TempEntity implements LivingEntity {
 
     @Override
     public void setArrowsInBody(int count) {
+    }
+
+    @Override
+    public void setArrowsInBody(int count, boolean fireEvent) {
+
     }
 
     @Override
@@ -339,14 +343,17 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    @Override
-    public void setVisibleByDefault(boolean b) { }
-
-    @Override
-    public boolean isVisibleByDefault() { return true; }
-
     public void setCustomNameVisible(boolean b) {
 
+    }
+
+    @Override
+    public boolean isVisibleByDefault() {
+        return true;
+    }
+
+    @Override
+    public void setVisibleByDefault(boolean b) {
     }
 
     public boolean isGlowing() {
@@ -418,6 +425,16 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public boolean isSneaking() {
+        return false;
+    }
+
+    @Override
+    public void setSneaking(boolean sneak) {
+
+    }
+
+    @Override
     public @NotNull Spigot spigot() {
         return null;
     }
@@ -445,6 +462,11 @@ public class TempEntity implements LivingEntity {
     @Override
     public @NotNull CreatureSpawnEvent.SpawnReason getEntitySpawnReason() {
         return null;
+    }
+
+    @Override
+    public boolean isUnderWater() {
+        return false;
     }
 
     @Override
@@ -593,45 +615,38 @@ public class TempEntity implements LivingEntity {
     public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {
     }
 
-    @Nullable
     @Override
-    public Sound getHurtSound() {
+    public @Nullable Sound getHurtSound() {
         return null;
     }
 
-    @Nullable
     @Override
-    public Sound getDeathSound() {
+    public @Nullable Sound getDeathSound() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getFallDamageSound(int i) {
+    public @NotNull Sound getFallDamageSound(int fallHeight) {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getFallDamageSoundSmall() {
+    public @NotNull Sound getFallDamageSoundSmall() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getFallDamageSoundBig() {
+    public @NotNull Sound getFallDamageSoundBig() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+    public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getEatingSound(@NotNull ItemStack itemStack) {
+    public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
         return null;
     }
 
@@ -729,6 +744,41 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @Override
+    public void knockback(double strength, double directionX, double directionZ) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot slot, @NotNull Collection<Player> players) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack stack, int amount) {
+        return null;
+    }
+
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot slot, int amount) {
+
+    }
+
+    @Override
+    public float getBodyYaw() {
+        return 0;
+    }
+
+    @Override
+    public void setBodyYaw(float bodyYaw) {
+
+    }
+
     public void damage(double v) {
     }
 
@@ -817,9 +867,8 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount) {
-        target = new FixedTarget(location);
-        return true;
+    public boolean teleport(@NotNull Location location, PlayerTeleportEvent.TeleportCause cause, @NotNull TeleportFlag... teleportFlags) {
+        return false;
     }
 
     public boolean teleport(@NotNull Location location) {
@@ -1016,21 +1065,18 @@ public class TempEntity implements LivingEntity {
         return EntityType.CHICKEN;
     }
 
-    @NotNull
     @Override
-    public Sound getSwimSound() {
+    public @NotNull Sound getSwimSound() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getSwimSplashSound() {
+    public @NotNull Sound getSwimSplashSound() {
         return null;
     }
 
-    @NotNull
     @Override
-    public Sound getSwimHighSpeedSplashSound() {
+    public @NotNull Sound getSwimHighSpeedSplashSound() {
         return null;
     }
 
@@ -1070,6 +1116,11 @@ public class TempEntity implements LivingEntity {
 
     @NotNull
     public <T extends Projectile> T launchProjectile(@NotNull Class<? extends T> aClass, Vector vector) {
+        return null;
+    }
+
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile, @Nullable Vector velocity, @Nullable Consumer<T> function) {
         return null;
     }
 
@@ -1140,5 +1191,15 @@ public class TempEntity implements LivingEntity {
     @Override
     public @NotNull PersistentDataContainer getPersistentDataContainer() {
         return null;
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState state) {
+
     }
 }
