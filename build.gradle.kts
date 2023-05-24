@@ -15,7 +15,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.md-5.net/content/groups/public/")
-    maven("https://maven.gkpixel.com/repository/anon-public/")
+    maven("https://repo.gkpixel.com/public/")
 }
 
 dependencies {
@@ -32,7 +32,7 @@ dependencies {
     compileOnly("com.promcteam:proskillapiparties:1.1.0.2-SNAPSHOT")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
     compileOnly("org.projectlombok:lombok:1.18.26")
-    compileOnly("dev.robothanzo.gk:GKReplay:1.8.2")
+    compileOnly("dev.robothanzo.gk.replay:GKReplay:1.8.2-SNAPSHOT")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.19:2.138.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
