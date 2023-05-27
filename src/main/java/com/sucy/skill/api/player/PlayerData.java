@@ -1659,14 +1659,12 @@ public class PlayerData {
      * @param player the player
      */
     public void updateWalkSpeed(Player player) {
-
-        float level = (float) (this.scaleStat(AttributeManager.MOVE_SPEED, 0.2f, 0D, Double.MAX_VALUE));
+        float level = (float) (this.scaleStat(AttributeManager.MOVE_SPEED, 0.2f, 0D, 1D));
         try {
             player.setWalkSpeed(level);
         } catch (IllegalArgumentException e) {
             SkillAPI.inst().getLogger().warning("Attempted to set player speed to " + level + " but failed: " + e.getMessage());
         }
-
     }
 
     private double getModifiedMaxHealth(Player player) {
