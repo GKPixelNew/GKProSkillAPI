@@ -28,19 +28,15 @@ package com.sucy.skill.api.event;
 
 import com.sucy.skill.api.skills.Skill;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Event for when true damage is dealt (damage ignoring armor)
  */
-public class TrueDamageEvent extends Event implements Cancellable {
+public class TrueDamageEvent extends DamageEvent {
     private static final HandlerList handlers = new HandlerList();
-    private LivingEntity damager;
-    private LivingEntity target;
-    private Skill skill;
-    private double damage;
+    private final Skill skill;
     private boolean cancelled;
 
     /**
@@ -51,11 +47,8 @@ public class TrueDamageEvent extends Event implements Cancellable {
      * @param damage  the amount of damage dealt
      */
     public TrueDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage) {
+        super(damager, target, damage, true);
         this.skill = skill;
-        this.damager = damager;
-        this.target = target;
-        this.damage = damage;
-        this.cancelled = false;
     }
 
     /**
@@ -72,42 +65,6 @@ public class TrueDamageEvent extends Event implements Cancellable {
      */
     public Skill getSkill() {
         return skill;
-    }
-
-    /**
-     * Retrieves the entity that dealt the damage
-     *
-     * @return entity that dealt the damage
-     */
-    public LivingEntity getDamager() {
-        return damager;
-    }
-
-    /**
-     * Retrieves the entity that received the damage
-     *
-     * @return entity that received the damage
-     */
-    public LivingEntity getTarget() {
-        return target;
-    }
-
-    /**
-     * Retrieves the amount of damage dealt
-     *
-     * @return amount of damage dealt
-     */
-    public double getDamage() {
-        return damage;
-    }
-
-    /**
-     * Sets the amount of damage dealt
-     *
-     * @param amount amount of damage dealt
-     */
-    public void setDamage(double amount) {
-        damage = amount;
     }
 
     /**
@@ -135,6 +92,7 @@ public class TrueDamageEvent extends Event implements Cancellable {
      *
      * @return list of event handlers
      */
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
