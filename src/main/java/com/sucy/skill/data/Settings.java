@@ -47,6 +47,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -825,6 +826,8 @@ public class Settings {
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
         if (attacker.equals(target)) return true;
+        if (isTeammate(attacker, target))
+            return false;
 
         if (attacker instanceof Player player) {
             if (target instanceof Animals && !(target instanceof Tameable)) {
@@ -853,6 +856,16 @@ public class Settings {
         }
 
         return combatProtection.canAttack(attacker, target, cause);
+    }
+
+    public boolean isTeammate(LivingEntity a, LivingEntity b) {
+        if (a instanceof Player playerA && b instanceof Player playerB) {
+            var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+            var teamA = scoreboard.getEntryTeam(playerA.getName());
+            var teamB = scoreboard.getEntryTeam(playerB.getName());
+            return Objects.equals(teamA, teamB);
+        }
+        return false;
     }
 
     /**
