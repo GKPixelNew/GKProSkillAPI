@@ -25,6 +25,11 @@ pipeline {
           }
         }
       }
+      when {
+        expression {
+          return !currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
+        }
+      }
     }
 
     stage('Finalize') {
