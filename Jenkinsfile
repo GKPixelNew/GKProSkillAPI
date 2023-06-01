@@ -21,7 +21,7 @@ pipeline {
       parallel {
         stage('Build GKMagic') {
           steps {
-            build job: 'GKMagic', wait: true
+            build job: 'GKMagic/main', wait: true
           }
         }
       }
