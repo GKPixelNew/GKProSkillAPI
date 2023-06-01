@@ -25,11 +25,7 @@ pipeline {
           }
         }
       }
-      when {
-        expression {
-          return !currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
-        }
-      }
+      when { not { triggeredBy 'BuildUpstreamCause' } }
     }
 
     stage('Finalize') {
@@ -39,11 +35,7 @@ pipeline {
         webhookSend 'https://eoj6oznymw2rd5r.m.pipedream.net'
       }
 
-      when {
-        expression {
-          return !currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')
-        }
-      }
+      when { not { triggeredBy 'BuildUpstreamCause' } }
     }
   }
 }
