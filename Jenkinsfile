@@ -41,7 +41,7 @@ pipeline {
     stage('Trigger Webhooks') {
       steps {
         discordSend description: '**Build:** ' + env.BUILD_ID + '\n**Branch:** ' + env.GIT_BRANCH + '\n**Status:** ' + currentBuild.currentResult + '\n', enableArtifactsList: true, footer: '', image: '', link: env.BUILD_URL, result: currentBuild.currentResult, scmWebUrl: 'https://github.com/GKPixelNew/GKCore', showChangeset: true, thumbnail: '', title: env.JOB_NAME, webhookURL: 'https://canary.discord.com/api/webhooks/995605973999812618/qRPdkJW43SGFa9qsIhjTm3Gh4xj44LrKIm0aGGN7j2_DghX1asiQCOL_o9tlFXVXga0D'
-        webhookSend 'https://eoj6oznymw2rd5r.m.pipedream.net'
+        webhookSend 'http://192.168.0.167:2813/api/v2/jenkins/webhook'
       }
 
       when { not { triggeredBy 'BuildUpstreamCause' } }
