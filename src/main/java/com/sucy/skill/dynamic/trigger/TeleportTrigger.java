@@ -17,7 +17,7 @@ public class TeleportTrigger implements Trigger<PlayerTeleportEvent> {
      */
     @Override
     public String getKey() {
-        return "MOVE";
+        return "TELEPORT";
     }
 
     /**
