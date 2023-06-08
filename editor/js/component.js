@@ -90,6 +90,7 @@ var Condition = {
     ELEVATION: {name: 'Elevation', container: true, construct: ConditionElevation},
     ELSE: {name: 'Else', container: true, construct: ConditionElse},
     ENTITY_TYPE: {name: 'Entity Type', container: true, construct: ConditionEntityType},
+    NOT_ENTITY: {name: 'Not Entity', container: true, construct: ConditionNotEntity},
     FIRE: {name: 'Fire', container: true, construct: ConditionFire},
     FLAG: {name: 'Flag', container: true, construct: ConditionFlag},
     FOOD: {name: 'Food', container: true, construct: ConditionFood},
@@ -158,6 +159,7 @@ var Mechanic = {
     ITEM_PROJECTILE: {name: 'Item Projectile', container: true, construct: MechanicItemProjectile},
     ITEM_REMOVE: {name: 'Item Remove', container: false, construct: MechanicItemRemove},
     LAUNCH: {name: 'Launch', container: false, construct: MechanicLaunch},
+    LAUNCH_TO: {name: 'Launch To', container: false, construct: MechanicLaunchTo},
     LIGHTNING: {name: 'Lightning', container: true, construct: MechanicLightning},
     MANA: {name: 'Mana', container: false, construct: MechanicMana},
     MESSAGE: {name: 'Message', container: false, construct: MechanicMessage},
@@ -321,6 +323,7 @@ Component.prototype.createBuilderHTML = function (target) {
             }
             comp.childrenHidden = !comp.childrenHidden;
         });
+        div.appendChild(vision);
         div.appendChild(vision);
         this.childrenHidden = false;
     }
@@ -1545,6 +1548,14 @@ function ConditionName() {
     );
 }
 
+extend('ConditionNotEntity', 'Component');
+
+function ConditionNotEntity(){
+    this.super('Not Entity', Type.CONDITION, true);
+
+    this.description = 'Applies child components when the target is not an entity.';
+}
+
 extend('ConditionOffhand', 'Component');
 
 function ConditionOffhand() {
@@ -2600,6 +2611,24 @@ function MechanicLaunch() {
     );
 }
 
+extend('MechanicLaunchTo', 'Component');
+
+function MechanicLaunchTo() {
+    this.super('Launch To', Type.MECHANIC, false);
+
+    this.description = 'Launches target to caster or caster to target.'
+
+    this.data.push(new ListValue('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
+        .setTooltip('Determines launches target to caster or launches caster to target')
+    );
+    this.data.push(new AttributeValue('Speed', 'speed', 1, 0)
+        .setTooltip('The speed when player been launching. If higher, player will be launched farther')
+    );
+    this.data.push(new AttributeValue('Height', 'height', 1.0, 0)
+        .setTooltip('The height when launching')
+    )
+}
+
 extend('MechanicLightning', 'Component');
 
 function MechanicLightning() {
@@ -2819,6 +2848,9 @@ function MechanicParticleProjectile() {
     );
     this.data.push(new ListValue('Pierce through blocks', 'pierce-blocks', ['True', 'False'], 'False')
         .setTooltip('Whether this projectile should pierce through blocks')
+    );
+    this.data.push(new ListValue('Ignore hitting player', 'ignore-hitting-player', ['True', 'False'], 'False')
+        .setTooltip('Whether this projectile should ignore hitting player')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
