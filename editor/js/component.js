@@ -46,6 +46,7 @@ var Trigger = {
     LAUNCH: {name: 'Launch', container: true, construct: TriggerLaunch},
     LEFT_CLICK: {name: 'Left Click', container: true, construct: TriggerLeftClick},
     MOVE: {name: 'Move', container: true, construct: TriggerMove},
+    TELEPORT: {name: 'Teleport', container: true, construct: TriggerTeleport},
     PHYSICAL_DAMAGE: {name: 'Physical Damage', container: true, construct: TriggerPhysicalDamage},
     RIGHT_CLICK: {name: 'Right Click', container: true, construct: TriggerRightClick},
     SKILL_DAMAGE: {name: 'Skill Damage', container: true, construct: TriggerSkillDamage},
@@ -838,6 +839,28 @@ function TriggerMove() {
     this.super('Move', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the "api-moved" value to check/use the distance traveled.';
+}
+
+extend('TriggerTeleport', 'Component');
+
+function TriggerTeleport() {
+    this.super('Teleport', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player gets teleported. Use the "api-distance" value to check/use the distance traveled.';
+
+    this.data.push(new ListValue('Type', 'type', ['Any',
+        'Ender Pearl',
+        'Command',
+        'Plugin',
+        'Nether Portal',
+        'End Portal',
+        'Spectate',
+        'End Gateway',
+        'Chorus Fruit',
+        'Dismount',
+        'Unknown'], 'Any')
+        .setTooltip('The type of projectile that should be launched.')
+    );
 }
 
 extend('TriggerPhysicalDamage', 'Component');
