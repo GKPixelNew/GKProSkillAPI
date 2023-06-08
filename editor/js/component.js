@@ -3151,6 +3151,7 @@ function MechanicTrigger() {
         'Launch',
         'Left Click',
         'Move',
+        'Teleport',
         'Physical Damage',
         'Right Click',
         'Skill Damage',
