@@ -53,6 +53,7 @@ public class ComponentRegistry {
         register(new LandTrigger());
         register(new LaunchTrigger());
         register(new MoveTrigger());
+        register(new TeleportTrigger());
         register(new PhysicalDealtTrigger());
         register(new PhysicalTakenTrigger());
         register(new SkillDealtTrigger());
