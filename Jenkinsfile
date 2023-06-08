@@ -45,13 +45,12 @@ pipeline {
 
       when { not { triggeredBy 'BuildUpstreamCause' } }
     }
-
-    post {
-      always {
-        script {
-          if (!currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')) {
-            discordSend description: '**Build:** ' + env.BUILD_ID + '\n**Branch:** ' + env.GIT_BRANCH + '\n**Status:** ' + currentBuild.currentResult + '\n', enableArtifactsList: true, footer: '', image: '', link: env.BUILD_URL, result: currentBuild.currentResult, scmWebUrl: 'https://github.com/GKPixelNew/GKCore', showChangeset: true, thumbnail: '', title: env.JOB_NAME, webhookURL: 'https://canary.discord.com/api/webhooks/995605973999812618/qRPdkJW43SGFa9qsIhjTm3Gh4xj44LrKIm0aGGN7j2_DghX1asiQCOL_o9tlFXVXga0D'
-          }
+  }
+  post {
+    always {
+      script {
+        if (!currentBuild.getBuildCauses('hudson.model.Cause$UpstreamCause')) {
+          discordSend description: '**Build:** ' + env.BUILD_ID + '\n**Branch:** ' + env.GIT_BRANCH + '\n**Status:** ' + currentBuild.currentResult + '\n', enableArtifactsList: true, footer: '', image: '', link: env.BUILD_URL, result: currentBuild.currentResult, scmWebUrl: 'https://github.com/GKPixelNew/GKCore', showChangeset: true, thumbnail: '', title: env.JOB_NAME, webhookURL: 'https://canary.discord.com/api/webhooks/995605973999812618/qRPdkJW43SGFa9qsIhjTm3Gh4xj44LrKIm0aGGN7j2_DghX1asiQCOL_o9tlFXVXga0D'
         }
       }
     }
