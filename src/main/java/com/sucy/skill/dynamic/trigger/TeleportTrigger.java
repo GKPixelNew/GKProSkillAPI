@@ -44,6 +44,12 @@ public class TeleportTrigger implements Trigger<PlayerTeleportEvent> {
     public void setValues(final PlayerTeleportEvent event, final Map<String, Object> data) {
         final double distance = event.getTo().distance(event.getFrom());
         data.put("api-distance", distance);
+        data.put("api-from-x", event.getFrom().getX());
+        data.put("api-from-y", event.getFrom().getY());
+        data.put("api-from-z", event.getFrom().getZ());
+        data.put("api-to-x", event.getTo().getX());
+        data.put("api-to-y", event.getTo().getY());
+        data.put("api-to-z", event.getTo().getZ());
     }
 
     /**
