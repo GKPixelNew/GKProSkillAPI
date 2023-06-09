@@ -849,7 +849,7 @@ extend('TriggerTeleport', 'Component');
 function TriggerTeleport() {
     this.super('Teleport', Type.TRIGGER, true);
 
-    this.description = 'Applies skill effects when a player gets teleported. Use the "api-distance" value to check/use the distance traveled.';
+    this.description = 'Applies skill effects when a player gets teleported. Use the "api-distance" value to check/use the distance traveled. You may also use "api-from-x" "api-from-y" "api-from-z" "api-to-x" "api-to-y" and "api-to-z" to check the coordinates of the source and destination regarding the teleport.';
 
     this.data.push(new ListValue('Type', 'type', ['Any',
         'Ender Pearl',
