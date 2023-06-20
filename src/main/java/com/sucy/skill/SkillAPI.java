@@ -616,10 +616,8 @@ public class SkillAPI extends JavaPlugin {
             throw new IllegalStateException("Cannot enable SkillAPI twice!");
         }
 
-        String coreVersion = NexEngine.getEngine().getDescription().getVersion();
-        boolean minCoreVersionMet = coreVersion.compareTo(DependencyRequirement.MIN_CORE_VERSION) >= 0;
-
-        if (!minCoreVersionMet) {
+        String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
+        if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required ProMCCore version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
             Bukkit.getPluginManager().disablePlugin(this);
