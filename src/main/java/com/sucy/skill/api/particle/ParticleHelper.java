@@ -60,8 +60,6 @@ public final class ParticleHelper {
     public static final String DUST_COLOR = "dust-color";
     public static final String FINAL_DUST_COLOR = "final-dust-color";
     public static final String DUST_SIZE = "dust-size";
-    public static final String ANGLE = "angle";
-    public static final String DELAY = "delay";
     private static final Random random = new Random();
 
     private ParticleHelper() {
@@ -217,16 +215,14 @@ public final class ParticleHelper {
                     settings.getInt(DURABILITY_KEY, 0),
                     Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
                     Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                    (float) settings.getDouble(DUST_SIZE, 1),
-                    settings.getDouble(ANGLE, 0),
-                    settings.getInt(DELAY, 0));
+                    (float) settings.getDouble(DUST_SIZE, 1));
         };
     }
 
-    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor,
-                                    Color toColor, float dustSize, double angle, int delay) {
-        return switch (particle) {
-            case REDSTONE -> new Particle.DustOptions(dustColor, dustSize);
+    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor, Color toColor, float dustSize) {
+        Object object = null;
+        switch (particle) {
+            case REDSTONE -> object = new Particle.DustOptions(dustColor, dustSize);
             case ITEM_CRACK -> {
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
@@ -235,16 +231,12 @@ public final class ParticleHelper {
                     ((Damageable) meta).setDamage(durability);
                 }
                 item.setItemMeta(meta);
-                yield item;
+                object = item;
             }
-            case BLOCK_CRACK, BLOCK_DUST, FALLING_DUST, BLOCK_MARKER -> material.createBlockData();
-            case DUST_COLOR_TRANSITION -> new Particle.DustTransition(dustColor, toColor, dustSize);
-            case VIBRATION ->
-                    new Vibration(new Vibration.Destination.BlockDestination(new Location(null, 0, 0, 0)), 1); //TODO proper destination
-            case SCULK_CHARGE -> (float) Math.toRadians(angle); // the angle the particle displays at in radians
-            case SHRIEK -> delay; // the delay between showing in ticks
-            default -> null;
-        };
+            case BLOCK_CRACK, BLOCK_DUST, FALLING_DUST, BLOCK_MARKER -> object = material.createBlockData();
+            case DUST_COLOR_TRANSITION -> object = new Particle.DustTransition(dustColor, toColor, dustSize);
+        }
+        return object;
     }
 
     public static Set<Player> filterPlayers(Collection<Player> players, Location location, double visibleRadius) {

@@ -61,8 +61,6 @@ public class EffectPlayer {
     public static final String DY = "-particle-dy";
     public static final String DZ = "-particle-dz";
     public static final String SPEED = "-particle-speed";
-    public static final String ANGLE = "-angle";
-    public static final String DELAY = "-delay";
 
     private final Settings settings;
 
@@ -139,9 +137,7 @@ public class EffectPlayer {
                     settings.getInt(keyMod + DURABILITY, 0),
                     Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
                     Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                    (float) settings.getDouble(DUST_SIZE, 1),
-                    settings.getDouble(keyMod + ANGLE, 0),
-                    settings.getInt(keyMod + DELAY, 0)
+                    (float) settings.getDouble(DUST_SIZE, 1)
             );
         } catch (Exception ex) {
             Logger.invalid("Bad material for particle effect - " + settings.getString(keyMod + MAT));
