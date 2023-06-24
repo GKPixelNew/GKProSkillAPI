@@ -162,6 +162,8 @@ let skillsActive = true;
 
 // Set up event listeners when the page loads
 window.onload = function () {
+    document.getElementById('badBrowser').style.display = 'none';
+
     document.getElementById('addTrigger').addEventListener('click', function (e) {
         activeComponent = activeSkill;
         showSkillPage('triggerChooser');
