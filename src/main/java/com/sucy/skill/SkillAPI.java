@@ -570,8 +570,10 @@ public class SkillAPI extends JavaPlugin {
         EffectManager.cleanUp();
         ArmorStandManager.cleanUp();
 
-        mainThread.disable();
-        mainThread = null;
+        if (mainThread != null) {
+            mainThread.disable();
+            mainThread = null;
+        }
 
         if (manaTask != null) {
             manaTask.cancel();
