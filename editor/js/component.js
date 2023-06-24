@@ -103,7 +103,7 @@ var Condition = {
     MONEY: {name: 'Money', container: true, construct: ConditionMoney},
     MOUNTED: {name: 'Mounted', container: true, construct: ConditionMounted},
     MOUNTING: {name: 'Mounting', container: true, construct: ConditionMounting},
-    NAME: {name: 'Name', container: true, construct: ConditionName},
+    MYTHICMOB_TYPE : { name: 'MythicMob Type', container: true, construct: ConditionMythicMobType },NAME: {name: 'Name', container: true, construct: ConditionName},
     OFFHAND: {name: 'Offhand', container: true, construct: ConditionOffhand},
     PARTICLE_PACK: {name: 'Particle Pack', container: true, construct: ConditionParticlePack},
     PERMISSION: {name: 'Permission', container: true, construct: ConditionPermission},
@@ -635,7 +635,7 @@ extend('TriggerBlockBreak', 'Component');
 
 function TriggerBlockBreak() {
     this.super('Block Break', Type.TRIGGER, true);
-    this.description = 'Applies skill effects when a player breaks a block matching  the given details';
+    this.description = 'Applies skill effects when a player breaks a block matching the given details';
 
     this.data.push(new MultiListValue('Material', 'material', getAnyMaterials, ['Any'])
         .setTooltip('The type of block expected to be broken')
@@ -649,7 +649,7 @@ extend('TriggerBlockPlace', 'Component');
 
 function TriggerBlockPlace() {
     this.super('Block Place', Type.TRIGGER, true);
-    this.description = 'Applies skill effects when a player places a block matching  the given details';
+    this.description = 'Applies skill effects when a player places a block matching the given details';
 
     this.data.push(new MultiListValue('Material', 'material', getAnyMaterials, ['Any'])
         .setTooltip('The type of block expected to be placed')
@@ -732,7 +732,7 @@ extend('TriggerFishingBite', 'Component');
 function TriggerFishingBite() {
     this.super('Fishing Bite', Type.TRIGGER, true);
 
-    this.description = 'Applies skill efects when a fish bites the fishing rod of a player';
+    this.description = 'Applies skill effects when a fish bites the fishing rod of a player';
 }
 
 extend('TriggerFishingFail', 'Component');
@@ -813,13 +813,7 @@ function TriggerLaunch() {
 
     this.description = 'Applies skill effects when a player launches a projectile.';
 
-    this.data.push(new ListValue('Type', 'type', ['Any',
-        'Arrow',
-        'Egg',
-        'Ender Pearl',
-        'Fireball',
-        'Fishing Hook',
-        'Snowball'], 'Any')
+    this.data.push(new ListValue('Type', 'type', getAnyProjectiles(), 'Any')
         .setTooltip('The type of projectile that should be launched.')
     );
 }
@@ -863,6 +857,24 @@ function TriggerTeleport() {
         'Dismount',
         'Unknown'], 'Any')
         .setTooltip('The type of projectile that should be launched.')
+    );
+}
+
+extend('TriggerSkillCast', 'Component');
+
+function TriggerSkillCast() {
+    this.super('Skill Cast', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player casts a skill.';
+
+    this.data.push(new ListValue('Cancel Cast', 'cancel', ['True', 'False'], 'False')
+        .setTooltip('True cancels the skill cast. False allows the skill cast'));
+
+    this.data.push(new StringListValue('Classes', 'allowed-classes', [])
+        .setTooltip('The list of classes which will trigger this effect. Leave blank to allow all to trigger. Use \'!xxx\' to exclude.')
+    );
+    this.data.push(new StringListValue('Skills', 'allowed-skills', [])
+        .setTooltip('The list of skills which will trigger this effect. Leave blank to allow all to trigger. Use \'!xxx\' to exclude.')
     );
 }
 
@@ -1130,11 +1142,11 @@ function ConditionAltitude() {
 
     this.description = "Applies child components whenever the player is on a certain height-level";
 
-    this.data.push(new IntValue('Min', 'min', 0)
+    this.data.push(new AttributeValue('Min', 'min', 0, 0)
         .setTooltip('The minimum height a player has to be on')
     );
 
-    this.data.push(new IntValue('Max', 'max', 0)
+    this.data.push(new AttributeValue('Max', 'max', 0, 0)
         .setTooltip('The maximum height a player can be on')
     );
 
@@ -1530,6 +1542,18 @@ function ConditionMounting() {
 
 }
 
+extend('ConditionMythicMobType', 'Component');
+
+function ConditionMythicMobType() {
+    this.super('MythicMob Type', Type.CONDITION, true);
+
+    this.description = 'Applies child elements if the target corresponds to one of the entered MythicMob types, or is not a MythicMob if left empty'
+
+    this.data.push(new StringListValue('MythicMob Types', 'types', [])
+        .setTooltip('The MythicMob types to target')
+    );
+}
+
 extend('ConditionName', 'Component');
 
 function ConditionName() {
@@ -1881,7 +1905,7 @@ function MechanicBlock() {
     this.data.push(new ListValue('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
         .setTooltip('The shape of the region to change the blocks for')
     );
-    this.data.push(new ListValue('Type', 'type', ['Air', 'Any', 'Solid'], 'Solid')
+    this.data.push(new ListValue('Type', 'type', ['Air', 'Any', 'Solid', ...getMaterials()], 'Solid')
         .setTooltip('The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment')
     );
     this.data.push(new ListValue('Block', 'block', getMaterials, 'Ice')
@@ -1894,6 +1918,9 @@ function MechanicBlock() {
     this.data.push(new MultiListValue('Blocks', 'blocks', getMaterials, [])
         .setTooltip('The list of blocks to randomly choose from when randomizing')
         .requireValue('randomize', ['True'])
+    );
+    this.data.push(new ListValue('Reset Yaw', 'reset-yaw', ['True', 'False'], 'False')
+        .setTooltip('Whether the target\'s yaw should be reset, effectively making the offsets cardinally aligned.')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 5, 0)
         .setTooltip('How long the blocks should be replaced for')
@@ -2013,16 +2040,15 @@ function MechanicCleanse() {
 
     this.description = 'Cleanses negative potion or status effects from the targets.';
 
-    this.data.push(new ListValue('Potion', 'potion', getBadPotions, 'All')
+    this.data.push(new MultiListValue('Potion', 'potion', getBadPotions)
         .setTooltip('The type of potion effect to remove from the target')
     );
-    this.data.push(new ListValue('Status', 'status', ['None',
-        'All',
+    this.data.push(new MultiListValue('Status', 'status', ['All',
         'Curse',
         'Disarm',
         'Root',
         'Silence',
-        'Stun'], 'All')
+        'Stun'])
         .setTooltip('The status to remove from the target')
     );
     this.data.push(new ListValue('Extinguish Target', 'extinguish', ['True', 'False'], 'True')
@@ -2086,6 +2112,10 @@ function MechanicDamage() {
     this.data.push(new ListValue('Apply Knockback', 'knockback', ['True', 'False'], 'True')
         .setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage')
     );
+    this.data.push(new ListValue('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
+        .setTooltip('Damage Cause considered by the server. This will have influence over the death message and ProRPGItems\' defenses')
+        .requireValue('true', ['False'])
+    );
 }
 
 extend('MechanicDamageBuff', 'Component');
@@ -2130,6 +2160,13 @@ function MechanicDamageLore() {
     );
     this.data.push(new StringValue('Classifier', 'classifier', 'default')
         .setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage')
+    );
+    this.data.push(new ListValue('Apply Knockback', 'knockback', ['True', 'False'], 'True')
+        .setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage')
+    );
+    this.data.push(new ListValue('Damage Cause', 'cause', ['Contact', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Custom', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Entity Attack')
+        .setTooltip('Damage Cause considered by the server. This will have influence over the death message and ProRPGItems\' defenses')
+        .requireValue('true', ['False'])
     );
 }
 
@@ -2180,46 +2217,7 @@ function MechanicDisguise() {
         .setTooltip('The type of disguise to use, as defined by the LibsDisguise plugin.')
     );
 
-    this.data.push(new ListValue('Mob', 'mob', ['Bat',
-        'Axolotl',
-        'Blaze',
-        'Cave Spider',
-        'Chicken',
-        'Cow',
-        'Creeper',
-        'Donkey',
-        'Elder Guardian',
-        'Ender Dragon',
-        'Enderman',
-        'Endermite',
-        'Ghast',
-        'Giant',
-        'Guardian',
-        'Horse',
-        'Iron Golem',
-        'Magma Cube',
-        'Mule',
-        'Mushroom Cow',
-        'Ocelot',
-        'Pig',
-        'Pig Zombie',
-        'Rabbit',
-        'Sheep',
-        'Shulker',
-        'Silverfish',
-        'Skeleton',
-        'Slime',
-        'Snowman',
-        'Spider',
-        'Squid',
-        'Undead Horse',
-        'Villager',
-        'Witch',
-        'Wither',
-        'Wither Skeleton',
-        'Wolf',
-        'Zombie',
-        'Zombie Villager'], 'Zombie')
+    this.data.push(new ListValue('Mob', 'mob', getMobDisguises(), 'Zombie')
         .requireValue('type', ['Mob'])
         .setTooltip('The type of mob to disguise the target as')
     );
@@ -2238,75 +2236,42 @@ function MechanicDisguise() {
         .setTooltip('Whether to change the entity\'s name to the player after disguising them')
     );
 
-    this.data.push(new ListValue('Misc', 'misc', ['Area Effect Cloud',
-        'Armor Stand',
-        'Arrow',
-        'Boat',
-        'Dragon Fireball',
-        'Dropped Item',
-        'Egg',
-        'Ender Crystal',
-        'Ender Pearl',
-        'Ender Signal',
-        'Experience Orb',
-        'Falling Block',
-        'Fireball',
-        'Firework',
-        'Fishing Hook',
-        'Item Frame',
-        'Leash Hitch',
-        'Minecart',
-        'Minecart Chest',
-        'Minecart Command',
-        'Minecart Furnace',
-        'Minecart Hopper',
-        'Minecart Mob Spawner',
-        'Minecart TNT',
-        'Painting',
-        'Primed TNT',
-        'Shulker Bullet',
-        'Snowball',
-        'Spectral Arrow',
-        'Splash Potion',
-        'Tipped Arrow',
-        'Thrown EXP Bottle',
-        'Wither Skull'], 'Painting')
+    this.data.push(new ListValue('Misc', 'misc', getMiscDisguises(), 'Painting')
         .requireValue('type', ['Misc'])
         .setTooltip('The object to disguise the target as')
     );
     this.data.push(new IntValue('Data', 'data', 0)
         // .requireValue('type', [ 'Misc' ])
-        .requireValue('misc', ['Area Effect Cloud',
-            'Armor Stand',
+        .requireValue('misc', ['Area effect cloud',
+            'Armor stand',
             'Arrow',
             'Boat',
-            'Dragon Fireball',
+            'Dragon fireball',
             'Egg',
-            'Ender Crystal',
-            'Ender Pearl',
-            'Ender Signal',
-            'Experience Orb',
+            'Ender crystal',
+            'Ender pearl',
+            'Ender signal',
+            'Experience orb',
             'Fireball',
             'Firework',
-            'Fishing Hook',
-            'Item Frame',
-            'Leash Hitch',
+            'Fishing hook',
+            'Item frame',
+            'Leash hitch',
             'Minecart',
-            'Minecart Chest',
-            'Minecart Command',
-            'Minecart Furnace',
-            'Minecart Hopper',
-            'Minecart Mob Spawner',
-            'Minecart TNT',
+            'Minecart chest',
+            'Minecart command',
+            'Minecart furnace',
+            'Minecart hopper',
+            'Minecart mob spawner',
+            'Minecart tnt',
             'Painting',
-            'Primed TNT',
-            'Shulker Bullet',
+            'Primed tnt',
+            'Shulker bullet',
             'Snowball',
-            'Spectral Arrow',
-            'Splash Potion',
-            'Tipped Arrow',
-            'Thrown EXP Bottle',
-            'Wither Skull'])
+            'Spectral arrow',
+            'Splash potion',
+            'Thrown exp bottle',
+            'Wither skull'])
         .setTooltip('Data value to use for the disguise type. What it does depends on the disguise')
     );
 
@@ -2857,7 +2822,6 @@ function MechanicParticleProjectile() {
     );
 
     addProjectileOptions(this);
-
     addParticleOptions(this);
 
     this.data.push(new DoubleValue('Frequency', 'frequency', 0.05)
@@ -2882,7 +2846,7 @@ function MechanicPassive() {
 extend('MechanicPermission', 'Component');
 
 function MechanicPermission() {
-    this.super('Permission', Type.MECHANIC, true);
+    this.super('Permission', Type.MECHANIC, false);
 
     this.description = 'Grants each player target a permission for a limited duration. This mechanic requires Vault with an accompanying permissions plugin in order to work.';
 
@@ -2922,8 +2886,8 @@ function MechanicPotionProjectile() {
 
     this.description = 'Drops a splash potion from each target that does not apply potion effects by default. This will apply child elements when the potion lands. The targets supplied will be everything hit by the potion. If nothing is hit by the potion, the target will be the location it landed.';
 
-    this.data.push(new ListValue('Type', 'type', getPotionTypes, 'Fire Resistance')
-        .setTooltip('The type of the potion to use for the visuals')
+    this.data.push(new StringValue('Color', 'color', '#ff0000')
+        .setTooltip('The hex color code to use for the potion')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of entities to hit')
@@ -2940,12 +2904,7 @@ function MechanicProjectile() {
 
     this.description = 'Launches a projectile that applies child components on hit. The target supplied will be the struck target.';
 
-    this.data.push(new ListValue('Projectile', 'projectile', ['Arrow',
-        'Egg',
-        'Snowball',
-        'Fireball',
-        'Large Fireball',
-        'Small fireball'], 'Arrow')
+    this.data.push(new ListValue('Projectile', 'projectile', getProjectiles(), 'Arrow')
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', ['True', 'False'], 'False')
@@ -2956,6 +2915,7 @@ function MechanicProjectile() {
     );
 
     addProjectileOptions(this);
+    addParticleOptions(this);
     addEffectOptions(this, true);
 }
 
@@ -2966,10 +2926,10 @@ function MechanicPurge() {
 
     this.description = 'Purges the target of positive potion effects or statuses';
 
-    this.data.push(new ListValue('Potion', 'potion', getGoodPotions, 'All')
+    this.data.push(new MultiListValue('Potion', 'potion', getGoodPotions)
         .setTooltip('The potion effect to remove from the target, if any')
     );
-    this.data.push(new ListValue('Status', 'status', ['None', 'All', 'Absorb', 'Invincible'], 'All')
+    this.data.push(new MultiListValue('Status', 'status', ['All', 'Absorb', 'Invincible'])
         .setTooltip('The status to remove from the target, if any')
     );
 }
@@ -3054,27 +3014,30 @@ function MechanicStat() {
 
     this.description = 'Gives a player bonus stat temporarily.';
 
-    this.data.push(new ListValue('Stat', 'key', ['health',
-        'mana',
-        'mana-regen',
-        'physical-damage',
-        'melee-damage',
-        'projectile-damage',
-        'physical-damage',
-        'melee-defense',
-        'projectile-defense',
-        'skill-damage',
-        'skill-defense',
-        'move-speed',
-        'attack-speed',
-        'armor',
-        'luck',
-        'armor-toughness',
-        'exp',
-        'hunger',
-        'hunger-heal',
-        'cooldown',
-        'knockback-resist'], 'health')
+    //this.data.push(new ListValue('Stat', 'key', ['health',
+    //    'mana',
+    //    'mana-regen',
+    //    'physical-damage',
+    //    'melee-damage',
+    //    'projectile-damage',
+    //    'physical-damage',
+    //    'melee-defense',
+    //    'projectile-defense',
+    //    'skill-damage',
+    //    'skill-defense',
+    //    'move-speed',
+    //    'attack-speed',
+    //    'armor',
+    //    'luck',
+    //    'armor-toughness',
+    //    'exp',
+    //    'hunger',
+    //    'hunger-heal',
+    //    'cooldown',
+    //                                              'knockback-resist'], 'health')
+    //     .setTooltip('The name of the stat to add to')
+    // );
+    this.data.push(new StringValue('Stat', 'key', 'health')
         .setTooltip('The name of the stat to add to')
     );
     this.data.push(new ListValue('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
@@ -3250,13 +3213,7 @@ function MechanicTrigger() {
     );
 
     // LAUNCH
-    this.data.push(new ListValue('Type', 'type', ['Any',
-        'Arrow',
-        'Egg',
-        'Ender Pearl',
-        'Fireball',
-        'Fishing Hook',
-        'Snowball'], 'Any')
+    this.data.push(new ListValue('Type', 'type', getAnyProjectiles(), 'Any')
         .requireValue('trigger', ['Launch'])
         .setTooltip('The type of projectile that should be launched.')
     );
@@ -3868,7 +3825,9 @@ function addParticleOptions(component) {
     component.data.push(new IntValue('Effect Data', 'data', 0).requireValue('particle', ['Smoke',
         'Ender Signal',
         'Mobspawner Flames',
-        'Potion Break'])
+        'Potion Break',
+            'Sculk charge'
+        ])
         .setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break')
     );
     component.data.push(new IntValue('Visible Radius', 'visible-radius', 25).setTooltip('How far away players can see the particles from in blocks')

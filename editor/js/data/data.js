@@ -61,16 +61,32 @@ function getAnyPotion() {
 
 function getGoodPotions() {
     const list = DATA.POTIONS.filter(type => GOOD_POTIONS.includes(type));
-    return [ 'All', 'None', ...list ];
+    return [ 'All', ...list ];
 }
 
 function getBadPotions() {
     const list = DATA.POTIONS.filter(type => BAD_POTIONS.includes(type));
-    return [ 'All', 'None', ...list ];
+    return [ 'All', ...list ];
 }
 
 function getDyes() {
     return DYES;
+}
+
+function getProjectiles() {
+    return DATA.PROJECTILES;
+}
+
+function getAnyProjectiles() {
+    return [ 'Any', ...DATA.PROJECTILES ];
+}
+
+function getMobDisguises() {
+    return DATA.MOB_DISGUISES;
+}
+
+function getMiscDisguises() {
+    return DATA.MISC_DISGUISES;
 }
 
 const GOOD_POTIONS = [
