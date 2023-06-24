@@ -3456,8 +3456,8 @@ var DATA_20 = {
     ]
 };
 
-var keys = Object.keys(DATA_1_20);
+var keys = Object.keys(DATA_20);
 for (var i = 0; i < keys.length; i++) {
-    DATA_1_20[keys[i]].sort();
+    DATA_20[keys[i]].sort();
 }
-DATA_1_20.ANY_POTION = DATA_1_20.POTIONS.slice().splice(0, 0, 'Any');
+DATA_20.ANY_POTION = DATA_20.POTIONS.slice().splice(0, 0, 'Any');
