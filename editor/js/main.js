@@ -162,15 +162,6 @@ let skillsActive = true;
 
 // Set up event listeners when the page loads
 window.onload = function () {
-    const isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    const isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
-    const isChrome = !!window.chrome && !isOpera;              // Chrome 1+
-    const badBrowser = !isOpera && !isFirefox && !isChrome;
-    document.getElementById('badBrowser').style.display = badBrowser ? 'block' : 'none';
-    if (badBrowser) {
-        return;
-    }
-
     document.getElementById('addTrigger').addEventListener('click', function (e) {
         activeComponent = activeSkill;
         showSkillPage('triggerChooser');
