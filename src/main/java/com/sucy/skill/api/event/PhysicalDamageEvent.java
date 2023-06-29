@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.event;
 
+import lombok.ToString;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * An event for when an entity is damaged by another entity without the
  * use of skills such as melee attacks or projectiles.
  */
+@ToString
 public class PhysicalDamageEvent extends DamageEvent {
     private static final HandlerList handlers = new HandlerList();
     private final boolean projectile;
