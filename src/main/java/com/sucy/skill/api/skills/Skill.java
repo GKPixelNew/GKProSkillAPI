@@ -728,7 +728,7 @@ public abstract class Skill implements IconHolder {
      * @param knockback      whether the damage should apply knockback
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
-        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.CUSTOM);
     }
 
     /**
