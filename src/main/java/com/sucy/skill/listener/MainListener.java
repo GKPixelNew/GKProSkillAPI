@@ -390,7 +390,6 @@ public class MainListener extends SkillAPIListener {
         Bukkit.getPluginManager().callEvent(e);
         event.setDamage(e.getDamage());
         event.setCancelled(e.isCancelled());
-        SkillAPI.inst().getLogger().info("Physical damage: " + event.getDamage() + " caused by " + event.getCause());
     }
 
     /**
