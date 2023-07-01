@@ -399,8 +399,7 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCombat(EntityDamageByEntityEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || !(event.getEntity() instanceof LivingEntity)) return;
+        if (!(event.getEntity() instanceof LivingEntity)) return;
 
         if (event.getEntity() instanceof Player) {
             Combat.applyCombat((Player) event.getEntity());

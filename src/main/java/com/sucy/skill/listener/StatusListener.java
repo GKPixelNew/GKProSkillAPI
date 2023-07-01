@@ -152,9 +152,6 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
-            return;
-
         LivingEntity damager = ListenerUtil.getDamager(event);
         check(event, damager, damager, true, StatusFlag.STUN, StatusFlag.DISARM);
     }
@@ -171,8 +168,7 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || !(event.getEntity() instanceof LivingEntity livingEntity))
+        if (!(event.getEntity() instanceof LivingEntity livingEntity))
             return;
 
         checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
