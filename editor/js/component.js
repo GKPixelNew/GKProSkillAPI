@@ -3116,6 +3116,9 @@ function MechanicTranslatedMessage() {
     this.data.push(new StringValue('Message', 'message', 'text')
         .setTooltip('The message\'s key to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
     );
+    this.data.push(new StringValue('Subtitle Message', 'subtitle_message', 'text')
+        .setTooltip('The subtitle message. Leave it empty if there\'s no subtitle you wanna show')
+        .requireValue('type', ['Title']));
     this.data.push(new ListValue('Dynamic Translations', 'dyntra', ['True', 'False'], 'True')
         .setTooltip('Whether this message uses GKMagic\'s Dynamic Translations. If false, the message\'s key must be in magic.ini of GKMagic')
     );
