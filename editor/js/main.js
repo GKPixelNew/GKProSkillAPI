@@ -517,15 +517,18 @@ function loadSection(data) {
 
 let CONFIGURED_AXIOS = null;
 
-userManager.getUser().then(user => {
-    CONFIGURED_AXIOS = axios.create({
-        // baseURL: 'http://localhost:81/v1/',
-        baseURL: 'https://cdn.gkpixel.com/v1/',
-        headers: {
-            'Authorization': 'Bearer ' + user.access_token,
-        }
-    });
-})
+function refreshAxios() {
+    userManager.getUser().then(user => {
+        CONFIGURED_AXIOS = axios.create({
+            // baseURL: 'http://localhost:81/v1/',
+            baseURL: 'https://cdn.gkpixel.com/v1/',
+            headers: {
+                'Authorization': 'Bearer ' + user.access_token,
+            }
+        });
+    })
+    console.log('Axios refreshed')
+}
 
 function getAxios() {
     return CONFIGURED_AXIOS;

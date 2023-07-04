@@ -14,16 +14,13 @@ const settings = {
 
 oidc.Log.setLogger(console);
 const userManager = new oidc.UserManager(settings);
+userManager.events().addUserLoaded(()=>refreshAxios())
 
 function login() {
     userManager.signinRedirect(settings).then().catch(err => {
         console.log(err);
     });
 }
-
-userManager.getUser().then(user => {
-    console.log("User: ", user);
-});
 
 function processLoginResponse() {
     userManager.signinRedirectCallback().then(() => {
