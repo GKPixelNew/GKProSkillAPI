@@ -14,7 +14,7 @@ const settings = {
 
 oidc.Log.setLogger(console);
 const userManager = new oidc.UserManager(settings);
-userManager.events().addUserLoaded(()=>refreshAxios())
+userManager.events.addUserLoaded(()=>refreshAxios())
 
 function login() {
     userManager.signinRedirect(settings).then().catch(err => {
