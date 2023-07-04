@@ -256,12 +256,7 @@ function getSkill(name) {
 
 function deleteSkill() {
     function deleteRemote() {
-        const apiKey = getApiKey();
-        axios.delete('https://cdn.gkpixel.com/v1/skill/' + activeSkill.data[0].value, {
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            }
-        })
+        getAxios().delete('skill/' + activeSkill.data[0].value)
             .then(response => {
                 if (response.data.success) {
                     deleteLocal()
@@ -304,18 +299,9 @@ function deleteSkill() {
 }
 
 function importSkill(skillId, callback, failureCallback) {
-    const apiKey = getApiKey();
-    axios.get('https://cdn.gkpixel.com/v1/skill/' + skillId, {
-        headers: {
-            'Authorization': 'Bearer ' + apiKey
-        }
-    }).then(response => {
+    getAxios().get('skill/' + skillId).then(response => {
         if (response.data.success) {
-            axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.skill.fileId, {
-                headers: {
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            }).then(response => {
+            getAxios().get('download/' + response.data.skill.fileId).then(response => {
                 loadSkillText(response.data, true);
                 notifySuccess('匯入成功')
                 if (callback) {

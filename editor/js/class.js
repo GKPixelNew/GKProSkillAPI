@@ -112,12 +112,7 @@ function saveClass() {
 
 function deleteClass() {
     function deleteRemote() {
-        const apiKey = getApiKey();
-        axios.delete('https://cdn.gkpixel.com/v1/class/' + activeClass.data[0].value, {
-            headers: {
-                'Authorization': 'Bearer ' + apiKey
-            }
-        })
+        getAxios().delete('class/' + activeClass.data[0].value)
             .then(response => {
                 if (response.data.success) {
                     deleteLocal()
@@ -274,19 +269,10 @@ function getClass(name) {
 }
 
 function importClass(classId) {
-    const apiKey = getApiKey();
     const list = document.getElementById('classList');
-    axios.get('https://cdn.gkpixel.com/v1/class/' + classId, {
-        headers: {
-            'Authorization': 'Bearer ' + apiKey
-        }
-    }).then(response => {
+    getAxios().get('class/' + classId).then(response => {
         if (response.data.success) {
-            axios.get('https://cdn.gkpixel.com/v1/download/' + response.data.class.fileId, {
-                headers: {
-                    'Authorization': 'Bearer ' + apiKey
-                }
-            }).then(response => {
+            getAxios().get('download/' + response.data.class.fileId).then(response => {
                 loadClassText(response.data);
                 list.selectedIndex = list.length - 3;
                 activeClass = classes[Math.max(0, Math.min(classes.length - 1, parseInt(list.length - 3)))];
