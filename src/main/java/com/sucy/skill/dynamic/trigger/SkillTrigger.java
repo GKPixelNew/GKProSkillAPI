@@ -29,7 +29,7 @@ public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {
         final double min = settings.getDouble("dmg-min");
         final double max = settings.getDouble("dmg-max");
         final List<String> types = settings.getStringList("category");
-        final boolean empty = types.isEmpty() || types.get(0).isBlank();
+        final boolean empty = types.isEmpty() || types.get(0).isBlank() || types.get(0).equals("default");
         if (!empty) SkillAPI.inst().getLogger().warning("Skill damage trigger category is not empty, values: " + types);
         return event.getDamage() >= min && event.getDamage() <= max &&
                 (empty || types.contains(event.getClassification()));
