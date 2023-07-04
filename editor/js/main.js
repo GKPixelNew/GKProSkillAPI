@@ -519,6 +519,7 @@ let CONFIGURED_AXIOS = null;
 
 userManager.getUser().then(user => {
     CONFIGURED_AXIOS = axios.create({
+        // baseURL: 'http://localhost:81/v1/',
         baseURL: 'https://cdn.gkpixel.com/v1/',
         headers: {
             'Authorization': 'Bearer ' + user.access_token,
