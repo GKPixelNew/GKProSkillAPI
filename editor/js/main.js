@@ -530,6 +530,8 @@ function refreshAxios() {
     console.log('Axios refreshed')
 }
 
+refreshAxios();
+
 function getAxios() {
     return CONFIGURED_AXIOS;
 }
