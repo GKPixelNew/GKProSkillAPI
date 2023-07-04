@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.SkillDamageEvent;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -28,7 +29,8 @@ public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {
         final double min = settings.getDouble("dmg-min");
         final double max = settings.getDouble("dmg-max");
         final List<String> types = settings.getStringList("category");
-        final boolean empty = types.isEmpty() || types.get(0).isEmpty();
+        final boolean empty = types.isEmpty() || types.get(0).isBlank();
+        if (!empty) SkillAPI.inst().getLogger().warning("Skill damage trigger category is not empty, values: " + types);
         return event.getDamage() >= min && event.getDamage() <= max &&
                 (empty || types.contains(event.getClassification()));
     }
