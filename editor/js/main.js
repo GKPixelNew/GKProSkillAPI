@@ -515,13 +515,25 @@ function loadSection(data) {
     }
 }
 
-function getApiKey() {
-    const token = window.localStorage.getItem("token");
-    if (token === null) {
-        window.location.href = "https://accounts.robothanzo.dev/v1/discord/login?redirect=" + window.location.href;
-    } else {
-        return JSON.parse(atob(token.split('.')[1])).account.apiKey;
-    }
+let CONFIGURED_AXIOS = null;
+
+function refreshAxios() {
+    userManager.getUser().then(user => {
+        CONFIGURED_AXIOS = axios.create({
+            // baseURL: 'http://localhost:81/v1/',
+            baseURL: 'https://cdn.gkpixel.com/v1/',
+            headers: {
+                'Authorization': 'Bearer ' + user.access_token,
+            }
+        });
+    })
+    console.log('Axios refreshed')
+}
+
+refreshAxios();
+
+function getAxios() {
+    return CONFIGURED_AXIOS;
 }
 
 function notifySuccess(message) {

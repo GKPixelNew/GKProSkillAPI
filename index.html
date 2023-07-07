@@ -6,10 +6,12 @@
           type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.prod.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/oidc-client-ts@2.2.4/dist/browser/oidc-client-ts.min.js"></script>
     <meta charset="UTF-8"/>
     <title>SkillAPI - Dynamic Editor</title>
 
     <!-- other scripts are loaded in main.js -->
+    <script src="editor/js/oauth.js"></script>
     <script src="editor/js/loader.js"></script>
     <script src="editor/js/main.js"></script>
     <link rel="stylesheet" href="editor/builderStyle.css"/>
@@ -47,20 +49,19 @@
         </select>
     </div>
     <div id="io" class="q-pt-sm">
-        <q-avatar v-if="loggedIn&&username!==''" class="q-mt-sm q-mr-sm"><img :src="avatar" alt="Avatar"></q-avatar>
-        <span>{{ username }}</span>
+        <q-avatar v-if="loggedIn&&name!==''" class="q-mt-sm q-mr-sm"><img :src="avatar" alt="Avatar"></q-avatar>
+        <span>{{ name }}</span>
         <q-btn v-if="!loggedIn"
                color="primary"
                style="width: calc(100% - 20px)"
-               onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/login?redirect=' + window.location.href">
+               @click="wrappedLogin()">
             登入
         </q-btn>
         <q-btn v-if="loggedIn"
                class="q-mt-sm"
                color="negative"
                style="width: calc(100% - 20px)"
-               onclick="window.location.href = 'https\://accounts.robothanzo.dev/v1/discord/logout?redirect=' + window.location.href;
-                     window.localStorage.removeItem('token')">登出
+               @click="wrappedLogout()">登出
         </q-btn>
     </div>
     <div id="small">
@@ -176,7 +177,7 @@
         data() {
             return {
                 avatar: "",
-                username: "",
+                name: "",
                 loggedIn: false,
                 import: {
                     type: '',
@@ -192,36 +193,23 @@
         },
         created() {
             Quasar.Dark.set(true);
-            const url = new URL(window.location.href);
-            let token = url.searchParams.get("token");
-            if (token !== null) {
-                url.searchParams.delete("token");
-                window.history.replaceState({}, "", url.href);
-                window.localStorage.setItem("token", token);
-            }
-            token = window.localStorage.getItem("token");
-            if (token !== null) {
-                const account = JSON.parse(atob(token.split('.')[1]));
-                if (account.exp * 1000 <= new Date().getTime()) {
-                    console.log("Token expired");
-                    window.localStorage.removeItem("token");
-                } else {
+            userManager.getUser().then(user => {
+                if (user) {
+                    this.avatar = user.profile.avatar;
+                    this.name = user.profile.name;
                     this.loggedIn = true;
-                    console.log("Logged in");
-                    axios.get("https://accounts.robothanzo.dev/v1/discord/user/" + account.account.discordId, {
-                        headers: {
-                            "Authorization": "Bearer " + getApiKey()
-                        }
-                    }).then(response => {
-                        if (response.data.success) {
-                            this.username = response.data.username;
-                            this.avatar = response.data.avatar;
-                        }
-                    });
                 }
-            }
+            });
         },
         methods: {
+            wrappedLogin() {
+                this.$q.loading.show({message: '正在與 GKPixel IDMS 連線...'});
+                login();
+            },
+            wrappedLogout() {
+                this.$q.loading.show({message: '正在與 GKPixel IDMS 連線...'});
+                logout();
+            },
             uploadSkill() {
                 if (activeComponent) {
                     activeComponent.update();
@@ -230,7 +218,6 @@
                     } catch (e) {}
                 }
                 showSkillPage('builder');
-                const apiKey = getApiKey();
                 let formData = new FormData();
                 formData.append('details', new Blob([JSON.stringify({skillId: activeSkill.data[0].value})], {
                     type: 'application/json'
@@ -238,11 +225,7 @@
                 formData.append('file', new File([new Blob([activeSkill.getSaveString()], {
                     type: 'application/x-yaml'
                 })], activeSkill.data[0].value + ".yml"));
-                axios.post('https://cdn.gkpixel.com/v1/skill', formData, {
-                    headers: {
-                        'Authorization': 'Bearer ' + apiKey,
-                    }
-                }).then(function (response) {
+                getAxios().post('skill', formData).then(function (response) {
                     if (response.data.success) {
                         notifySuccess('上傳成功')
                     } else {
@@ -253,7 +236,6 @@
                 });
             },
             uploadClass() {
-                const apiKey = getApiKey();
                 let formData = new FormData();
                 formData.append('details', new Blob([JSON.stringify({classId: activeClass.data[0].value})], {
                     type: 'application/json'
@@ -261,11 +243,7 @@
                 formData.append('file', new File([new Blob([activeClass.getSaveString()], {
                     type: 'application/x-yaml'
                 })], activeClass.data[0].value + ".yml"));
-                axios.post('https://cdn.gkpixel.com/v1/class', formData, {
-                    headers: {
-                        'Authorization': 'Bearer ' + apiKey,
-                    }
-                }).then(function (response) {
+                getAxios().post('class', formData).then(function (response) {
                     if (response.data.success) {
                         notifySuccess('上傳成功')
                     } else {
@@ -297,11 +275,7 @@
                     loadingChoices: true
                 };
                 this.$refs.importDialog.show();
-                axios.get("https://cdn.gkpixel.com/v1/skill", {
-                    headers: {
-                        'Authorization': 'Bearer ' + getApiKey(),
-                    }
-                }).then(response => {
+                getAxios().get("skill").then(response => {
                     if (response.data.success) {
                         this.import.choices = response.data.skills.map(s => {
                             return s.skillId
@@ -322,11 +296,7 @@
                     loadingChoices: true
                 };
                 this.$refs.importDialog.show();
-                axios.get("https://cdn.gkpixel.com/v1/class", {
-                    headers: {
-                        'Authorization': 'Bearer ' + getApiKey(),
-                    }
-                }).then(response => {
+                getAxios().get("class").then(response => {
                     if (response.data.success) {
                         this.import.choices = response.data.classes.map(s => {
                             return s.classId
