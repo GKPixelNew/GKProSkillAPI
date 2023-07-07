@@ -50,6 +50,7 @@ var Trigger = {
     PHYSICAL_DAMAGE: {name: 'Physical Damage', container: true, construct: TriggerPhysicalDamage},
     RIGHT_CLICK: {name: 'Right Click', container: true, construct: TriggerRightClick},
     SKILL_DAMAGE: {name: 'Skill Damage', container: true, construct: TriggerSkillDamage},
+    TOOK_LAST_DAMAGE: {nae: 'Took Last Damage', container: true, construct: TriggerTookLastDamage},
     TOOK_PHYSICAL_DAMAGE: {name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage},
     TOOK_SKILL_DAMAGE: {name: 'Took Skill Damage', container: true, construct: TriggerTookSkillDamage}
 };
@@ -972,6 +973,25 @@ function TriggerTookSkillDamage() {
     this.data.push(new StringListValue('Category', 'category', ['default'])
         .setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage.')
     );
+}
+
+extend('TriggerTookLastDamage', 'Component')
+function TriggerTookLastDamage() {
+    this.super('Took Last Damage', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player takes last damage, it is recommended that using Death Trigger instead if you don\'t have to cancel the damage'
+
+    this.data.push(new ListValue('Target Caster', 'target', ['True', 'False'], 'True')
+        .setTooltip('True makes children target the caster. False makes children target the attacking entity')
+    );
+    this.data.push(new DoubleValue("Min Damage", "dmg-min", 0)
+        .setTooltip('The minimum damage that needs to be dealt')
+    );
+    this.data.push(new DoubleValue("Max Damage", "dmg-max", 999)
+        .setTooltip('The maximum damage that needs to be dealt')
+    );
+    this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
+        .setTooltip("Whether cancelling the damage or not"));
 }
 
 // -- Target constructors ------------------------------------------------------ //
