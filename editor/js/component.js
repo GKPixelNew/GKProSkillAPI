@@ -933,6 +933,25 @@ function TriggerSkillDamage() {
     );
 }
 
+extend('TriggerTookLastDamage', 'Component');
+function TriggerTookLastDamage() {
+    this.super('Took Last Damage', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player takes last damage, it is recommended that using Death Trigger instead if you don\'t have to cancel the damage';
+
+    this.data.push(new ListValue('Target Caster', 'target', ['True', 'False'], 'True')
+        .setTooltip('True makes children target the caster. False makes children target the attacking entity')
+    );
+    this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
+        .setTooltip("Whether cancelling the damage or not"));
+    this.data.push(new DoubleValue("Min Damage", "dmg-min", 0)
+        .setTooltip('The minimum damage that needs to be dealt')
+    );
+    this.data.push(new DoubleValue("Max Damage", "dmg-max", 999)
+        .setTooltip('The maximum damage that needs to be dealt')
+    );
+}
+
 extend('TriggerTookPhysicalDamage', 'Component');
 
 function TriggerTookPhysicalDamage() {
@@ -975,18 +994,6 @@ function TriggerTookSkillDamage() {
     );
 }
 
-extend('TriggerTookLastDamage', 'Component');
-function TriggerTookLastDamage() {
-    this.super('Took Last Damage', Type.TRIGGER, true);
-
-    this.description = 'Applies skill effects when a player takes last damage, it is recommended that using Death Trigger instead if you don\'t have to cancel the damage';
-
-    this.data.push(new ListValue('Target Caster', 'target', ['True', 'False'], 'True')
-        .setTooltip('True makes children target the caster. False makes children target the attacking entity')
-    );
-    this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
-        .setTooltip("Whether cancelling the damage or not"));
-}
 
 // -- Target constructors ------------------------------------------------------ //
 
