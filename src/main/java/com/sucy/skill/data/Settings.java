@@ -844,6 +844,15 @@ public class Settings {
                 }
 
                 return combatProtection.canAttack(player, (Player) target, cause);
+            } else if (target instanceof Tameable tameable) {
+                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
+
+                if (tameable.isTamed() && (tameable.getOwner() instanceof Player)) {
+                    return (tameable.getOwner() != target)
+                            && canAttack(player, (Player) tameable.getOwner());
+                }
             }
             return combatProtection.canAttack(player, target, cause);
         } else if (attacker instanceof Tameable tameable) {
