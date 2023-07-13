@@ -88,7 +88,7 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public void saveData(PlayerAccounts data) {
-        if (!data.isLoaded()) return;
+        if (data == null || !data.isLoaded()) return;
 
         try {
             CommentedConfig config = new CommentedConfig(api, "players/" + data.getOfflinePlayer().getUniqueId().toString().toLowerCase());
