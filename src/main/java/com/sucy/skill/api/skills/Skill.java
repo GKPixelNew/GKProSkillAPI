@@ -799,6 +799,7 @@ public abstract class Skill implements IconHolder {
                 skillDamage = false;
             }
         }
+        System.out.println("after dmg: " + event.getDamage());
     }
 
     /**
