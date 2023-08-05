@@ -757,7 +757,6 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
-            System.out.println("fuckyou dmg: " + damage);
             if (source instanceof Player) {
                 Player player = (Player) source;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
