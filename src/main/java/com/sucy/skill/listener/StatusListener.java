@@ -166,12 +166,14 @@ public class StatusListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity))
             return;
-        System.out.println("fuckyou dmg: " + event.getDamage());
-        checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
+        if(livingEntity.getNoDamageTicks() == 0) {
+            System.out.println("fuckyou dmg: " + event.getDamage());
+            checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
+        }
     }
 
     /**
@@ -179,7 +181,7 @@ public class StatusListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onTrueDamage(TrueDamageEvent event) {
         checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
