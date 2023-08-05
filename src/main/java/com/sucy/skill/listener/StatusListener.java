@@ -192,6 +192,7 @@ public class StatusListener extends SkillAPIListener {
      * @param damage damage amount
      */
     private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage) {
+        System.out.println("fuckyou dmg: " + damage);
         if (check(event, entity, null, true, StatusFlag.ABSORB))
             VersionManager.heal(entity, damage);
         else

@@ -19,11 +19,7 @@ public class FishingFishTrigger extends FishingTrigger {
      */
     @Override
     public boolean shouldTrigger(PlayerFishEvent event, int level, Settings settings) {
-
-        if (event.getState() == State.FISHING) {
-            return true;
-        }
-        return false;
+        return event.getState() == State.FISHING;
     }
 
 }
