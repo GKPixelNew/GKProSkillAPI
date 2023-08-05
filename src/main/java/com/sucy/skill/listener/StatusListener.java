@@ -168,6 +168,7 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
+        System.out.println("status");
         if (!(event.getEntity() instanceof LivingEntity livingEntity))
             return;
 

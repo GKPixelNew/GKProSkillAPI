@@ -66,7 +66,6 @@ public class DamageMechanic extends MechanicComponent {
         double damage = parseValues(caster, DAMAGE, level, 1.0);
         boolean knockback = settings.getBool(KNOCKBACK, true);
         String classification = settings.getString(CLASSIFIER, "default");
-        System.out.println("fuck before dmg: " + damage);
         if (damage < 0) {
             return false;
         }
