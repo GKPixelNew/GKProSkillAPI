@@ -26,10 +26,7 @@
  */
 package com.sucy.skill.listener;
 
-import com.sucy.skill.api.event.FlagApplyEvent;
-import com.sucy.skill.api.event.PhysicalDamageEvent;
-import com.sucy.skill.api.event.PlayerCastSkillEvent;
-import com.sucy.skill.api.event.TrueDamageEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.dynamic.mechanic.CleanseMechanic;
@@ -167,11 +164,19 @@ public class StatusListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onDamaged(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity livingEntity))
-            return;
+    public void onDamagedEvent(EntityDamageEvent event) {
+        if(event.getEntity() instanceof LivingEntity livingEntity && event.getCause() != EntityDamageEvent.DamageCause.CUSTOM)
+            checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
+    }
 
-        checkAbsorbAndInvincible(livingEntity, event, event.getDamage());
+    /**
+     * Cancels damage when a defender is invincible or inverting damage
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onSkillDamaged(SkillDamageEvent event) {
+        checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
 
     /**
