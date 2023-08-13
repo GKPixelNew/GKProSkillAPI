@@ -280,6 +280,7 @@ public abstract class EffectComponent {
             String key = text.substring(i + 1, j);
             if (data.containsKey(key)) {
                 Object obj = data.get(key);
+                System.out.println("Found " + key + " = " + obj + " (" + obj.getClass() + ") " + " in " + data);
                 if (obj instanceof Player) {
                     obj = ((Player) obj).getName();
                 } else if (obj instanceof LivingEntity) {
