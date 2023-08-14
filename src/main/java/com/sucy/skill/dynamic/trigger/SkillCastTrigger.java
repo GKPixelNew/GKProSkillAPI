@@ -2,6 +2,7 @@ package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.PlayerCastSkillEvent;
+import com.sucy.skill.api.player.PlayerClass;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -35,15 +36,16 @@ public class SkillCastTrigger implements Trigger<PlayerCastSkillEvent> {
         List<String> skills = settings.getStringList("allowed-skills").stream().filter(s -> !s.isEmpty()).collect(Collectors.toList());
         List<String> blackClasses = classes.stream().filter(c -> c.startsWith("!"))
                 .map(c -> c.substring(1))
-                .collect(Collectors.toList());
+                .toList();
         List<String> blackSkills = skills.stream().filter(c -> c.startsWith("!"))
                 .map(c -> c.substring(1))
-                .collect(Collectors.toList());
+                .toList();
         classes = classes.stream().filter(c -> !c.startsWith("!")).collect(Collectors.toList());
         skills = skills.stream().filter(c -> !c.startsWith("!")).collect(Collectors.toList());
 
         String skillName = event.getSkill().getData().getName();
-        String className = event.getPlayerData().getMainClass().getData().getName();
+        PlayerClass mainClass = event.getPlayerData().getMainClass();
+        String className = mainClass == null ? "" : event.getPlayerData().getMainClass().getData().getName();
         if (!skills.isEmpty() && !skills.contains(skillName)
                 || blackSkills.contains(skillName)) {
             return false;
