@@ -3400,7 +3400,7 @@ var DATA_20 = {
         "Zoglin",
         "Piglin brute",
     ],
-    MOB_DISGUISES: [
+    MISC_DISGUISES: [
         "Dropped item",
         "Experience orb",
         "Area effect cloud",
