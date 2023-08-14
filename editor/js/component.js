@@ -3175,7 +3175,8 @@ function MechanicTrigger() {
         'Right Click',
         'Skill Damage',
         'Took Physical Damage',
-        'Took Skill Damage'], 'Death')
+        'Took Skill Damage',
+        'Took Last Damage'], 'Death')
         .setTooltip('The trigger to listen for')
     );
     this.data.push(new AttributeValue('Duration', 'duration', 5, 0)
@@ -3268,6 +3269,11 @@ function MechanicTrigger() {
         .requireValue('trigger', damageTriggers)
         .setTooltip('The maximum damage that needs to be dealt')
     );
+
+    // TOOK LAST DAMAGE
+    this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
+        .requireValue('trigger', ['Took Last Damage'])
+        .setTooltip('Whether cancelling the damage or not'))
 }
 
 extend('MechanicValueAdd', 'Component');
