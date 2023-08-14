@@ -3275,6 +3275,13 @@ function MechanicTrigger() {
     this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
         .requireValue('trigger', ['Took Last Damage'])
         .setTooltip('Whether cancelling the damage or not'))
+    this.data.push(new ListValue('Target Listen Target', 'target', ['True', 'False'], 'True')
+        .requireValue('trigger', ['Took Last Damage'])
+        .setTooltip('True makes children target the target that has been listened to. False makes children target the entity fighting the target entity.')
+    );
+    this.data.push(new ListValue('Cancel', 'cancel', ['True', 'False'], 'True')
+        .requireValue('trigger', ['Took Last Damage'])
+        .setTooltip('Whether cancelling the damage or not'))
 }
 
 extend('MechanicValueAdd', 'Component');
