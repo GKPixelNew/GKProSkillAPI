@@ -105,7 +105,7 @@ public class CleanseMechanic extends MechanicComponent {
 
             if (potion.equals("ALL")) {
                 for (PotionEffect p : target.getActivePotionEffects()) {
-                    if (NEGATIVE_POTIONS.contains(p.getType().getName())) {
+                    if (NEGATIVE_POTIONS.contains(p.getType())) {
                         target.removePotionEffect(p.getType());
                         worked = true;
                     }
