@@ -35,10 +35,11 @@ import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -79,47 +80,45 @@ public class CleanseMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         boolean worked = false;
-        String status = settings.getString(STATUS, "None").toLowerCase();
-        String potion = settings.getString(POTION).toUpperCase().replace(' ', '_');
         boolean extinguish = settings.getBool(EXTINGUISH, true);
         boolean resetNegativeStats = settings.getBool(RESET_NEGATIVE_STATS, true);
-        PotionEffectType type = null;
-        try {
-            type = PotionEffectType.getByName(potion);
-        } catch (Exception ex) {
-            // Invalid potion type
+        Set<String> statusSet = new HashSet<>();
+        for (String string : settings.getStringList(STATUS)) {
+            if (string.equalsIgnoreCase("All")) {
+                statusSet.addAll(StatusFlag.NEGATIVE);
+                break;
+            }
+            statusSet.add(string.toLowerCase());
+        }
+        Set<PotionEffectType> potionSet = new HashSet<>();
+        for (String string : settings.getStringList(POTION)) {
+            if (string.equalsIgnoreCase("All")) {
+                potionSet.addAll(NEGATIVE_POTIONS);
+                break;
+            }
+            try {
+                potionSet.add(Objects.requireNonNull(PotionEffectType.getByName(string.toLowerCase().replace(' ', '_'))));
+            } catch (IllegalArgumentException | NullPointerException ignored) {
+            }
         }
 
         for (LivingEntity target : targets) {
-            if (status.equals("all")) {
-                for (String flag : StatusFlag.NEGATIVE) {
-                    if (FlagManager.hasFlag(target, flag)) {
-                        FlagManager.removeFlag(target, flag);
-                        worked = true;
-                    }
+            for (String status : statusSet) {
+                if (FlagManager.hasFlag(target, status)) {
+                    FlagManager.removeFlag(target, status);
+                    worked = true;
                 }
-            } else if (FlagManager.hasFlag(target, status)) {
-                FlagManager.removeFlag(target, status);
-                worked = true;
             }
-
-            if (potion.equals("ALL")) {
-                for (PotionEffect p : target.getActivePotionEffects()) {
-                    if (NEGATIVE_POTIONS.contains(p.getType().getName())) {
-                        target.removePotionEffect(p.getType());
-                        worked = true;
-                    }
+            for (PotionEffectType type : potionSet) {
+                if (target.hasPotionEffect(type)) {
+                    target.removePotionEffect(type);
+                    worked = true;
                 }
-            } else if (type != null && target.hasPotionEffect(type)) {
-                target.removePotionEffect(type);
-                worked = true;
             }
-
             if (extinguish && target.getFireTicks() > 0) {
                 target.setFireTicks(0);
                 worked = true;
             }
-
             if (resetNegativeStats && target instanceof Player player) {
                 PlayerData playerData = SkillAPI.getPlayerData(player);
                 for (PlayerStatModifier modifier : playerData.getStatModifiers(AttributeManager.MOVE_SPEED)) {
@@ -130,6 +129,7 @@ public class CleanseMechanic extends MechanicComponent {
                 }
             }
         }
+
         return worked;
     }
 }
