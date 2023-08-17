@@ -124,7 +124,6 @@ public class WolfMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);
-                wolf.setOwner(player);
                 System.out.println("owner: " + player.getName());
                 wolf.setSilent(silent);
                 wolf.setAware(!noAI);
