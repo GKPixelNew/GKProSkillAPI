@@ -2985,7 +2985,7 @@ function MechanicQuest() {
     this.data.push(new StringValue("Quest type", "quest_type", "")
         .setTooltip("what type is the quest."))
 
-    this.data.push(new StringValue("Quest id", "quest_type", "")
+    this.data.push(new StringValue("Quest id", "quest_id", "")
         .setTooltip("what id is the quest"))
 
     this.data.push(new ListValue('Caster', 'caster', ['True', 'False'], 'True')
