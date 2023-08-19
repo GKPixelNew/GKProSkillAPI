@@ -179,6 +179,7 @@ var Mechanic = {
     PROJECTILE: {name: 'Projectile', container: true, construct: MechanicProjectile},
     PURGE: {name: 'Purge', container: false, construct: MechanicPurge},
     PUSH: {name: 'Push', container: false, construct: MechanicPush},
+    QUEST: {name: 'Quest', container: false, construct: MechanicQuest},
     REMEMBER_TARGETS: {name: 'Remember Targets', container: false, construct: MechanicRememberTargets},
     REPEAT: {name: 'Repeat', container: true, construct: MechanicRepeat},
     SOUND: {name: 'Sound', container: false, construct: MechanicSound},
@@ -2972,6 +2973,23 @@ function MechanicPush() {
     this.data.push(new StringValue('Source', 'source', 'none')
         .setTooltip('The source to push/pull from. This should be a key used in a Remember Targets mechanic. If no targets are remembered, this will default to the caster.')
     );
+}
+
+extend('MechanicQuest', 'Component')
+
+function MechanicQuest() {
+    this.super('Quest', Type.MECHANIC, false);
+
+    this.description = 'mark finishing quest for player in GKMagic'
+
+    this.data.push(new StringValue("Quest type", "quest_type", "")
+        .setTooltip("what type is the quest."))
+
+    this.data.push(new StringValue("Quest id", "quest_type", "")
+        .setTooltip("what id is the quest"))
+
+    this.data.push(new ListValue('Caster', 'caster', ['True', 'False'], 'True')
+        .setTooltip('If true, the caster will finish the quest. If false, the targets will finish the quest'))
 }
 
 extend('MechanicRememberTargets', 'Component');
