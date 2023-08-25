@@ -39,6 +39,7 @@ var Trigger = {
     FISH_GRAB: {name: 'Fishing Grab', container: true, construct: TriggerFishingGrab},
     FISH_GROUND: {name: 'Fishing Ground', container: true, construct: TriggerFishingGround},
     FISH_REEL: {name: 'Fishing Reel', container: true, construct: TriggerFishingReel},
+    SKILL_HEAL: {name: "Skill Heal", container: true, construct: TriggerSkillHeal},
     INITIALIZE: {name: 'Initialize', container: true, construct: TriggerInitialize},
     ITEMSWAP: {name: 'Item Swap', container: true, construct: TriggerItemSwap},
     KILL: {name: 'Kill', container: true, construct: TriggerKill},
@@ -768,6 +769,14 @@ function TriggerFishingReel() {
     this.super('Fishing Reel', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod.';
+}
+
+extend('TriggerSkillHeal', 'Component');
+
+function TriggerSkillHeal() {
+    this.super('Skill Heal', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player be healed. The target is the one be healed, the caster is the one who used skill'
 }
 
 extend('TriggerInitialize', 'Component');
