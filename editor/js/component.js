@@ -39,7 +39,6 @@ var Trigger = {
     FISH_GRAB: {name: 'Fishing Grab', container: true, construct: TriggerFishingGrab},
     FISH_GROUND: {name: 'Fishing Ground', container: true, construct: TriggerFishingGround},
     FISH_REEL: {name: 'Fishing Reel', container: true, construct: TriggerFishingReel},
-    SKILL_HEAL: {name: "Skill Heal", container: true, construct: TriggerSkillHeal},
     INITIALIZE: {name: 'Initialize', container: true, construct: TriggerInitialize},
     ITEMSWAP: {name: 'Item Swap', container: true, construct: TriggerItemSwap},
     KILL: {name: 'Kill', container: true, construct: TriggerKill},
@@ -52,6 +51,7 @@ var Trigger = {
     PHYSICAL_DAMAGE: {name: 'Physical Damage', container: true, construct: TriggerPhysicalDamage},
     RIGHT_CLICK: {name: 'Right Click', container: true, construct: TriggerRightClick},
     SKILL_DAMAGE: {name: 'Skill Damage', container: true, construct: TriggerSkillDamage},
+    SKILL_HEAL: {name: 'Skill Heal', container: true, construct: TriggerSkillHeal},
     TOOK_LAST_DAMAGE: {name: 'Took Last Damage', container: true, construct: TriggerTookLastDamage},
     TOOK_PHYSICAL_DAMAGE: {name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage},
     TOOK_SKILL_DAMAGE: {name: 'Took Skill Damage', container: true, construct: TriggerTookSkillDamage}
