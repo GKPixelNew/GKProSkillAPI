@@ -776,7 +776,7 @@ extend('TriggerSkillHeal', 'Component');
 function TriggerSkillHeal() {
     this.super('Skill Heal', Type.TRIGGER, true);
 
-    this.description = 'Applies skill effects when a player be healed. The target is the one be healed, the caster is the one who used skill'
+    this.description = 'Applies skill effects when a player be healed. The target is the one be healed, the caster is the one who used skill.';
 }
 
 extend('TriggerInitialize', 'Component');
