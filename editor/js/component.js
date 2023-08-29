@@ -3202,6 +3202,7 @@ function MechanicTrigger() {
         'Physical Damage',
         'Right Click',
         'Skill Damage',
+        'Skill Heal',
         'Took Physical Damage',
         'Took Skill Damage',
         'Took Last Damage'], 'Death')
