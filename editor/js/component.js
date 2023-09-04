@@ -93,7 +93,6 @@ var Condition = {
     ELEVATION: {name: 'Elevation', container: true, construct: ConditionElevation},
     ELSE: {name: 'Else', container: true, construct: ConditionElse},
     ENTITY_TYPE: {name: 'Entity Type', container: true, construct: ConditionEntityType},
-    NOT_ENTITY: {name: 'Not Entity', container: true, construct: ConditionNotEntity},
     FIRE: {name: 'Fire', container: true, construct: ConditionFire},
     FLAG: {name: 'Flag', container: true, construct: ConditionFlag},
     FOOD: {name: 'Food', container: true, construct: ConditionFood},
@@ -144,6 +143,7 @@ var Mechanic = {
     DELAY: {name: 'Delay', container: true, construct: MechanicDelay},
     DISGUISE: {name: 'Disguise', container: false, construct: MechanicDisguise},
     DURABILITY: {name: 'Durability', container: false, construct: MechanicDurability},
+    EFFECT_DELAY: {name: 'Effect Delay', container: true, construct: MechanicEffectDelay},
     EXPLOSION: {name: 'Explosion', container: false, construct: MechanicExplosion},
     FIRE: {name: 'Fire', container: false, construct: MechanicFire},
     FLAG: {name: 'Flag', container: false, construct: MechanicFlag},
@@ -2327,6 +2327,21 @@ function MechanicDurability() {
     this.data.push(new ListValue('Offhand', 'offhand', ['True', 'False'], 'False')
         .setTooltip('Whether to apply to the offhand slot')
     );
+}
+
+extend('MechanicEffectDelay', 'Component')
+
+function MechanicEffectDelay() {
+    this.super('Effect Delay', Type.MECHANIC, true);
+
+    this.description = 'Applies child components after a delay.';
+
+    this.data.push(new AttributeValue('Delay', 'delay', 2, 0)
+        .setTooltip('The amount of time to wait before applying child components in seconds')
+    );
+
+    this.data.push(new StringValue('Translated key', 'dyntra', '')
+        .setTooltip('The key of the countdown text showing for player in GKMagic'))
 }
 
 extend('MechanicExplosion', 'Component');
