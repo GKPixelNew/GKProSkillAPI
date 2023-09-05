@@ -1604,14 +1604,6 @@ function ConditionName() {
     );
 }
 
-extend('ConditionNotEntity', 'Component');
-
-function ConditionNotEntity(){
-    this.super('Not Entity', Type.CONDITION, true);
-
-    this.description = 'Applies child components when the target is not an entity.';
-}
-
 extend('ConditionOffhand', 'Component');
 
 function ConditionOffhand() {
