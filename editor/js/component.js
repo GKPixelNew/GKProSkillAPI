@@ -186,6 +186,7 @@ var Mechanic = {
     SOUND: {name: 'Sound', container: false, construct: MechanicSound},
     Stat: {name: 'Stat', container: false, construct: MechanicStat},
     STATUS: {name: 'Status', container: false, construct: MechanicStatus},
+    SUMMON: {name: 'Summon', container: true, construct: MechanicSummon},
     TAUNT: {name: 'Taunt', container: false, construct: MechanicTaunt},
     TRANSLATED_MESSAGE: {name: 'Translated Message', container: false, construct: MechanicTranslatedMessage},
     TRIGGER: {name: 'Trigger', container: true, construct: MechanicTrigger},
@@ -3133,6 +3134,43 @@ function MechanicStatus() {
     this.data.push(new ListValue('Force', 'force', ['True', 'False'], 'False')
         .setTooltip('Whether to apply the negative status even if the target has the status')
     );
+}
+
+extend('MechanicSummon', 'Component')
+
+function MechanicSummon() {
+    this.super('Summon', Type.MECHANIC, true);
+
+    this.description = 'Summon an entity. Some option have no use for some entities, for example, set move speed 69 for a shulker';
+
+    this.data.push(new ListValue('Entity', 'entity', getEntities(), "wolf")
+        .setTooltip('The entity to be summoned'))
+
+    this.data.push(new DoubleValue('Health', 'health', 20)
+        .setTooltip('The health of the entities'));
+
+    this.data.push(new DoubleValue('Attack Damage', 'damage', 2)
+        .setTooltip('The attack damage of the entities'));
+
+    this.data.push(new DoubleValue('Knockback', 'knockback', 1)
+        .setTooltip('The power of knockback when the entities attack others'))
+
+    this.data.push(new DoubleValue('Walk speed', 'walk_speed', -1)
+        .setTooltip('The move speed of the entities, leave negative and their walk speed should be the same as they used to'))
+
+    this.data.push(new DoubleValue('Fly speed', 'fly_speed', -1)
+        .setTooltip('The fly speed of the entities, leave negative and their walk speed should be the same as they used to'));
+
+    this.data.push(new DoubleValue('Follow range', 'follow_range', -1)
+        .setTooltip('The entities can detect enemies within how many blocks and trace them'))
+
+    this.data.push(new DoubleValue('Armor', 'armor', 0)
+        .setTooltip('The armor value of the entities'))
+
+
+    this.data.push(new DoubleValue('Amount', 'amount', 1)
+        .setTooltip('How many entities will be summoned'));
+
 }
 
 extend('MechanicTaunt', 'Component');
