@@ -3167,6 +3167,8 @@ function MechanicSummon() {
     this.data.push(new DoubleValue('Armor', 'armor', 0)
         .setTooltip('The armor value of the entities'))
 
+    this.data.push(new DoubleValue('Duration', 'duration', 10)
+        .setTooltip('How many seconds it should exist'));
 
     this.data.push(new DoubleValue('Amount', 'amount', 1)
         .setTooltip('How many entities will be summoned'));
