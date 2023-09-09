@@ -3146,31 +3146,31 @@ function MechanicSummon() {
     this.data.push(new ListValue('Entity', 'entity', getEntities(), "wolf")
         .setTooltip('The entity to be summoned'))
 
-    this.data.push(new DoubleValue('Health', 'health', 20)
+    this.data.push(new AttributeValue('Health', 'health', 20, 0)
         .setTooltip('The health of the entities'));
 
-    this.data.push(new DoubleValue('Attack Damage', 'damage', 2)
+    this.data.push(new AttributeValue('Attack Damage', 'damage', 2, 0)
         .setTooltip('The attack damage of the entities'));
 
-    this.data.push(new DoubleValue('Knockback', 'knockback', 1)
+    this.data.push(new AttributeValue('Knockback', 'knockback', 1, 0)
         .setTooltip('The power of knockback when the entities attack others'))
 
-    this.data.push(new DoubleValue('Walk speed', 'walk_speed', -1)
+    this.data.push(new AttributeValue('Walk speed', 'walk_speed', -1, 0)
         .setTooltip('The move speed of the entities, leave negative and their walk speed should be the same as they used to'))
 
-    this.data.push(new DoubleValue('Fly speed', 'fly_speed', -1)
+    this.data.push(new AttributeValue('Fly speed', 'fly_speed', -1, 0)
         .setTooltip('The fly speed of the entities, leave negative and their fly speed should be the same as they used to'));
 
-    this.data.push(new DoubleValue('Follow range', 'follow_range', -1)
+    this.data.push(new AttributeValue('Follow range', 'follow_range', -1, 0)
         .setTooltip('The entities can detect enemies within how many blocks and trace them, , leave negative and their follow range should be the same as they used to'))
 
-    this.data.push(new DoubleValue('Armor', 'armor', 0)
+    this.data.push(new AttributeValue('Armor', 'armor', 0, 0)
         .setTooltip('The armor value of the entities'))
 
-    this.data.push(new DoubleValue('Duration', 'duration', 10)
+    this.data.push(new AttributeValue('Duration', 'duration', 10, 0)
         .setTooltip('How many seconds it should exist'));
 
-    this.data.push(new DoubleValue('Amount', 'amount', 1)
+    this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('How many entities will be summoned'));
 
 }
