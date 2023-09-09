@@ -3159,10 +3159,10 @@ function MechanicSummon() {
         .setTooltip('The move speed of the entities, leave negative and their walk speed should be the same as they used to'))
 
     this.data.push(new DoubleValue('Fly speed', 'fly_speed', -1)
-        .setTooltip('The fly speed of the entities, leave negative and their walk speed should be the same as they used to'));
+        .setTooltip('The fly speed of the entities, leave negative and their fly speed should be the same as they used to'));
 
     this.data.push(new DoubleValue('Follow range', 'follow_range', -1)
-        .setTooltip('The entities can detect enemies within how many blocks and trace them'))
+        .setTooltip('The entities can detect enemies within how many blocks and trace them, , leave negative and their follow range should be the same as they used to'))
 
     this.data.push(new DoubleValue('Armor', 'armor', 0)
         .setTooltip('The armor value of the entities'))
