@@ -3173,6 +3173,10 @@ function MechanicSummon() {
     this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('How many entities will be summoned'));
 
+    this.data.push(new StringListValue('Skills (one per line)', 'skills', [])
+        .setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
+    );
+
 }
 
 extend('MechanicTaunt', 'Component');
