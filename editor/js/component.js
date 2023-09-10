@@ -3167,6 +3167,10 @@ function MechanicSummon() {
     this.data.push(new AttributeValue('Armor', 'armor', 0, 0)
         .setTooltip('The armor value of the entities'))
 
+    this.data.push(new ListValue('Adult', 'adult', ['True', 'False'], 'True')
+        .setTooltip('The entity should be an adult or a baby')
+    );
+
     this.data.push(new AttributeValue('Duration', 'duration', 10, 0)
         .setTooltip('How many seconds it should exist'));
 
