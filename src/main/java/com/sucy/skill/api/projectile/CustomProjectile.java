@@ -308,6 +308,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * Returns true if another check should happen, false other wise
      */
     protected boolean checkCollision(final boolean pierce) {
+        SkillAPI.inst().getLogger().info("can hit entity: " + hitEntity);
         if(!hitEntity) return true;
         for (LivingEntity entity : getColliding()) {
             if (entity == thrower || hit.contains(entity.getEntityId())) {
