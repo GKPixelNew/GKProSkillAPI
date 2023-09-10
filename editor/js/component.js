@@ -2857,9 +2857,6 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
     );
-
-    addProjectileOptions(this);
-
     this.data.push(new ListValue('Hit entity', 'hit-entity', ['True', 'False'], 'True')
         .setTooltip('Whether this projectile should ignore hitting player')
     );
@@ -2867,6 +2864,9 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue('Missile', 'missile', ['True', 'False'], 'False')
         .setTooltip('Whether the projectile should home any entity')
     );
+
+
+    addProjectileOptions(this);
 
     this.data.push(new StringValue("Missile target key", 'missile-target', '')
         .setTooltip("The target should be homed")
