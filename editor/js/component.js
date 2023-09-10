@@ -2854,14 +2854,36 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue('Pierce through blocks', 'pierce-blocks', ['True', 'False'], 'False')
         .setTooltip('Whether this projectile should pierce through blocks')
     );
-    this.data.push(new ListValue('Ignore hitting player', 'ignore-hitting-player', ['True', 'False'], 'False')
-        .setTooltip('Whether this projectile should ignore hitting player')
-    );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
     );
 
     addProjectileOptions(this);
+
+    this.data.push(new ListValue('Hit entity', 'hit-entity', ['True', 'False'], 'True')
+        .setTooltip('Whether this projectile should ignore hitting player')
+    );
+
+    this.data.push(new ListValue('Missile', 'missile', ['True', 'False'], 'False')
+        .setTooltip('Whether the projectile should home any entity')
+    );
+
+    this.data.push(new StringValue("Missile target key", 'missile-target', '')
+        .setTooltip("The target should be homed")
+        .requireValue('missile', ['True']));
+
+    this.data.push(new StringValue("Target threshold", 'missile-target', '')
+        .setTooltip("If the dot of the velocities between the projectile and the target is greater than the threshold, the projectile will change the velocity")
+        .requireValue('missile', ['True']));
+
+    this.data.push(new StringValue("Target angle", 'missile-angle', '')
+        .setTooltip("This is useless, not sure if this works in the future")
+        .requireValue('missile', ['True']));
+
+    this.data.push(new DoubleValue("Target delay", 'missile-delay', 0)
+        .setTooltip("When to start homing after launching the projectile")
+        .requireValue('missile', ['True']));
+
     addParticleOptions(this);
 
     this.data.push(new DoubleValue('Frequency', 'frequency', 0.05)
