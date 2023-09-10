@@ -2858,7 +2858,7 @@ function MechanicParticleProjectile() {
         .setTooltip('The alignment of targets to hit')
     );
     this.data.push(new ListValue('Hit entity', 'hit-entity', ['True', 'False'], 'True')
-        .setTooltip('Whether this projectile should ignore hitting player')
+        .setTooltip('Whether this projectile can hit entity')
     );
 
     this.data.push(new ListValue('Missile', 'missile', ['True', 'False'], 'False')
