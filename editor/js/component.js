@@ -2865,9 +2865,6 @@ function MechanicParticleProjectile() {
         .setTooltip('Whether the projectile should home any entity')
     );
 
-
-    addProjectileOptions(this);
-
     this.data.push(new StringValue("Missile target key", 'missile-target', '')
         .setTooltip("The target should be homed")
         .requireValue('missile', ['True']));
@@ -2883,6 +2880,8 @@ function MechanicParticleProjectile() {
     this.data.push(new DoubleValue("Target delay", 'missile-delay', 0)
         .setTooltip("When to start homing after launching the projectile")
         .requireValue('missile', ['True']));
+
+    addProjectileOptions(this);
 
     addParticleOptions(this);
 
