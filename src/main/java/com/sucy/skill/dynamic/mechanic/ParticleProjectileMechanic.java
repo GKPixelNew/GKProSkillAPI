@@ -179,7 +179,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, this, life, settings.getBool(HIT_ENTITY), missileTarget, missileThreshold, missileAngle, missileDelay);
+                list = ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, this, life, settings.getBool(HIT_ENTITY, true), missileTarget, missileThreshold, missileAngle, missileDelay);
             } else {
                 Vector dir = target.getLocation().getDirection();
 
@@ -206,7 +206,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         amount,
                         this,
                         life,
-                        settings.getBool(HIT_ENTITY),
+                        settings.getBool(HIT_ENTITY, true),
                         missileTarget,
                         missileThreshold,
                         missileAngle,
