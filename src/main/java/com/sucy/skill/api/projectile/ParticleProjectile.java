@@ -102,6 +102,7 @@ public class ParticleProjectile extends CustomProjectile {
         this.life = lifespan;
         this.gravity = new Vector(0, settings.getDouble(GRAVITY, 0), 0);
         this.pierce = settings.getBool(PIERCE, false);
+        super.hitEntity = hitPlayer;
         this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
         this.missileTarget = missileTarget;
         this.missileAngle = missileAngle;

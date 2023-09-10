@@ -91,6 +91,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     private final Set<Integer> hit = new HashSet<>();
     private final LivingEntity thrower;
     private ProjectileCallback callback;
+    public boolean hitEntity = true;
     private boolean enemy = true;
     private boolean ally = false;
     private boolean valid = true;
@@ -307,6 +308,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * Returns true if another check should happen, false other wise
      */
     protected boolean checkCollision(final boolean pierce) {
+        if(!hitEntity) return true;
         for (LivingEntity entity : getColliding()) {
             if (entity == thrower || hit.contains(entity.getEntityId())) {
                 continue;
