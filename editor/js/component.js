@@ -2872,7 +2872,7 @@ function MechanicParticleProjectile() {
         .setTooltip("The target should be homed")
         .requireValue('missile', ['True']));
 
-    this.data.push(new DoubleValue("Target threshold", 'missile-target', 1)
+    this.data.push(new DoubleValue("Target threshold", 'missile-threshold', 1)
         .setTooltip("If the dot of the velocities between the projectile and the target is greater than the threshold, the projectile will change the velocity")
         .requireValue('missile', ['True']));
 
