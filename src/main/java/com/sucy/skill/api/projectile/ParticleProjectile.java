@@ -35,8 +35,10 @@ import com.sucy.skill.api.event.ParticleProjectileLaunchEvent;
 import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -77,6 +79,10 @@ public class ParticleProjectile extends CustomProjectile {
     private Vector vel;
     private int count;
     private int life;
+    private Entity missileTarget = null;
+    private double missileThreshold = 0;
+    private double missileAngle = 0;
+    private boolean missileStarted = false;
 
     /**
      * Constructor
@@ -86,7 +92,7 @@ public class ParticleProjectile extends CustomProjectile {
      * @param loc      initial location of the projectile
      * @param settings settings for the projectile
      */
-    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan) {
+    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
         super(shooter);
 
         this.loc = loc;
@@ -97,7 +103,20 @@ public class ParticleProjectile extends CustomProjectile {
         this.gravity = new Vector(0, settings.getDouble(GRAVITY, 0), 0);
         this.pierce = settings.getBool(PIERCE, false);
         this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
-
+        this.missileTarget = missileTarget;
+        this.missileAngle = missileAngle;
+        this.missileThreshold = missileThreshold;
+        //Missile delay
+        if(missileDelay == 0){
+            missileStarted = true;
+        }else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    missileStarted = true;
+                }
+            }.runTaskLater(SkillAPI.inst(), (long) (missileDelay * 20));
+        }
         steps = (int) Math.ceil(vel.length() * 2);
         vel.multiply(1.0 / steps);
         gravity.multiply(1.0 / steps);
@@ -117,13 +136,13 @@ public class ParticleProjectile extends CustomProjectile {
      * @param callback optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
         ArrayList<Vector> dirs = calcSpread(center, angle, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
         for (Vector dir : dirs) {
             Location l = loc.clone();
             l.setDirection(dir);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, hitPlayer, missileTarget, missileThreshold, missileAngle, missileDelay);
             p.setCallback(callback);
             list.add(p);
         }
@@ -143,13 +162,13 @@ public class ParticleProjectile extends CustomProjectile {
      * @param callback optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
         Vector vel = new Vector(0, 1, 0);
         ArrayList<Location> locs = calcRain(center, radius, height, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, hitPlayer, missileTarget, missileThreshold, missileAngle, missileDelay);
             p.setCallback(callback);
             list.add(p);
         }
@@ -189,7 +208,9 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     protected Event hit(LivingEntity entity) {
-        return new ParticleProjectileHitEvent(this, entity);
+        if(hitEntity)
+            return new ParticleProjectileHitEvent(this, entity);
+        return null;
     }
 
     /**
@@ -263,6 +284,26 @@ public class ParticleProjectile extends CustomProjectile {
         if (life <= 0) {
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
+        }
+
+        // Missile
+        if(missileTarget != null && missileStarted) {
+            final Vector vel = getVelocity();
+            final double speed = vel.length();
+            final Vector dir = vel.multiply(1 / speed);
+            final Vector towards = missileTarget.getLocation().toVector().subtract(getLocation().toVector());
+            final Vector targetDir = towards.normalize();
+            final double dot = dir.dot(targetDir);
+            if (dot >= missileThreshold) {
+                setVelocity(targetDir.multiply(speed));
+            }
+//            else {
+//                final double diff = Math.acos(dot);
+//                final double t = missileAngle / diff;
+//                final double sinAngle = Math.sin(diff);
+//                final double m = Math.sin()
+//                baseProjectile.setVelocity(result);
+//            }
         }
     }
 }
