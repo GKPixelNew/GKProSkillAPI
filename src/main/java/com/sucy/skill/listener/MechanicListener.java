@@ -56,6 +56,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BoundingBox;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -390,6 +391,12 @@ public class MechanicListener extends SkillAPIListener {
     public void onBlockFade(BlockFadeEvent event) {
         if (BlockMechanic.isPending(event.getBlock().getLocation()))
             event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onDismount(EntityDismountEvent event) {
+        if(event.getDismounted() instanceof Projectile)
+            event.getDismounted().remove();
     }
 
     @EventHandler
