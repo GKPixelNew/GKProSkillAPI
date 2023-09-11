@@ -66,6 +66,7 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String FORWARD = "forward";
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
+    private static final String RIDE = "ride";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES = new HashMap<>() {{
         put("arrow", Arrow.class);
         put("egg", Egg.class);
@@ -184,6 +185,8 @@ public class ProjectileMechanic extends MechanicComponent {
                     SkillAPI.setMeta(p, LEVEL, level);
                     if (flaming) p.setFireTicks(Integer.MAX_VALUE);
                     projectiles.add(p);
+                    if(settings.getBool(RIDE, false))
+                        p.addPassenger(target);
                 }
             } else {
                 Vector dir = target.getLocation().getDirection();
@@ -228,6 +231,8 @@ public class ProjectileMechanic extends MechanicComponent {
                     SkillAPI.setMeta(p, LEVEL, level);
                     if (flaming) p.setFireTicks(9999);
                     projectiles.add(p);
+                    if(settings.getBool(RIDE, false))
+                        p.addPassenger(target);
                 }
             }
         }
