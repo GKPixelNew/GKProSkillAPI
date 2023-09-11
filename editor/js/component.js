@@ -3167,7 +3167,7 @@ function MechanicSummon() {
 
     this.description = 'Summon an entity. Some option have no use for some entities, for example, set move speed 69 for a shulker';
 
-    this.data.push(new ListValue('Entity', 'entity', getEntities(), "wolf")
+    this.data.push(new ListValue('Entity', 'entity', getEntities(), "Allay")
         .setTooltip('The entity to be summoned'))
 
     this.data.push(new AttributeValue('Health', 'health', 20, 0)
@@ -3200,6 +3200,15 @@ function MechanicSummon() {
 
     this.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('How many entities will be summoned'));
+
+    this.data.push(new StringValue('Target Key', 'target', '')
+        .requireValue('entity', ['Shulker bullet'])
+        .setTooltip('The target you want this bullet trace to')
+    );
+
+    this.data.push(new ListValue('Ride', 'ride', ['True', 'False'], 'False')
+        .setTooltip('Whether to make launcher get on the entity')
+    );
 
     this.data.push(new StringListValue('Skills (one per line)', 'skills', [])
         .setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
