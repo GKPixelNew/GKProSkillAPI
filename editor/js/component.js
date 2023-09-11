@@ -2974,6 +2974,9 @@ function MechanicProjectile() {
     this.data.push(new ListValue('Cost', 'cost', ['None', 'All', 'One'], 'None')
         .setTooltip('The item cost of the skill. "One" will only charge the player 1 item of it\'s type, whereas "All" will charge 1 for each fired projectile.')
     );
+    this.data.push(new ListValue('Ride', 'ride', ['True', 'False'], 'False')
+        .setTooltip('Whether to make launcher get on the projectile')
+    );
 
     addProjectileOptions(this);
     addParticleOptions(this);
