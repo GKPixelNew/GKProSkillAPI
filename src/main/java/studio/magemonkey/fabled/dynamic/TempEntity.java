@@ -26,11 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
+import com.destroystokyo.paper.block.TargetBlockInfo;
+import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.api.particle.target.EffectTarget;
-import studio.magemonkey.fabled.api.particle.target.EntityTarget;
-import studio.magemonkey.fabled.api.particle.target.FixedTarget;
-import studio.magemonkey.fabled.api.util.Nearby;
+import io.papermc.paper.entity.TeleportFlag;
+import io.papermc.paper.threadedregions.scheduler.EntityScheduler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -40,9 +42,11 @@ import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
@@ -57,8 +61,15 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
+import studio.magemonkey.fabled.api.particle.target.EffectTarget;
+import studio.magemonkey.fabled.api.particle.target.EntityTarget;
+import studio.magemonkey.fabled.api.particle.target.FixedTarget;
+import studio.magemonkey.fabled.api.util.Nearby;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Temporary dummy entity used for targeting a location in the dynamic system
@@ -104,7 +115,43 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @NotNull
     public Block getTargetBlock(Set<Material> set, int i) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Block getTargetBlock(int i, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int i, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable BlockFace getTargetBlockFace(int i, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetBlockInfo getTargetBlockInfo(int i, @NotNull TargetBlockInfo.FluidMode fluidMode) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Entity getTargetEntity(int i, boolean b) {
+        return null;
+    }
+
+    @Override
+    public @Nullable TargetEntityInfo getTargetEntityInfo(int i, boolean b) {
+        return null;
+    }
+
+    @Override
+    public @Nullable RayTraceResult rayTraceEntities(int i, boolean b) {
         return null;
     }
 
@@ -198,6 +245,51 @@ public class TempEntity implements LivingEntity {
     public void setArrowsInBody(int count) {
     }
 
+    @Override
+    public void setArrowsInBody(int i, boolean b) {
+
+    }
+
+    @Override
+    public int getNextArrowRemoval() {
+        return 0;
+    }
+
+    @Override
+    public void setNextArrowRemoval(@Range(from = 0L, to = 2147483647L) int i) {
+
+    }
+
+    @Override
+    public int getBeeStingerCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingerCooldown(int i) {
+
+    }
+
+    @Override
+    public int getBeeStingersInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setBeeStingersInBody(int i) {
+
+    }
+
+    @Override
+    public int getNextBeeStingerRemoval() {
+        return 0;
+    }
+
+    @Override
+    public void setNextBeeStingerRemoval(@Range(from = 0L, to = 2147483647L) int i) {
+
+    }
+
     public int getMaximumNoDamageTicks() {
         return 0;
     }
@@ -239,6 +331,11 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @Override
+    public void setKiller(@Nullable Player player) {
+
+    }
+
     public boolean addPotionEffect(PotionEffect potionEffect) {
         return false;
     }
@@ -267,7 +364,17 @@ public class TempEntity implements LivingEntity {
         return ImmutableList.of();
     }
 
+    @Override
+    public boolean clearActivePotionEffects() {
+        return false;
+    }
+
     public boolean hasLineOfSight(Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean hasLineOfSight(@NotNull Location location) {
         return false;
     }
 
@@ -288,6 +395,16 @@ public class TempEntity implements LivingEntity {
     }
 
     public void setCanPickupItems(boolean b) {
+
+    }
+
+    @Override
+    public @Nullable Component customName() {
+        return null;
+    }
+
+    @Override
+    public void customName(@Nullable Component component) {
 
     }
 
@@ -386,8 +503,154 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public boolean isSneaking() {
+        return false;
+    }
+
+    @Override
+    public void setSneaking(boolean b) {
+
+    }
+
+    @Override
+    public void setPose(@NotNull Pose pose, boolean b) {
+
+    }
+
+    @Override
+    public boolean hasFixedPose() {
+        return false;
+    }
+
+    @Override
     public @NotNull Spigot spigot() {
         return null;
+    }
+
+    @Override
+    public @NotNull Component name() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component teamDisplayName() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Location getOrigin() {
+        return null;
+    }
+
+    @Override
+    public boolean fromMobSpawner() {
+        return false;
+    }
+
+    @NotNull
+    @Override
+    public CreatureSpawnEvent.SpawnReason getEntitySpawnReason() {
+        return null;
+    }
+
+    @Override
+    public boolean isUnderWater() {
+        return false;
+    }
+
+    @Override
+    public boolean isInRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isInBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrRain() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWaterOrRainOrBubbleColumn() {
+        return false;
+    }
+
+    @Override
+    public boolean isInLava() {
+        return false;
+    }
+
+    @Override
+    public boolean isTicking() {
+        return false;
+    }
+
+    @Override
+    public @NotNull Set<Player> getTrackedPlayers() {
+        return Set.of();
+    }
+
+    @Override
+    public boolean spawnAt(@NotNull Location location, @NotNull CreatureSpawnEvent.SpawnReason spawnReason) {
+        return false;
+    }
+
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
+    }
+
+    @Override
+    public double getX() {
+        return 0;
+    }
+
+    @Override
+    public double getY() {
+        return 0;
+    }
+
+    @Override
+    public double getZ() {
+        return 0;
+    }
+
+    @Override
+    public float getPitch() {
+        return 0;
+    }
+
+    @Override
+    public float getYaw() {
+        return 0;
+    }
+
+    @Override
+    public boolean collidesAt(@NotNull Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean wouldCollideUsing(@NotNull BoundingBox boundingBox) {
+        return false;
+    }
+
+    @Override
+    public @NotNull EntityScheduler getScheduler() {
+        return null;
+    }
+
+    @Override
+    public @NotNull String getScoreboardEntryName() {
+        return "";
     }
 
     public boolean isLeashed() {
@@ -538,6 +801,166 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public void setNoPhysics(boolean b) {
+
+    }
+
+    @Override
+    public boolean hasNoPhysics() {
+        return false;
+    }
+
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean b) {
+
+    }
+
+    @Override
+    public int getArrowsStuck() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowsStuck(int i) {
+
+    }
+
+    @Override
+    public int getShieldBlockingDelay() {
+        return 0;
+    }
+
+    @Override
+    public void setShieldBlockingDelay(int i) {
+
+    }
+
+    @Override
+    public float getSidewaysMovement() {
+        return 0;
+    }
+
+    @Override
+    public float getUpwardsMovement() {
+        return 0;
+    }
+
+    @Override
+    public float getForwardsMovement() {
+        return 0;
+    }
+
+    @Override
+    public void startUsingItem(@NotNull EquipmentSlot equipmentSlot) {
+
+    }
+
+    @Override
+    public void completeUsingActiveItem() {
+
+    }
+
+    @Override
+    public @NotNull ItemStack getActiveItem() {
+        return null;
+    }
+
+    @Override
+    public void clearActiveItem() {
+
+    }
+
+    @Override
+    public int getActiveItemRemainingTime() {
+        return 0;
+    }
+
+    @Override
+    public void setActiveItemRemainingTime(@Range(from = 0L, to = 2147483647L) int i) {
+
+    }
+
+    @Override
+    public boolean hasActiveItem() {
+        return false;
+    }
+
+    @Override
+    public int getActiveItemUsedTime() {
+        return 0;
+    }
+
+    @Override
+    public @NotNull EquipmentSlot getActiveItemHand() {
+        return null;
+    }
+
+    @Override
+    public boolean isJumping() {
+        return false;
+    }
+
+    @Override
+    public void setJumping(boolean b) {
+
+    }
+
+    @Override
+    public void playPickupItemAnimation(@NotNull Item item, int i) {
+
+    }
+
+    @Override
+    public float getHurtDirection() {
+        return 0;
+    }
+
+    @Override
+    public void setHurtDirection(float v) {
+
+    }
+
+    @Override
+    public void knockback(double v, double v1, double v2) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot) {
+
+    }
+
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot, @NotNull Collection<Player> collection) {
+
+    }
+
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack itemStack, int i) {
+        return null;
+    }
+
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot equipmentSlot, int i) {
+
+    }
+
+    @Override
+    public float getBodyYaw() {
+        return 0;
+    }
+
+    @Override
+    public void setBodyYaw(float v) {
+
+    }
+
+    @Override
     public void setInvisible(boolean invisible) {
     }
 
@@ -649,6 +1072,11 @@ public class TempEntity implements LivingEntity {
     public void setRotation(float yaw, float pitch) {
     }
 
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag... teleportFlags) {
+        return false;
+    }
+
     public boolean teleport(Location location) {
         target = new FixedTarget(location);
         return true;
@@ -667,6 +1095,11 @@ public class TempEntity implements LivingEntity {
     public boolean teleport(Entity entity, PlayerTeleportEvent.TeleportCause teleportCause) {
         target = new EntityTarget(entity);
         return true;
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Boolean> teleportAsync(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag... teleportFlags) {
+        return null;
     }
 
     public List<Entity> getNearbyEntities(double x, double y, double z) {
@@ -902,6 +1335,11 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> aClass, @Nullable Vector vector, @Nullable Consumer<? super T> consumer) {
+        return null;
+    }
+
     public boolean isPermissionSet(String s) {
         return false;
     }
@@ -959,7 +1397,22 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public void registerAttribute(@NotNull Attribute attribute) {
+
+    }
+
+    @Override
     public @NotNull PersistentDataContainer getPersistentDataContainer() {
         return null;
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState triState) {
+
     }
 }

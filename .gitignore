@@ -5,3 +5,9 @@ gh-pages/
 settings.xml
 toolchains.xml
 log.txt
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
