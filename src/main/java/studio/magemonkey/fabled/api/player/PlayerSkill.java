@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.api.player;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Material;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.SkillStatus;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.manager.AttributeManager;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Material;
 
 /**
  * Represents player-specific data for a skill such as the player's
@@ -212,6 +212,19 @@ public final class PlayerSkill {
     public int getCooldownLeft() {
         if (isOnCooldown()) {
             return (int) ((cooldown - System.currentTimeMillis() + 999) / 1000);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Gets the current cooldown of the skill in milliseconds.
+     *
+     * @return current cooldown in milliseconds or 0 if not on cooldown
+     */
+    public int getCooldownMillis() {
+        if (isOnCooldown()) {
+            return (int) (cooldown - System.currentTimeMillis());
         } else {
             return 0;
         }
