@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,14 +91,15 @@ public class RepeatMechanic extends MechanicComponent {
             return 0;
         }
 
+        if (skill.checkCancelled()) {
+            skill.cancelTrigger();
+            return 0;
+        }
+
         final int level   = skill.getActiveLevel(caster);
         boolean   success = executeChildren(caster, level, targets, force);
 
         if (--count <= 0 || (!success && stopOnFail)) {
-            return 0;
-        }
-
-        if (skill.checkCancelled()) {
             return 0;
         }
         return count;
