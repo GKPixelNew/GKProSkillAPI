@@ -26,14 +26,16 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.List;
 
@@ -77,7 +79,7 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
         copy.set("level", level);
-        new ParticleTask(caster, targets, level, copy);
+        new ParticleTask(caster, targets, level, copy, this.skill);
         return !targets.isEmpty();
     }
 
@@ -87,6 +89,7 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final double[]           rots;
         private final Vector             offset;
         private final Vector             dir;
+        private final Skill skill;
 
         private final double upward;
 
@@ -102,9 +105,10 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final boolean withRotation;
         private       int     life;
 
-        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings) {
+        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings, Skill skill) {
             this.targets = targets;
             this.settings = settings;
+            this.skill = skill;
 
             double forward = getNum(caster, FORWARD, 0);
             this.upward = getNum(caster, UPWARD, 0);
@@ -160,7 +164,13 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                         rotate(offset, targetCos, targetSin);
 
                         loc.add(offset);
-                        ParticleHelper.play(loc, settings);
+                        try {
+                            ParticleHelper.play(loc, settings);
+                        } catch (IllegalArgumentException e) {
+                            Logger.invalid("Invalid particle while trying to cast " + this.skill.getName() + ": " +
+                                    settings.getString(ParticleHelper.PARTICLE_KEY));
+                            cancel();
+                        }
                         loc.subtract(offset);
 
                         targetCos = Math.cos(Math.toRadians(-targetAngle));
@@ -169,7 +179,13 @@ public class ParticleAnimationMechanic extends MechanicComponent {
                     } else {
                         rotate(offset, Math.cos(Math.toRadians(rots[j])), Math.sin(Math.toRadians(rots[j])));
                         loc.add(offset);
-                        ParticleHelper.play(loc, settings);
+                        try {
+                            ParticleHelper.play(loc, settings);
+                        } catch (IllegalArgumentException e) {
+                            Logger.invalid("Invalid particle while trying to cast " + this.skill.getName() + ": " +
+                                    settings.getString(ParticleHelper.PARTICLE_KEY));
+                            cancel();
+                        }
                         loc.subtract(offset);
 
                         rotate(offset, Math.cos(Math.toRadians(-rots[j])), Math.sin(Math.toRadians(-rots[j])));
