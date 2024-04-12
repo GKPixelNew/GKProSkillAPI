@@ -60,16 +60,12 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)
     }
-//
-//    processResources {
-//        outputs.upToDateWhen { false }
-////
-////        filesMatching("**/plugin.yml") {
-////            filter {
-////                it.replace("%project.version%", version as String)
-////            }
-////        }
-//    }
+
+    processResources {
+        filesMatching("**/paper-plugin.yml") {
+            expand("project" to project)
+        }
+    }
 }
 
 publishing {

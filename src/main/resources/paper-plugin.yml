@@ -16,6 +16,9 @@ dependencies:
   - name: Codex
     required: true
     bootstrap: true
+  - name: GKReplay
+    required: true
+    bootstrap: true
   - name: Vault
     required: false
     bootstrap: true
