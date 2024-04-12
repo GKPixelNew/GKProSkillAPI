@@ -26,15 +26,11 @@
  */
 package studio.magemonkey.fabled.api.projectile;
 
-import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.target.Followable;
-import studio.magemonkey.fabled.log.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.metadata.MetadataValue;
@@ -42,6 +38,12 @@ import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.util.Reflex;
+import studio.magemonkey.codex.util.reflection.ReflectionManager;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.target.Followable;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -354,7 +356,12 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             Object list = (getEntities == null ? getEntitiesGuava : getEntities)
                     .invoke(nmsWorld, null, getBoundingBox(), predicate);
             for (Object item : (List) list) {
-                result.add((LivingEntity) getBukkitEntity.invoke(item));
+                LivingEntity entity = (LivingEntity) getBukkitEntity.invoke(item);
+                if (entity instanceof HumanEntity humanEntity) {
+                    if (humanEntity.getGameMode() == GameMode.SPECTATOR)
+                        continue;
+                }
+                result.add(entity);
             }
         }
         // Fallback when reflection fails
@@ -364,6 +371,11 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             for (LivingEntity entity : getNearbyEntities()) {
                 if (entity == thrower)
                     continue;
+
+                if (entity instanceof HumanEntity humanEntity) {
+                    if (humanEntity.getGameMode() == GameMode.SPECTATOR)
+                        continue;
+                }
 
                 if (getLocation().distanceSquared(entity.getLocation()) < radiusSq)
                     result.add(entity);

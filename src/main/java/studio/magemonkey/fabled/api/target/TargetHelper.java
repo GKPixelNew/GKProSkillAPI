@@ -1,7 +1,5 @@
 package studio.magemonkey.fabled.api.target;
 
-import studio.magemonkey.fabled.hook.DisguiseHook;
-import studio.magemonkey.fabled.hook.PluginChecker;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
@@ -9,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.hook.DisguiseHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -228,7 +228,7 @@ public abstract class TargetHelper {
         Location temp = loc1.clone();
         for (int i = 0; i < steps; i++) {
             temp.add(slope);
-            if (isSolid(temp.getBlock().getType())) {
+            if (temp.getBlock().getType() != Material.AIR) {
                 return true;
             }
         }
