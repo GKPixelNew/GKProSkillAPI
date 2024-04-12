@@ -1,41 +1,65 @@
 <script lang='ts'>
-	import DiscordLogo from './DiscordLogo.svelte';
-	import { goto }    from '$app/navigation';
-	import { base }    from '$app/paths';
+	import {goto} from '$app/navigation';
+	import {base} from '$app/paths';
+	import {login, logout, userManager} from "$api/oauth";
+	import {User} from "oidc-client-ts";
+
+	let user: User | null = null;
+    $: user = null;
+    userManager.getUser().then(u => {
+        user = u
+        console.log(u)
+    });
 </script>
 
 <div id='header'>
-	<div class='home'
-			 tabindex='0'
-			 role='button'
-			 on:click={() => goto(`${base}/`)}
-			 on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
-	>
-		<h1 class='accent'>Fabled</h1>
-		<h2>Dynamic Editor</h2>
-		<div class='copy'>&copy; ProMCTeam {new Date().getFullYear()}</div>
-	</div>
+    <div class='home'
+         tabindex='0'
+         role='button'
+         on:click={() => goto(`${base}/`)}
+         on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
+    >
+        <h1 class='accent'>GKPixel</h1>
+        <h2>Dynamic Skill Editor</h2>
+        <div class='copy'>&copy; ProMCTeam and GKPixelTeam {new Date().getFullYear()}</div>
+    </div>
 
-	<div class='socials'>
-		<a class='social discord' href='https://discord.gg/6UzkTe6RvW' title='Join our Discord'>
-			<DiscordLogo />
-		</a>
-		<a class='social github'
-			 href='https://github.com/promcteam/proskillapi'
-			 title='Check out our GitHub'>
-			<img src='{base}/github-mark-white.svg' alt='Github' />
-		</a>
-		<a class='social spigot'
-			 href='https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/'
-			 title='Check out our resource on Spigot'>
-			<img src='{base}/spigot.png' alt='Spigot' />
-		</a>
-		<a class='social wiki'
-			 href='https://promcteam.com/wiki/index.php?title=Proskillapi:Proskillapi'
-			 title='Wiki'>
-			<span class='material-symbols-rounded'>help</span>
-		</a>
-	</div>
+    <div class='socials'>
+        {#if user == null}
+            <div class='chip'
+                 tabindex='0'
+                 role='button'
+                 style="background-color: #0079d9"
+                 on:click|stopPropagation={login}
+                 on:keypress={(e) => {
+					 if (e.key === 'Enter') {
+						 e.stopPropagation();
+						 login();
+					 }
+				 }}
+                 title='登入 GKIDMS'>
+                登入
+            </div>
+        {/if}
+        {#if user != null}
+			<img style="margin: auto;margin-right: 10px;height: 35px" src={user.profile.avatar} alt="Avatar"/>
+			<div style="margin: auto;margin-right: 20px">{user.profile.given_name}</div>
+			<div class='chip'
+				 tabindex='0'
+				 role='button'
+				 style="background-color: #d92800"
+				 on:click|stopPropagation={logout}
+				 on:keypress={(e) => {
+					 if (e.key === 'Enter') {
+						 e.stopPropagation();
+						 logout();
+					 }
+				 }}
+				 title='登出 GKIDMS'>
+				登出
+			</div>
+        {/if}
+    </div>
 </div>
 
 <style>
@@ -74,27 +98,6 @@
     .socials {
         display: flex;
         justify-content: flex-end;
-    }
-
-    .social, .social:visited, .social:active {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        -webkit-user-select: none;
-        color: var(--color-fg);
-        background-color: #0083ef;
-        border-radius: 50%;
-        height: 2rem;
-        aspect-ratio: 1;
-        padding: 0.3rem;
-        margin: 0 0.2rem;
-        text-decoration: none;
-    }
-
-    .social img {
-        height: 100%;
-        aspect-ratio: 1;
     }
 
     .copy {

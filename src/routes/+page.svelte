@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-  <title>Fabled Dynamic Editor</title>
+  <title>GKPixel Skill Editor</title>
 </svelte:head>
 
 <div class="start">Select/Add a class/skill on the left to get started!</div>

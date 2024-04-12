@@ -7,13 +7,17 @@ import { get }                              from 'svelte/store';
 import { loadClassText }                    from '../data/class-store';
 import YAML                                 from 'yaml';
 import { initComponents }                   from '$api/components/components';
+import {refreshAxios} from "$api/cdn";
+import {initOAuth} from "$api/oauth";
 
 export const ssr = false;
 
-const expectedHost = 'fabled.magemonkey.studio';
+const expectedHost = 'skill.gkpixel.com';
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = async ({ url }) => {
+	initOAuth();
+	refreshAxios();
 	initComponents();
 	if (url.host.includes('localhost')) return;
 
