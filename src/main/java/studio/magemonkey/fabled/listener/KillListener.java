@@ -26,9 +26,11 @@
  */
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -93,6 +95,18 @@ public class KillListener extends FabledListener {
         }
     }
 
+    private void setKiller(LivingEntity t, LivingEntity d) {
+        if (t instanceof Player target) {
+            if (d instanceof Player damager) {
+                target.setKiller(damager);
+            }
+            if (d instanceof Tameable tameable) {
+                if (tameable.getOwner() != null)
+                    target.setKiller(Bukkit.getPlayer(tameable.getOwner().getUniqueId()));
+            }
+        }
+    }
+
     /**
      * Grants experience upon killing a monster and blocks experience when
      * the monster originated from a blocked source.
@@ -127,8 +141,7 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        if (event.getDamager() instanceof Player player)
-            player.setKiller((Player) event.getDamager());
+        setKiller(event.getTarget(), event.getDamager());
     }
 
     /**
@@ -138,8 +151,7 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        if (event.getDamager() instanceof Player player)
-            player.setKiller((Player) event.getDamager());
+        setKiller(event.getTarget(), event.getDamager());
     }
 
     /**
@@ -149,7 +161,6 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        if (event.getDamager() instanceof Player player)
-            player.setKiller((Player) event.getDamager());
+        setKiller(event.getTarget(), event.getDamager());
     }
 }
