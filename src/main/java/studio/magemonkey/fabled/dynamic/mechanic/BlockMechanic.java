@@ -38,6 +38,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.particle.ParticleHelper;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -51,17 +52,20 @@ public class BlockMechanic extends MechanicComponent {
 
     private static final String SHAPE     = "shape";
     private static final String TYPE      = "type";
+    private static final String RANDOMIZE = "randomize";
     private static final String RADIUS    = "radius";
     private static final String WIDTH     = "width";
     private static final String HEIGHT    = "height";
     private static final String DEPTH     = "depth";
     private static final String BLOCK     = "block";
+    private static final String BLOCKS = "blocks";
     private static final String SECONDS   = "seconds";
     private static final String FORWARD   = "forward";
     private static final String UPWARD    = "upward";
     private static final String RIGHT     = "right";
     private static final String RESET_YAW = "reset-yaw";
     private static final String FILL = "fill";
+    private static final Random random = new Random();
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
     private static final HashMap<Location, BlockState> original = new HashMap<>();
@@ -218,11 +222,24 @@ public class BlockMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
 
-        Material block = Material.ICE;
-        try {
-            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase(Locale.US).replace(' ', '_'));
-        } catch (Exception ex) {
-            // Use default
+        boolean randomize = settings.getBool(RANDOMIZE, false);
+
+        List<Material> block = new LinkedList<>();
+        if (randomize) {
+            List<String> blocks = settings.getStringList(BLOCKS);
+            for (String b : blocks) {
+                try {
+                    block.add(Material.valueOf(b.toUpperCase().replace(' ', '_')));
+                } catch (Exception ex) {
+                    Logger.invalid("Invalid block type: " + b);
+                }
+            }
+        } else {
+            try {
+                block.add(Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_')));
+            } catch (Exception ex) {
+                Logger.invalid("Invalid block type: " + settings.getString(BLOCK, "ICE"));
+            }
         }
         int  ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
 
@@ -240,7 +257,7 @@ public class BlockMechanic extends MechanicComponent {
 
             states.add(b.getLocation());
             BlockState state = b.getState();
-            state.setType(block);
+            state.setType(block.get(random.nextInt(block.size())));
             state.update(true, false);
         }
 
