@@ -5033,7 +5033,9 @@ class WolfMechanic extends ProMechanic {
 				new DropdownSelect('Target', 'aggro_target', Object.values(get(targets)).map(t => t.name), 'Nearest')
 					.setTooltip('The target to aggro on'),
 				new BooleanSelect('Silent', 'silent', true)
-					.setTooltip('Whether the wolf should be silent')
+					.setTooltip('Whether the wolf should be silent'),
+				new BooleanSelect('No AI', 'no_ai', false)
+					.setTooltip('Whether the wolf should be controlled by an AI'),
 			],
 			summaryItems: ['color', 'name', 'seconds', 'amount']
 		}, true);
