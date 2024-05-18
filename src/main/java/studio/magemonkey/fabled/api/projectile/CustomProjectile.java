@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
@@ -310,7 +311,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         if (valid) {
             cancel();
             Bukkit.getPluginManager().callEvent(land());
-            if (callback != null && callback.shouldTargetBlocks())
+            if (callback != null)
                 callback.callback(this, null);
         }
     }
@@ -327,6 +328,11 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             hit.add(entity.getEntityId());
 
             boolean ally = Fabled.getSettings().isAlly(getShooter(), entity);
+            if (entity instanceof Player player) {
+                if (player.getGameMode() == GameMode.SPECTATOR) {
+                    continue;
+                }
+            }
             if (ally && !this.ally) continue;
             if (!ally && !this.enemy) continue;
             if (!Fabled.getSettings().isValidTarget(entity)) continue;
