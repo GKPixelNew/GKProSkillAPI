@@ -856,6 +856,25 @@ class NearestTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
+class PlayerTarget extends ProTarget {
+	public constructor() {
+		super({
+			name:         'Player',
+			description:  'Targets online players within the caster\'s world',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Ally', 'Enemy', 'All'], 'Ally')
+					.setTooltip('The offset from the target in the direction they are facing. Negative numbers go backwards'),
+			],
+			preview:      [
+				...particlesAtTargetPreviewOptions()
+			],
+			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class OffsetTarget extends ProTarget {
 	public constructor() {
 		super({
@@ -5139,6 +5158,7 @@ export const initComponents = () => {
 		LOCATION: { name: 'Location', component: LocationTarget },
 		NEAREST:  { name: 'Nearest', component: NearestTarget },
 		OFFSET:   { name: 'Offset', component: OffsetTarget },
+		PLAYER:   { name: 'Player', component: PlayerTarget },
 		REMEMBER: { name: 'Remember', component: RememberTarget },
 		SELF:     { name: 'Self', component: SelfTarget },
 		SINGLE:   { name: 'Single', component: SingleTarget },
