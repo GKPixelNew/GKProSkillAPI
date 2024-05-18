@@ -26,6 +26,13 @@
  */
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.GameMode;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
@@ -35,14 +42,6 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.data.Permissions;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import org.bukkit.GameMode;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 
 /**
  * Tracks who kills what entities and awards experience accordingly
@@ -128,8 +127,8 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player player)
+            player.setKiller((Player) event.getDamager());
     }
 
     /**
@@ -139,8 +138,8 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player player)
+            player.setKiller((Player) event.getDamager());
     }
 
     /**
@@ -150,7 +149,7 @@ public class KillListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
-        if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+        if (event.getDamager() instanceof Player player)
+            player.setKiller((Player) event.getDamager());
     }
 }
