@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -65,6 +66,8 @@ public class BlockMechanic extends MechanicComponent {
     private static final String RIGHT     = "right";
     private static final String RESET_YAW = "reset-yaw";
     private static final String FILL = "fill";
+    private static final String BLOCK_DAMAGE_TYPE = "block_damage_TYPE";
+    private static final String BLOCK_DAMAGE = "block_damage";
     private static final Random random = new Random();
 
     private static final HashMap<Location, Integer> pending = new HashMap<>();
@@ -223,6 +226,9 @@ public class BlockMechanic extends MechanicComponent {
         if (targets.isEmpty()) return false;
 
         boolean randomize = settings.getBool(RANDOMIZE, false);
+        float blockDamage = settings.getString(BLOCK_DAMAGE_TYPE, "static").equalsIgnoreCase("random") ?
+                new Random().nextFloat() :
+                (float) parseValues(caster, BLOCK_DAMAGE, level, 0);
 
         List<Material> block = new LinkedList<>();
         if (randomize) {
@@ -259,6 +265,11 @@ public class BlockMechanic extends MechanicComponent {
             BlockState state = b.getState();
             state.setType(block.get(random.nextInt(block.size())));
             state.update(true, false);
+            if (blockDamage > 0) {
+                for (var player : Bukkit.getOnlinePlayers()) {
+                    player.sendBlockDamage(loc, blockDamage);
+                }
+            }
         }
 
         // Revert after duration
