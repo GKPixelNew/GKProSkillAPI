@@ -61,6 +61,7 @@ public class WolfMechanic extends MechanicComponent {
     private static final String AMOUNT     = "amount";
     private static final String SITTING    = "sitting";
     private static final String AGGRO_TARGET = "aggro-target";
+    private static final String SILENT = "silent";
 
     private final Map<Integer, RemoveTask> tasks = new HashMap<>();
     private TargetComponent aggroTarget;
@@ -101,7 +102,8 @@ public class WolfMechanic extends MechanicComponent {
                         settings.getString(NAME, "").replace("{player}", player.getName())));
         double       damage  = parseValues(player, DAMAGE, level, 3.0);
         double       amount  = parseValues(player, AMOUNT, level, 1.0);
-        boolean      sitting = settings.getString(SITTING, "false").equalsIgnoreCase("true");
+        boolean sitting = settings.getBool(SITTING, false);
+        boolean silent = settings.getBool(SILENT, true);
         List<String> skills  = settings.getStringList(SKILLS);
 
         DyeColor dye = null;
@@ -122,6 +124,7 @@ public class WolfMechanic extends MechanicComponent {
             for (int i = 0; i < amount; i++) {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);
                 wolf.setOwner(player);
+                wolf.setSilent(silent);
                 AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (maxHealth != null)
                     maxHealth.setBaseValue(health);
