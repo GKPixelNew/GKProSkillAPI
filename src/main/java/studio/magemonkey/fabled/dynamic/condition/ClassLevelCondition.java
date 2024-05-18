@@ -52,7 +52,7 @@ public class ClassLevelCondition extends ConditionComponent {
     }
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         if (!(target instanceof Player)) return false;
 
         final PlayerClass playerClass = Fabled.getData((Player) target).getMainClass();

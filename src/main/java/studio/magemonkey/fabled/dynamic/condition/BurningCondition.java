@@ -11,7 +11,7 @@ public class BurningCondition extends ConditionComponent {
     private String burn;
 
     @Override
-    boolean test(LivingEntity caster, int level, LivingEntity target) {
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
 
         return (caster.getFireTicks() > 0) == burn.equalsIgnoreCase("Burn");
     }

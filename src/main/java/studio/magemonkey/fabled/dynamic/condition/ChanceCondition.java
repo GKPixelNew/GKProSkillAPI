@@ -33,7 +33,7 @@ public class ChanceCondition extends ConditionComponent {
     private static final String CHANCE = "chance";
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final double chance = parseValues(caster, CHANCE, level, 25) / 100.0;
         return Fabled.RANDOM.nextDouble() < chance;
     }

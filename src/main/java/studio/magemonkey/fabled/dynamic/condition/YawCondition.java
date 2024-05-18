@@ -7,7 +7,7 @@ public class YawCondition extends ConditionComponent {
     private static String MAX_YAW = "max-yaw";
 
     @Override
-    boolean test(LivingEntity caster, int level, LivingEntity target) {
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
         double yaw = target.getLocation().getYaw();
         if (yaw < 0) {
             yaw += 360;

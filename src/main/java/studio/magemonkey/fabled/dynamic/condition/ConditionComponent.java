@@ -36,7 +36,7 @@ public abstract class ConditionComponent extends EffectComponent {
         return filtered.size() > 0 && executeChildren(caster, level, filtered, force);
     }
 
-    abstract boolean test(final LivingEntity caster, final int level, final LivingEntity target);
+    public abstract boolean test(final LivingEntity caster, final int level, final LivingEntity target);
 
     /**
      * {@inheritDoc}

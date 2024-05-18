@@ -16,7 +16,7 @@ public class WorldCondition extends ConditionComponent {
     private boolean     blacklist;
 
     @Override
-    boolean test(LivingEntity caster, int level, LivingEntity target) {
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
         return worlds.contains(caster.getWorld().getName()) != blacklist;
     }
 

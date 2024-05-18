@@ -37,7 +37,7 @@ public class AttributeCondition extends ConditionComponent {
     private static final String MAX  = "max";
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         int value = 0;
         final int    min  = (int) parseValues(caster, MIN, level, 0);
         final int    max  = (int) parseValues(caster, MAX, level, 999);

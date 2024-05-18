@@ -41,7 +41,7 @@ public class DistanceCondition extends ConditionComponent {
     }
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         double min = parseValues(caster, MIN, level, 0);
         double max = parseValues(caster, MAX, level, 50);
         // Square values, so distanceSquared can be used to decrease load
