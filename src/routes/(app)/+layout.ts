@@ -1,10 +1,10 @@
 import type { LayoutLoad }                  from './$types';
 import { createPaste, getHaste }            from '$api/hastebin';
 import { base }                             from '$app/paths';
-import { loadSkillText, skills }            from '../data/skill-store';
-import { getAllClassYaml, getAllSkillYaml } from '../data/store';
+import { loadSkillText, skills }            from '../../data/skill-store';
+import { getAllClassYaml, getAllSkillYaml } from '../../data/store';
 import { get }                              from 'svelte/store';
-import { loadClassText }                    from '../data/class-store';
+import { loadClassText }                    from '../../data/class-store';
 import YAML                                 from 'yaml';
 import { initComponents }                   from '$api/components/components';
 import {refreshAxios} from "$api/cdn";

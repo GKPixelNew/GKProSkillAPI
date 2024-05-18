@@ -1,6 +1,5 @@
 import {Log, UserManager, type UserManagerSettings} from "oidc-client-ts";
 import {refreshAxios} from "$api/cdn";
-import {onMount} from "svelte";
 
 export let userManager: UserManager;
 let settings: UserManagerSettings;
@@ -19,7 +18,9 @@ export const initOAuth = () => {
         filterProtocolClaims: true,
         extraHeaders: {
             "Origin": window.location.origin
-        }
+        },
+        silent_redirect_uri: window.location.origin + "/oauth/silent",
+        automaticSilentRenew: true,
     } as UserManagerSettings;
     userManager = new UserManager(settings);
     userManager.events.addUserLoaded(() => {
@@ -34,8 +35,9 @@ export const login = () => {
     });
 }
 
-export const processLoginResponse = () => {
-    userManager.signinRedirectCallback().then(() => {
+export const processLoginResponse = (silent: boolean = false) => {
+    userManager.signinCallback().then(() => {
+        if (silent) return;
         window.location.href = window.location.origin;
     }).catch(function (err) {
         console.error(err);

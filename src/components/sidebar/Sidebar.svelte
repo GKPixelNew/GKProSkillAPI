@@ -1,151 +1,216 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	import { addClass, addClassFolder, classes, classFolders } from '../../data/class-store';
-	import { closeSidebar, isShowClasses, sidebarOpen }        from '../../data/store';
-	import SidebarEntry                                        from './SidebarEntry.svelte';
-	import { squish }                                          from '../../data/squish';
-	import { goto }                                            from '$app/navigation';
-	import { beforeUpdate, onDestroy, onMount }                from 'svelte';
-	import type { Unsubscriber }                               from 'svelte/store';
-	import { get }      from 'svelte/store';
-	import FabledFolder from '$api/fabled-folder';
-	import FabledClass from '$api/fabled-class';
-	import FabledSkill from '$api/fabled-skill';
-	import Folder      from '../Folder.svelte';
-	import { fly }                                             from 'svelte/transition';
-	import { clickOutside }                                    from '$api/clickoutside';
-	import { browser }                                         from '$app/environment';
-	import Toggle                                              from '../input/Toggle.svelte';
-	import { addSkill, addSkillFolder, skillFolders, skills }  from '../../data/skill-store';
-	import { base }                                            from '$app/paths';
+    import {addClass, addClassFolder, classes, classFolders} from '../../data/class-store';
+    import {closeSidebar, isShowClasses, sidebarOpen} from '../../data/store';
+    import SidebarEntry from './SidebarEntry.svelte';
+    import {squish} from '../../data/squish';
+    import {goto} from '$app/navigation';
+    import {beforeUpdate, onDestroy, onMount} from 'svelte';
+    import type {Unsubscriber} from 'svelte/store';
+    import {get} from 'svelte/store';
+    import FabledFolder from '$api/fabled-folder';
+    import FabledClass from '$api/fabled-class';
+    import FabledSkill from '$api/fabled-skill';
+    import Folder from '../Folder.svelte';
+    import {fly} from 'svelte/transition';
+    import {clickOutside} from '$api/clickoutside';
+    import {browser} from '$app/environment';
+    import Toggle from '../input/Toggle.svelte';
+    import {addSkill, addSkillFolder, skillFolders, skills} from '../../data/skill-store';
+    import {base} from '$app/paths';
+    import {getAllClasses, loading, reloadAllClasses} from "$api/cdn";
+    import Modal from "$components/Modal.svelte";
+    import ProInput from "$input/ProInput.svelte";
+    import {Circle} from "svelte-loading-spinners";
 
-	let folders: FabledFolder[] = [];
-	let classSub: Unsubscriber;
-	let skillSub: Unsubscriber;
-	let classIncluded: Array<FabledClass | FabledSkill> = [];
-	let skillIncluded: Array<FabledClass | FabledSkill> = [];
+    let folders: FabledFolder[] = [];
+    let classSub: Unsubscriber;
+    let skillSub: Unsubscriber;
+    let classIncluded: Array<FabledClass | FabledSkill> = [];
+    let skillIncluded: Array<FabledClass | FabledSkill> = [];
 
-	let width: number;
-	let height: number;
-	let scrollY: number;
-	const appendIncluded                                = (item: Array<FabledFolder | FabledClass | FabledSkill> | FabledFolder | FabledClass | FabledSkill, include: Array<FabledClass | FabledSkill>) => {
-		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
-		if (item instanceof FabledFolder) appendIncluded(item.data, include);
-		else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
-	};
+    let width: number;
+    let height: number;
+    let scrollY: number;
 
-	const rebuildFolders = (fold?: FabledFolder[]) => {
-		if (get(isShowClasses)) {
-			folders       = fold || get(classFolders);
-			classIncluded = [];
-			appendIncluded(folders, classIncluded);
-		} else {
-			folders       = fold || get(skillFolders);
-			skillIncluded = [];
-			appendIncluded(folders, skillIncluded);
-		}
-	};
+    let importing: 'class' | 'skill' | 'none' = 'none';
+    let options = {
+        classes: [],
+        skills: []
+    };
+    let importChoice = '';
+    let loadingOptions = false;
+    const appendIncluded = (item: Array<FabledFolder | FabledClass | FabledSkill> | FabledFolder | FabledClass | FabledSkill, include: Array<FabledClass | FabledSkill>) => {
+        if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
+        if (item instanceof FabledFolder) appendIncluded(item.data, include);
+        else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
+    };
 
-	onMount(() => {
-		if (!browser) return;
+    const rebuildFolders = (fold?: FabledFolder[]) => {
+        if (get(isShowClasses)) {
+            folders = fold || get(classFolders);
+            classIncluded = [];
+            appendIncluded(folders, classIncluded);
+        } else {
+            folders = fold || get(skillFolders);
+            skillIncluded = [];
+            appendIncluded(folders, skillIncluded);
+        }
+    };
 
-		classSub = classFolders.subscribe(rebuildFolders);
-		skillSub = skillFolders.subscribe(rebuildFolders);
-	});
+    const onImportClass = () => {
+        importing = 'class';
+        loadingOptions = true;
+        getAllClasses().then(res => {
+            options.classes = res;
+        }).finally(() => {
+            loadingOptions = false;
+        });
+    }
 
-	beforeUpdate(rebuildFolders);
+    onMount(() => {
+        if (!browser) return;
 
-	onDestroy(() => {
-		if (classSub) classSub();
-		if (skillSub) skillSub();
-	});
+        classSub = classFolders.subscribe(rebuildFolders);
+        skillSub = skillFolders.subscribe(rebuildFolders);
+    });
 
-	const clickOut = (e: MouseEvent) => {
-		if (width < 500) {
-			e.stopPropagation();
-			closeSidebar();
-		}
-	};
+    beforeUpdate(rebuildFolders);
+
+    onDestroy(() => {
+        if (classSub) classSub();
+        if (skillSub) skillSub();
+    });
+
+    const clickOut = (e: MouseEvent) => {
+        if (width < 500) {
+            e.stopPropagation();
+            closeSidebar();
+        }
+    };
+
+    const closeModal = () => {
+        importing = 'none';
+    }
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY} />
+<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY}/>
 
 <div id='sidebar'
-		 transition:squish
-		 on:introend={() => sidebarOpen.set(true)}
-		 on:outroend={() => sidebarOpen.set(false)}
-		 use:clickOutside={clickOut}
-		 style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
-	<div class='type-wrap'>
-		<Toggle bind:data={$isShowClasses} left='Classes' right='Skills' color='#111' inline={false} />
-		<hr />
-	</div>
-	{#if $isShowClasses}
-		<div class='items'
-				 in:fly={{x: -100}}
-				 out:fly={{x: -100}}>
-			{#each $classFolders as cf}
-				<Folder folder={cf} />
-			{/each}
-			{#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
-				<SidebarEntry
-					data={cl}
-					delay={200 + 100*i}
-					on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
-					{cl.name}{cl.location === 'server' ? '*' : ''}
-				</SidebarEntry>
-			{/each}
-			<SidebarEntry
-				delay={200 + 100*($classes.length+1)}>
-				<div class='new'>
+     transition:squish
+     on:introend={() => sidebarOpen.set(true)}
+     on:outroend={() => sidebarOpen.set(false)}
+     use:clickOutside={clickOut}
+     style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
+    <div class='type-wrap'>
+        <Toggle bind:data={$isShowClasses} left='Classes' right='Skills' color='#111' inline={false}/>
+        <hr/>
+    </div>
+    {#if $isShowClasses}
+        <div class='items'
+             in:fly={{x: -100}}
+             out:fly={{x: -100}}>
+            {#each $classFolders as cf}
+                <Folder folder={cf}/>
+            {/each}
+            {#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
+                <SidebarEntry
+                        data={cl}
+                        delay={200 + 100*i}
+                        on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
+                    {cl.name}{cl.location === 'server' ? '*' : ''}
+                </SidebarEntry>
+            {/each}
+            <SidebarEntry
+                    delay={200 + 100*($classes.length+1)}>
+                <div class='new'>
 					<span tabindex='0'
-								role='button'
-								on:click={() => addClass()}
-								on:keypress={(e) => e.key === 'Enter' && addClass()}>New Class</span>
-					<span class='new-folder'
-								tabindex='0'
-								role='button'
-								on:click={() => addClassFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && addClassFolder(new FabledFolder())}>New Folder</span>
-				</div>
-			</SidebarEntry>
-		</div>
-	{:else}
-		<div class='items'
-				 in:fly={{ x: 100 }}
-				 out:fly={{ x: 100 }}>
-			{#each $skillFolders as sk}
-				<Folder folder={sk} />
-			{/each}
-			{#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
-				<SidebarEntry
-					data={sk}
-					direction='right'
-					delay={200 + 100*i}
-					on:click={() => goto(`${base}/skill/${sk.name}`)}>
-					{sk.name}{sk.location === 'server' ? '*' : ''}
-				</SidebarEntry>
-			{/each}
-			<SidebarEntry
-				delay={200 + 100*($skills.length+1)}
-				direction='right'>
-				<div class='new'>
+                          role='button'
+                          on:click={() => addClass()}
+                          on:keypress={(e) => e.key === 'Enter' && addClass()}>New Class</span>
+                    <span class='new-folder'
+                          tabindex='0'
+                          role='button'
+                          on:click={() => addClassFolder(new FabledFolder())}
+                          on:keypress={(e) => e.key === 'Enter' && addClassFolder(new FabledFolder())}>New Folder</span>
+                </div>
+            </SidebarEntry>
+            <SidebarEntry delay={200 + 100*($classes.length+2)}>
+                <div class='new'>
 					<span tabindex='0'
-								role='button'
-								on:click={() => addSkill()}
-								on:keypress={(e) => e.key === 'Enter' && addSkill()}>New Skill</span>
-					<span class='new-folder'
-								tabindex='0'
-								role='button'
-								on:click={() => addSkillFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new FabledFolder())}>New Folder</span>
-				</div>
-			</SidebarEntry>
-		</div>
-	{/if}
+                          role='button'
+                          on:click={() => onImportClass()}
+                          on:keypress={(e) => e.key === 'Enter' && addClass()}>Import Class</span>
+                    <span tabindex='0'
+                          role='button'
+                          on:click={() => reloadAllClasses()}
+                          on:keypress={(e) => e.key === 'Enter' && addClass()}>Reload All</span>
+                </div>
+            </SidebarEntry>
+        </div>
+    {:else}
+        <div class='items'
+             in:fly={{ x: 100 }}
+             out:fly={{ x: 100 }}>
+            {#each $skillFolders as sk}
+                <Folder folder={sk}/>
+            {/each}
+            {#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
+                <SidebarEntry
+                        data={sk}
+                        direction='right'
+                        delay={200 + 100*i}
+                        on:click={() => goto(`${base}/skill/${sk.name}`)}>
+                    {sk.name}{sk.location === 'server' ? '*' : ''}
+                </SidebarEntry>
+            {/each}
+            <SidebarEntry
+                    delay={200 + 100*($skills.length+1)}
+                    direction='right'>
+                <div class='new'>
+					<span tabindex='0'
+                          role='button'
+                          on:click={() => addSkill()}
+                          on:keypress={(e) => e.key === 'Enter' && addSkill()}>New Skill</span>
+                    <span class='new-folder'
+                          tabindex='0'
+                          role='button'
+                          on:click={() => addSkillFolder(new FabledFolder())}
+                          on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new FabledFolder())}>New Folder</span>
+                </div>
+            </SidebarEntry>
+        </div>
+    {/if}
 </div>
 
+<Modal open={importing === "class"} width="300px" on:close={closeModal}>
+    <h2>匯入信仰</h2>
+    <hr />
+    <div class='import-container'>
+        <ProInput label='信仰 ID' tooltip='要匯入的信仰 ID' >
+            {#if loadingOptions}
+                <Circle size="25" color="#0083ef"/>
+            {:else}
+                <select bind:value={importChoice}>
+                    {#each options.classes as opt}
+                        <option value={opt}>{opt}</option>
+                    {/each}
+                </select>
+            {/if}
+        </ProInput>
+    </div>
+
+</Modal>
+
 <style>
+    .import-container {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        width: 100%;
+        padding-inline: 0.5rem;
+        padding-top: 0.25rem;
+    }
+
     #sidebar {
         position: absolute;
         top: 0;

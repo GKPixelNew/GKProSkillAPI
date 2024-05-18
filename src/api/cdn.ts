@@ -1,7 +1,12 @@
-import axios, {type AxiosInstance} from "axios";
+import axios, {AxiosError, type AxiosInstance} from "axios";
 import {userManager} from "$api/oauth";
+import {loadRaw} from "../data/store";
+import {notifyFailure, notifySuccess} from "$api/notify";
+import {classes} from "../data/class-store";
+import {get} from "svelte/store";
 
-export let CONFIGURED_AXIOS:AxiosInstance = axios;
+let CONFIGURED_AXIOS: AxiosInstance = axios;
+export let loading: String[] = [];
 
 export const refreshAxios = async () => {
     const user = await userManager.getUser()
@@ -17,4 +22,67 @@ export const refreshAxios = async () => {
         }
     });
     console.log('Axios refreshed')
+}
+
+export const importClass = async (classId: String) => {
+    CONFIGURED_AXIOS.get('class/' + classId).then(response => {
+        if (response.data.success) {
+            CONFIGURED_AXIOS.get('download/' + response.data.class.fileId).then(response => {
+                loadRaw(response.data, true)
+            })
+            notifySuccess('匯入成功');
+        } else {
+            notifyFailure('匯入失敗');
+        }
+    }).catch(error => {
+        if (error.response.status === 404) {
+            notifyFailure('匯入失敗，找不到信仰');
+        } else {
+            notifyFailure('匯入失敗，錯誤 ' + error.response.status);
+        }
+    })
+}
+
+export const importSkill = async (skillId: String) => {
+    CONFIGURED_AXIOS.get('skill/' + skillId).then(response => {
+        if (response.data.success) {
+            CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId).then(response => {
+                loadRaw(response.data, true)
+            })
+            notifySuccess('匯入成功');
+        } else {
+            notifyFailure('匯入失敗');
+        }
+    }).catch(error => {
+        if (error.response.status === 404) {
+            notifyFailure('匯入失敗，找不到技能');
+        } else {
+            notifyFailure('匯入失敗，錯誤 ' + error.response.status);
+        }
+    })
+}
+
+export const reloadAllClasses = async () => {
+    for (const c of get(classes)) {
+        loading.push(c.name);
+        await importClass(c.name)
+        loading.splice(loading.indexOf(c.name), 1);
+    }
+}
+
+export let getAllClasses = async () => {
+    try {
+        const response = await CONFIGURED_AXIOS.get("class");
+        if (response.data.success) {
+            return response.data.classes.map((s: { classId: any; }) => {
+                return s.classId
+            }).sort();
+        } else {
+            notifyFailure('讀取信仰列表失敗')
+        }
+        // @ts-ignore
+    } catch (error: AxiosError) {
+        notifyFailure('讀取信仰列表失敗，錯誤 ' + error.response.status)
+    }
+    return []
 }

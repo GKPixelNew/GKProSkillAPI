@@ -1,21 +1,22 @@
 <script lang='ts'>
-	import '../app.css';
-	import { active, importing, loadFile, saveAll, saveData, saveError, showSidebar } from '../data/store';
+	import '../../app.css';
+	import { active, importing, loadFile, saveAll, saveData, saveError, showSidebar } from '../../data/store';
 	import { onDestroy, onMount }                                                     from 'svelte';
 	import { browser }                                                                from '$app/environment';
 	import ImportModal
 																																										from '$components/ImportModal.svelte';
 	import NavBar                                                                     from '$components/NavBar.svelte';
 	import HeaderBar                                                                  from '$components/HeaderBar.svelte';
-	import { isSaving, skills }                                                       from '../data/skill-store';
+	import { isSaving, skills }                                                       from '../../data/skill-store';
 	import { fly }                                                                    from 'svelte/transition';
 	import type { Unsubscriber }                                                      from 'svelte/store';
 	import { get }                                                                    from 'svelte/store';
 	import Sidebar
 																																										from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                          from '../data/modal-service';
+	import { activeModal, closeModal, modalData, openModal }                          from '../../data/modal-service';
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
+	import {SvelteToast} from "@zerodevx/svelte-toast";
 
 	let dragging    = false;
 	let displaySave = false;
@@ -153,6 +154,8 @@
 		Drop to Import
 	</div>
 {/if}
+
+<SvelteToast/>
 
 <style>
     .dragging {

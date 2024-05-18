@@ -213,22 +213,22 @@
         cursor: pointer;
     }
 
-    .sidebar-entry:not(.in-folder):last-child {
+    .sidebar-entry:not(.in-folder):has(.new) {
         position: sticky;
         margin-top: 0.5rem;
         bottom: 0;
         background-color: unset;
     }
 
-    .sidebar-entry:not(:last-child), :global(.folder-content .sidebar-entry) {
+    .sidebar-entry:not(:has(.new)), :global(.folder-content .sidebar-entry) {
         border-bottom: 1px solid #aaa;
     }
 
-    .sidebar-entry.over:not(:last-child) {
+    .sidebar-entry.over:not(:has(.new)) {
         border-bottom: 10px solid rgba(0, 79, 143, 0.7);
     }
 
-    .sidebar-entry.over:last-child {
+    .sidebar-entry.over:has(.new) {
         border-top: 10px solid rgba(0, 79, 143, 0.7);
     }
 
