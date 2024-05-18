@@ -2248,6 +2248,8 @@ class BlockMechanic extends ProMechanic {
 					.setTooltip('Whether the target\'s yaw should be reset, effectively making the offsets cardinally aligned'),
 				new AttributeSelect('Seconds', 'seconds', 5)
 					.setTooltip('How long the blocks should be replaced for'),
+				new BooleanSelect('Fill', 'fill', false)
+					.setTooltip('Whether the inside of the region should be filled with the blocks, if set to False, the center will be hollow'),
 
 				// Sphere options
 				new AttributeSelect('Radius', 'radius', 3)
