@@ -62,8 +62,8 @@ public class NearestTarget extends TargetComponent {
         for (LivingEntity target : targets) {
             final Comparator<LivingEntity> comparator = new DistanceComparator(target.getLocation());
             Nearby.getLivingNearby(target, radius).stream()
+                    .filter(e -> self == IncludeCaster.IN_AREA || !e.equals(caster))
                     .min(comparator)
-                    .filter(t -> self.equals(IncludeCaster.IN_AREA) || caster != t)
                     .ifPresent(e -> {
                         GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
                         if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return;
@@ -189,7 +189,7 @@ public class NearestTarget extends TargetComponent {
     }
 
     private static class DistanceComparator implements Comparator<LivingEntity> {
-        private Location loc;
+        private final Location loc;
 
         private DistanceComparator(final Location loc) {
             this.loc = loc;

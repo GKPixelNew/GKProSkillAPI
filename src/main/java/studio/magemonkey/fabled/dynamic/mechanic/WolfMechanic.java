@@ -37,7 +37,6 @@ import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.skills.PassiveSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.ComponentRegistry;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
@@ -117,9 +116,7 @@ public class WolfMechanic extends MechanicComponent {
         List<LivingEntity> wolves  = new ArrayList<>();
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
-            aggroTargets = aggroTarget.getTargets(caster, level, Nearby.getLivingNearby(caster,
-                    parseValues(caster, "radius", level, 100),
-                    aggroTarget.getSelf() == TargetComponent.IncludeCaster.IN_AREA));
+            aggroTargets = aggroTarget.getTargets(caster, level, targets);
         }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
