@@ -89,8 +89,7 @@ public class DisguiseMechanic extends MechanicComponent {
                 if (!(target instanceof TempEntity)) {
                     DisguiseHook.disguisePlayer(
                             target,
-                            settings.getString(PLAYER, "Eniripsa96").replace("{player}", caster.getName()),
-                            changeName);
+                            filter(caster, target, settings.getString(PLAYER, "Eniripsa96")), changeName);
                 }
             }
         }
