@@ -605,8 +605,10 @@ public class Fabled extends SkillAPI {
         EffectManager.cleanUp();
         ArmorStandManager.cleanUp();
 
-        mainThread.disable();
-        mainThread = null;
+        if (mainThread != null) {
+            mainThread.disable();
+            mainThread = null;
+        }
 
         if (manaTask != null) {
             manaTask.cancel();
