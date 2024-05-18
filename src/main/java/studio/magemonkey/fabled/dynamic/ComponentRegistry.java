@@ -343,7 +343,7 @@ public class ComponentRegistry {
         builder.append("]},");
     }
 
-    private static void register(final EffectComponent component) {
+    public static void register(final EffectComponent component) {
         COMPONENTS.computeIfAbsent(component.getType(), t -> new HashMap<>())
                 .put(component.getKey().toLowerCase(), component.getClass());
     }
