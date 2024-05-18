@@ -1854,20 +1854,15 @@ public class PlayerData {
      * to update attribute/stats that comes with equipments
      */
     public void updatePlayerStat(Player player) {
-        if (!this.hasClass()) {
-            this.maxHealth = 0;
-            if (player != null)
-                this.updateHealth(player);
-            return;
-        }
-
         final double oldMaxHealth = this.maxHealth;
         this.maxHealth = 0;
         this.maxMana = 0;
 
-        for (PlayerClass playerClass : classes.values()) {
-            this.maxHealth += playerClass.getHealth();
-            this.maxMana += playerClass.getMana();
+        if (!this.hasClass()) {
+            for (PlayerClass playerClass : classes.values()) {
+                this.maxHealth += playerClass.getHealth();
+                this.maxMana += playerClass.getMana();
+            }
         }
 
         this.maxHealth = this.scaleStat(AttributeManager.HEALTH, maxHealth);
