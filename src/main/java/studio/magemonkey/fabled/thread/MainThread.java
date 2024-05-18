@@ -88,7 +88,8 @@ public class MainThread extends Thread {
     public void disable() {
         for (IThreadTask task : tasks) {
             try {
-                task.run();
+                if (task != null)
+                    task.run();
             } catch (IllegalPluginAccessException ignored) {
             }
         }
