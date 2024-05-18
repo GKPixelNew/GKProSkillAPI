@@ -117,8 +117,8 @@ publishing {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "mc.promcteam"
-            artifactId = "proskillapi"
+            groupId = project.group.toString()
+            artifactId = "fabled"
             version = version
 
             from(components["java"])
