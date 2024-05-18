@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.data.io;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerAccounts;
-import studio.magemonkey.fabled.log.Logger;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerAccounts;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +89,7 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public void saveData(PlayerAccounts data) {
-        if (!data.isLoaded()) return;
+        if (data == null || !data.isLoaded()) return;
 
         try {
             CommentedConfig config = new CommentedConfig(api,
