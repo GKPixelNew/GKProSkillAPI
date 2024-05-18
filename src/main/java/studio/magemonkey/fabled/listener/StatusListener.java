@@ -26,14 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.api.DefaultCombatProtection;
-import studio.magemonkey.fabled.api.event.*;
-import studio.magemonkey.fabled.api.util.FlagManager;
-import studio.magemonkey.fabled.api.util.StatusFlag;
-import studio.magemonkey.fabled.data.TitleType;
-import studio.magemonkey.fabled.language.RPGFilter;
-import studio.magemonkey.fabled.manager.TitleManager;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -41,12 +33,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.mccore.util.VersionManager;
+import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.event.*;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
+import studio.magemonkey.fabled.data.TitleType;
+import studio.magemonkey.fabled.dynamic.mechanic.CleanseMechanic;
+import studio.magemonkey.fabled.language.RPGFilter;
+import studio.magemonkey.fabled.manager.TitleManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -292,5 +294,15 @@ public class StatusListener extends FabledListener {
             }
         }
         return false;
+    }
+
+    @EventHandler
+    public void onPotion(EntityPotionEffectEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (FlagManager.hasFlag(player, StatusFlag.BYPASS_NEGATIVE) && event.getNewEffect() != null &&
+                    CleanseMechanic.NEGATIVE_POTIONS.contains(event.getNewEffect().getType())) {
+                event.setCancelled(true);
+            }
+        }
     }
 }

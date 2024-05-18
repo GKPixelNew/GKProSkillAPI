@@ -26,8 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.util.FlagManager;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ import java.util.List;
 public class StatusMechanic extends MechanicComponent {
     private static final String KEY      = "status";
     private static final String DURATION = "duration";
+    private static final String FORCE = "force";
 
     @Override
     public String getKey() {
@@ -58,10 +60,14 @@ public class StatusMechanic extends MechanicComponent {
             return false;
         }
 
-        String key     = settings.getString(KEY, "stun").toLowerCase();
+        String key = settings.getString(KEY, "stun").toLowerCase().replace(" ", "_");
         double seconds = parseValues(caster, DURATION, level, 3.0);
         int    ticks   = (int) (seconds * 20);
+        boolean forceStatus = settings.getBool(FORCE, false);
         for (LivingEntity target : targets) {
+            if (FlagManager.hasFlag(target, StatusFlag.BYPASS_NEGATIVE) && StatusFlag.NEGATIVE.contains(key) && !forceStatus) {
+                continue;
+            }
             FlagManager.addFlag(target, key, ticks);
         }
         return targets.size() > 0;
