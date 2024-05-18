@@ -60,9 +60,9 @@ configurations {
     }
 }
 
-group = "com.promcteam"
+group = "studio.magemonkey"
 version = "1.3.2-R0.3-SNAPSHOT"
-description = "ProSkillAPI"
+description = "fabled"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks {
@@ -86,6 +86,31 @@ tasks {
             environment("FABLED_VERSION", project.version)
         }
         useJUnitPlatform()
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("pluginMaven") {
+            groupId = "studio.magemonkey"
+            artifactId = "fabled"
+            version = project.version.toString()
+        }
+    }
+    repositories {
+        maven {
+            name = "Reposilite"
+            url = uri(
+                (if ((publications.getByName("pluginMaven") as MavenPublication).version.toString()
+                        .endsWith("-SNAPSHOT")
+                )
+                    System.getenv("REPOSILITE_HOST") + "/snapshots" else System.getenv("REPOSILITE_HOST") + "/releases")
+            )
+            credentials {
+                username = System.getenv("REPOSILITE_USER")
+                password = System.getenv("REPOSILITE_PASSWORD")
+            }
+        }
     }
 }
 
