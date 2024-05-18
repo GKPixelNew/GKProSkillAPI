@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -89,7 +89,7 @@ public class CmdBind implements IFunction, TabCompleter {
         ItemMeta meta = item.getItemMeta();
 
         if (args.length >= 1) {
-            PlayerData playerData = Fabled.getPlayerData((Player) sender);
+            PlayerData playerData = Fabled.getData((Player) sender);
 
             StringBuilder skillName = new StringBuilder(args[0]);
             for (int i = 1; i < args.length; i++) {
@@ -126,7 +126,7 @@ public class CmdBind implements IFunction, TabCompleter {
                                       @NotNull String s,
                                       @NotNull String[] args) {
         if (!(commandSender instanceof Player)) return null;
-        return ConfigurableCommand.getTabCompletions(Fabled.getPlayerData((Player) commandSender).getSkills().stream()
+        return ConfigurableCommand.getTabCompletions(Fabled.getData((Player) commandSender).getSkills().stream()
                 .map(playerSkill -> playerSkill.getData().getName())
                 .collect(Collectors.toList()), args);
     }

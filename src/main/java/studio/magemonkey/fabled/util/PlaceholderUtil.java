@@ -58,7 +58,7 @@ public class PlaceholderUtil {
     }
 
     public static String replace(OfflinePlayer player, String identifier) {
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
 
         if (identifier.startsWith("group_")) {
             if (!Fabled.getClasses().isEmpty()) {
@@ -230,7 +230,7 @@ public class PlaceholderUtil {
             return "0";
         }
 
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
 
         if (data == null) {
             return "0";
@@ -327,7 +327,7 @@ public class PlaceholderUtil {
 
         if (identifier.startsWith("player_")) {
             if (identifier.startsWith("player_account_")) {
-                PlayerAccounts accounts = Fabled.getPlayerAccountData(player);
+                PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
                 Pattern        pattern  = Pattern.compile("player_account_(\\d+)");
                 Matcher        matcher  = pattern.matcher(identifier);
                 if (matcher.find()) {

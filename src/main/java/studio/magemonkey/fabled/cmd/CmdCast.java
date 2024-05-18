@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -74,7 +74,7 @@ public class CmdCast implements IFunction, TabCompleter {
 
             // Requires at least one argument
         else if (args.length >= 1) {
-            PlayerData player = Fabled.getPlayerData((Player) sender);
+            PlayerData player = Fabled.getData((Player) sender);
 
             // Get the skill name
             String skill = String.join(" ", args);
@@ -111,7 +111,7 @@ public class CmdCast implements IFunction, TabCompleter {
                                       @NotNull String s,
                                       @NotNull String[] args) {
         if (!(commandSender instanceof Player)) return null;
-        return ConfigurableCommand.getTabCompletions(Fabled.getPlayerData((Player) commandSender).getSkills().stream()
+        return ConfigurableCommand.getTabCompletions(Fabled.getData((Player) commandSender).getSkills().stream()
                 .filter(playerSkill -> playerSkill.getData() instanceof SkillShot)
                 .map(playerSkill -> playerSkill.getData().getKey())
                 .collect(Collectors.toList()), args);

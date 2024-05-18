@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -105,7 +105,7 @@ public class GUITask extends RepeatThreadTask {
             if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) continue;
             if (!Fabled.hasPlayerData(player)) continue;
 
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
 
             // Health scale
             if (forceScaling) {

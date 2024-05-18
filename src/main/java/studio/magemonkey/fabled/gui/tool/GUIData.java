@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.gui.tool;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -49,9 +50,11 @@ public class GUIData {
             SLOTS = "slots";
 
     private final ArrayList<GUIPage> pageMap  = new ArrayList<GUIPage>();
+    @Getter
     private       boolean            editable = true;
 
     private int rows  = 3;
+    @Getter
     private int pages = 1;
     private int nav   = 0;
 
@@ -119,8 +122,6 @@ public class GUIData {
         player.getPlayer().openInventory(inv);
     }
 
-    public boolean isEditable() {return editable;}
-
     public GUIPage getPage(int page) {
         return pageMap.get(page % pages);
     }
@@ -152,10 +153,6 @@ public class GUIData {
 
     public void prev() {
         nav = (nav + pages - 1) % pages;
-    }
-
-    public int getPages() {
-        return pages;
     }
 
     public void addPage() {

@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -110,7 +110,7 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public void saveAll() {
-        Map<String, PlayerAccounts> data = Fabled.getPlayerAccountData();
+        Map<String, PlayerAccounts> data = Fabled.getPlayerAccounts();
         ArrayList<String>           keys = new ArrayList<String>(data.keySet());
         for (String key : keys)
             saveData(data.get(key));

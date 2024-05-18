@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -89,7 +89,7 @@ public class CmdExp implements IFunction, TabCompleter {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
                 return;
             }
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
 
             // Parse the experience
             double amount = NumberParser.parseDouble(args[numberIndex]);

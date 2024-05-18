@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -44,7 +44,7 @@ public class AttributeCondition extends ConditionComponent {
         final int    min  = (int) parseValues(caster, MIN, level, 0);
         final int    max  = (int) parseValues(caster, MAX, level, 999);
 
-        final PlayerData data  = Fabled.getPlayerData((Player) target);
+        final PlayerData data  = Fabled.getData((Player) target);
         final int        value = data.getAttribute(attr);
         return value >= min && value <= max;
     }

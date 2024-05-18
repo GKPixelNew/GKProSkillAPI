@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ public class CmdRefund implements IFunction {
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Only players have skills
         if (sender instanceof Player) {
-            PlayerData player = Fabled.getPlayerData((Player) sender);
+            PlayerData player = Fabled.getData((Player) sender);
 
             // Reset all skills
             if (args.length < 1) {
@@ -75,7 +75,7 @@ public class CmdRefund implements IFunction {
             } else if (args.length > 2 && args[1].equals("attribute")) {
 
                 OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
-                PlayerData    playerData = Fabled.getPlayerData(player1);
+                PlayerData    playerData = Fabled.getData(player1);
 
                 int current = playerData.getInvestedAttribute(args[2].toLowerCase());
 
@@ -96,7 +96,7 @@ public class CmdRefund implements IFunction {
                 }
             } else if (args.length == 2 && args[1].equals("attribute")) {
                 OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
-                PlayerData    playerData = Fabled.getPlayerData(player1);
+                PlayerData    playerData = Fabled.getData(player1);
 
                 List<String> refunded = playerData.refundAttributes();
                 cmd.sendMessage(sender,

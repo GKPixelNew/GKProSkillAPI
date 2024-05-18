@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -60,7 +60,7 @@ public class CmdClearBinds implements IFunction {
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
             command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         } else {
-            PlayerData player = Fabled.getPlayerData((Player) sender);
+            PlayerData player = Fabled.getData((Player) sender);
 
             player.clearAllBinds();
             command.sendMessage(sender, UNBOUND, "&2All skill bindings have been cleared");

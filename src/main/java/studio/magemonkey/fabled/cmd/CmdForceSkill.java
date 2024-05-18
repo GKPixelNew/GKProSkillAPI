@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ public class CmdForceSkill implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerData    playerData = Fabled.getPlayerData(player);
+            PlayerData    playerData = Fabled.getData(player);
             StringBuilder skillName  = new StringBuilder(args[2]);
             for (int i = 3; i < args.length; i++) skillName.append(" " + args[i]);
             PlayerSkill skill = playerData.getSkill(skillName.toString());
@@ -120,7 +120,7 @@ public class CmdForceSkill implements IFunction, TabCompleter {
         } else if (args.length == 2) {
             return ConfigurableCommand.getTabCompletions(List.of("up", "down", "reset"), new String[]{args[1]});
         } else if (args.length > 2) {
-            PlayerData playerData = Fabled.getPlayerData(Bukkit.getPlayer(args[0]));
+            PlayerData playerData = Fabled.getData(Bukkit.getPlayer(args[0]));
             if (playerData == null) return null;
             return ConfigurableCommand.getTabCompletions(playerData.getSkills().stream()
                     .map(playerSkill -> playerSkill.getData().getName())

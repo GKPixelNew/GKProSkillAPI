@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -84,7 +85,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends JavaPlugin implements SkillAPI {
+public class Fabled extends SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
@@ -113,15 +114,11 @@ public class Fabled extends JavaPlugin implements SkillAPI {
 
     public Fabled() throws IOException {
         super();
-        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
-        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
     public Fabled(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) throws
             IOException {
         super(loader, description, dataFolder, file);
-        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
-        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
     /**
@@ -312,11 +309,11 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param player player to get the data for
      * @return the class data of the player
      */
-    public static PlayerData getPlayerData(OfflinePlayer player) {
+    public static PlayerData getData(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
-        return getPlayerAccountData(player).getActiveData();
+        return getPlayerAccounts(player).getActiveData();
     }
 
     /**
@@ -327,7 +324,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      *
      * @param player player to load the data for
      */
-    public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
+    public static PlayerAccounts loadPlayerAccounts(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
@@ -415,8 +412,8 @@ public class Fabled extends JavaPlugin implements SkillAPI {
             return;
         }
 
-        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
-            PlayerAccounts accounts = getPlayerAccountData(player);
+        singleton.getServer().getScheduler().runTaskAsynchronously((Plugin) singleton, () -> {
+            PlayerAccounts accounts = getPlayerAccounts(player);
             if (!skipSaving) {
                 singleton.io.saveData(accounts);
             }
@@ -432,14 +429,14 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param player player to get the data for
      * @return the class data of the player
      */
-    public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
+    public static PlayerAccounts getPlayerAccounts(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
 
         String id = player.getUniqueId().toString().toLowerCase();
         if (!inst().players.containsKey(id)) {
-            PlayerAccounts data = loadPlayerData(player);
+            PlayerAccounts data = loadPlayerAccounts(player);
             singleton.players.put(id, data);
             return data;
         } else {
@@ -453,7 +450,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      *
      * @return all Fabled player data
      */
-    public static Map<String, PlayerAccounts> getPlayerAccountData() {
+    public static Map<String, PlayerAccounts> getPlayerAccounts() {
         return inst().players;
     }
 
@@ -474,7 +471,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLater(inst(), delay);
+        return runnable.runTaskLater((JavaPlugin) inst(), delay);
     }
 
     /**
@@ -484,7 +481,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(Runnable runnable, int delay) {
-        return Bukkit.getScheduler().runTaskLater(singleton, runnable, delay);
+        return Bukkit.getScheduler().runTaskLater((JavaPlugin) singleton, runnable, delay);
     }
 
     /**
@@ -495,7 +492,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param period   how often to run in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
-        return runnable.runTaskTimer(inst(), delay, period);
+        return runnable.runTaskTimer((JavaPlugin) inst(), delay, period);
     }
 
     /**
@@ -506,7 +503,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param value  value to store
      */
     public static void setMeta(Metadatable target, String key, Object value) {
-        target.setMetadata(key, new FixedMetadataValue(inst(), value));
+        target.setMetadata(key, new FixedMetadataValue((JavaPlugin) inst(), value));
     }
 
     /**
@@ -516,9 +513,10 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param key    key the value was stored under
      * @return the stored value
      */
+    @SuppressWarnings("ConstantValue")
     public static Object getMeta(Metadatable target, String key) {
         List<MetadataValue> meta = target.getMetadata(key);
-        return meta == null || meta.size() == 0 ? null : meta.get(0).value();
+        return meta == null || meta.isEmpty() ? null : meta.get(0).value();
     }
 
     /**
@@ -550,7 +548,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @param key    key metadata was stored under
      */
     public static void removeMeta(Metadatable target, String key) {
-        target.removeMetadata(key, inst());
+        target.removeMetadata(key, (JavaPlugin) inst());
     }
 
     /**
@@ -560,7 +558,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      * @return config data
      */
     public static CommentedConfig getConfig(String name) {
-        return new CommentedConfig(singleton, name);
+        return new CommentedConfig((JavaPlugin) singleton, name);
     }
 
     /**
@@ -570,11 +568,18 @@ public class Fabled extends JavaPlugin implements SkillAPI {
         Fabled inst = inst();
         inst.onDisable();
         inst.onEnable();
-        YAMLMenu.reloadMenus(inst);
+        YAMLMenu.reloadMenus((JavaPlugin) inst);
     }
 
     @Override
     public void onLoad() {
+        try {
+            MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
+            MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
+        } catch (IOException e) {
+            getLogger().warning("Failed to migrate ProSkillAPI data to Fabled. " + e.getMessage());
+        }
+
         MimicHook.init(this);
         fabledProvider = new FabledAttributeProvider(this);
         AttributeRegistry.registerProvider(fabledProvider);
@@ -626,7 +631,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
         classes.clear();
         players.clear();
 
-        HandlerList.unregisterAll(this);
+        HandlerList.unregisterAll((JavaPlugin) this);
         cmd.clear();
 
         loaded = false;
@@ -649,7 +654,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
         if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required Codex version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
-            Bukkit.getPluginManager().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin((JavaPlugin) this);
             return;
         }
 
@@ -662,7 +667,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
         // Load settings
         settings = new Settings(this);
         settings.reload();
-        language = new CommentedLanguageConfig(this, "language");
+        language = new CommentedLanguageConfig((JavaPlugin) this, "language");
         language.checkDefaults();
         language.trim();
         language.save();
@@ -735,7 +740,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
         if (settings.isManaEnabled()) {
             if (VersionManager.isVersionAtLeast(11400)) {
                 manaTask = Bukkit.getScheduler().runTaskTimer(
-                        this,
+                        (JavaPlugin) this,
                         new ManaTask(),
                         Fabled.getSettings().getGainFreq(),
                         Fabled.getSettings().getGainFreq()
@@ -784,7 +789,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
                     iterator.remove();
                 }
             }
-            Bukkit.getPluginManager().registerEvents(listener, this);
+            Bukkit.getPluginManager().registerEvents(listener, (JavaPlugin) this);
             this.listeners.add(listener);
         }
     }

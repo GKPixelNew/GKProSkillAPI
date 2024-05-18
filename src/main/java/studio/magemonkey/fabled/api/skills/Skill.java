@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.api.skills;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
@@ -843,7 +844,7 @@ public abstract class Skill implements IconHolder {
 
         damage = event.getDamage();
         knockback = event.isKnockback();
-        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(Fabled.inst(), cause));
+        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue((JavaPlugin) Fabled.inst(), cause));
         if (source instanceof Player) {
             if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
         }

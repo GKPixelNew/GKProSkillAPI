@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -92,7 +92,7 @@ public class StatMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData data = Fabled.getPlayerData((Player) target);
+                final PlayerData data = Fabled.getData((Player) target);
                 PlayerStatModifier modifier = new PlayerStatModifier("fabled.mechanic.stat_mechanic", amount,
                         Operation.valueOf(operation), false);
 

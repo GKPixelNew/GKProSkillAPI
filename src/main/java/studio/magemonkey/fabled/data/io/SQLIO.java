@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -26,18 +26,18 @@
  */
 package studio.magemonkey.fabled.data.io;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerAccounts;
-import studio.magemonkey.fabled.data.Settings;
-import studio.magemonkey.fabled.log.Logger;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.YAMLParser;
 import studio.magemonkey.codex.mccore.sql.ColumnType;
 import studio.magemonkey.codex.mccore.sql.direct.SQLDatabase;
 import studio.magemonkey.codex.mccore.sql.direct.SQLTable;
 import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerAccounts;
+import studio.magemonkey.fabled.data.Settings;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,9 +47,8 @@ import java.util.Map;
  * Loads player data from the SQL Database
  */
 public class SQLIO extends IOManager {
-    public static final String ID     = "id";
-    public static final String DATA   = "data";
-    public static final char   STRING = '√';
+    public static final String ID   = "id";
+    public static final String DATA = "data";
 
     /**
      * Initializes the SQL IO Manager
@@ -113,7 +112,7 @@ public class SQLIO extends IOManager {
     @Override
     public void saveAll() {
         SQLConnection               connection = openConnection();
-        Map<String, PlayerAccounts> data       = Fabled.getPlayerAccountData();
+        Map<String, PlayerAccounts> data       = Fabled.getPlayerAccounts();
         ArrayList<String>           keys       = new ArrayList<String>(data.keySet());
         for (String key : keys) {
             saveSingle(connection, data.get(key));
@@ -125,7 +124,7 @@ public class SQLIO extends IOManager {
         try {
             String playerKey = player.getUniqueId().toString().toLowerCase();
             DataSection file =
-                    new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
+                    new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(DATA));
             return load(player, file);
         } catch (Exception ex) {
             Logger.bug("Failed to load data from the SQL Database - " + ex.getMessage());
@@ -138,7 +137,7 @@ public class SQLIO extends IOManager {
 
         try {
             String playerKey = data.getOfflinePlayer().getUniqueId().toString().toLowerCase();
-            connection.table.createEntry(playerKey).set(DATA, file.toString(STRING));
+            connection.table.createEntry(playerKey).set(DATA, file.toString());
         } catch (Exception ex) {
             Logger.bug("Failed to save data for invalid player");
         }

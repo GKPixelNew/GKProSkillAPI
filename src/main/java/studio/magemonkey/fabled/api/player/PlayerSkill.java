@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -46,6 +46,15 @@ public final class PlayerSkill {
     @Getter
     @Setter
     private long        cooldown;
+    /**
+     * -- SETTER --
+     *  Sets the level of the skill. This will not update passive
+     *  effects. To level up/down the skill properly, use the
+     *  upgrade and downgrade methods in PlayerData.
+     *
+     * @param level new level of the skill
+     */
+    @Setter
     private int         level;
     private boolean     external;
 
@@ -252,17 +261,6 @@ public final class PlayerSkill {
 
         // The skill is available when both off cooldown and when there's enough mana
         return SkillStatus.READY;
-    }
-
-    /**
-     * Sets the level of the skill. This will not update passive
-     * effects. To level up/down the skill properly, use the
-     * upgrade and downgrade methods in PlayerData.
-     *
-     * @param level new level of the skill
-     */
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     /**

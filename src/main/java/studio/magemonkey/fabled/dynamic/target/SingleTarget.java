@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.particle.ParticleSettings;
 import studio.magemonkey.fabled.api.target.TargetHelper;
@@ -96,7 +97,7 @@ public class SingleTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("line-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("line-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
@@ -140,7 +141,7 @@ public class SingleTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("cylinder-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("cylinder-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

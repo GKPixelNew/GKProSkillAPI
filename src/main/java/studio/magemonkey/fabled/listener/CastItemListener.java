@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -130,7 +130,7 @@ public class CastItemListener extends FabledListener {
 
         PlayerSkillSlot slotData = new PlayerSkillSlot();
         data.put(player.getUniqueId(), slotData);
-        slotData.init(Fabled.getPlayerData(player));
+        slotData.init(Fabled.getData(player));
 
         PlayerInventory inv  = player.getInventory();
         int             slot = Fabled.getSettings().getCastSlot();

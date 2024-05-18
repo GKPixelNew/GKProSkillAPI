@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -27,6 +27,23 @@
 package studio.magemonkey.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.api.meta.NBTAttribute;
 import studio.magemonkey.codex.mccore.config.Filter;
@@ -64,22 +81,6 @@ import studio.magemonkey.fabled.manager.AttributeManager;
 import studio.magemonkey.fabled.manager.IAttributeManager;
 import studio.magemonkey.fabled.manager.ProAttribute;
 import studio.magemonkey.fabled.task.ScoreboardTask;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -90,7 +91,7 @@ import java.util.stream.Collectors;
  * and the skills in each of those classes. You should not instantiate this class
  * yourself and instead get it from the Fabled static methods.
  * <p>
- * In order to get a player's data, use "Fabled.getPlayerData(...)". Do NOT
+ * In order to get a player's data, use "Fabled.getData(...)". Do NOT
  * try to instantiate your own PlayerData object.
  */
 @Getter
@@ -1323,7 +1324,7 @@ public class PlayerData {
      * @return true if able to show the player, false otherwise
      */
     public boolean showSkills(Player player) {
-        // Cannot show an invalid player, and cannot show no skills
+        // Cannot show an invalid player, and cannot show zero skills
         if (player == null || classes.isEmpty() || skills.isEmpty()) {
             return false;
         }
@@ -1347,7 +1348,7 @@ public class PlayerData {
      * @return true if succeeded, false otherwise
      */
     public boolean showSkills(Player player, PlayerClass playerClass) {
-        // Cannot show an invalid player, and cannot show no skills
+        // Cannot show an invalid player, and cannot show zero skills
         if (player == null || playerClass.getData().getSkills().isEmpty()) {
             return false;
         }
@@ -1437,15 +1438,19 @@ public class PlayerData {
      * will not save any skills, experience, or levels of the previous class if
      * there was any. The new class will start at level 1 with 0 experience.
      *
+     * @param previous    the previously professed class, if any
      * @param fabledClass class to assign to the player
+     * @param reset       whether to reset the class data, specifically for changing classes to a class that is not a child of the previous one
      * @return the player-specific data for the new class
      */
-    public PlayerClass setClass(FabledClass previous, FabledClass fabledClass, boolean reset) {
+    public PlayerClass setClass(@Nullable FabledClass previous, FabledClass fabledClass, boolean reset) {
         PlayerClass c = classes.remove(fabledClass.getGroup());
         if (c != null) {
-            for (Skill skill : c.getData().getSkills()) {
+            List<Skill> skTemp =
+                    c.getPlayerData().getSkills().stream().map(PlayerSkill::getData).collect(Collectors.toList());
+            for (Skill skill : skTemp) {
                 String      nm = skill.getName().toLowerCase();
-                PlayerSkill ps = skills.get(nm);
+                PlayerSkill ps = this.skills.get(nm);
                 if (previous != null && fabledClass.hasParent() && fabledClass.getParent()
                         .getName()
                         .equals(previous.getName())) {
@@ -1458,19 +1463,19 @@ public class PlayerData {
                             resetAttribs();
 
                         skills.remove(nm);
-                        comboData.removeSkill(skill);
+                        comboData.removeSkill(ps.getData());
                     }
                 } else {
                     if (!reset && Fabled.getSettings().isRefundOnClassChange() && skills.containsKey(nm)) {
                         if (ps.getInvestedCost() > 0)
                             c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
                         skills.remove(nm);
-                        comboData.removeSkill(skill);
+                        comboData.removeSkill(ps.getData());
                     }
 
                     if (reset) {
                         skills.remove(nm);
-                        comboData.removeSkill(skill);
+                        comboData.removeSkill(ps.getData());
                     }
                     resetAttribs();
                 }
@@ -2539,7 +2544,7 @@ public class PlayerData {
     }
 
     private boolean applyUse(final Player player, final PlayerSkill skill, final double manaCost) {
-        player.setMetadata("custom-cooldown", new FixedMetadataValue(Fabled.inst(), 1));
+        player.setMetadata("custom-cooldown", new FixedMetadataValue((JavaPlugin) Fabled.inst(), 1));
         skill.startCooldown();
         if (Fabled.getSettings().isShowSkillMessages()) {
             skill.getData().sendMessage(player, Fabled.getSettings().getMessageRadius());
@@ -2552,7 +2557,9 @@ public class PlayerData {
             if (!removeTimer.isCancelled()) removeTimer.cancel();
         }
         removeTimer = Bukkit.getScheduler()
-                .runTaskLater(Fabled.inst(), () -> player.removeMetadata("custom-cooldown", Fabled.inst()), 20L);
+                .runTaskLater((JavaPlugin) Fabled.inst(),
+                        () -> player.removeMetadata("custom-cooldown", (JavaPlugin) Fabled.inst()),
+                        20L);
         return true;
     }
 
@@ -2588,7 +2595,7 @@ public class PlayerData {
                                 RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
-                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
+                Bukkit.getScheduler().runTaskLater((JavaPlugin) Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
             }
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.ON_COOLDOWN);
         }

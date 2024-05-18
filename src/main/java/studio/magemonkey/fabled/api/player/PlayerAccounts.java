@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -38,17 +38,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Represents the collection of accounts owned by a single player.
  * Most of the time, this class won't be used by other plugins as
  * you can skip directly to a player's active data using the
- * Fabled.getPlayerData methods. This would be if you want
+ * Fabled.getData methods. This would be if you want
  * to extend functionality for handling the inactive accounts.
  */
 public class PlayerAccounts {
-    private final HashMap<Integer, PlayerData> classData = new HashMap<>();
+    private final Map<Integer, PlayerData> classData = new HashMap<>();
     private final UUID                         player;
     private       int                          active;
     @Getter
@@ -172,7 +173,7 @@ public class PlayerAccounts {
      *
      * @return all account data for the player
      */
-    public HashMap<Integer, PlayerData> getAllData() {
+    public Map<Integer, PlayerData> getAllData() {
         return classData;
     }
 

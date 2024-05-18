@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -46,7 +46,7 @@ public class ManaCondition extends ConditionComponent {
         final String      type  = settings.getString(TYPE).toLowerCase();
         final double      min   = parseValues(caster, MIN, level, 0);
         final double      max   = parseValues(caster, MAX, level, 99);
-        final PlayerData  data  = Fabled.getPlayerData((Player) target);
+        final PlayerData  data  = Fabled.getData((Player) target);
         final PlayerSkill skill = getSkillData(caster);
         final double      mana  = data.getMana();
 

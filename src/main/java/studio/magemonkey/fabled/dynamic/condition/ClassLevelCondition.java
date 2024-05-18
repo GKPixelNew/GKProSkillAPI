@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -55,7 +55,7 @@ public class ClassLevelCondition extends ConditionComponent {
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         if (!(target instanceof Player)) return false;
 
-        final PlayerClass playerClass = Fabled.getPlayerData((Player) target).getMainClass();
+        final PlayerClass playerClass = Fabled.getData((Player) target).getMainClass();
         return playerClass != null && playerClass.getLevel() >= min && playerClass.getLevel() <= max;
     }
 }

@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -106,13 +106,13 @@ public class SkillDetailMenu extends MapMenu {
 
     @Override
     public void onUp(Player player) {
-        Fabled.getPlayerData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
+        Fabled.getData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
     }
 
     @Override
     public void onDown(Player player) {
         if (!Fabled.getSettings().isAllowDowngrade()) return;
-        Fabled.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
+        Fabled.getData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
     }
 
     @Override
@@ -127,13 +127,13 @@ public class SkillDetailMenu extends MapMenu {
 
         // Upgrade button
         else if (button == 1) {
-            Fabled.getPlayerData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
+            Fabled.getData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
         }
 
         // Downgrade button
         else if (button == 2) {
             if (Fabled.getSettings().isAllowDowngrade())
-                Fabled.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
+                Fabled.getData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
         }
 
         // More info button
@@ -146,7 +146,7 @@ public class SkillDetailMenu extends MapMenu {
 
     @Override
     public void setup(Player player) {
-        MapScheme scheme = MapScheme.get(api, Fabled.getPlayerData(player).getScheme());
+        MapScheme scheme = MapScheme.get(api, Fabled.getData(player).getScheme());
         MapScene  scene  = getScene(player);
         int       page   = getPage(player);
 

@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ public class CmdSwitch implements IFunction, TabCompleter {
 
         // Switch accounts if valid number
         else {
-            PlayerAccounts player = Fabled.getPlayerAccountData((Player) sender);
+            PlayerAccounts player = Fabled.getPlayerAccounts((Player) sender);
 
             FabledClass fabledClass = getRoot(Fabled.getClass(args[0]));
             if (fabledClass != null) {

@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -71,7 +71,7 @@ public class CmdReset implements IFunction {
                         ChatColor.GRAY + "Type " + ChatColor.GOLD + "/class reset confirm" + ChatColor.GRAY
                                 + " to continue");
             } else {
-                PlayerData data = Fabled.getPlayerData((Player) sender);
+                PlayerData data = Fabled.getData((Player) sender);
                 data.resetAll();
                 data.updatePlayerStat(((Player) sender).getPlayer());
                 cmd.sendMessage(sender, RESET, ChatColor.DARK_GREEN + "You have reset your active account data");

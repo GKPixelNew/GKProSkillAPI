@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -98,7 +98,7 @@ public class CmdForceProfess implements IFunction, TabCompleter {
             String name = args[1];
             for (int i = 2; i < args.length; i++) name += ' ' + args[i];
 
-            PlayerData  data   = Fabled.getPlayerData(player);
+            PlayerData  data   = Fabled.getData(player);
             FabledClass target = Fabled.getClass(name);
 
             // Invalid class

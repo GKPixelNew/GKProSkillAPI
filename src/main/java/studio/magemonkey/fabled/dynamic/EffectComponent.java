@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -26,6 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
@@ -33,13 +39,11 @@ import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -154,7 +158,7 @@ public abstract class EffectComponent {
 
         // Apply global modifiers
         if (Fabled.getSettings().isAttributesEnabled() && caster instanceof Player) {
-            PlayerData data = Fabled.getPlayerData((Player) caster);
+            PlayerData data = Fabled.getData((Player) caster);
             value = data.scaleDynamic(this, key, value);
         }
 
@@ -249,7 +253,7 @@ public abstract class EffectComponent {
      */
     protected PlayerSkill getSkillData(LivingEntity caster) {
         if (caster instanceof Player) {
-            return Fabled.getPlayerData((Player) caster).getSkill(skill.getName());
+            return Fabled.getData((Player) caster).getSkill(skill.getName());
         } else {
             return null;
         }
@@ -342,7 +346,7 @@ public abstract class EffectComponent {
                         );
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
         playChildrenPreviews(onPreviewStop, caster, level, targetSupplier);

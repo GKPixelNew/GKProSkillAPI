@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -63,13 +63,13 @@ public class ValueLoadMechanic extends MechanicComponent {
         String     key        = settings.getString(KEY);
         boolean    override   = settings.getBool(OVERRIDE);
         CastData   data       = DynamicSkill.getCastData(caster);
-        PlayerData playerData = Fabled.getPlayerData((OfflinePlayer) caster);
+        PlayerData playerData = Fabled.getData((OfflinePlayer) caster);
         if (!playerData.getAllPersistentData().containsKey(key)) return false;
         if (!data.contains(key) || override) {
             data.put(key, playerData.getPersistentData(key));
         }
         if (!override && settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }
