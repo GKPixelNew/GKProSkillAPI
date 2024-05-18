@@ -36,4 +36,8 @@ public class BlockChangeEvent extends Event implements Cancellable {
     public void setCancelled(boolean cancel) {
         cancelled = cancel;
     }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }

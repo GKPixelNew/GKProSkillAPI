@@ -65,6 +65,7 @@ import studio.magemonkey.fabled.dynamic.DynamicClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
 import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.hook.GKReplayHook;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.hook.mimic.MimicHook;
@@ -774,6 +775,11 @@ public class Fabled extends SkillAPI {
         // Copy the quests module if the plugin is loaded.
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
             ResourceManager.copyQuestsModule();
+        }
+
+        if (Bukkit.getServer().getPluginManager().getPlugin("GKReplay") != null) {
+            new GKReplayHook(this);
+            getLogger().info("ProSkillAPI hook into GKReplay: " + ChatColor.GREEN + "success.");
         }
 
         loaded = true;

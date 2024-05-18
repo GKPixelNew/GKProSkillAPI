@@ -32,7 +32,6 @@ import org.bukkit.Material;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.SkillStatus;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.manager.AttributeManager;
 
 /**
  * Represents player-specific data for a skill such as the player's
@@ -295,8 +294,7 @@ public final class PlayerSkill {
      * Starts the cooldown of the skill
      */
     public void startCooldown() {
-        long cd = (long) player.scaleStat(AttributeManager.COOLDOWN, skill.getCooldown(level) * 1000L);
-        cooldown = System.currentTimeMillis() + cd;
+        cooldown = System.currentTimeMillis() + (long) Math.floor(skill.getCooldown(level, player) * 1000L);
     }
 
     /**
