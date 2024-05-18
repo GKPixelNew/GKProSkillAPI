@@ -78,13 +78,13 @@ public abstract class MockedTest {
             // Copy to Fabled/dynamic/classes.yml
             File classDir = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "class");
             if (!classDir.exists()) classDir.mkdirs();
 
             File classFile = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic", "classes.yml");
             if (!classFile.exists()) {
                 classFile.createNewFile();
@@ -112,7 +112,7 @@ public abstract class MockedTest {
             // Remove from class folder
             File classFile = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "class", clazz + ".yml");
             if (classFile.exists()) {
                 classFile.delete();
@@ -128,13 +128,13 @@ public abstract class MockedTest {
             // Copy to Fabled/dynamic/skills.yml
             File skillDir = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "skill");
             if (!skillDir.exists()) skillDir.mkdirs();
 
             File skillFile = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic", "skills.yml");
             if (!skillFile.exists()) {
                 skillFile.createNewFile();
@@ -160,7 +160,7 @@ public abstract class MockedTest {
             // Remove from skill folder
             File skillFile = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
-                            .getProperty("FABLED_VERSION")
+                            .getenv("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "skill", skill + ".yml");
             if (skillFile.exists()) {
                 skillFile.delete();
