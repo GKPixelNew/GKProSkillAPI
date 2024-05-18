@@ -26,22 +26,17 @@
  */
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.skills.Skill;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.api.skills.Skill;
 
 /**
  * Event for when true damage is dealt (damage ignoring armor)
  */
-public class TrueDamageEvent extends Event implements Cancellable {
+public class TrueDamageEvent extends DamageEvent {
     private static final HandlerList  handlers = new HandlerList();
-    private final        LivingEntity damager;
-    private final        LivingEntity target;
     private final        Skill        skill;
-    private              double       damage;
-    private              boolean      cancelled;
 
     /**
      * Initializes a new event
@@ -51,11 +46,8 @@ public class TrueDamageEvent extends Event implements Cancellable {
      * @param damage  the amount of damage dealt
      */
     public TrueDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage) {
+        super(damager, target, damage, true);
         this.skill = skill;
-        this.damager = damager;
-        this.target = target;
-        this.damage = damage;
-        this.cancelled = false;
     }
 
     /**
@@ -66,66 +58,11 @@ public class TrueDamageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Retrieves the entity that dealt the damage
-     *
-     * @return entity that dealt the damage
-     */
-    public LivingEntity getDamager() {
-        return damager;
-    }
-
-    /**
-     * Retrieves the entity that received the damage
-     *
-     * @return entity that received the damage
-     */
-    public LivingEntity getTarget() {
-        return target;
-    }
-
-    /**
-     * Retrieves the amount of damage dealt
-     *
-     * @return amount of damage dealt
-     */
-    public double getDamage() {
-        return damage;
-    }
-
-    /**
-     * Sets the amount of damage dealt
-     *
-     * @param amount amount of damage dealt
-     */
-    public void setDamage(double amount) {
-        damage = amount;
-    }
-
-    /**
-     * Checks whether the event is cancelled
-     *
-     * @return true if cancelled, false otherwise
-     */
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    /**
-     * Sets the cancelled state of the event
-     *
-     * @param cancelled the cancelled state of the event
-     */
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-
-    /**
      * Retrieves the handlers for the event
      *
      * @return list of event handlers
      */
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
