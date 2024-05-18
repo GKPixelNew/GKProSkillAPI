@@ -107,7 +107,7 @@ publishing {
         maven {
             name = "Reposilite"
             url = uri(
-                (if ((publications.getByName("pluginMaven") as MavenPublication).version.toString()
+                (if ((publications.getByName("maven") as MavenPublication).version.toString()
                         .endsWith("-SNAPSHOT")
                 )
                     System.getenv("REPOSILITE_HOST") + "/snapshots" else System.getenv("REPOSILITE_HOST") + "/releases")
