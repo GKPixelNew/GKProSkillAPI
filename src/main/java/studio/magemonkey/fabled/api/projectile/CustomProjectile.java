@@ -29,10 +29,7 @@ package studio.magemonkey.fabled.api.projectile;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
@@ -361,10 +358,15 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             Object predicate = getEntities == null ? GUAVA_PREDICATE : JAVA_PREDICATE;
             Object list = (getEntities == null ? getEntitiesGuava : getEntities)
                     .invoke(nmsWorld, null, getBoundingBox(), predicate);
-            for (Object item : (List) list) {
+            for (Object item : (List<?>) list) {
                 LivingEntity entity = (LivingEntity) getBukkitEntity.invoke(item);
                 if (entity instanceof HumanEntity humanEntity) {
                     if (humanEntity.getGameMode() == GameMode.SPECTATOR)
+                        continue;
+                }
+                if (entity instanceof Tameable tameable) {
+                    if (tameable.getOwner() == thrower ||
+                            (tameable.isTamed() && tameable.getOwner() instanceof Player && Fabled.getSettings().isAlly((Player) tameable.getOwner(), thrower)))
                         continue;
                 }
                 result.add(entity);
