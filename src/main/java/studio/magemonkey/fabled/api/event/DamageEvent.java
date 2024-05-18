@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * An event for when an entity is damaged by another entity in this plugin.
@@ -34,6 +35,8 @@ public abstract class DamageEvent extends Event implements Cancellable {
     @Setter
     private double damage;
     private boolean cancelled;
+    @Getter
+    private static final HandlerList handlerList = new HandlerList();
 
     /**
      * Checks whether the event is cancelled

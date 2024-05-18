@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -37,16 +36,13 @@ import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.manager.AttributeManager;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Cleanses a target of negative potion or status effects
  */
 public class CleanseMechanic extends MechanicComponent {
-    public static final Set<PotionEffectType> NEGATIVE_POTIONS = ImmutableSet.of(
+    public static final List<PotionEffectType> NEGATIVE_POTIONS = Arrays.asList(
             PotionEffectType.BLINDNESS,
             PotionEffectType.CONFUSION,
             PotionEffectType.HUNGER,

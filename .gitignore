@@ -11,3 +11,5 @@ log.txt
 
 # Ignore Gradle build output directory
 build
+
+codex.jar

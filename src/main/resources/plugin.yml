@@ -1,62 +1,22 @@
 name: ${project.name}
-version: ${project.version}
 main: studio.magemonkey.fabled.Fabled
-provides:
-  - SkillAPI
-  - ProSkillAPI
-api-version: '1.19'
-authors:
-  - Travja
-  - goflish
-  - Eniripsa96
-  - Sentropic
-  - RobotHanzo
-has-open-classloader: true
-
-dependencies:
-  - name: Codex
-    required: true
-    bootstrap: true
-  - name: GKReplay
-    required: true
-    bootstrap: true
-  - name: Vault
-    required: false
-    bootstrap: true
-  - name: Citizens
-    required: false
-    bootstrap: true
-  - name: LibsDisguises
-    required: false
-    bootstrap: true
-  - name: PlaceholderAPI
-    required: false
-    bootstrap: true
-  - name: NoCheatPlus
-    required: false
-    bootstrap: true
-  - name: MythicMobs
-    required: false
-    bootstrap: true
-  - name: WorldGuard
-    required: false
-    bootstrap: true
-  - name: WorldEdit
-    required: false
-    bootstrap: true
-  - name: Mimic
-    required: false
-    bootstrap: true
-load-before:
-  - name: Divinity
-    boostrap: false
-  - name: Quests
-    boostrap: false
-  - name: TAB
-    boostrap: false
-load-after:
-  - name: Codex
-    boostrap: false
+version: ${project.version}
+authors: [ Travja, goflish, Eniripsa96, Sentropic ]
+depend: [ Codex ]
+softdepend:
+  - Vault
+  - Citizens
+  - LibsDisguises
+  - PlaceholderAPI
+  - NoCheatPlus
+  - MythicMobs
+  - WorldGuard
+  - WorldEdit
+  - Mimic
+  - ProtocolLib
+loadbefore: [ Divinity, Quests, TAB ]
+provides: [ SkillAPI, ProSkillAPI ]
+api-version: 1.16
 
 permissions:
   fabled.basic:
@@ -109,8 +69,8 @@ permissions:
       fabled.level: true
       fabled.mana: true
       fabled.points: true
-      skillapi.reload: true
-      skillapi.class: true
-      skillapi.skill: true
+      fabled.reload: true
+      fabled.class: true
+      fabled.skill: true
       skillapi.lore: true
       skillapi.gui: true
