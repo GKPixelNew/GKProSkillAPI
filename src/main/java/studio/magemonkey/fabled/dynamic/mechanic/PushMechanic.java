@@ -26,14 +26,20 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.event.SkillPushEvent;
-import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.SkillPushEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.dynamic.target.RememberTarget;
+import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Launches the target in a given direction relative to their forward direction
@@ -72,7 +78,24 @@ public class PushMechanic extends MechanicComponent {
             } else { // "scaled"
                 vel.multiply(speed / vel.lengthSquared());
             }
-            vel.setY(vel.getY() / 5 + 0.5);
+            double resistKnockback = 0;
+            if (target instanceof Player targetPlayer) {
+                PlayerData data = Fabled.getData(targetPlayer);
+                resistKnockback = data.scaleStat(AttributeManager.KNOCKBACK_RESIST, 0);
+            }
+            //If slow falling. we won't apply anti-knockback at push mechanics
+            boolean isSlowFalling = false;
+            if (target.hasPotionEffect(PotionEffectType.LEVITATION)) {
+                if (Objects.requireNonNull(target.getPotionEffect(PotionEffectType.LEVITATION)).getAmplifier() > 127) {
+                    isSlowFalling = true;
+                }
+            }
+            if (resistKnockback >= 1 && !isSlowFalling)
+                continue;
+            vel.setY(vel.getY() / 5);
+            if (!isSlowFalling) {
+                vel.multiply(1 - resistKnockback);
+            }
 
             SkillPushEvent event = new SkillPushEvent(caster, target, vel);
             Bukkit.getPluginManager().callEvent(event);
