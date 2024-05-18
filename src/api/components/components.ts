@@ -2597,6 +2597,10 @@ class DisguiseMechanic extends ProMechanic {
 					.requireValue('type', ['Player'])
 					.setTooltip('The player to disguise the target as'),
 
+				new BooleanSelect('Change Name', 'change-name', false)
+					.requireValue('type', ['Player'])
+					.setTooltip('Whether to change the entity\'s name to the player after disguising them'),
+
 				new DropdownSelect('Misc', 'misc', getMiscDisguises, 'Painting')
 					.requireValue('type', ['Misc'])
 					.setTooltip('The object to disguise the target as'),
