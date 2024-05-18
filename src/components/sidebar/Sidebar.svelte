@@ -161,11 +161,11 @@
 								role='button'
 								style="font-size: 14.9px"
 								on:click={() => onImportClass()}
-								on:keypress={(e) => e.key === 'Enter' && onImportClass()}>Import Class</span>
+								on:keypress={(e) => e.key === 'Enter' && onImportClass()}>匯入信仰</span>
 					<span tabindex='0'
 								role='button'
 								on:click={() => reloadAllClasses()}
-								on:keypress={(e) => e.key === 'Enter' && reloadAllClasses()}>Reload All</span>
+								on:keypress={(e) => e.key === 'Enter' && reloadAllClasses()}>重新整理</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -205,11 +205,11 @@
 						<span tabindex='0'
 									role='button'
 									on:click={() => onImportSkill()}
-									on:keypress={(e) => e.key === 'Enter' && onImportSkill()}>Import Skill</span>
+									on:keypress={(e) => e.key === 'Enter' && onImportSkill()}>匯入技能</span>
 					<span tabindex='0'
 								role='button'
 								on:click={() => reloadAllSkills()}
-								on:keypress={(e) => e.key === 'Enter' && reloadAllSkills()}>Reload All</span>
+								on:keypress={(e) => e.key === 'Enter' && reloadAllSkills()}>重新整理</span>
 				</div>
 			</SidebarEntry>
 		</div>

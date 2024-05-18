@@ -54,7 +54,7 @@
 						 }
 					 }}
 					 title='Import Data'>
-				Import
+				從檔案匯入
 			</div>
 
 			{#if $activeType}
@@ -69,7 +69,7 @@
 							 }
 						 }}
 						 title='Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}'>
-					Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}
+					分享 {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}
 				</div>
 			{/if}
 		</div>

@@ -19,8 +19,8 @@
          on:click={() => goto(`${base}/`)}
          on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
     >
-        <h1 class='accent'>GKPixel</h1>
-        <h2>Dynamic Skill Editor</h2>
+        <h1 class='accent'>GKPixel&copy;</h1>
+        <h2>技能編輯器&trade;</h2>
         <div class='copy'>&copy; ProMCTeam and GKPixelTeam {new Date().getFullYear()}</div>
     </div>
 
