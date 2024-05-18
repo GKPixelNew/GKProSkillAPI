@@ -91,10 +91,16 @@ tasks {
 
 publishing {
     publications {
-        create<MavenPublication>("pluginMaven") {
-            groupId = "dev.robothanzo.gk.sapi"
-            artifactId = "GKProSkillAPI"
-            version = project.version.toString()
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
         }
     }
     repositories {
