@@ -512,6 +512,20 @@ class SkillDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class TeleportTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name: 'Teleport',
+			description: 'Applies skill effects when a player gets teleported. Use the "api-distance" value to check/use the distance traveled. You may also use "api-from-x" "api-from-y" "api-from-z" "api-to-x" "api-to-y" and "api-to-z" to check the coordinates of the source and destination regarding the teleport.',
+			data: [new DropdownSelect('Type', 'type', ['Any', 'Ender Pearl', 'Command', 'Plugin', 'Nether Portal', 'End Portal', 'Spectate', 'End Gateway', 'Chorus Fruit', 'Dismount', 'Unknown'], 'Any')
+				.setTooltip('The type of projectile that should be launched')],
+			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class TookPhysicalTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -5041,7 +5055,7 @@ class WolfMechanic extends ProMechanic {
 				new BooleanSelect('No AI', 'no_ai', false)
 					.setTooltip('Whether the wolf should be controlled by an AI'),
 			],
-			summaryItems: ['color', 'name', 'seconds', 'amount']
+			summaryItems: ['color', 'name', 'seconds', 'amount', 'aggro_target']
 		}, true);
 		for (const t of Object.values(get(targets))) {
 			this.data.push(new SectionMarker('Target: ' + t.name).requireValue('aggro_target', [t.name]));
@@ -5152,6 +5166,7 @@ export const initComponents = () => {
 		SIGNAL:        { name: 'Signal', component: SignalTrigger },
 		SHIELD:        { name: 'Shield', component: ShieldTrigger },
 		SKILL_CAST:    { name: 'Skill Cast', component: SkillCastTrigger },
+		TELEPORT: { name: 'Teleport', component: TeleportTrigger },
 
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
@@ -5169,7 +5184,7 @@ export const initComponents = () => {
 		PHYS_DAMAGE:  { name: 'Physical Damage', component: PhysicalDamageTrigger, section: 'Damage' },
 		TOOK_PHYS:    { name: 'Took Physical Damage', component: TookPhysicalTrigger, section: 'Damage' },
 		SKILL_DAMAGE: { name: 'Skill Damage', component: SkillDamageTrigger, section: 'Damage' },
-		TOOK_SKILL:   { name: 'Took Skill Damage', component: TookSkillTrigger, section: 'Damage' }
+		TOOK_SKILL:   { name: 'Took Skill Damage', component: TookSkillTrigger, section: 'Damage' },
 	});
 	targets.set({
 		AREA:     { name: 'Area', component: AreaTarget },
