@@ -3438,6 +3438,8 @@ class ParticleProjectileMechanic extends ProMechanic {
 			data:         [
 				new BooleanSelect('Pierce', 'pierce')
 					.setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them'),
+				new BooleanSelect('Pierce through blocks', 'pierce-blocks')
+					.setTooltip('Whether this projectile should pierce through blocks'),
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
 				new IntSelect('Steps', 'steps', 2)
