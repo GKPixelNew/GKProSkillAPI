@@ -3504,23 +3504,6 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
-				new DropdownSelect('Hit Entity', 'hit-entity', ['True', 'False'], 'True')
-					.setTooltip('Whether this projectile can hit entities'),
-				new DropdownSelect('Missile', 'missile', ['True', 'False'], 'False')
-					.setTooltip('Whether the projectile should home any entity'),
-				new SectionMarker('Missile')
-					.requireValue('missile', ['True']),
-				new StringSelect('Missile Target Key', 'missile-target', '')
-					.setTooltip('The target should be homed')
-					.requireValue('missile', ['True']),
-				new DoubleSelect('Missile Strength', 'missile-strength', 0.5)
-					.setTooltip('The strength of the homing'),
-				new DoubleSelect('Missile Threshold', 'missile-threshold', 1)
-					.setTooltip('If the dot of the velocities between the projectile and the target is greater than the threshold, the projectile will change the velocity')
-					.requireValue('missile', ['True']),
-				new DoubleSelect('Missile Angle', 'missile-angle', 1)
-					.setTooltip('This is useless, not sure if this works in the future')
-					.requireValue('missile', ['True']),
 				...homingOptions(),
 				...projectileOptions(),
 				...particleOptions(),
