@@ -25,7 +25,7 @@
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
 	import type FabledAttribute from '$api/fabled-attribute';
-	import { importSkill } from '$api/cdn.js';
+	import { importClass, importSkill } from '$api/cdn.js';
 
 	let folders: FabledFolder[] = [];
 	let classSub: Unsubscriber;
@@ -255,6 +255,11 @@
 				</select>
 			{/if}
 		</ProInput>
+		<button on:click={() => importClass(importChoice)}
+						on:keypress={(e) => e.key === 'Enter' && importClass(importChoice)}
+						class="button"
+						style="grid-column: 1 / span 2"
+						tabindex='0'>確認匯入</button>
 	</div>
 </Modal>
 
@@ -273,10 +278,11 @@
 				</select>
 			{/if}
 		</ProInput>
-		<span on:click={() => importSkill(importChoice)}
-					on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new FabledFolder())}
-					role='button'
-					tabindex='0'>確認匯入</span>
+		<button on:click={() => importSkill(importChoice)}
+					on:keypress={(e) => e.key === 'Enter' && importSkill(importChoice)}
+						class="button"
+						style="grid-column: 1 / span 2"
+					tabindex='0'>確認匯入</button>
 	</div>
 </Modal>
 
