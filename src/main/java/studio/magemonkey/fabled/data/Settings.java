@@ -859,6 +859,15 @@ public class Settings {
         if (attacker instanceof Player && target instanceof Player) {
             if (playerAlly) return false;
             if (playerWorlds.contains(target.getWorld().getName())) return false;
+        } else if (target instanceof Tameable tameable) {
+            if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+                return false;
+            }
+
+            if (tameable.isTamed() && (tameable.getOwner() instanceof Player)) {
+                return (tameable.getOwner() != target)
+                        && canAttack(attacker, (Player) tameable.getOwner());
+            }
             return CombatProtection.canAttack(attacker, target, passiveAlly, cause);
         } else {
             if (attacker instanceof Tameable tameable) {
