@@ -2403,7 +2403,11 @@ class CleanseMechanic extends ProMechanic {
 				new DropdownSelect('Potion', 'potion', getBadPotions, undefined, true)
 					.setTooltip('The type of potion effect to remove from the target'),
 				new DropdownSelect('Status', 'status', ['All', 'Curse', 'Disarm', 'Root', 'Silence', 'Stun'], undefined, true)
-					.setTooltip('The status to remove from the target')
+					.setTooltip('The status to remove from the target'),
+				new BooleanSelect('Extinguish Target', 'extinguish', true)
+					.setTooltip('Whether to extinguish the player if they are on fire'),
+				new BooleanSelect('Reset Negative Stats', 'reset-negative-stats', true)
+					.setTooltip('Whether to reset the negative stats of the target, mainly below default speed')
 			],
 			summaryItems: ['potion', 'status']
 		}, false);
