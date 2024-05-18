@@ -310,7 +310,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         if (valid) {
             cancel();
             Bukkit.getPluginManager().callEvent(land());
-            if (callback != null)
+            if (callback != null && callback.shouldTargetBlocks())
                 callback.callback(this, null);
         }
     }

@@ -26,6 +26,21 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -41,20 +56,6 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.task.RemoveTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -100,6 +101,14 @@ public class PotionProjectileMechanic extends MechanicComponent {
     public static final String RADIUS_ON_USE   = "radius-on-use";
     public static final String RADIUS_PER_TICK = "radius-per-tick";
     public static final String CLOUD_PREFIX    = "cloud-";
+    private static final String TARGET_BLOCKS = "target-blocks";
+    private boolean targetBlocks;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     @Override
     public String getKey() {
@@ -266,6 +275,10 @@ public class PotionProjectileMechanic extends MechanicComponent {
      * @param hit    the entity hit by the projectile, if any
      */
     public void callback(Entity entity, Collection<LivingEntity> hit) {
+        if (hit == null || hit.isEmpty()) {
+            hit = List.of(new TempEntity(entity.getLocation()));
+        }
+        if (hit.stream().anyMatch(i -> i instanceof TempEntity) && !targetBlocks) return;
         List<LivingEntity> targets = new ArrayList<>(hit);
         String             group   = settings.getString(ALLY, "enemy").toLowerCase();
         boolean            both    = group.equals("both");
@@ -318,6 +331,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
                     if (hit == null) {
                         hit = new TempEntity(projectile.getLocation());
                     }
+                    if (hit instanceof TempEntity && !targetBlocks) return;
                     List<LivingEntity> hitTargets = new ArrayList<>();
                     if (settings.getBool(LINGER, false)) {
                         double   radius = parseValues(caster, RADIUS, level, 3);

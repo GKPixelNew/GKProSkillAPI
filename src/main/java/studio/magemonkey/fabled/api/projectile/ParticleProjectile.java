@@ -28,7 +28,6 @@ package studio.magemonkey.fabled.api.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
@@ -212,7 +211,7 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     protected boolean landed() {
-        return getLocation().getBlock().getType() != Material.AIR;
+        return getLocation().getBlock().isPassable();
     }
 
     /**

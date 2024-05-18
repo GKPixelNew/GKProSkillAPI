@@ -26,6 +26,14 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -37,14 +45,8 @@ import studio.magemonkey.fabled.api.projectile.ItemProjectile;
 import studio.magemonkey.fabled.api.projectile.ParticleProjectile;
 import studio.magemonkey.fabled.api.projectile.ProjectileCallback;
 import studio.magemonkey.fabled.api.util.ItemStackReader;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,14 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
+    private static final String TARGET_BLOCKS = "target-blocks";
+    private boolean targetBlocks;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     @Override
     public String getKey() {
@@ -187,6 +197,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
+        if (hit instanceof TempEntity && !targetBlocks) return;
         ArrayList<LivingEntity> targets = new ArrayList<>();
         targets.add(hit);
         executeChildren(projectile.getShooter(),

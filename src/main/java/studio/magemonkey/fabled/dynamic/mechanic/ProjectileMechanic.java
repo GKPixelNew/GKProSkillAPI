@@ -37,6 +37,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -105,6 +106,14 @@ public class ProjectileMechanic extends MechanicComponent {
                 put("egg", Material.EGG);
                 put("snowball", snowBall());
             }};
+    private static final String TARGET_BLOCKS = "target-blocks";
+    private boolean targetBlocks;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+    }
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
@@ -340,7 +349,10 @@ public class ProjectileMechanic extends MechanicComponent {
      * @param hit        the entity hit by the projectile, if any
      */
     public void callback(Projectile projectile, LivingEntity hit) {
-        if (hit == null) hit = new TempEntity(projectile.getLocation());
+        if (hit == null) {
+            hit = new TempEntity(projectile.getLocation());
+        }
+        if (hit instanceof TempEntity && !targetBlocks) return; // To make sure hit wasn't a temp entity already
 
         LivingEntity finalHit = hit;
         Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
