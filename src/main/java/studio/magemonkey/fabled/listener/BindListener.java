@@ -26,11 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.KeyPressEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.codex.util.DataUT;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -42,6 +37,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.util.DataUT;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.KeyPressEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,9 +95,7 @@ public class BindListener extends FabledListener {
                 .get(SKILLS_KEY, DataUT.STRING_ARRAY);
         List<String> list = new ArrayList<>();
         if (array != null)
-            for (int i = 0; i < array.length; i++) {
-                list.add(array[i]);
-            }
+            list.addAll(Arrays.asList(array));
         return list;
     }
 

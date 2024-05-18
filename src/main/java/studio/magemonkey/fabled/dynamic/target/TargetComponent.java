@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.dynamic.target;
 
+import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -34,6 +35,7 @@ public abstract class TargetComponent extends EffectComponent {
     boolean       allies;
     boolean       throughWall;
     boolean       invulnerable;
+    @Getter
     IncludeCaster self;
 
     @Override
@@ -86,7 +88,7 @@ public abstract class TargetComponent extends EffectComponent {
         playChildrenPreviews(onPreviewStop, caster, level, supplier);
     }
 
-    List<LivingEntity> determineTargets(final LivingEntity caster,
+    public List<LivingEntity> determineTargets(final LivingEntity caster,
                                         final int level,
                                         final List<LivingEntity> from,
                                         final Function<LivingEntity, List<LivingEntity>> conversion) {
