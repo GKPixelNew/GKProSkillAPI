@@ -40,6 +40,7 @@ import studio.magemonkey.fabled.data.Point3D;
 import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.IValue;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.Objects;
 import java.util.Set;
@@ -138,6 +139,10 @@ public class ParticleEffect implements IParticleEffect {
         );
         this.interval = interval;
         this.view = viewRange;
+        if (animation == null) {
+            Logger.invalid("Animation formula for " + name + " is null");
+            return;
+        }
 
         animation.getPoints(animDir);
     }
