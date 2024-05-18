@@ -38,7 +38,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
@@ -804,7 +803,7 @@ public abstract class Skill implements IconHolder {
                        LivingEntity source,
                        String classification,
                        boolean knockback) {
-        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.CUSTOM);
     }
 
     /**
@@ -843,7 +842,7 @@ public abstract class Skill implements IconHolder {
 
         damage = event.getDamage();
         knockback = event.isKnockback();
-        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue((JavaPlugin) Fabled.inst(), cause));
+        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(Fabled.inst(), cause));
         if (source instanceof Player) {
             if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
         }

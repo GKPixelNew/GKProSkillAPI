@@ -91,7 +91,7 @@ public class DamageMechanic extends MechanicComponent {
                         caster,
                         classification,
                         knockback,
-                        EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
+                        EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Custom")
                                 .toUpperCase(Locale.US)
                                 .replace(' ', '_')));
             }
