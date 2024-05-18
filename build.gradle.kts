@@ -60,9 +60,9 @@ configurations {
     }
 }
 
-group = "studio.magemonkey"
+group = "dev.robothanzo.gk"
 version = "1.3.2-R0.3-SNAPSHOT"
-description = "fabled"
+description = "GKProSkillAPI"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 tasks {
@@ -92,8 +92,8 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("pluginMaven") {
-            groupId = "studio.magemonkey"
-            artifactId = "fabled"
+            groupId = "dev.robothanzo.gk"
+            artifactId = "GKProSkillAPI"
             version = project.version.toString()
         }
     }
