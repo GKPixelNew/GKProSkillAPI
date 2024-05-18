@@ -61,9 +61,10 @@ public class BlockMechanic extends MechanicComponent {
     private static final String UPWARD    = "upward";
     private static final String RIGHT     = "right";
     private static final String RESET_YAW = "reset-yaw";
+    private static final String FILL = "fill";
 
-    private static final HashMap<Location, Integer>    pending  = new HashMap<Location, Integer>();
-    private static final HashMap<Location, BlockState> original = new HashMap<Location, BlockState>();
+    private static final HashMap<Location, Integer> pending = new HashMap<>();
+    private static final HashMap<Location, BlockState> original = new HashMap<>();
 
     private final Map<Integer, List<RevertTask>> tasks = new HashMap<>();
 
@@ -117,6 +118,7 @@ public class BlockMechanic extends MechanicComponent {
         String  type  = settings.getString(TYPE, "solid").toLowerCase();
         boolean solid = type.equals("solid");
         boolean air   = type.equals("air");
+        boolean fill = settings.getBool(FILL, false);
         Material matType =
                 !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase(Locale.US).replace(' ', '_'))
                         : null;
@@ -183,14 +185,17 @@ public class BlockMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            int   blockX = (int) Math.floor(resetYaw || facingZ ? i : k);
-                            int   blockY = (int) Math.floor(j);
-                            int   blockZ = (int) Math.floor(resetYaw || facingZ ? k : i);
-                            Block b      = w.getBlockAt(blockX, blockY, blockZ);
-                            if ((!solid || b.getType().isSolid())
-                                    && (!air || b.getType().isAir())
-                                    && !Fabled.getSettings().getFilteredBlocks().contains(b.getType())) {
-                                blocks.add(b);
+                            if (fill || i == x + width || j == y + height || k == z + depth
+                                    || i == x - width || j == y - height || k == z - depth) {
+                                int blockX = (int) Math.floor(resetYaw || facingZ ? i : k);
+                                int blockY = (int) Math.floor(j);
+                                int blockZ = (int) Math.floor(resetYaw || facingZ ? k : i);
+                                Block b = w.getBlockAt(blockX, blockY, blockZ);
+                                if ((!solid || b.getType().isSolid())
+                                        && (!air || b.getType().isAir())
+                                        && !Fabled.getSettings().getFilteredBlocks().contains(b.getType())) {
+                                    blocks.add(b);
+                                }
                             }
                         }
                     }
