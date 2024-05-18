@@ -174,8 +174,7 @@ public class StatusListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || DefaultCombatProtection.isFakeDamageEvent(event))
+        if (DefaultCombatProtection.isFakeDamageEvent(event))
             return;
 
         LivingEntity damager = ListenerUtil.getDamager(event);
@@ -194,8 +193,7 @@ public class StatusListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || (event instanceof EntityDamageByEntityEvent
+        if ((event instanceof EntityDamageByEntityEvent
                 && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event))
                 || !(event.getEntity() instanceof LivingEntity))
             return;
