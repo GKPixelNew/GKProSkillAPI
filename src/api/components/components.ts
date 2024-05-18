@@ -1983,6 +1983,8 @@ const projectileOptions = (): ComponentOption[] => {
 			.setTooltip('The orientation for firing projectiles. Cone will fire arrows in a cone centered on your reticle. Horizontal cone does the same as cone, just locked to the XZ axis (parallel to the ground). Rain drops the projectiles from above the target. For firing one arrow straight, use "Cone"'),
 		new AttributeSelect('Amount', 'amount', 1)
 			.setTooltip('The number of projectiles to fire'),
+		new BooleanSelect('Target Blocks', 'target-blocks', false)
+			.setTooltip('Whether to execute children if the projectile hits a block'),
 
 		// Cone values
 		new AttributeSelect('Angle', 'angle', 30)
