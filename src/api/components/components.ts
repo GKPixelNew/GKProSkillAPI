@@ -2277,6 +2277,11 @@ class BlockMechanic extends ProMechanic {
 					.setTooltip('How long the blocks should be replaced for'),
 				new BooleanSelect('Fill', 'fill', false)
 					.setTooltip('Whether the inside of the region should be filled with the blocks, if set to False, the center will be hollow'),
+				new DropdownSelect('Block damage type', 'block_damage_type', ['Static', 'Random'], 'Static')
+					.setTooltip('How the block damage should be determined'),
+				new AttributeSelect('Block damage', 'block_damage', 0, 0)
+					.setTooltip('The static amount of damage to deal to the block, from 0 to 1')
+					.requireValue('block_damage_type', ['Static']),
 
 				// Sphere options
 				new AttributeSelect('Radius', 'radius', 3)
