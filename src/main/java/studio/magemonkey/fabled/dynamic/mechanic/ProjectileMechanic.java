@@ -92,6 +92,7 @@ public class ProjectileMechanic extends MechanicComponent {
     public static final  String                                       REMEMBER      = "remember-key";
     public static final  String                                       CORRECTION    = "correction";
     public static final  String                                       WALL          = "wall";
+    private static final String RIDABLE = "ridable";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES   =
             new HashMap<>() {{
                 put("arrow", Arrow.class);
@@ -202,6 +203,8 @@ public class ProjectileMechanic extends MechanicComponent {
                     p.teleport(loc);
                     p.setVelocity(vel);
                     projectiles.add(p);
+                    if (settings.getBool(RIDABLE, false))
+                        p.addPassenger(target);
                 }
             } else {
                 Vector dir = location.getDirection();
@@ -215,6 +218,8 @@ public class ProjectileMechanic extends MechanicComponent {
                     p.teleport(location);
                     p.setVelocity(d.multiply(speed));
                     projectiles.add(p);
+                    if (settings.getBool(RIDABLE, false))
+                        p.addPassenger(target);
                 }
             }
         }

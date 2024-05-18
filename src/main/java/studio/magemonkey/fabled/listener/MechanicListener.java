@@ -299,6 +299,12 @@ public class MechanicListener extends FabledListener {
             event.setCancelled(true);
     }
 
+    @EventHandler
+    public void onDismount(EntityDismountEvent event) {
+        if (event.getDismounted() instanceof Projectile)
+            event.getDismounted().remove();
+    }
+
     /**
      * Applies projectile and lightning callbacks when striking an enemy
      *
