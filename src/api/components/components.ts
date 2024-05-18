@@ -3504,6 +3504,8 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
+				new BooleanSelect('ride', 'ride', false)
+					.setTooltip('Whether the caster should ride the projectile'),
 				...homingOptions(),
 				...projectileOptions(),
 				...particleOptions(),
