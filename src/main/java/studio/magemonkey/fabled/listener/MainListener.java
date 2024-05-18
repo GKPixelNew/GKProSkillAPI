@@ -28,6 +28,7 @@ package studio.magemonkey.fabled.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -114,7 +115,7 @@ public class MainListener extends FabledListener {
 //        } else {
 //            player.setMaxHealth(20);
 //        }
-        player.setWalkSpeed(0.2f);
+        player.setWalkSpeed((float) Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).getValue());
         Fabled.unloadPlayerData(player, skipSaving);
     }
 

@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.listener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -200,7 +201,7 @@ public class MechanicListener extends FabledListener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         flying.remove(event.getPlayer().getUniqueId());
-        event.getPlayer().setWalkSpeed(0.2f);
+        event.getPlayer().setWalkSpeed((float) event.getPlayer().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue());
     }
 
     /**

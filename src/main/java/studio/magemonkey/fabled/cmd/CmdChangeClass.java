@@ -3,6 +3,7 @@ package studio.magemonkey.fabled.cmd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -28,6 +29,7 @@ import studio.magemonkey.fabled.language.RPGFilter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +58,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
         DynamicSkill.clearCastData(player);
 
         player.setDisplayName(player.getName());
-        player.setWalkSpeed(0.2f);
+        player.setWalkSpeed((float) Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).getValue());
     }
 
     /**
