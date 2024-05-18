@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.api;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.damage.DamageSource;
@@ -12,6 +11,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.Fabled;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -42,10 +42,8 @@ public interface CombatProtection {
                 }
             }
 
-            if (target instanceof Tameable) {
-                Tameable entity = (Tameable) target;
-                if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer) {
-                    OfflinePlayer owner = (OfflinePlayer) entity.getOwner();
+            if (target instanceof Tameable entity) {
+                if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer owner) {
                     if (owner.isOnline()) {
                         return canAttack(attacker, owner.getPlayer(), false);
                     }
