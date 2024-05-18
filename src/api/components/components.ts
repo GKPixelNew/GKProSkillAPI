@@ -2244,8 +2244,6 @@ class BlockMechanic extends ProMechanic {
 					.setTooltip('The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment'),
 				new DropdownSelect('Block', 'block', getBlocks, 'Ice')
 					.setTooltip('The type of block to turn the region into'),
-				new IntSelect('Block Data', 'data')
-					.setTooltip('The block data to apply, mostly applicable for things like signs, woods, steps, or the similar'),
 				new BooleanSelect('Reset Yaw', 'reset-yaw', false)
 					.setTooltip('Whether the target\'s yaw should be reset, effectively making the offsets cardinally aligned'),
 				new AttributeSelect('Seconds', 'seconds', 5)
@@ -4990,10 +4988,21 @@ class WolfMechanic extends ProMechanic {
 				new AttributeSelect('Amount', 'amount', 1)
 					.setTooltip('How many wolves to summon'),
 				new SkillSelect('Skills', 'skills', true)
-					.setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work')
+					.setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work'),
+				new DropdownSelect('Target', 'aggro_target', Object.values(get(targets)).map(t => t.name), 'Nearest')
+					.setTooltip('The target to aggro on')
 			],
 			summaryItems: ['color', 'name', 'seconds', 'amount']
 		}, true);
+		for (const t of Object.values(get(targets))) {
+			this.data.push(new SectionMarker('Target: ' + t.name).requireValue('aggro_target', [t.name]));
+			// @ts-expect-error This is not abstract in runtime
+			const target = new t.component();
+			for (let d of target.data) {
+				d = d.clone();
+				this.data.push(d.requireValue('aggro_target', [t.name]));
+			}
+		}
 	}
 
 	public static override new = () => new this();
