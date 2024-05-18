@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.hook.DisguiseHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +49,7 @@ public class DisguiseMechanic extends MechanicComponent {
     private static final String DATA     = "data";
     private static final String MATERIAL = "mat";
     private static final String DURATION = "duration";
+    private static final String CHANGE_NAME = "change_name";
 
     @Override
     public String getKey() {
@@ -71,6 +72,7 @@ public class DisguiseMechanic extends MechanicComponent {
         }
 
         String type = settings.getString(TYPE);
+        boolean changeName = settings.getBool(CHANGE_NAME, false);
 
         // Mob disguises
         if (type.equalsIgnoreCase("mob")) {
@@ -87,7 +89,8 @@ public class DisguiseMechanic extends MechanicComponent {
                 if (!(target instanceof TempEntity)) {
                     DisguiseHook.disguisePlayer(
                             target,
-                            settings.getString(PLAYER, "Eniripsa96").replace("{player}", caster.getName()));
+                            settings.getString(PLAYER, "Eniripsa96").replace("{player}", caster.getName()),
+                            changeName);
                 }
             }
         }
