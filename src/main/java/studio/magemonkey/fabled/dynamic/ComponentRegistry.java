@@ -71,6 +71,7 @@ public class ComponentRegistry {
         register(new ShieldTrigger());
         register(new SignalTrigger());
         register(new SkillCastTrigger());
+        register(new TeleportTrigger());
         register(new ConsumeTrigger());
 
         // Targets
