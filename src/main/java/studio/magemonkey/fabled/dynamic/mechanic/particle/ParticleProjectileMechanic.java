@@ -45,7 +45,6 @@ import studio.magemonkey.fabled.api.projectile.ProjectileCallback;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +73,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
-    private static final String HIT_ENTITY = "hit-entity";
-    private static final String MISSILE_TARGET = "missile-target";
-    private static final String MISSILE_THRESHOLD = "missile-threshold";
-    private static final String MISSILE_DELAY = "missile-delay";
 
     private boolean targetBlocks;
 
@@ -120,18 +115,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
 
-        final List<LivingEntity> missileTargets = RememberTarget.remember(caster, settings.getString(MISSILE_TARGET, "_none"));
-
-        LivingEntity missileTarget = null;
-        double missileThreshold = 0;
-        double missileAngle = 0;
-        double missileDelay = 0;
-        if (!missileTargets.isEmpty()) {
-            missileTarget = missileTargets.get(0);
-            missileThreshold = settings.getDouble(MISSILE_THRESHOLD);
-            missileDelay = settings.getDouble(MISSILE_DELAY);
-        }
-
         // Fire from each target
         for (LivingEntity target : targets) {
             Location location = target.getEyeLocation();
@@ -152,7 +135,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, HEIGHT, level, 8.0),
                         amount,
                         this,
-                        life, settings.getBool(HIT_ENTITY, true), missileTarget, missileThreshold, missileAngle, missileDelay);
+                        life);
             } else {
                 Vector dir = location.getDirection();
                 if (spread.equals("horizontal cone")) {
@@ -168,12 +151,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, ANGLE, level, 30.0),
                         amount,
                         this,
-                        life,
-                        settings.getBool(HIT_ENTITY, true),
-                        missileTarget,
-                        missileThreshold,
-                        missileAngle,
-                        missileDelay
+                        life
                 );
             }
 
@@ -252,18 +230,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, ParticleProjectile.CORRECTION, level, 0.2),
                         0);
 
-                final List<LivingEntity> missileTargets = RememberTarget.remember(caster, settings.getString(MISSILE_TARGET, "_none"));
-
-                LivingEntity missileTarget = null;
-                double missileThreshold = 0;
-                double missileAngle = 0;
-                double missileDelay = 0;
-                if (!missileTargets.isEmpty()) {
-                    missileTarget = missileTargets.get(0);
-                    missileThreshold = settings.getDouble(MISSILE_THRESHOLD);
-                    missileDelay = settings.getDouble(MISSILE_DELAY);
-                }
-
                 ProjectileCallback callback = (projectile, hit) -> {
                     if (hit == null) hit = new TempEntity(projectile.getLocation());
                     targets.add(hit);
@@ -292,7 +258,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                life, settings.getBool(HIT_ENTITY, true), missileTarget, missileThreshold, missileAngle, missileDelay));
+                                life));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -308,7 +274,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                life, settings.getBool(HIT_ENTITY, true), missileTarget, missileThreshold, missileAngle, missileDelay
+                                life
                         ));
                     }
 

@@ -28,10 +28,8 @@ package studio.magemonkey.fabled.api.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
@@ -110,10 +108,6 @@ public class ParticleProjectile extends CustomProjectile {
     protected     Consumer<Location>     onStep;
     protected     Supplier<LivingEntity> homing;
     protected     double                 correction;
-    private Entity missileTarget = null;
-    private double missileThreshold = 0;
-    private double missileAngle = 0;
-    private boolean missileStarted = false;
 
     /**
      * Constructor
@@ -123,7 +117,7 @@ public class ParticleProjectile extends CustomProjectile {
      * @param loc      initial location of the projectile
      * @param settings settings for the projectile
      */
-    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
+    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan) {
         super(shooter, settings);
 
         this.loc = loc;
@@ -137,21 +131,6 @@ public class ParticleProjectile extends CustomProjectile {
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
         this.pierce = settings.getBool(PIERCE, false);
         this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
-        this.missileTarget = missileTarget;
-        this.missileAngle = missileAngle;
-        this.missileThreshold = missileThreshold;
-        super.hitEntity = hitPlayer;
-        //Missile delay
-        if (missileDelay == 0) {
-            missileStarted = true;
-        } else {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    missileStarted = true;
-                }
-            }.runTaskLater(Fabled.inst(), (long) (missileDelay * 20));
-        }
 
         if (settings.getBool(HOMING, false)) {
             String target = settings.getString(HOMING_TARGET, "nearest");
@@ -221,37 +200,13 @@ public class ParticleProjectile extends CustomProjectile {
     }
 
     /**
-     * Fires a spread of projectiles from the location.
+     * Handles hitting an entity
      *
-     * @param shooter   entity shooting the projectiles
-     * @param level     level to use for scaling the speed
-     * @param direction the center direction of the spread
-     * @param loc       location to shoot from
-     * @param settings  settings to use when firing
-     * @param angle     angle of the spread
-     * @param amount    number of projectiles to fire
-     * @param callback  optional callback for when projectiles hit
-     * @return list of fired projectiles
+     * @param entity entity the projectile hit
      */
-    public static List<ParticleProjectile> spread(LivingEntity shooter,
-                                                  int level,
-                                                  Vector direction,
-                                                  Location loc,
-                                                  Settings settings,
-                                                  double angle,
-                                                  int amount,
-                                                  ProjectileCallback callback,
-                                                  int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
-        List<Vector>             dirs = calcSpread(direction, angle, amount);
-        List<ParticleProjectile> list = new ArrayList<>();
-        for (Vector dir : dirs) {
-            Location l = loc.clone();
-            l.setDirection(dir);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, hitPlayer, missileTarget, missileThreshold, missileAngle, missileDelay);
-            p.setCallback(callback);
-            list.add(p);
-        }
-        return list;
+    @Override
+    protected Event hit(LivingEntity entity) {
+        return new ParticleProjectileHitEvent(this, entity);
     }
 
     /**
@@ -307,52 +262,6 @@ public class ParticleProjectile extends CustomProjectile {
     }
 
     /**
-     * Fires a spread of projectiles from the location.
-     *
-     * @param shooter  entity shooting the projectiles
-     * @param level    level to use for scaling the speed
-     * @param center   the center location to rain on
-     * @param settings settings to use when firing
-     * @param radius   radius of the circle
-     * @param height   height above the center location
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
-     * @return list of fired projectiles
-     */
-    public static List<ParticleProjectile> rain(LivingEntity shooter,
-                                                int level,
-                                                Location center,
-                                                Settings settings,
-                                                double radius,
-                                                double height,
-                                                int amount,
-                                                ProjectileCallback callback,
-                                                int lifespan, boolean hitPlayer, Entity missileTarget, double missileThreshold, double missileAngle, double missileDelay) {
-        Vector                   vel  = new Vector(0, 1, 0);
-        List<Location>           locs = calcRain(center, radius, height, amount);
-        List<ParticleProjectile> list = new ArrayList<>();
-        for (Location l : locs) {
-            l.setDirection(vel);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, hitPlayer, missileTarget, missileThreshold, missileAngle, missileDelay);
-            p.setCallback(callback);
-            list.add(p);
-        }
-        return list;
-    }
-
-    /**
-     * Handles hitting an entity
-     *
-     * @param entity entity the projectile hit
-     */
-    @Override
-    protected Event hit(LivingEntity entity) {
-        if (hitEntity)
-            return new ParticleProjectileHitEvent(this, entity);
-        return null;
-    }
-
-    /**
      * Updates the projectiles position and checks for collisions
      */
     @Override
@@ -400,25 +309,73 @@ public class ParticleProjectile extends CustomProjectile {
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
         }
+    }
 
-        // Missile
-        if (missileTarget != null && missileStarted) {
-            final Vector vel = getVelocity();
-            final double sspeed = vel.length();
-            final Vector dir = vel.multiply(1 / sspeed);
-            final Vector towards = missileTarget.getLocation().toVector().subtract(getLocation().toVector());
-            final Vector targetDir = towards.normalize();
-            final double dot = dir.dot(targetDir);
-            if (dot >= missileThreshold) {
-                setVelocity(targetDir.multiply(sspeed));
-            }
-//            else {
-//                final double diff = Math.acos(dot);
-//                final double t = missileAngle / diff;
-//                final double sinAngle = Math.sin(diff);
-//                final double m = Math.sin()
-//                baseProjectile.setVelocity(result);
-//            }
+    /**
+     * Fires a spread of projectiles from the location.
+     *
+     * @param shooter   entity shooting the projectiles
+     * @param level     level to use for scaling the speed
+     * @param direction the center direction of the spread
+     * @param loc       location to shoot from
+     * @param settings  settings to use when firing
+     * @param angle     angle of the spread
+     * @param amount    number of projectiles to fire
+     * @param callback  optional callback for when projectiles hit
+     * @return list of fired projectiles
+     */
+    public static List<ParticleProjectile> spread(LivingEntity shooter,
+                                                  int level,
+                                                  Vector direction,
+                                                  Location loc,
+                                                  Settings settings,
+                                                  double angle,
+                                                  int amount,
+                                                  ProjectileCallback callback,
+                                                  int lifespan) {
+        List<Vector>             dirs = calcSpread(direction, angle, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
+        for (Vector dir : dirs) {
+            Location l = loc.clone();
+            l.setDirection(dir);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            p.setCallback(callback);
+            list.add(p);
         }
+        return list;
+    }
+
+    /**
+     * Fires a spread of projectiles from the location.
+     *
+     * @param shooter  entity shooting the projectiles
+     * @param level    level to use for scaling the speed
+     * @param center   the center location to rain on
+     * @param settings settings to use when firing
+     * @param radius   radius of the circle
+     * @param height   height above the center location
+     * @param amount   number of projectiles to fire
+     * @param callback optional callback for when projectiles hit
+     * @return list of fired projectiles
+     */
+    public static List<ParticleProjectile> rain(LivingEntity shooter,
+                                                int level,
+                                                Location center,
+                                                Settings settings,
+                                                double radius,
+                                                double height,
+                                                int amount,
+                                                ProjectileCallback callback,
+                                                int lifespan) {
+        Vector                   vel  = new Vector(0, 1, 0);
+        List<Location>           locs = calcRain(center, radius, height, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
+        for (Location l : locs) {
+            l.setDirection(vel);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            p.setCallback(callback);
+            list.add(p);
+        }
+        return list;
     }
 }
