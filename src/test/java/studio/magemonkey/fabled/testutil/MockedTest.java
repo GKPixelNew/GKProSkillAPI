@@ -42,6 +42,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
+    private static String pluginDirPrefix = "GKProSkillAPI-";
     protected     List<PlayerMock>      players          = new ArrayList<>();
     protected     Map<UUID, PlayerData> activePlayerData = new HashMap<>();
     private final Set<String>           classesToLoad    = new HashSet<>();
@@ -76,13 +77,13 @@ public abstract class MockedTest {
                 .getResourceAsStream(masterFileLoc))))) {
             // Copy to Fabled/dynamic/classes.yml
             File classDir = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "class");
             if (!classDir.exists()) classDir.mkdirs();
 
             File classFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic", "classes.yml");
             if (!classFile.exists()) {
@@ -110,7 +111,7 @@ public abstract class MockedTest {
         for (String clazz : classes) {
             // Remove from class folder
             File classFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "class", clazz + ".yml");
             if (classFile.exists()) {
@@ -126,13 +127,13 @@ public abstract class MockedTest {
                 .getResourceAsStream(masterFileLoc))))) {
             // Copy to Fabled/dynamic/skills.yml
             File skillDir = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "skill");
             if (!skillDir.exists()) skillDir.mkdirs();
 
             File skillFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic", "skills.yml");
             if (!skillFile.exists()) {
@@ -158,7 +159,7 @@ public abstract class MockedTest {
         for (String skill : skills) {
             // Remove from skill folder
             File skillFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + System
                             .getProperty("FABLED_VERSION")
                             + File.separator + "dynamic" + File.separator + "skill", skill + ".yml");
             if (skillFile.exists()) {
@@ -255,21 +256,22 @@ public abstract class MockedTest {
 
     @BeforeEach
     public void initClasses() {
-        String fabledVersion = System.getProperty("FABLED_VERSION");
-        File classDir = new File(
-                server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + fabledVersion
-                        + File.separator + "dynamic" + File.separator + "class");
+        String fabledVersion = System.getenv("FABLED_VERSION");
+        String dynamicRoot = server.getPluginsFolder().getAbsolutePath() + File.separator + pluginDirPrefix + fabledVersion
+                + File.separator + "dynamic" + File.separator;
+        File classDir = new File(dynamicRoot + "class");
         if (!classDir.exists()) classDir.mkdirs();
+        File skillDir = new File(dynamicRoot + "skill");
+        if (!skillDir.exists()) skillDir.mkdirs();
         try {
             FileUtils.cleanDirectory(classDir);
+            FileUtils.cleanDirectory(skillDir);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         classesToLoad.forEach(c -> {
-            File classFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + fabledVersion
-                            + File.separator + "dynamic" + File.separator + "class", c + ".yml");
+            File classFile = new File(dynamicRoot + "class", c + ".yml");
             try {
                 if (!classFile.exists()) {
                     classFile.createNewFile();
@@ -292,9 +294,7 @@ public abstract class MockedTest {
         });
 
         skillsToLoad.forEach(s -> {
-            File skillFile = new File(
-                    server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + fabledVersion
-                            + File.separator + "dynamic" + File.separator + "skill", s + ".yml");
+            File skillFile = new File(dynamicRoot + "skill", s + ".yml");
             try {
                 if (!skillFile.exists()) {
                     skillFile.createNewFile();
