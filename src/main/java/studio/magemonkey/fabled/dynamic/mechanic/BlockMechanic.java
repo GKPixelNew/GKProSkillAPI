@@ -26,8 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,10 +33,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -57,7 +56,6 @@ public class BlockMechanic extends MechanicComponent {
     private static final String HEIGHT    = "height";
     private static final String DEPTH     = "depth";
     private static final String BLOCK     = "block";
-    private static final String DATA      = "data";
     private static final String SECONDS   = "seconds";
     private static final String FORWARD   = "forward";
     private static final String UPWARD    = "upward";
@@ -222,7 +220,6 @@ public class BlockMechanic extends MechanicComponent {
             // Use default
         }
         int  ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte data  = (byte) settings.getInt(DATA, 0);
 
         // Change blocks
         ArrayList<Location> states = new ArrayList<>();
@@ -239,8 +236,6 @@ public class BlockMechanic extends MechanicComponent {
             states.add(b.getLocation());
             BlockState state = b.getState();
             state.setType(block);
-            if (data > 0)
-                state.setData(new MaterialData(block, data));
             state.update(true, false);
         }
 
