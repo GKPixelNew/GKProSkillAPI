@@ -14,12 +14,14 @@
 			 tabindex='0'
 			 role='radio'
 			 aria-checked='{data}'
+			 style:background-color={data ? "#00ac46" : color}
 	>{left}</div>
 	<div on:click={() => data = false}
 			 on:keypress={(e) => { if(e.key === 'Enter') data = false }}
 			 tabindex='0'
 			 role='radio'
 			 aria-checked='{!data}'
+			 style:background-color={data ? color : "#bc1900"}
 	>{right}</div>
 </div>
 
@@ -44,7 +46,6 @@
         height: 100%;
         width: 50%;
         border-radius: 0.4rem;
-        background-color: #0083ef;
         position: absolute;
         left: 0;
         transition: left 350ms ease-in-out;
