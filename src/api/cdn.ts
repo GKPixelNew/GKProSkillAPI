@@ -29,7 +29,7 @@ export const importClass = async (classId: string) => {
     CONFIGURED_AXIOS.get('class/' + classId).then(response => {
         if (response.data.success) {
             CONFIGURED_AXIOS.get('download/' + response.data.class.fileId).then(response => {
-                loadRaw(response.data, true)
+                loadRaw(response.data, false)
             })
             notifySuccess('匯入成功');
         } else {
@@ -48,7 +48,7 @@ export const importSkill = async (skillId: string) => {
     CONFIGURED_AXIOS.get('skill/' + skillId).then(response => {
         if (response.data.success) {
             CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId).then(response => {
-                loadRaw(response.data, true)
+                loadRaw(response.data, false)
             })
             notifySuccess('匯入成功');
         } else {

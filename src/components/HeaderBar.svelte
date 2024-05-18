@@ -81,7 +81,7 @@
 
     h1, h2 {
         display: inline;
-        font-family: Mojave-Web, sans-serif;
+        font-family: Product Sans Bold, sans-serif;
         margin: 0;
         padding: 0 0 0.5rem;
     }

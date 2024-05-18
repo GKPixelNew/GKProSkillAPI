@@ -317,9 +317,9 @@
         padding: 0.25rem 0.5rem 0.75rem;
         background-color: #333;
         width: min-content;
-        box-shadow: inset 0 0 0.5rem #111;
+        box-shadow: inset 0 0 0.3rem #111;
         border: 0.13rem solid #444;
-        border-left: 0.3rem solid var(--comp-color);
+        border-left: 0.1rem solid var(--comp-color);
         border-radius: 0 0.4rem 0.4rem 0;
         overflow: hidden;
         user-select: none;
