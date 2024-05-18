@@ -28,9 +28,14 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.api.util.StatusFlag;
+import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +64,8 @@ public class CleanseMechanic extends MechanicComponent {
 
     private static final String STATUS = "status";
     private static final String POTION = "potion";
+    private static final String EXTINGUISH = "extinguish";
+    private static final String RESET_NEGATIVE_STATS = "reset_negative_stats";
 
     @Override
     public String getKey() {
@@ -77,6 +84,8 @@ public class CleanseMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         boolean     worked    = false;
+        boolean extinguish = settings.getBool(EXTINGUISH, true);
+        boolean resetNegativeStats = settings.getBool(RESET_NEGATIVE_STATS, true);
         Set<String> statusSet = new HashSet<>();
         for (String string : settings.getStringList(STATUS)) {
             if (string.equalsIgnoreCase("All")) {
@@ -111,6 +120,21 @@ public class CleanseMechanic extends MechanicComponent {
                 if (target.hasPotionEffect(type)) {
                     target.removePotionEffect(type);
                     worked = true;
+                }
+            }
+
+            if (extinguish && target.getFireTicks() > 0) {
+                target.setFireTicks(0);
+                worked = true;
+            }
+
+            if (resetNegativeStats && target instanceof Player player) {
+                PlayerData playerData = Fabled.getData(player);
+                for (PlayerStatModifier modifier : playerData.getStatModifiers(AttributeManager.MOVE_SPEED)) {
+                    if (modifier.applyOn(0.2) < 0.2) {
+                        playerData.removeStatModifier(modifier.getUUID(), true);
+                        worked = true;
+                    }
                 }
             }
         }
