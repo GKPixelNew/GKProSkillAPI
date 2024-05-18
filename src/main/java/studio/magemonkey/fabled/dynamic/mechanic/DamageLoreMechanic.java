@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
+import studio.magemonkey.codex.mccore.util.VersionManager;
 
 import java.util.List;
 import java.util.Locale;
@@ -113,7 +113,7 @@ public class DamageLoreMechanic extends MechanicComponent {
                                         caster,
                                         classification,
                                         settings.getBool(KNOCKBACK, true),
-                                        EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
+                                        EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Custom")
                                                 .toUpperCase(Locale.US)
                                                 .replace(' ', '_')));
                             }
