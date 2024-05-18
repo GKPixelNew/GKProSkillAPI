@@ -51,7 +51,10 @@ public class CleanseMechanic extends MechanicComponent {
             PotionEffectType.SLOW_DIGGING,
             PotionEffectType.UNLUCK,
             PotionEffectType.WEAKNESS,
-            PotionEffectType.WITHER
+            PotionEffectType.WITHER,
+            PotionEffectType.BAD_OMEN,
+            PotionEffectType.GLOWING,
+            PotionEffectType.HARM
     );
 
     private static final String STATUS = "status";
