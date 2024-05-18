@@ -92,6 +92,7 @@ public class ParticleProjectile extends CustomProjectile {
      */
 
     private static final String PIERCE = "pierce";
+    private static final String PIERCE_BLOCKS = "pierce-blocks";
 
     private       Location               loc;
     private       Vector                 vel;
@@ -103,6 +104,7 @@ public class ParticleProjectile extends CustomProjectile {
     private final int                    particlePeriod;
     private       int                    count;
     private final boolean                pierce;
+    private final boolean pierceBlocks;
     protected     Consumer<Location>     onStep;
     protected     Supplier<LivingEntity> homing;
     protected     double                 correction;
@@ -128,6 +130,7 @@ public class ParticleProjectile extends CustomProjectile {
 
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
         this.pierce = settings.getBool(PIERCE, false);
+        this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
 
         if (settings.getBool(HOMING, false)) {
             String target = settings.getString(HOMING_TARGET, "nearest");
@@ -211,7 +214,7 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     protected boolean landed() {
-        return getLocation().getBlock().isPassable();
+        return (!getLocation().getBlock().isPassable() && !pierceBlocks);
     }
 
     /**
