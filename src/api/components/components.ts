@@ -1661,7 +1661,8 @@ class StatusCondition extends ProCondition {
 						'Invulnerable',
 						'Root',
 						'Silence',
-						'Stun'
+						'Stun',
+						'Bypass Negative'
 					])
 					.setTooltip('The status to look for')
 			],
@@ -4316,7 +4317,8 @@ class StatusMechanic extends ProMechanic {
 					'Invulnerable',
 					'Root',
 					'Silence',
-					'Stun'], 'Stun')
+					'Stun',
+					'Bypass Negative'], 'Stun')
 					.setTooltip('The status to apply'),
 				new AttributeSelect('Duration', 'duration', 3, 1)
 					.setTooltip('How long in seconds to apply the status')
