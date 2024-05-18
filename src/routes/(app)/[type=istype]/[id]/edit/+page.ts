@@ -1,14 +1,20 @@
-import type FabledClass          from '$api/fabled-class';
-import type FabledSkill          from '$api/fabled-skill';
-import { active, isShowClasses } from '../../../../../data/store';
-import { get }                                         from 'svelte/store';
-import { redirect }                                    from '@sveltejs/kit';
-import { classes }                                     from '../../../../../data/class-store';
-import { skills }          from '../../../../../data/skill-store';
-import { FabledAttribute } from '$api/fabled-attribute';
-import { attributes }      from '../../../../../data/attribute-store';
-import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import YAML                                            from 'yaml';
+import type FabledClass                                                        from '$api/fabled-class';
+import type FabledSkill                                                        from '$api/fabled-skill';
+import { active, shownTab }                                                    from '../../../../../data/store';
+import { get }                                                                 from 'svelte/store';
+import { redirect }                                                            from '@sveltejs/kit';
+import { classes }                                                             from '../../../../../data/class-store';
+import { skills }                                                              from '../../../../../data/skill-store';
+import { Attribute }                                                           from '$api/stat';
+import {
+	attributes,
+	getAttributeNames
+}                                                                              from '../../../../../data/attribute-store';
+import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
+import YAML                                                                    from 'yaml';
+import FabledAttribute                                                         from '$api/fabled-attribute';
+import { Tab }                                                                 from '$api/tab';
+import { parseYaml }                                                           from '$api/yaml';
 
 export const ssr = false;
 
@@ -17,45 +23,85 @@ export const ssr = false;
 export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
-	let data: FabledClass | FabledSkill | undefined;
-	let fallback: FabledClass | FabledSkill | undefined;
-	if (!isSkill) {
-		for (const c of get(classes)) {
-			if (!fallback) fallback = c;
 
-			if (c.name == name) {
-				data = c;
-				break;
+	let data: FabledClass | FabledSkill | FabledAttribute | undefined;
+	let fallback: FabledClass | FabledSkill | FabledAttribute | undefined;
+	switch (params.type) {
+		case 'skill': {
+			for (const c of get(skills)) {
+				if (!fallback) fallback = c;
+
+				if (c.name == name) {
+					data = c;
+					break;
+				}
 			}
+			break;
 		}
-	} else if (isSkill) {
-		for (const c of get(skills)) {
-			if (!fallback) fallback = c;
+		case 'attribute': {
+			for (const c of get(attributes)) {
+				if (!fallback) fallback = c;
 
-			if (c.name == name) {
-				data = c;
-				break;
+				if (c.name == name) {
+					data = c;
+					break;
+				}
 			}
+			break;
+		}
+		default: {
+			for (const c of get(classes)) {
+				if (!fallback) fallback = c;
+
+				if (c.name == name) {
+					data = c;
+					break;
+				}
+			}
+			break;
 		}
 	}
-
 	if (data) {
+		let classOrSkill = false;
 		if (!data.loaded) {
 			if (data.location === 'local') {
-				const yamlData = <MultiSkillYamlData | MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
+				if (data instanceof FabledAttribute) {
+					const text = localStorage.getItem('attribs') || '';
+					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
+						const yamlData = <MultiAttributeYamlData>parseYaml(text);
+						if (yamlData && Object.keys(yamlData).length > 0) {
+							data.load(yamlData[data.name]);
+						}
+					}
+				} else {
+					classOrSkill   = true;
+					const yamlData = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
 
-				if (yamlData && Object.keys(yamlData).length > 0) {
-					data.load(Object.values(yamlData)[0]);
+					if (yamlData && Object.keys(yamlData).length > 0) {
+						data.load(Object.values(yamlData)[0]);
+					}
 				}
 			} else {
 				// TODO Load data from server
 			}
-			if (isSkill) (<FabledSkill>data).postLoad();
+
+			if (classOrSkill && isSkill) (<FabledSkill>data).postLoad();
 		}
 
-		if (!isSkill) updateClassAttributes(<FabledClass>data);
+		if (classOrSkill && !isSkill) updateClassAttributes(<FabledClass>data);
+
 		active.set(data);
-		isShowClasses.set(!isSkill);
+		switch (params.type) {
+			case 'skill':
+				shownTab.set(Tab.SKILLS);
+				break;
+			case 'attribute':
+				shownTab.set(Tab.ATTRIBUTES);
+				break;
+			default:
+				shownTab.set(Tab.CLASSES);
+				break;
+		}
 		return { data };
 	} else {
 		if (fallback) {
@@ -67,10 +113,10 @@ export async function load({ params }) {
 }
 
 const updateClassAttributes = (clazz: FabledClass) => {
-	for (const a of get(attributes)) {
+	for (const a of getAttributeNames()) {
 		if (clazz.attributes.find(b => b.name === a))
 			continue;
 
-		clazz.attributes.push(new FabledAttribute(a, 0, 0));
+		clazz.attributes.push(new Attribute(a, 0, 0));
 	}
 };

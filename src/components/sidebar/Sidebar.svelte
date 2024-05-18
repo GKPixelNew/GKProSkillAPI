@@ -1,33 +1,35 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-    import {addClass, addClassFolder, classes, classFolders} from '../../data/class-store';
-    import {closeSidebar, isShowClasses, sidebarOpen} from '../../data/store';
-    import SidebarEntry from './SidebarEntry.svelte';
-    import {squish} from '../../data/squish';
-    import {goto} from '$app/navigation';
-    import {beforeUpdate, onDestroy, onMount} from 'svelte';
-    import type {Unsubscriber} from 'svelte/store';
-    import {get} from 'svelte/store';
-    import FabledFolder from '$api/fabled-folder';
-    import FabledClass from '$api/fabled-class';
-    import FabledSkill from '$api/fabled-skill';
-    import Folder from '../Folder.svelte';
-    import {fly} from 'svelte/transition';
-    import {clickOutside} from '$api/clickoutside';
-    import {browser} from '$app/environment';
-    import Toggle from '../input/Toggle.svelte';
-    import {addSkill, addSkillFolder, skillFolders, skills} from '../../data/skill-store';
-    import {base} from '$app/paths';
-    import {getAllClasses, loading, reloadAllClasses} from "$api/cdn";
-    import Modal from "$components/Modal.svelte";
-    import ProInput from "$input/ProInput.svelte";
-    import {Circle} from "svelte-loading-spinners";
+	import { addClass, addClassFolder, classes, classFolders } from '../../data/class-store';
+	import { closeSidebar, shownTab, sidebarOpen }             from '../../data/store';
+	import SidebarEntry                                        from './SidebarEntry.svelte';
+	import { squish }                                          from '../../data/squish';
+	import { goto }                                            from '$app/navigation';
+	import { beforeUpdate, onDestroy, onMount }                from 'svelte';
+	import type { Unsubscriber }                               from 'svelte/store';
+	import { get }                                             from 'svelte/store';
+	import FabledFolder                                        from '$api/fabled-folder';
+	import FabledClass                                         from '$api/fabled-class';
+	import FabledSkill                                         from '$api/fabled-skill';
+	import Folder                                              from '../Folder.svelte';
+	import { fly }                                             from 'svelte/transition';
+	import { clickOutside }                                    from '$api/clickoutside';
+	import { browser }                                         from '$app/environment';
+	import Tabs                                                from '../input/Tabs.svelte';
+	import { addSkill, addSkillFolder, skillFolders, skills }  from '../../data/skill-store';
+	import { addAttribute, attributes }                        from '../../data/attribute-store';
+	import { base }                                            from '$app/paths';
+	import { Tab }                                             from '$api/tab';
+	import {getAllClasses, loading, reloadAllClasses} from "$api/cdn";
+	import Modal from "$components/Modal.svelte";
+	import ProInput from "$input/ProInput.svelte";
+	import {Circle} from "svelte-loading-spinners";
 
-    let folders: FabledFolder[] = [];
-    let classSub: Unsubscriber;
-    let skillSub: Unsubscriber;
-    let classIncluded: Array<FabledClass | FabledSkill> = [];
-    let skillIncluded: Array<FabledClass | FabledSkill> = [];
+	let folders: FabledFolder[]                         = [];
+	let classSub: Unsubscriber;
+	let skillSub: Unsubscriber;
+	let classIncluded: Array<FabledClass | FabledSkill> = [];
+	let skillIncluded: Array<FabledClass | FabledSkill> = [];
 
     let width: number;
     let height: number;
@@ -47,14 +49,18 @@
     };
 
     const rebuildFolders = (fold?: FabledFolder[]) => {
-        if (get(isShowClasses)) {
+        switch (get(shownTab)) {
+			case Tab.CLASSES: {
             folders = fold || get(classFolders);
             classIncluded = [];
             appendIncluded(folders, classIncluded);
-        } else {
+        break;
+			}
+			case Tab.SKILLS: {
             folders = fold || get(skillFolders);
             skillIncluded = [];
-            appendIncluded(folders, skillIncluded);
+            appendIncluded(folders, skillIncluded);break;
+			}
         }
     };
 
@@ -103,10 +109,10 @@
      use:clickOutside={clickOut}
      style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
     <div class='type-wrap'>
-        <Toggle bind:data={$isShowClasses} left='Classes' right='Skills' color='#111' inline={false}/>
+        <Tabs bind:selectedTab={$shownTab} data={["Classes", "Skills", "Attributes"]} color='#111' inline={false}/>
         <hr/>
     </div>
-    {#if $isShowClasses}
+    {#if $shownTab == Tab.CLASSES}
         <div class='items'
              in:fly={{x: -100}}
              out:fly={{x: -100}}>
@@ -148,7 +154,7 @@
                 </div>
             </SidebarEntry>
         </div>
-    {:else}
+    {:else if $shownTab == Tab.SKILLS}
         <div class='items'
              in:fly={{ x: 100 }}
              out:fly={{ x: 100 }}>
@@ -180,7 +186,31 @@
                 </div>
             </SidebarEntry>
         </div>
-    {/if}
+    {:else if $shownTab == Tab.ATTRIBUTES}
+		<div class='items'
+				 in:fly={{ x: 100 }}
+				 out:fly={{ x: 100 }}>
+			{#each $attributes as att, i (att.name)}
+				<SidebarEntry
+					data={att}
+					direction='right'
+					delay={200 + 100*i}
+					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}>
+					{att.name}{att.location === 'server' ? '*' : ''}
+				</SidebarEntry>
+			{/each}
+			<SidebarEntry
+				delay={200 + 100*($attributes.length+1)}
+				direction='right'>
+				<div class='new'>
+					<span tabindex='0'
+								role='button'
+								on:click={() => addAttribute()}
+								on:keypress={(e) => e.key === 'Enter' && addAttribute()}>New Attribute</span>
+				</div>
+			</SidebarEntry>
+		</div>
+	{/if}
 </div>
 
 <Modal open={importing === "class"} width="300px" on:close={closeModal}>
