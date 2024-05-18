@@ -195,10 +195,21 @@ public class StatusListener extends FabledListener {
     public void onDamaged(EntityDamageEvent event) {
         if ((event instanceof EntityDamageByEntityEvent
                 && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event))
-                || !(event.getEntity() instanceof LivingEntity))
+                || !(event.getEntity() instanceof LivingEntity)
+                || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
             return;
 
         checkAbsorbAndInvincible((LivingEntity) event.getEntity(), event, event.getDamage());
+    }
+
+    /**
+     * Cancels damage when a defender is invincible or inverting damage
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onDamaged(DamageEvent event) {
+        checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
 
     /**
