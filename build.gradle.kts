@@ -60,7 +60,7 @@ configurations {
     }
 }
 
-group = "dev.robothanzo.gk"
+group = "dev.robothanzo.gk.sapi"
 version = "1.3.2-R0.3-SNAPSHOT"
 description = "GKProSkillAPI"
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -92,7 +92,7 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("pluginMaven") {
-            groupId = "dev.robothanzo.gk"
+            groupId = "dev.robothanzo.gk.sapi"
             artifactId = "GKProSkillAPI"
             version = project.version.toString()
         }
