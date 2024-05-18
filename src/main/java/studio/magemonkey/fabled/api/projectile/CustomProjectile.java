@@ -289,7 +289,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     protected boolean isTraveling() {
         // Leaving a loaded chunk
-        if (!getLocation().getChunk().isLoaded()) {
+        if (!getLocation().isWorldLoaded() || !getLocation().getChunk().isLoaded()) {
             cancel();
             Bukkit.getPluginManager().callEvent(expire());
             return false;
