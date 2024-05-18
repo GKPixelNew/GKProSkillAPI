@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
@@ -31,6 +32,7 @@ public class ProtocolLibHook {
         listeners.forEach(c -> unregister(c));
     }
 
+    @SneakyThrows
     public void broadcastToNearby(Player player, PacketContainer packet) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (player.equals(p) || !p.getWorld().equals(player.getWorld())) continue;

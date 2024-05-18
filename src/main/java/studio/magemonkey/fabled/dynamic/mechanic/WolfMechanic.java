@@ -26,17 +26,24 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.skills.PassiveSkill;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
 import org.bukkit.DyeColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.skills.PassiveSkill;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.api.util.Nearby;
+import studio.magemonkey.fabled.dynamic.ComponentRegistry;
+import studio.magemonkey.fabled.dynamic.ComponentType;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
+import studio.magemonkey.fabled.dynamic.target.TargetComponent;
+import studio.magemonkey.fabled.listener.MechanicListener;
+import studio.magemonkey.fabled.task.RemoveTask;
 
 import java.util.*;
 
@@ -54,8 +61,21 @@ public class WolfMechanic extends MechanicComponent {
     private static final String SKILLS     = "skills";
     private static final String AMOUNT     = "amount";
     private static final String SITTING    = "sitting";
+    private static final String AGGRO_TARGET = "aggro-target";
 
     private final Map<Integer, RemoveTask> tasks = new HashMap<>();
+    private TargetComponent aggroTarget;
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        String targetString = settings.getString(AGGRO_TARGET, "");
+        if (!targetString.isBlank()) {
+            aggroTarget = (TargetComponent) ComponentRegistry.getComponent(ComponentType.TARGET, targetString);
+            aggroTarget.setSettings(settings);
+            aggroTarget.load(skill, config);
+        }
+    }
 
     /**
      * Executes the component
@@ -68,13 +88,11 @@ public class WolfMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {
+        if (!(caster instanceof Player player)) {
             return false;
         }
 
         cleanUp(caster);
-
-        final Player player = (Player) caster;
 
         String color  = settings.getString(COLOR);
         double health = parseValues(player, HEALTH, level, 10.0);
@@ -97,11 +115,24 @@ public class WolfMechanic extends MechanicComponent {
         double             seconds = parseValues(player, SECONDS, level, 10.0);
         int                ticks   = (int) (seconds * 20);
         List<LivingEntity> wolves  = new ArrayList<>();
+        List<LivingEntity> aggroTargets = List.of();
+        if (aggroTarget != null) {
+            aggroTargets = aggroTarget.getTargets(caster, level, Nearby.getLivingNearby(caster,
+                    parseValues(caster, "radius", level, 100)));
+        }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);
                 wolf.setOwner(player);
-                wolf.setMaxHealth(health);
+                AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if (maxHealth != null)
+                    maxHealth.setBaseValue(health);
+                wolf.setHealth(health);
+                wolf.setSitting(sitting);
+                if (!aggroTargets.isEmpty()) {
+                    wolf.setTarget(aggroTargets.get(0));
+                    wolf.setAngry(true);
+                }
                 wolf.setHealth(health);
                 wolf.setSitting(sitting);
                 Fabled.setMeta(wolf, MechanicListener.SUMMON_DAMAGE, damage);
@@ -155,5 +186,6 @@ public class WolfMechanic extends MechanicComponent {
             task.cancel();
             task.run();
         }
+        aggroTarget.cleanUp(caster);
     }
 }

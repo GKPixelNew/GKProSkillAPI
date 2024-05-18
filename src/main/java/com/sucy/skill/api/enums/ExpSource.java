@@ -3,6 +3,7 @@ package com.sucy.skill.api.enums;
 /**
  * @deprecated Use {@link studio.magemonkey.fabled.api.enums.ExpSource} instead
  */
+@Deprecated
 public enum ExpSource {
     /**
      * Experience resulted from defeating a monster

@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
-import org.bukkit.plugin.Plugin;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
-import studio.magemonkey.fabled.api.target.TargetHelper;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
+import studio.magemonkey.fabled.api.target.TargetHelper;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -52,7 +52,7 @@ public class LinearTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         final double tolerance = parseValues(caster, TOLERANCE, level, 4.0);
         final double range     = parseValues(caster, RANGE, level, 5.0);

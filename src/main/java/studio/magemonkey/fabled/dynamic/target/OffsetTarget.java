@@ -27,9 +27,9 @@
 package studio.magemonkey.fabled.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class OffsetTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         return determineTargets(caster, level, targets, t -> ImmutableList.of(getTargetLoc(caster, level, t)));
     }

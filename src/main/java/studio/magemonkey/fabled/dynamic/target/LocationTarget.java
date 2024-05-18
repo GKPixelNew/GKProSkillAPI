@@ -27,7 +27,6 @@
 package studio.magemonkey.fabled.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class LocationTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         final double  range    = parseValues(caster, RANGE, level, 5.0);
         final boolean entities = settings.getBool(ENTITIES, true);

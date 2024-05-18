@@ -26,17 +26,17 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
-import org.bukkit.plugin.Plugin;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
-import studio.magemonkey.fabled.api.util.Nearby;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
+import studio.magemonkey.fabled.api.util.Nearby;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -54,7 +54,7 @@ public class NearestTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    List<LivingEntity> getTargets(
+    public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
 
         final double             radius = parseValues(caster, RADIUS, level, 3.0);

@@ -69,9 +69,9 @@ public abstract class TargetComponent extends EffectComponent {
         self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase(Locale.US).replace(' ', '_'));
     }
 
-    abstract List<LivingEntity> getTargets(final LivingEntity caster,
-                                           final int level,
-                                           final List<LivingEntity> targets);
+    public abstract List<LivingEntity> getTargets(final LivingEntity caster,
+                                                  final int level,
+                                                  final List<LivingEntity> targets);
 
     /**
      * {@inheritDoc}

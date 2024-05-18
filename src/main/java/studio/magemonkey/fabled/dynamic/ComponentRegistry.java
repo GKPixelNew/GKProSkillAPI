@@ -243,7 +243,7 @@ public class ComponentRegistry {
         return TRIGGERS.get(key.toUpperCase(Locale.US).replace(' ', '_'));
     }
 
-    static EffectComponent getComponent(final ComponentType type, final String key) {
+    public static EffectComponent getComponent(final ComponentType type, final String key) {
         final Class<?> componentClass = COMPONENTS.get(type).get(key.toLowerCase());
         if (componentClass == null) {
             throw new IllegalArgumentException("Invalid component key - " + key);

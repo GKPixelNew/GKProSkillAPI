@@ -62,7 +62,7 @@ public abstract class EffectComponent {
     /**
      * The settings for the component
      */
-    protected final      Settings                   settings         = new Settings();
+    protected Settings settings = new Settings();
     /**
      * Whether the component should display preview effects
      */
@@ -134,6 +134,10 @@ public abstract class EffectComponent {
      */
     public Settings getSettings() {
         return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     /**
