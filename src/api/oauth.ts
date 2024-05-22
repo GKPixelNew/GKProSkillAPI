@@ -13,7 +13,7 @@ export const initOAuth = () => {
         redirect_uri: window.location.origin + "/oauth/callback",
         post_logout_redirect_uri: window.location.origin,
         response_type: "code",
-        scope: "openid profile download:cdn read:cdn.class.* update:cdn.class.* read.all:cdn.class.* read:cdn.skill.* update:cdn.skill.* read.all:cdn.skill.*",
+        scope: "openid profile offline_access download:cdn read:cdn.class.* update:cdn.class.* read.all:cdn.class.* read:cdn.skill.* update:cdn.skill.* read.all:cdn.skill.*",
         response_mode: "fragment",
         filterProtocolClaims: true,
         extraHeaders: {
