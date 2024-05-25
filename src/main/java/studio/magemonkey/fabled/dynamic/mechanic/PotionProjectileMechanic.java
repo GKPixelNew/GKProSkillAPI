@@ -107,7 +107,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     @Override
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
-        targetBlocks = config.getBoolean(TARGET_BLOCKS, true);
+        targetBlocks = config.getBoolean(TARGET_BLOCKS, false);
     }
 
     @Override
