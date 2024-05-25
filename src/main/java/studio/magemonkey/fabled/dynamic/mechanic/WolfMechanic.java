@@ -191,6 +191,7 @@ public class WolfMechanic extends MechanicComponent {
             task.cancel();
             task.run();
         }
-        aggroTarget.cleanUp(caster);
+        if (aggroTarget != null)
+            aggroTarget.cleanUp(caster);
     }
 }
