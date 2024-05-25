@@ -1,14 +1,12 @@
 import axios, {AxiosError, type AxiosInstance} from "axios";
 import {userManager} from "$api/oauth";
-import { active, loadRaw, saveAttributes } from '../data/store';
+import { active, loadRaw } from '../data/store';
 import {notifyFailure, notifySuccess} from "$api/notify";
-import {classes} from "../data/class-store";
 import {get} from "svelte/store";
-import { skills } from '../data/skill-store';
 import FabledAttribute from '$api/fabled-attribute';
 import YAML from 'yaml';
-import FabledSkill from '$api/fabled-skill';
-import FabledClass from '$api/fabled-class';
+import FabledClass, { classStore } from '../data/class-store';
+import { skillStore } from '../data/skill-store';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
@@ -68,7 +66,7 @@ export const importSkill = async (skillId: string) => {
 }
 
 export const reloadAllClasses = async () => {
-    for (const c of get(classes)) {
+    for (const c of get(classStore.classes)) {
         loading.push(c.name);
         importClass(c.name).then(() => {
             loading.splice(loading.indexOf(c.name), 1);
@@ -77,7 +75,7 @@ export const reloadAllClasses = async () => {
 }
 
 export const reloadAllSkills = async () => {
-    for (const c of get(skills)) {
+    for (const c of get(skillStore.skills)) {
         loading.push(c.name);
         importSkill(c.name).then(() => {
             loading.splice(loading.indexOf(c.name), 1);

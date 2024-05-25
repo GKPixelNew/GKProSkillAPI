@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import '../app.css';
+	import '../../app.css';
 	import {
 		active,
 		importing,
@@ -10,7 +10,7 @@
 		saveDataToServer,
 		saveError,
 		showSidebar
-	}                                                                        from '../data/store';
+	}                                                                        from '../../data/store';
 	import { onDestroy, onMount }                                            from 'svelte';
 	import { browser }                                                       from '$app/environment';
 	import ImportModal                                                       from '$components/ImportModal.svelte';
@@ -19,16 +19,15 @@
 	import { fly }                                                           from 'svelte/transition';
 	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
 	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                 from '../data/modal-service';
+	import { activeModal, closeModal, modalData, openModal }                 from '../../data/modal-service';
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
 	import {SvelteToast} from "@zerodevx/svelte-toast";
 	import { upload } from '$api/cdn';
-																																					 from '$components/modal/SettingsModal.svelte';
 	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
 	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
-	import { skillStore }                                                    from '../data/skill-store.js';
+	import { skillStore }                                                    from '../../data/skill-store.js';
 
 	const isSaving = skillStore.isSaving;
 
@@ -193,15 +192,15 @@
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
-	<div class='button save' title='Save'
+	<div class='button save' title='Upload'
 			 tabindex='0'
 			 role='button'
 			 style:--rotation='{$rotation * 3}deg'
 			 style:--distance='{$distance}rem'
-			 on:click={() => saveData()}
-			 on:keypress={(e) => { if (e.key === 'Enter') saveData() }}
+			 on:click={() => upload()}
+			 on:keypress={(e) => { if (e.key === 'Enter') upload() }}
 	>
-		<span class='material-symbols-rounded'>save</span>
+		<span class='material-symbols-rounded'>upload</span>
 	</div>
 	{#if $socketConnected}
 		<!-- Rotation goes up by 2 for each button -->

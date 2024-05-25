@@ -24,7 +24,6 @@
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
-	import type FabledAttribute from '$api/fabled-attribute';
 	import { importClass, importSkill } from '$api/cdn.js';
 
 	let folders: FabledFolder[] = [];
@@ -44,8 +43,6 @@
 	};
 	let importChoice = '';
 	let loadingOptions = false;
-	const appendIncluded = (item: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> | FabledFolder | FabledClass | FabledSkill | FabledAttribute, include: Array<FabledClass | FabledSkill | FabledAttribute>) => {
-
 	const skills       = skillStore.skills;
 	const skillFolders = skillStore.skillFolders;
 	const classes      = classStore.classes;
