@@ -282,12 +282,12 @@ public abstract class MockedTest {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                     .getClassLoader()
                     .getResourceAsStream("classes" + File.separator + c + ".yml"))));
-                 FileWriter writer = new FileWriter(classFile);) {
+                 FileWriter writer = new FileWriter(classFile)) {
                 String str;
                 while ((str = in.readLine()) != null) {
                     writer.write(str + "\n");
                 }
-                log.info("Saved class file " + c);
+                log.info("Saved class file {}", c);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
