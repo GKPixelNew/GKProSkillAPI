@@ -159,6 +159,10 @@ public class ParticleEffect implements IParticleEffect {
         try {
             int       next        = (frame + 1) * animation.getCopies();
             Point3D[] animPoints  = animation.getPoints(animDir);
+            if (shape == null) {
+                Logger.invalid("Shape formula for " + name + " is null");
+                return;
+            }
             Point3D[] shapePoints = shape.getPoints(shapeDir);
             Point2D[] trig        = animation.getTrig(frame);
 
