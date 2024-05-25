@@ -1,35 +1,79 @@
 <script lang='ts'>
-	import '../../app.css';
-	import { active, importing, loadFile, saveAll, saveError, showSidebar } from '../../data/store';
-	import { onDestroy, onMount }                                                     from 'svelte';
-	import { browser }                                                                from '$app/environment';
-	import ImportModal
-																																										from '$components/ImportModal.svelte';
-	import NavBar                                                                     from '$components/NavBar.svelte';
-	import HeaderBar                                                                  from '$components/HeaderBar.svelte';
-	import { isSaving, skills }                                                       from '../../data/skill-store';
-	import { fly }                                                                    from 'svelte/transition';
-	import type { Unsubscriber }                                                      from 'svelte/store';
-	import { get }                                                                    from 'svelte/store';
-	import Sidebar
-																																										from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                          from '../../data/modal-service';
+	import '../app.css';
+	import {
+		active,
+		importing,
+		loadFile,
+		saveAll,
+		saveAllToServer,
+		saveData,
+		saveDataToServer,
+		saveError,
+		showSidebar
+	}                                                                        from '../data/store';
+	import { onDestroy, onMount }                                            from 'svelte';
+	import { browser }                                                       from '$app/environment';
+	import ImportModal                                                       from '$components/ImportModal.svelte';
+	import NavBar                                                            from '$components/NavBar.svelte';
+	import HeaderBar                                                         from '$components/HeaderBar.svelte';
+	import { fly }                                                           from 'svelte/transition';
+	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
+	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
+	import { activeModal, closeModal, modalData, openModal }                 from '../data/modal-service';
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
 	import {SvelteToast} from "@zerodevx/svelte-toast";
 	import { upload } from '$api/cdn';
+																																					 from '$components/modal/SettingsModal.svelte';
+	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
+	import { quadInOut }                                                     from 'svelte/easing';
+	import Modal                                                             from '$components/Modal.svelte';
+	import { skillStore }                                                    from '../data/skill-store.js';
+
+	const isSaving = skillStore.isSaving;
 
 	let dragging    = false;
 	let displaySave = false;
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
+	let button                                 = '';
+	let serverSaveStatus                       = 'NONE';
+	const statusMap: { [key: string]: string } = {
+		'SAVING': 'hourglass_empty',
+		'SAVED':  'check',
+		'ERROR':  'error'
+	};
+	let copied                                 = false;
+
+	const passphrase = socketService.keyphrase;
+	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
+	let rotation     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
+	let distance     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
+	let dcTime       = derived<Readable<number>, number>(dcWarning, (dcWarning, set) => {
+		let interval: number;
+		let seconds   = 0;
+		const setTime = () => {
+			let time = dcWarning - ++seconds;
+			if (time <= 0) {
+				clearInterval(interval);
+				return;
+			}
+			set(time);
+		};
+
+		set(dcWarning);
+
+		interval = window.setInterval(() => setTime(), 1000);
+		return () => clearInterval(interval);
+	});
+
 	onMount(() => {
 		if (!browser) return;
 		document.addEventListener('dragover', dragover);
 		document.addEventListener('drop', loadFiles);
 
-		saveSub = isSaving.subscribe(saving => {
+		saveSub = skillStore.isSaving.subscribe(saving => {
 			if (!saving) {
 				setTimeout(() => displaySave = false, 1000);
 				return;
@@ -77,8 +121,52 @@
 	};
 
 	const save = () => {
-		skills.set([...get(skills)]);
+		skillStore.skills.set([...get(skillStore.skills)]);
 		get(active)?.save();
+	};
+
+	const acknowledgeSaveError = () => {
+		const err = get(saveError);
+		if (err) {
+			err.acknowledged = true;
+		}
+		saveError.set(undefined);
+	};
+
+	const saveServerInfo = async () => {
+		if (serverSaveStatus === 'SAVING') return;
+		button           = 'save';
+		serverSaveStatus = 'SAVING';
+		let success      = await saveDataToServer();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
+	const exportAllToServer = async () => {
+		if (serverSaveStatus === 'SAVING') return;
+		button           = 'export';
+		serverSaveStatus = 'SAVING';
+		let success      = await saveAllToServer();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
+	const reload = async () => {
+		if (serverSaveStatus === 'SAVING') return;
+		button           = 'reload';
+		serverSaveStatus = 'SAVING';
+		let success      = await socketService.reloadSapi();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
+	const copyText = () => {
+		navigator.clipboard.writeText('/synth trust ' + $passphrase);
+		copied = true;
+		setTimeout(() => copied = false, 2000);
 	};
 </script>
 
@@ -92,30 +180,89 @@
 		<slot />
 	</div>
 </div>
+<!--<SocketPanel />-->
+
 <div id='floating-buttons'>
 	<div class='button backup' title='Backup All Data'
 			 tabindex='0'
 			 role='button'
+			 style:--rotation='{$rotation}deg'
+			 style:--distance='{$distance}rem'
 			 on:click={saveAll}
 			 on:keypress={(e) => e.key === 'Enter' && saveAll()}
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
+	<div class='button save' title='Save'
+			 tabindex='0'
+			 role='button'
+			 style:--rotation='{$rotation * 3}deg'
+			 style:--distance='{$distance}rem'
+			 on:click={() => saveData()}
+			 on:keypress={(e) => { if (e.key === 'Enter') saveData() }}
+	>
+		<span class='material-symbols-rounded'>save</span>
+	</div>
+	{#if $socketConnected}
+		<!-- Rotation goes up by 2 for each button -->
+		<div class='button socket-upload'
+				 title='Save to Server'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 5}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => saveServerInfo()}
+				 on:keypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
+		>
+			{#if button === 'save' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>upload_file</span>
+			{/if}
+		</div>
+		<div class='button socket-all'
+				 title='Upload All to Server'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 7}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => exportAllToServer()}
+				 on:keypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
+		>
+			{#if button === 'export' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>cloud_upload</span>
+			{/if}
+		</div>
+		<div class='button socket-reload'
+				 title='Reload ProSkillAPI'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 9}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => reload()}
+				 on:keypress={(e) => { if (e.key === 'Enter') reload() }}
+		>
+			{#if button === 'reload' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>sync</span>
+			{/if}
+		</div>
+	{/if}
 	<div class='button settings' title='Change Settings'
 			 tabindex='0'
 			 role='button'
+			 style:--rotation='60deg'
+			 style:--distance='1rem'
 			 on:click={() => openModal(SettingsModal)}
 			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
 	>
 		<span class='material-symbols-rounded'>settings</span>
-	</div>
-	<div class='button save' title='Upload'
-			 tabindex='0'
-			 role='button'
-			 on:click={() => upload()}
-			 on:keypress={(e) => e.key === 'Enter' && upload()}
-	>
-		<span class='material-symbols-rounded'>upload</span>
 	</div>
 </div>
 
@@ -132,8 +279,8 @@
 		<div class='acknowledge button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => { get(saveError).acknowledged = true; saveError.set(null); }}
-				 on:keypress={(e) => { if (e.key === 'Enter') { get(saveError).acknowledged = true; saveError.set(null); }}}
+				 on:click={() => { acknowledgeSaveError() }}
+				 on:keypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
 		>I Understand
 		</div>
 	</div>
@@ -156,9 +303,50 @@
 	</div>
 {/if}
 
+<Modal open={!!$passphrase && !$socketTrusted}>
+	<h3>Untrusted Connection to Server</h3>
+	<div>Server is not trusted. Please run
+		<div class='code'
+				 class:copied
+				 tabindex='0'
+				 role='button'
+				 on:click={copyText}
+				 on:keypress={(e) => { if (e.key === 'Enter') copyText() }}
+		>
+			/synth trust {$passphrase}
+		</div>
+		from the server
+	</div>
+</Modal>
+
+{#if $dcWarning > 0}
+	<div class='dc-warning' transition:fly={{y: -20}}>
+		<strong>You will lose connection in { $dcTime } seconds</strong>
+		<div class='button'
+				 tabindex='0'
+				 role='button'
+				 on:click={() => socketService.ping()}
+				 on:keypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
+		>Click to remain connected
+		</div>
+	</div>
+{/if}
+
 <SvelteToast/>
 
 <style>
+    @property --rotation {
+        syntax: "<angle>";
+        inherits: false;
+        initial-value: 0deg;
+    }
+
+    @property --distance {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 0;
+    }
+
     .dragging {
         display: flex;
         align-items: center;
@@ -200,28 +388,37 @@
         justify-content: center;
     }
 
-    #floating-buttons {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        right: 0.5rem;
-        bottom: 0.5rem;
-        align-items: flex-end;
-    }
-
     #floating-buttons .button {
+        --rotation: 0deg;
+        --distance: 3.5rem;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        translate: calc(-1 * var(--distance) * sin(105deg - var(--rotation))) calc(-1 * var(--distance) * cos(105deg - var(--rotation)));
+
         background-color: #0083ef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        place-items: center;
         border-radius: 50%;
         padding: 0.7rem;
         box-shadow: inset 0 0 10px #222;
-        margin: 0.5rem;
+        margin: 0;
+        overflow: hidden;
+
+        transition: --rotation 0.5s ease, --distance 0.5s ease;
+    }
+
+    #floating-buttons {
+        position: fixed;
+        right: 0.5rem;
+        bottom: 0.5rem;
+        z-index: 100;
     }
 
     #floating-buttons .button .material-symbols-rounded {
-        font-size: 1.75rem;
+        font-size: 1.75em;
+        grid-row: 1;
+        grid-column: 1;
     }
 
     #floating-buttons .save {
@@ -230,13 +427,22 @@
 
     #floating-buttons .settings {
         background-color: #777;
-        position: absolute;
-        top: 2.45rem;
-        left: -2rem;
+    }
+
+    #floating-buttons .socket-upload {
+        background-color: #ff9800;
+    }
+
+    #floating-buttons .socket-all {
+        background-color: #c21b1b;
+    }
+
+    #floating-buttons .socket-reload {
+        background-color: #363636;
     }
 
     #floating-buttons .settings .material-symbols-rounded {
-        font-size: 1rem;
+        font-size: 1em;
     }
 
     #body-container.empty {
@@ -274,5 +480,43 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+    }
+
+    .code {
+        display: inline;
+        background-color: #555;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        font-family: monospace;
+        font-size: 0.8em;
+        cursor: grab;
+
+        transition: background-color 0.5s ease;
+    }
+
+    .code.copied {
+        background-color: #36ab36;
+    }
+
+    .dc-warning {
+        position: fixed;
+        z-index: 100;
+        top: 0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 29, 29, 0.6);
+        backdrop-filter: blur(5px);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        box-shadow: inset 0 0 5px #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .dc-warning > .button {
+        background-color: #555555;
     }
 </style>

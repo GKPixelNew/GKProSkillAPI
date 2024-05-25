@@ -1,14 +1,14 @@
 <script lang='ts'>
-	import FabledFolder from '$api/fabled-folder';
-	import { slide }    from 'svelte/transition';
-	import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from '../data/store';
-	import FabledClass from '$api/fabled-class';
-	import FabledSkill from '$api/fabled-skill';
-	import { get }     from 'svelte/store';
-	import SidebarEntry
-																																												 from '$components/sidebar/SidebarEntry.svelte';
-	import { goto }                                                                        from '$app/navigation';
-	import { base }                                                                        from '$app/paths';
+	import { slide }                     from 'svelte/transition';
+	import { dragging, sidebarOpen }     from '../data/store';
+	import { get }                       from 'svelte/store';
+	import SidebarEntry                  from '$components/sidebar/SidebarEntry.svelte';
+	import { goto }                      from '$app/navigation';
+	import { base }                      from '$app/paths';
+	import type FabledAttribute          from '$api/fabled-attribute';
+	import type FabledClass              from '../data/class-store';
+	import type FabledSkill              from '../data/skill-store';
+	import { FabledFolder, folderStore } from '../data/folder-store.js';
 
 	export let folder: FabledFolder;
 	let elm: HTMLElement;
@@ -35,13 +35,13 @@
 	};
 
 	const deleteF = () => {
-		deleteFolder(folder);
+		folderStore.deleteFolder(folder);
 	};
 
 	const addFolder = () => {
 		folder.createFolder();
 		folder.open = true;
-		updateFolders();
+		folderStore.updateFolders();
 	};
 
 
@@ -52,16 +52,16 @@
 	};
 
 	const drop = () => {
-		over                                            = false;
-		const dragData: FabledClass | FabledSkill | FabledFolder = get(dragging);
+		over                                                                       = false;
+		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		if (!dragData) return;
 		if (folder.data.includes(dragData)) return;
 
-		const containing = getFolder(dragData);
+		const containing = folderStore.getFolder(dragData);
 		if (containing) containing.remove(dragData);
 
 		if (dragData instanceof FabledFolder) {
-			removeFolder(dragData);
+			folderStore.removeFolder(dragData);
 			dragData.parent = folder;
 		}
 
@@ -98,6 +98,7 @@
 	<span class='name' contenteditable='false'
 				tabindex='0'
 				role='textbox'
+				class:server={folder.location === 'server'}
 				bind:this={elm}
 				on:blur={() => elm.contentEditable = "false"}
 				bind:textContent={folder.name}
@@ -150,13 +151,13 @@
 
 {#if folder.open}
 	<div class='folder-content' transition:slide>
-		{#each folder.data as data (data.key)}
+		{#each folder.data as data (data?.key)}
 			{#if data instanceof FabledFolder}
 				<svelte:self folder={data} />
 			{:else}
 				<SidebarEntry {data}
 											on:click={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>
-					{data.name}
+					{data.name}{data.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/if}
 		{/each}
@@ -214,6 +215,10 @@
     .name {
         flex: 1;
         margin-left: 0.5rem;
+    }
+
+    .name.server::after {
+        content: '*';
     }
 
     .icon {

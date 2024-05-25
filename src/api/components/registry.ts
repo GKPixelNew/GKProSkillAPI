@@ -4,8 +4,8 @@ import type ProComponent           from '$api/components/procomponent';
 import type ProTrigger             from '$api/components/triggers';
 import type ProTarget              from '$api/components/targets';
 import type ProCondition           from '$api/components/conditions';
-import type ProMechanic           from '$api/components/mechanics';
-import type { YamlComponentData } from '$api/types';
+import type ProMechanic            from '$api/components/mechanics';
+import type { YamlComponentData }  from '$api/types';
 
 export type RegistryEntry = {
 	name: string,
