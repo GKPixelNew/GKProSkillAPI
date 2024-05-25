@@ -1,10 +1,14 @@
 import axios, {AxiosError, type AxiosInstance} from "axios";
 import {userManager} from "$api/oauth";
-import {loadRaw} from "../data/store";
+import { active, loadRaw, saveAttributes } from '../data/store';
 import {notifyFailure, notifySuccess} from "$api/notify";
 import {classes} from "../data/class-store";
 import {get} from "svelte/store";
 import { skills } from '../data/skill-store';
+import FabledAttribute from '$api/fabled-attribute';
+import YAML from 'yaml';
+import FabledSkill from '$api/fabled-skill';
+import FabledClass from '$api/fabled-class';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
@@ -115,4 +119,35 @@ export const getAllSkills = async () => {
         }
     }
     return []
+}
+
+export const upload = async () => {
+    const formData = new FormData();
+    const act = get(active);
+    if (!act) return;
+    if (act instanceof FabledAttribute) {
+        notifyFailure("無法上傳屬性")
+        return;
+    }
+    if (act instanceof FabledClass) {
+        formData.append('details', new Blob([JSON.stringify({classId: act.name})], {
+            type: 'application/json'
+        }));
+    } else {
+        formData.append('details', new Blob([JSON.stringify({ skillId: act.name })], {
+            type: 'application/json'
+        }));
+    }
+    formData.append('file', new File([new Blob([YAML.stringify({ [act.name]: act.serializeYaml() })], {
+        type: 'application/x-yaml'
+    })], act.name + ".yml"));
+    CONFIGURED_AXIOS.post(act instanceof FabledClass ? 'class' : 'skill', formData).then(function (response) {
+        if (response.data.success) {
+            notifySuccess('上傳成功')
+        } else {
+            notifyFailure('上傳失敗')
+        }
+    }).catch(function (error) {
+        notifyFailure('上傳失敗，錯誤 ' + error.response.status)
+    });
 }

@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import '../../app.css';
-	import { active, importing, loadFile, saveAll, saveData, saveError, showSidebar } from '../../data/store';
+	import { active, importing, loadFile, saveAll, saveError, showSidebar } from '../../data/store';
 	import { onDestroy, onMount }                                                     from 'svelte';
 	import { browser }                                                                from '$app/environment';
 	import ImportModal
@@ -17,6 +17,7 @@
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
 	import {SvelteToast} from "@zerodevx/svelte-toast";
+	import { upload } from '$api/cdn';
 
 	let dragging    = false;
 	let displaySave = false;
@@ -108,13 +109,13 @@
 	>
 		<span class='material-symbols-rounded'>settings</span>
 	</div>
-	<div class='button save' title='Save'
+	<div class='button save' title='Upload'
 			 tabindex='0'
 			 role='button'
-			 on:click={() => saveData()}
-			 on:keypress={(e) => e.key === 'Enter' && saveData()}
+			 on:click={() => upload()}
+			 on:keypress={(e) => e.key === 'Enter' && upload()}
 	>
-		<span class='material-symbols-rounded'>save</span>
+		<span class='material-symbols-rounded'>upload</span>
 	</div>
 </div>
 
