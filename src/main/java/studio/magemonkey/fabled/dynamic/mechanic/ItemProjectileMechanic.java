@@ -82,7 +82,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     @Override
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
-        targetBlocks = config.getBoolean(TARGET_BLOCKS, false);
+        targetBlocks = settings.getBool(TARGET_BLOCKS, false);
     }
 
     @Override
