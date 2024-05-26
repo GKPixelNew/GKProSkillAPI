@@ -51,8 +51,10 @@ export const importSkill = async (skillId: string) => {
         if (response.data.success) {
             CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId).then(response => {
                 loadRaw(response.data, false)
+                notifySuccess('匯入成功');
+            }).catch((error: AxiosError) => {
+                notifyFailure('匯入失敗: ' + error.status);
             })
-            notifySuccess('匯入成功');
         } else {
             notifyFailure('匯入失敗');
         }

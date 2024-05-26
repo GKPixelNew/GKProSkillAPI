@@ -269,7 +269,7 @@ export default class FabledSkill implements Serializable {
 			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
 			localStorage.setItem('sapi.skill.' + this.name, yaml);
 			this.tooBig = false;
-		} catch (e: any) {
+		} catch (e: any) { // eslint-disable-line
 			// If the data is too big
 			if (!e?.message?.includes('quota')) {
 				console.error(this.name + ' Save error', e);
@@ -611,7 +611,6 @@ class SkillStore {
 			// If there is no data or the object is empty... return
 			return;
 		}
-
 		const keys = Object.keys(data);
 
 		let skill: FabledSkill;

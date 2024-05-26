@@ -5071,12 +5071,12 @@ class WolfMechanic extends ProMechanic {
 					.setTooltip('How many wolves to summon'),
 				new SkillSelect('Skills', 'skills', true)
 					.setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work'),
-				new DropdownSelect('Target', 'aggro_target', Object.values(get(targets)).map(t => t.name), 'Nearest')
-					.setTooltip('The target to aggro on'),
 				new BooleanSelect('Silent', 'silent', true)
 					.setTooltip('Whether the wolf should be silent'),
 				new BooleanSelect('No AI', 'no_ai', false)
 					.setTooltip('Whether the wolf should be controlled by an AI'),
+				new DropdownSelect('Target', 'aggro_target', Object.values(get(targets)).map(t => t.name), 'Nearest')
+					.setTooltip('The target to aggro on'),
 			],
 			summaryItems: ['color', 'name', 'seconds', 'amount', 'aggro_target']
 		}, true);
