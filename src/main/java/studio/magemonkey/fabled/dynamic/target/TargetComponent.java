@@ -66,8 +66,8 @@ public abstract class TargetComponent extends EffectComponent {
         final String group = settings.getString(ALLY, "enemy").toLowerCase();
         everyone = group.equals("both");
         allies = group.equals("ally");
-        throughWall = settings.getString(WALL, "false").equalsIgnoreCase("true");
-        invulnerable = settings.getString(INVULNERABLE, "false").equalsIgnoreCase("true");
+        throughWall = settings.getBool(WALL, false);
+        invulnerable = settings.getBool(INVULNERABLE, false);
         self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase(Locale.US).replace(' ', '_'));
     }
 
