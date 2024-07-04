@@ -26,16 +26,15 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import com.google.common.collect.ImmutableSet;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import studio.magemonkey.codex.util.NamespaceResolver;
-import studio.magemonkey.fabled.api.util.FlagManager;
-import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerStatModifier;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.util.*;
@@ -57,7 +56,7 @@ public class CleanseMechanic extends MechanicComponent {
             PotionEffectType.WITHER,
             PotionEffectType.BAD_OMEN,
             PotionEffectType.GLOWING,
-            PotionEffectType.HARM
+            PotionEffectType.INSTANT_DAMAGE
     );
 
     private static final String STATUS = "status";

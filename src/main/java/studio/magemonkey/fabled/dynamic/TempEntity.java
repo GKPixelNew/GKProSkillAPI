@@ -44,6 +44,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -961,6 +962,11 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public boolean canUseEquipmentSlot(@NotNull EquipmentSlot equipmentSlot) {
+        return false;
+    }
+
+    @Override
     public void setInvisible(boolean invisible) {
     }
 
@@ -985,6 +991,11 @@ public class TempEntity implements LivingEntity {
     }
 
     public void setHealth(double v) {
+    }
+
+    @Override
+    public void heal(double v, @NotNull EntityRegainHealthEvent.RegainReason regainReason) {
+
     }
 
     public int _INVALID_getHealth() {
@@ -1258,6 +1269,11 @@ public class TempEntity implements LivingEntity {
     @Override
     public boolean isInWorld() {
         return false;
+    }
+
+    @Override
+    public @Nullable String getAsString() {
+        return "TEMP_ENTITY";
     }
 
     @Nullable

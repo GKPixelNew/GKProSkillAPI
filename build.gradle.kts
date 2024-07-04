@@ -20,6 +20,7 @@ repositories {
 var codex_version = "1.0.0-R0.18-SNAPSHOT"
 
 dependencies {
+    testImplementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.89.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
@@ -27,10 +28,9 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("org.slf4j:slf4j-reload4j:2.0.13")
     testImplementation("commons-io:commons-io:2.16.1")
-    testImplementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     testImplementation("io.netty:netty-all:4.1.109.Final")
     testImplementation("studio.magemonkey:codex:${codex_version}")
-    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.5")
