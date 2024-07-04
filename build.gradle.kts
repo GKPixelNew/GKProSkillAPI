@@ -20,7 +20,7 @@ repositories {
 var codex_version = "1.0.0-R0.18-SNAPSHOT"
 
 dependencies {
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.86.1")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.89.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.mockito:mockito-inline:5.2.0")

@@ -1,11 +1,13 @@
 package studio.magemonkey.fabled.listener;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import studio.magemonkey.fabled.testutil.MockedTest;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import studio.magemonkey.fabled.testutil.MockedTest;
 
 import java.util.ArrayList;
 
@@ -41,7 +43,7 @@ public class KillListenerTest extends MockedTest {
 
     @Test
     public void onDeath() {
-        EntityDeathEvent event = new EntityDeathEvent(target, new ArrayList<>());
+        EntityDeathEvent event = new EntityDeathEvent(target, DamageSource.builder(DamageType.MAGIC).build(), new ArrayList<>());
         killListener.onKill(event);
 
         verify(killListener, times(1)).giveExp(any(), any(), anyInt());
