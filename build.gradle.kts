@@ -63,12 +63,12 @@ configurations {
 group = "dev.robothanzo.gk.sapi"
 version = "1.3.2-R0.3-SNAPSHOT"
 description = "GKProSkillAPI"
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+        options.release.set(21)
     }
 
     processResources {
