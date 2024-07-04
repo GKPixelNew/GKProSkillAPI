@@ -38,9 +38,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import studio.magemonkey.codex.mccore.util.VersionManager;
+import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.util.FlagManager;
@@ -138,7 +137,11 @@ public class StatusListener extends FabledListener {
                 || event.getFlag().equals(StatusFlag.ROOT)
                 || event.getFlag().equals(StatusFlag.CHANNELING)) {
             if (!(event.getEntity() instanceof Player)) {
-                event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, event.getTicks(), 100));
+                event.getEntity()
+                        .addPotionEffect(new PotionEffect(NamespaceResolver.getPotion("SLOWNESS", "SLOW"),
+                                event.getTicks(),
+                                100));
+                // SLOW/SLOWNESS
             }
         }
     }
@@ -231,7 +234,7 @@ public class StatusListener extends FabledListener {
      */
     private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage) {
         if (check(event, entity, null, StatusFlag.ABSORB))
-            VersionManager.heal(entity, damage);
+            entity.setHealth(entity.getHealth() + damage);
         else
             check(event, entity, null, StatusFlag.INVINCIBLE);
     }

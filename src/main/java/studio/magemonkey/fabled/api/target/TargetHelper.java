@@ -96,13 +96,18 @@ public abstract class TargetHelper {
     /**
      * Gets the targets in a cone
      *
-     * @param source entity to get the targets for
-     * @param arc    arc angle of the cone
-     * @param range  range of the cone
-     * @param resetY whether to reset the Y value of the target
+     * @param source   entity to get the targets for
+     * @param arc      arc angle of the cone
+     * @param range    range of the cone
+     * @param rotation rotation of the cone
+     * @param resetY   whether to reset the Y value of the target
      * @return list of targets
      */
-    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range, boolean resetY) {
+    public static List<LivingEntity> getConeTargets(LivingEntity source,
+                                                    double arc,
+                                                    double range,
+                                                    double rotation,
+                                                    boolean resetY) {
         List<LivingEntity> targets = new ArrayList<>();
         List<Entity>       list    = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
@@ -111,6 +116,12 @@ public abstract class TargetHelper {
         Location sourceLocation = source.getEyeLocation();
         Vector   dir            = sourceLocation.getDirection();
         if (resetY) dir.setY(0);
+
+        // Rotate the dir by the rotation about the Y-axis
+        if (rotation != 0) {
+            dir.rotateAroundY(rotation);
+        }
+
         double cos   = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
 

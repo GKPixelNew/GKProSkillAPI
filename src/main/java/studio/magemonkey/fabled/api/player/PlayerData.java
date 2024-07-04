@@ -41,7 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
@@ -49,7 +49,6 @@ import studio.magemonkey.codex.api.meta.NBTAttribute;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.codex.util.EntityUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -65,6 +64,7 @@ import studio.magemonkey.fabled.cast.PlayerCastBars;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.data.GroupSettings;
 import studio.magemonkey.fabled.data.PlayerEquips;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.gui.handlers.AttributeHandler;
@@ -78,8 +78,8 @@ import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.AttributeManager;
+import studio.magemonkey.fabled.manager.FabledAttribute;
 import studio.magemonkey.fabled.manager.IAttributeManager;
-import studio.magemonkey.fabled.manager.ProAttribute;
 import studio.magemonkey.fabled.task.ScoreboardTask;
 
 import java.util.*;
@@ -179,6 +179,7 @@ public class PlayerData {
     @Setter
     private double     lastHealth;
     private double     maxHealth;
+    private int        points; // Only used if shared-skill-points is enabled. Otherwise stored in PlayerClass
     /**
      * -- GETTER --
      * The hunger value here is not representative of the player's total hunger,
@@ -421,10 +422,10 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return false;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return false;
 
-        int max          = proAttribute.getMax();
+        int max          = fabledAttribute.getMax();
         int currentStage = getInvestedAttributeStage(key);
 
         if (currentStage >= max) {
@@ -461,8 +462,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int currentStage = getInvestedAttributeStage(key);
         return getAttributeUpCost(key, currentStage, currentStage + 1);
@@ -482,8 +483,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer modifier) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int currentStage  = getInvestedAttributeStage(key);
         int selectedStage = currentStage + modifier;
@@ -505,8 +506,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer from, Integer to) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int     totalCost = 0;
         boolean reverse   = false;
@@ -518,7 +519,7 @@ public class PlayerData {
         }
         for (int i = from + 1; i <= to; i++) { // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
             totalCost += Math.max(0,
-                    proAttribute.getCostBase() + (int) Math.floor((i - 1) * proAttribute.getCostModifier()));
+                    fabledAttribute.getCostBase() + (int) Math.floor((i - 1) * fabledAttribute.getCostModifier()));
         }
         return totalCost * (reverse ? -1 : 1);
     }
@@ -532,8 +533,14 @@ public class PlayerData {
      */
     public boolean giveAttribute(String key, int amount) {
         key = key.toLowerCase();
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return false;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return false;
+
+        int max          = fabledAttribute.getMax();
+        int currentStage = getInvestedAttributeStage(key);
+        int invested     = getInvestedAttribute(key);
+        if (amount + currentStage > max) amount = max - currentStage;
+        if (amount == 0) return false;
 
         PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, amount);
         Bukkit.getPluginManager().callEvent(event);
@@ -542,9 +549,6 @@ public class PlayerData {
         }
 
         amount = event.getChange();
-        int currentStage = getInvestedAttributeStage(key);
-        int invested     = getInvestedAttribute(key);
-        int max          = proAttribute.getMax();
 
         int newStage = Math.min(amount + currentStage, max);
         int cost     = getAttributeUpCost(key, currentStage, newStage);
@@ -622,21 +626,30 @@ public class PlayerData {
     }
 
     /**
+     * Refunds all invested attribute points for the given attribute
+     * @param key attribute key
+     * @return true if successful, false otherwise
+     */
+    public boolean refundAttributeAll(String key) {
+        return refundAttribute(key, getInvestedAttributeStage(key));
+    }
+
+    /**
      * Refunds an attribute point from the given attribute
      * if there are any points invested in it. If there are
      * none, this will do nothing.
      *
      * @param key attribute key
+     * @param refundAmount the number of points to refund
      */
-    public boolean refundAttribute(String key) {
+    public boolean refundAttribute(String key, int refundAmount) {
         key = key.toLowerCase();
         int current = getInvestedAttributeStage(key); // iomatix: get current stage
         if (current <= 0) {
             return false;
         }
 
-        // TODO Replace this with just PlayerAttributeChangeEvent
-        PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key, -1);
+        PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, -refundAmount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return false;
@@ -659,8 +672,10 @@ public class PlayerData {
      * Refunds all spent attribute points for a specific attribute
      *
      * @param key attribute key
+     * @param refund whether to refund the points
+     * @return true if successful, false otherwise
      */
-    public boolean refundAttributes(String key) {
+    public boolean resetAttribute(String key, boolean refund) {
         key = key.toLowerCase();
         int change = -getInvestedAttributeStage(key);
         if (change == 0) return true;
@@ -673,16 +688,18 @@ public class PlayerData {
 
         int currentStage = getInvestedAttributeStage(key);
         int newStage     = Math.max(0, currentStage + event.getChange());
-        // This _should_ be positive as we should be giving points back to the user, but could potentially
-        // be negative if someone set the change to a positive number in the event.
-        // If it's negative, we'll need to check if they have enough points to purchase the upgrade
+        // This _should_ be negative as we should be giving points back to the user, but could potentially
+        // be positive if someone set the change to a positive number in the event.
+        // If it's positive, we'll need to check if they have enough points to purchase the upgrade
         int refundAmount = getAttributeUpCost(key, currentStage, newStage);
 
         if (event.getChange() > 0 && attribPoints < refundAmount) {
             return false;
         }
 
-        attribPoints -= refundAmount;
+        if (refund) {
+            attribPoints -= refundAmount;
+        }
         attributes.put(key, getInvestedAttribute(key) + refundAmount);
         attrUpStages.put(key, newStage);
 
@@ -695,7 +712,7 @@ public class PlayerData {
      */
     public List<String> refundAttributes() {
         return attributes.keySet().stream()
-                .filter(this::refundAttributes)
+                .filter(this::refundAttributeAll)
                 .collect(Collectors.toList());
     }
 
@@ -753,13 +770,13 @@ public class PlayerData {
 
         double modified = defaultValue;
 
-        final List<ProAttribute> matches = manager.forStat(stat);
+        final List<FabledAttribute> matches = manager.forStat(stat);
         if (matches != null) {
 
-            for (final ProAttribute proAttribute : matches) {
-                int amount = this.getAttribute(proAttribute.getKey());
+            for (final FabledAttribute fabledAttribute : matches) {
+                int amount = this.getAttribute(fabledAttribute.getKey());
                 if (amount > 0) {
-                    modified = proAttribute.modifyStat(stat, modified, amount);
+                    modified = fabledAttribute.modifyStat(stat, modified, amount);
                 }
             }
 
@@ -803,15 +820,15 @@ public class PlayerData {
             return value;
         }
 
-        final List<ProAttribute> matches = manager.forComponent(component, key);
+        final List<FabledAttribute> matches = manager.forComponent(component, key);
         if (matches == null) {
             return value;
         }
 
-        for (final ProAttribute proAttribute : matches) {
-            int amount = getAttribute(proAttribute.getKey());
+        for (final FabledAttribute fabledAttribute : matches) {
+            int amount = getAttribute(fabledAttribute.getKey());
             if (amount > 0) {
-                value = proAttribute.modify(component, key, value, amount);
+                value = fabledAttribute.modify(component, key, value, amount);
             }
         }
         return value;
@@ -1213,7 +1230,7 @@ public class PlayerData {
         Player player = getPlayer();
         if (player != null && skill.getData() instanceof PassiveSkill) {
             if (skill.getLevel() == 0) {
-                ((PassiveSkill) skill.getData()).stopEffects(player, 1);
+                ((PassiveSkill) skill.getData()).stopEffects(player);
             } else {
                 ((PassiveSkill) skill.getData()).update(player, skill.getLevel() + amount, skill.getLevel());
             }
@@ -1237,7 +1254,7 @@ public class PlayerData {
         skill.setLevel(0);
 
         if (player != null && (skill.getData() instanceof PassiveSkill)) {
-            ((PassiveSkill) skill.getData()).stopEffects(player, 1);
+            ((PassiveSkill) skill.getData()).stopEffects(player);
         }
     }
 
@@ -1434,9 +1451,7 @@ public class PlayerData {
     }
 
     /**
-     * Sets the professed class for the player for the corresponding group. This
-     * will not save any skills, experience, or levels of the previous class if
-     * there was any. The new class will start at level 1 with 0 experience.
+     * Sets the professed class for the player for the corresponding group.
      *
      * @param previous    the previously professed class, if any
      * @param fabledClass class to assign to the player
@@ -1444,10 +1459,14 @@ public class PlayerData {
      * @return the player-specific data for the new class
      */
     public PlayerClass setClass(@Nullable FabledClass previous, FabledClass fabledClass, boolean reset) {
-        PlayerClass c = classes.remove(fabledClass.getGroup());
+        PlayerClass c           = classes.remove(fabledClass.getGroup());
+        int         skillPoints = 0;
         if (c != null) {
             List<Skill> skTemp =
-                    c.getPlayerData().getSkills().stream().map(PlayerSkill::getData).collect(Collectors.toList());
+                    c.getPlayerData().getSkills().stream()
+                            .filter(skill -> skill.getPlayerClass().getData().getGroup().equals(fabledClass.getGroup()))
+                            .map(PlayerSkill::getData)
+                            .collect(Collectors.toList());
             for (Skill skill : skTemp) {
                 String      nm = skill.getName().toLowerCase();
                 PlayerSkill ps = this.skills.get(nm);
@@ -1457,10 +1476,10 @@ public class PlayerData {
                     GroupSettings group = Fabled.getSettings().getGroupSettings(fabledClass.getGroup());
                     if (group.isProfessReset()) {
                         if (group.isProfessRefundSkills() && ps.getInvestedCost() > 0)
-                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
+                            skillPoints += ps.getInvestedCost();
 
                         if (group.isProfessRefundAttributes())
-                            resetAttribs();
+                            resetAttribs(true);
 
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
@@ -1468,7 +1487,7 @@ public class PlayerData {
                 } else {
                     if (!reset && Fabled.getSettings().isRefundOnClassChange() && skills.containsKey(nm)) {
                         if (ps.getInvestedCost() > 0)
-                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
+                            skillPoints += ps.getInvestedCost();
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
                     }
@@ -1477,7 +1496,7 @@ public class PlayerData {
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
                     }
-                    resetAttribs();
+                    resetAttribs(true);
                 }
             }
         } else {
@@ -1488,7 +1507,12 @@ public class PlayerData {
         if (!reset && c != null) {
             classData.setLevel(c.getLevel());
             classData.setExp(c.getExp());
-            classData.setPoints(c.getPoints());
+            if (Fabled.getSettings().isSharedSkillPoints()) {
+                classData.setEarnedPoints(c.getPoints());
+                this.points += skillPoints;
+            } else {
+                classData.setPoints(c.getPoints() + skillPoints);
+            }
         }
         classes.put(fabledClass.getGroup(), classData);
 
@@ -1591,12 +1615,14 @@ public class PlayerData {
             for (Skill skill : data.getSkills()) {
                 PlayerSkill ps = skills.remove(skill.getName().toLowerCase());
                 if (ps != null && ps.isUnlocked() && ps.getData() instanceof PassiveSkill) {
-                    ((PassiveSkill) ps.getData()).stopEffects(getPlayer(), ps.getLevel());
+                    ((PassiveSkill) ps.getData()).stopEffects(getPlayer());
                 }
 
-                if (settings.isProfessRefundSkills() && toSubclass) points += ps.getInvestedCost();
+                points += ps.getInvestedCost();
                 comboData.removeSkill(skill);
             }
+            if (Fabled.getSettings().isSharedSkillPoints())
+                this.points += points - playerClass.getEarnedPoints();
 
             // Update GUI features
             updateScoreboard();
@@ -1611,15 +1637,8 @@ public class PlayerData {
             setClass(null, fabledClass, true);
         }
 
-        int aPoints = 0;
-        if (settings.isProfessRefundAttributes() && toSubclass) {
-            aPoints += attribPoints;
-            for (Entry<String, Integer> entry : attributes.entrySet()) aPoints += entry.getValue();
-        }
-        resetAttribs(); //Should reset attribute points to 0.
-        attribPoints += aPoints;
-
-        return points;
+        resetAttribs(settings.isProfessRefundAttributes() && toSubclass);
+        return settings.isProfessRefundSkills() && toSubclass ? points : 0;
     }
 
     /**
@@ -1627,18 +1646,28 @@ public class PlayerData {
      * has, leaving no remaining data until the player professes again to a starting class.
      */
     public void resetAll() {
-        ArrayList<String> keys = new ArrayList<>(classes.keySet());
-        for (String key : keys) {
-            reset(key, false);
+        ArrayList<String> classNames = new ArrayList<>(classes.keySet());
+        for (String clazz : classNames) {
+            reset(clazz, false);
         }
+
+        if (classNames.isEmpty()) {
+            this.resetAttribs(false);
+        }
+
+        this.points = 0;
     }
 
     /**
      * Resets attributes for the player. If refunds are cancelled for any
      * specific attribute, that attribute will not be reset.
+     *
+     * @param refund whether to refund the points for the reset attributes
      */
-    public void resetAttribs() {
-        attribPoints = 0;
+    public void resetAttribs(boolean refund) {
+        if (!refund) {
+            attribPoints = 0;
+        }
 
         for (PlayerClass c : classes.values()) {
             GroupSettings s = c.getData().getGroupSettings();
@@ -1647,7 +1676,7 @@ public class PlayerData {
 
         Set<String> toRemove = new HashSet<>();
         for (String attr : attributes.keySet()) {
-            boolean refunded = refundAttributes(attr);
+            boolean refunded = resetAttribute(attr, refund);
             if (refunded) toRemove.add(attr);
         }
 
@@ -1688,7 +1717,7 @@ public class PlayerData {
                     previous != null && fabledClass.getParent().getName().equals(previous.getName());
             int skillPoints = isResetting
                     ? reset(fabledClass.getGroup(), isSubclass)
-                    : -1;
+                    : 0;
 
             // Inherit previous class data if any
             final PlayerClass current;
@@ -1696,7 +1725,6 @@ public class PlayerData {
                 current = new PlayerClass(this, fabledClass);
                 classes.put(fabledClass.getGroup(), current);
                 attribPoints += fabledClass.getGroupSettings().getStartingAttribs();
-                if (skillPoints == -1) skillPoints = current.getPoints();
             } else {
                 current = previousData;
                 previousData.setClassData(fabledClass);
@@ -1712,9 +1740,9 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
-            if (skillPoints < 0 || (isResetting && skillPoints == 0))
-                skillPoints = fabledClass.getGroupSettings().getStartingPoints();
-            current.setPoints(skillPoints);
+            if (fabledClass.getParent() == null || isResetting)
+                skillPoints += fabledClass.getGroupSettings().getStartingPoints();
+            current.givePoints(skillPoints);
             updateScoreboard();
             updatePlayerStat(getPlayer());
             return true;
@@ -1805,6 +1833,18 @@ public class PlayerData {
                 .forEach(playerClass -> playerClass.loseLevels(amount));
     }
 
+    public int getPoints() {
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            return this.points;
+        } else {
+            PlayerClass clazz = this.getMainClass();
+            if (clazz == null) {
+                clazz = this.classes.values().stream().findFirst().orElse(null);
+            }
+            return clazz == null ? 0 : clazz.getPoints();
+        }
+    }
+
     /**
      * Gives skill points to the player for all classes matching the experience source
      *
@@ -1814,9 +1854,13 @@ public class PlayerData {
      */
     @Deprecated
     public void givePoints(int amount, ExpSource source) {
-        for (PlayerClass playerClass : classes.values()) {
-            if (playerClass.getData().receivesExp(source)) {
-                playerClass.givePoints(amount);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points += amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                if (playerClass.getData().receivesExp(source)) {
+                    playerClass.givePoints(amount);
+                }
             }
         }
     }
@@ -1828,8 +1872,12 @@ public class PlayerData {
      * @param source source of the levels
      */
     public void givePoints(int amount, PointSource source) {
-        for (PlayerClass playerClass : classes.values()) {
-            playerClass.givePoints(amount, source);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points += amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                playerClass.givePoints(amount, source);
+            }
         }
     }
 
@@ -1839,8 +1887,12 @@ public class PlayerData {
      * @param amount amount of levels to set to
      */
     public void setPoints(int amount) {
-        for (PlayerClass playerClass : classes.values()) {
-            playerClass.setPoints(amount);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points = amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                playerClass.setPoints(amount);
+            }
         }
     }
 
@@ -1892,19 +1944,15 @@ public class PlayerData {
         }
 
         // Others stats
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
-            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
-            this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-            this.updateMCAttribute(player,
-                    Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-                    AttributeManager.KNOCKBACK_RESIST,
-                    0,
-                    1.0);
-        }
-        if (VersionManager.isVersionAtLeast(110200)) {
-            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
-        }
+        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
+        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
+        this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
+        this.updateMCAttribute(player,
+                Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                AttributeManager.KNOCKBACK_RESIST,
+                0,
+                1.0);
+        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
     }
 
     /**
@@ -1977,16 +2025,19 @@ public class PlayerData {
             player.setHealthScaled(false);
 
         if (player.getHealth() > modifiedMax)
-            player.setHealth(this.maxHealth);
+            player.setHealth(modifiedMax);
 
     }
 
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
-
-        AttributeInstance instance = player.getAttribute(attribute);
-        double            def      = instance.getDefaultValue();
-        double            modified = this.scaleStat(attribKey, def, min, max);
-        instance.setBaseValue(/*def + */modified);
+        try {
+            AttributeInstance instance = player.getAttribute(attribute);
+            double            def      = instance.getDefaultValue();
+            double            modified = this.scaleStat(attribKey, def, min, max);
+            instance.setBaseValue(/*def + */modified);
+        } catch (Exception e) {
+            Logger.log("Failed to update attribute " + attribute.name() + " for " + player.getName());
+        }
     }
 
     /**
@@ -2410,6 +2461,31 @@ public class PlayerData {
         if (player == null) {
             return;
         }
+
+        if (player.isValid()) {
+            _startPassives(player);
+        } else {
+            // Wait for the player to be valid and start passives
+            new BukkitRunnable() {
+                int tries = 0;
+
+                @Override
+                public void run() {
+                    if (player.isValid()) {
+                        _startPassives(player);
+                        this.cancel();
+                    }
+
+                    if (++tries > 10) this.cancel();
+                }
+            }.runTaskTimer(Fabled.inst(), 20L, 20L);
+        }
+    }
+
+    private void _startPassives(Player player) {
+        if (player == null) {
+            return;
+        }
         passive = true;
         for (PlayerSkill skill : skills.values()) {
             if (skill.isUnlocked() && (skill.getData() instanceof PassiveSkill)) {
@@ -2419,22 +2495,23 @@ public class PlayerData {
     }
 
     /**
-     * Stops passive abilities for the player if they are online. This is already
-     * called by the API and shouldn't be called by other plugins.
+     * Stops passive abilities and events from triggering for the player if they are online.
+     * This is already called by the API and shouldn't be called by other plugins.
      *
      * @param player player to stop the passive skills for
      */
-    public void stopPassives(Player player) {
+    public void stopSkills(Player player) {
         if (player == null) {
             return;
         }
+
         passive = false;
         for (PlayerSkill skill : skills.values()) {
-            if (skill.isUnlocked() && (skill.getData() instanceof PassiveSkill)) {
+            if (skill.isUnlocked() && (skill.getData() instanceof DynamicSkill)) {
                 try {
-                    ((PassiveSkill) skill.getData()).stopEffects(player, skill.getLevel());
+                    ((DynamicSkill) skill.getData()).stopEffects(player);
                 } catch (Exception ex) {
-                    Logger.bug("Failed to stop passive skill " + skill.getData().getName());
+                    Logger.bug("Failed to stop skill " + skill.getData().getName());
                     ex.printStackTrace();
                 }
             }
@@ -2538,7 +2615,7 @@ public class PlayerData {
     }
 
     private boolean applyUse(final Player player, final PlayerSkill skill, final double manaCost) {
-        player.setMetadata("custom-cooldown", new FixedMetadataValue((JavaPlugin) Fabled.inst(), 1));
+        player.setMetadata("custom-cooldown", new FixedMetadataValue(Fabled.inst(), 1));
         skill.startCooldown();
         if (Fabled.getSettings().isShowSkillMessages()) {
             skill.getData().sendMessage(player, Fabled.getSettings().getMessageRadius());
@@ -2551,8 +2628,8 @@ public class PlayerData {
             if (!removeTimer.isCancelled()) removeTimer.cancel();
         }
         removeTimer = Bukkit.getScheduler()
-                .runTaskLater((JavaPlugin) Fabled.inst(),
-                        () -> player.removeMetadata("custom-cooldown", (JavaPlugin) Fabled.inst()),
+                .runTaskLater(Fabled.inst(),
+                        () -> player.removeMetadata("custom-cooldown", Fabled.inst()),
                         20L);
         return true;
     }
@@ -2589,7 +2666,7 @@ public class PlayerData {
                                 RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
-                Bukkit.getScheduler().runTaskLater((JavaPlugin) Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
+                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
             }
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.ON_COOLDOWN);
         }

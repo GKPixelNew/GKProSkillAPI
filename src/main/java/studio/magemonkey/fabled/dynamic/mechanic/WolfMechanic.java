@@ -64,7 +64,7 @@ public class WolfMechanic extends MechanicComponent {
     private static final String SILENT = "silent";
     private static final String NO_AI = "no_ai";
 
-    private final Map<Integer, RemoveTask> tasks = new HashMap<>();
+    private final Map<Integer, RemoveEntitiesTask> tasks = new HashMap<>();
     private TargetComponent aggroTarget;
 
     @Override
@@ -78,15 +78,6 @@ public class WolfMechanic extends MechanicComponent {
         }
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(caster instanceof Player player)) {
@@ -168,7 +159,7 @@ public class WolfMechanic extends MechanicComponent {
             }
         }
 
-        final RemoveTask task = new RemoveTask(wolves, ticks);
+        final RemoveEntitiesTask task = new RemoveEntitiesTask(wolves, ticks);
         tasks.put(caster.getEntityId(), task);
 
         // Apply children to the wolves
@@ -186,7 +177,7 @@ public class WolfMechanic extends MechanicComponent {
 
     @Override
     public void cleanUp(final LivingEntity caster) {
-        final RemoveTask task = tasks.remove(caster.getEntityId());
+        final RemoveEntitiesTask task = tasks.remove(caster.getEntityId());
         if (task != null) {
             task.cancel();
             task.run();

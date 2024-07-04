@@ -353,7 +353,7 @@ public class MechanicListener extends FabledListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onSummonDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager().hasMetadata(SUMMON_DAMAGE))
-            VersionManager.setDamage(event, Fabled.getMetaDouble(event.getDamager(), SUMMON_DAMAGE));
+            event.setDamage(Fabled.getMetaDouble(event.getDamager(), SUMMON_DAMAGE));
     }
 
     /**
@@ -448,7 +448,7 @@ public class MechanicListener extends FabledListener {
             }
         }
         if (!entities.isEmpty()) {
-            new RemoveTask(entities, 1);
+            new RemoveEntitiesTask(entities, 1);
         }
     }
 

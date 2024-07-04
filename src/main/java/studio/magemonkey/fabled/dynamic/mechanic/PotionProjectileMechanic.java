@@ -40,7 +40,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -54,7 +53,7 @@ import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
 
 import java.util.*;
@@ -171,8 +170,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
         }
 
         ItemStack itemStack = new ItemStack(
-                settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(
-                        VersionManager.V1_9_0)
+                settings.getString(LINGER, "false").equalsIgnoreCase("true")
                         ? Material.LINGERING_POTION
                         : Material.SPLASH_POTION);
         ItemMeta meta = itemStack.getItemMeta();
@@ -253,7 +251,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
+        new RemoveEntitiesTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
             @Override
             public void run() {
                 super.run();

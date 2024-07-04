@@ -1162,7 +1162,7 @@ public class TempEntity implements LivingEntity {
         return true;
     }
 
-    public void sendMessage(String s) {
+    public void sendMessage(@NotNull String s) {
     }
 
     public void sendMessage(String[] strings) {
@@ -1176,6 +1176,7 @@ public class TempEntity implements LivingEntity {
     public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {
     }
 
+    @NotNull
     public Server getServer() {
         return Bukkit.getServer();
     }
@@ -1189,6 +1190,7 @@ public class TempEntity implements LivingEntity {
     public void setPersistent(boolean persistent) {
     }
 
+    @NotNull
     public String getName() {
         return "Location";
     }
@@ -1197,19 +1199,20 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public boolean setPassenger(Entity entity) {
+    public boolean setPassenger(@NotNull Entity entity) {
         return false;
     }
 
+    @NotNull
     public List<Entity> getPassengers() {
-        return null;
+        return List.of();
     }
 
-    public boolean addPassenger(final Entity entity) {
+    public boolean addPassenger(@NotNull final Entity entity) {
         return false;
     }
 
-    public boolean removePassenger(final Entity entity) {
+    public boolean removePassenger(@NotNull final Entity entity) {
         return false;
     }
 
@@ -1233,6 +1236,7 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @SuppressWarnings("removal")
     public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {
     }
 
@@ -1254,6 +1258,12 @@ public class TempEntity implements LivingEntity {
     @Override
     public boolean isInWorld() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public String getAsString() {
+        return "TEMP_ENTITY";
     }
 
     @Nullable

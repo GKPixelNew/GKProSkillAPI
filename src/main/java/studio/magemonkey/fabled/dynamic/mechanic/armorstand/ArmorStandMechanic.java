@@ -6,9 +6,8 @@ import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import org.bukkit.Location;
-import org.bukkit.RegionAccessor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -98,8 +97,9 @@ public class ArmorStandMechanic extends MechanicComponent {
                     () -> target.getWorld().spawn(loc, ArmorStand.class, onSpawn),
                     () -> {
                         // 1.20.1: remove this block if the deprecated interface has removed.
+                        Class<?> regionAccessor = Class.forName("org.bukkit.RegionAccessor");
                         //noinspection JavaReflectionMemberAccess,deprecation
-                        Method method = RegionAccessor.class.getDeclaredMethod("spawn", Location.class, Class.class, org.bukkit.util.Consumer.class);
+                        Method method = regionAccessor.getDeclaredMethod("spawn", Location.class, Class.class, org.bukkit.util.Consumer.class);
                         //noinspection deprecation
                         return (ArmorStand) method.invoke(target.getWorld(), loc, ArmorStand.class,
                                 (org.bukkit.util.Consumer<ArmorStand>) onSpawn::accept);
@@ -122,7 +122,7 @@ public class ArmorStandMechanic extends MechanicComponent {
             ArmorStandManager.register(instance, target, key);
         }
         executeChildren(caster, level, armorStands, force);
-        new RemoveTask(armorStands, duration);
+        new RemoveEntitiesTask(armorStands, duration);
         return targets.size() > 0;
     }
 

@@ -29,7 +29,6 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -38,6 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -52,7 +52,7 @@ import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
 
 import java.lang.reflect.InvocationTargetException;
@@ -258,7 +258,9 @@ public class ProjectileMechanic extends MechanicComponent {
             ItemMeta meta = itemStack.getItemMeta();
             if (meta != null) {
                 if (settings.getBool(ENCHANTED, false)) {
-                    meta.addEnchant(Enchantment.DURABILITY, 1, false);
+                    meta.addEnchant(NamespaceResolver.getEnchantment("UNBREAKING", "DURABILITY"),
+                            1,
+                            false); // UNBREAKING/DURABILITY
                 }
                 meta.setCustomModelData(settings.getInt(CMD, 0));
                 if (meta instanceof Damageable) {
@@ -332,7 +334,7 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
+        new RemoveEntitiesTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
             @Override
             public void run() {
                 super.run();

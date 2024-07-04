@@ -35,6 +35,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import studio.magemonkey.codex.util.reflection.ReflectionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
@@ -52,7 +53,7 @@ public class KillListener extends FabledListener {
     private static final String S_TYPE  = "sType";
     private static final int    SPAWNER = 0, EGG = 1;
 
-    public static void giveExp(LivingEntity entity, Player killer, int exp) {
+    public void giveExp(LivingEntity entity, Player killer, int exp) {
 
         // Disabled world
         if (!Fabled.getSettings().isWorldEnabled(entity.getWorld()))

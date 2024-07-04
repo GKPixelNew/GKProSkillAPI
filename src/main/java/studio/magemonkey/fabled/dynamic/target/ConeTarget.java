@@ -45,10 +45,10 @@ import java.util.function.Supplier;
  * each of the current targets.
  */
 public class ConeTarget extends TargetComponent {
-    private static final String ANGLE   = "angle";
-    private static final String RANGE   = "range";
-    private static final String RESET_Y = "reset-y";
-
+    private static final String ANGLE    = "angle";
+    private static final String RANGE    = "range";
+    private static final String ROTATION = "rotation";
+    private static final String RESET_Y  = "reset-y";
 
     /**
      * {@inheritDoc}
@@ -60,24 +60,28 @@ public class ConeTarget extends TargetComponent {
                             Supplier<List<LivingEntity>> targetSupplier) {
         super.playPreview(onPreviewStop, caster, level, targetSupplier);
 
+        boolean resetY = settings.getBool(RESET_Y, true);
+        double angle =
+                parseValues(caster, ANGLE, level, 90.0) * Math.PI / 360; // Intentional division by 2
+        double range    = parseValues(caster, RANGE, level, 5.0);
+        double rotation = -parseValues(caster, ROTATION, level, 0.0) * Math.PI / 180;
+
         if (preview.getBool("triangle", false)) {
+            ParticleSettings particleSettings = new ParticleSettings(preview, "triangle-");
+            double           density          = preview.getDouble("triangle-" + "density", 1);
+            double           rStep            = 1 / range / density;
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    ParticleSettings particleSettings = new ParticleSettings(preview, "triangle-");
-                    double angle =
-                            parseValues(caster, ANGLE, level, 90.0) * Math.PI / 360; // Intentional division by 2
-                    double range   = parseValues(caster, RANGE, level, 5.0);
-                    double density = preview.getDouble("triangle-" + "density", 1);
-
-                    double rStep = 1 / range / density;
-
                     for (LivingEntity target : targetSupplier.get()) {
-                        Location origin    = target.getEyeLocation();
-                        Vector   direction = origin.getDirection();
+                        Location origin = target.getEyeLocation().clone();
+                        if (resetY) origin.setPitch(0);
+                        if (rotation != 0) origin.setYaw((float) (origin.getYaw() + rotation));
+                        Vector direction = origin.getDirection();
 
                         Location altDirection = origin.clone();
-                        altDirection.setPitch((origin.getPitch() + 135) % 180 - 90); // Move pitch 45° without overflow
+                        altDirection.setPitch(
+                                (altDirection.getPitch() + 135) % 180 - 90); // Move pitch 45° without overflow
                         Vector perpendicular = altDirection.getDirection().crossProduct(direction);
 
                         Vector directionStep = direction.clone().multiply(rStep);
@@ -99,28 +103,28 @@ public class ConeTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("triangle-" + "period", 5)));
+            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("triangle-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
         if (preview.getBool("cone", false)) {
+            ParticleSettings particleSettings = new ParticleSettings(preview, "cone-");
+            double           density          = preview.getDouble("cone-" + "density", 1);
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    ParticleSettings particleSettings = new ParticleSettings(preview, "cone-");
-                    double angle =
-                            parseValues(caster, ANGLE, level, 90.0) * Math.PI / 360; // Intentional division by 2
-                    double range   = parseValues(caster, RANGE, level, 5.0);
-                    double density = preview.getDouble("cone-" + "density", 1);
 
                     double rStep = 1 / range / density;
 
                     for (LivingEntity target : targetSupplier.get()) {
-                        Location origin    = target.getEyeLocation();
-                        Vector   direction = origin.getDirection();
+                        Location origin = target.getEyeLocation().clone();
+                        if (resetY) origin.setPitch(0);
+                        if (rotation != 0) origin.setYaw((float) (origin.getYaw() + rotation));
+                        Vector direction = origin.getDirection();
 
                         Location altDirection = origin.clone();
-                        altDirection.setPitch((origin.getPitch() + 135) % 180 - 90); // Move pitch 45° without overflow
+                        altDirection.setPitch(
+                                (altDirection.getPitch() + 135) % 180 - 90); // Move pitch 45° without overflow
                         Vector perpendicular = altDirection.getDirection().crossProduct(direction);
 
                         Vector directionStep = direction.clone().multiply(rStep);
@@ -147,7 +151,7 @@ public class ConeTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("cone-" + "period", 5)));
+            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("cone-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }
@@ -157,12 +161,14 @@ public class ConeTarget extends TargetComponent {
      */
     @Override
     public List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
-        double range = parseValues(caster, RANGE, level, 3.0);
-        double angle = parseValues(caster, ANGLE, level, 90.0);
+        double  range    = parseValues(caster, RANGE, level, 3.0);
+        double  angle    = parseValues(caster, ANGLE, level, 90.0);
+        double  rotation = parseValues(caster, ROTATION, level, 0.0);
+        boolean resetY   = settings.getBool(RESET_Y, true);
         return determineTargets(caster,
                 level,
                 targets,
-                t -> TargetHelper.getConeTargets(t, angle, range, settings.getBool(RESET_Y, true)));
+                t -> TargetHelper.getConeTargets(t, angle, range, rotation, resetY));
     }
 
     @Override

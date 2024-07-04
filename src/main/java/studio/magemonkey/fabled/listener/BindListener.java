@@ -94,8 +94,7 @@ public class BindListener extends FabledListener {
                 .getPersistentDataContainer()
                 .get(SKILLS_KEY, DataUT.STRING_ARRAY);
         List<String> list = new ArrayList<>();
-        if (array != null)
-            list.addAll(Arrays.asList(array));
+        if (array != null) Collections.addAll(list, array);
         return list;
     }
 

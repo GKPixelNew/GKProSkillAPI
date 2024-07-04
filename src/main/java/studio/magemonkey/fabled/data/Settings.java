@@ -44,7 +44,6 @@ import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CombatProtection;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
@@ -88,6 +87,7 @@ public class Settings {
     DEFAULT_YIELD                  = "default",
             ACCOUNT_BASE           = "Accounts.",
             ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
+            ACCOUNT_SHARED_SP      = ACCOUNT_BASE + "shared-skill-points",
             ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
             ACCOUNT_MAX            = ACCOUNT_BASE + "max-accounts",
             ACCOUNT_PERM           = ACCOUNT_BASE + "perm-accounts",
@@ -210,6 +210,8 @@ public class Settings {
      */
     @Getter
     private String              mainGroup;
+    @Getter
+    private boolean             sharedSkillPoints;
     /**
      * Retrieves the max accounts allowed for most players
      *
@@ -224,6 +226,13 @@ public class Settings {
     private boolean             playerAlly;
     private boolean             affectNpcs;
     private boolean             affectArmorStands;
+    /**
+     * -- SETTER --
+     *  Swaps out the default combat protection for a custom one
+     *
+     * @param combatProtection combat protection to use
+     */
+    @Setter
     private CombatProtection    combatProtection = new DefaultCombatProtection();
     private boolean             auto;
     private boolean             useSql;
@@ -252,9 +261,30 @@ public class Settings {
     private String              sqlDatabase;
     private String              sqlUser;
     private String              sqlPass;
+    /**
+     * -- GETTER --
+     *  Checks whether Fabled should modify the max health of players
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             modifyHealth;
+    /**
+     * -- GETTER --
+     *  <p>Retrieves the default health for players that do not have a class.</p>
+     *
+     * @return default health for classless players
+     */
+    @Getter
     private int                 defaultHealth;
     private boolean             showAutoSkills;
+    /**
+     * -- GETTER --
+     *  Checks whether attributes are enabled
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             attributesEnabled;
     /**
      * Checks whether attribute points can be refunded
@@ -809,6 +839,7 @@ public class Settings {
 
     private void loadAccountSettings() {
         mainGroup = config.getString(ACCOUNT_MAIN);
+        sharedSkillPoints = config.getBoolean(ACCOUNT_SHARED_SP);
         onePerClass = config.getBoolean(ACCOUNT_EACH);
         maxAccounts = config.getInt(ACCOUNT_MAX);
 
@@ -924,15 +955,6 @@ public class Settings {
                 && (!target.getType().name().equals("ARMOR_STAND") || affectArmorStands);
     }
 
-    /**
-     * Swaps out the default combat protection for a custom one
-     *
-     * @param combatProtection combat protection to use
-     */
-    public void setCombatProtection(final CombatProtection combatProtection) {
-        this.combatProtection = combatProtection;
-    }
-
     private void loadTargetingSettings() {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
@@ -1029,39 +1051,12 @@ public class Settings {
     }
 
     /**
-     * Checks whether Fabled should modify the max health of players
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isModifyHealth() {
-        return modifyHealth;
-    }
-
-    /**
-     * <p>Retrieves the default health for players that do not have a class.</p>
-     *
-     * @return default health for classless players
-     */
-    public int getDefaultHealth() {
-        return defaultHealth;
-    }
-
-    /**
      * Checks whether auto-leveled skills are to be shown.
      *
      * @return true if shown, false otherwise
      */
     public boolean isShowingAutoSkills() {
         return showAutoSkills;
-    }
-
-    /**
-     * Checks whether attributes are enabled
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isAttributesEnabled() {
-        return attributesEnabled;
     }
 
     /**
@@ -1176,9 +1171,6 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            slotList.remove("40");
-        }
         slots = new int[slotList.size()];
         for (int i = 0; i < slots.length; i++) {
             slots[i] = NumberParser.parseInt(slotList.get(i));

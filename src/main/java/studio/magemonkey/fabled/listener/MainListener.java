@@ -41,7 +41,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.enums.ExpSource;
@@ -99,7 +98,7 @@ public class MainListener extends FabledListener {
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             data.setOnPreviewStop(null);
             data.record(player);
-            data.stopPassives(player);
+            data.stopSkills(player);
         }
 
         FlagManager.clearFlags(player);
@@ -108,12 +107,6 @@ public class MainListener extends FabledListener {
         DynamicSkill.clearCastData(player);
 
         player.setDisplayName(player.getName());
-        //We don't really need to reset the health... do we?
-//        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-//            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-//        } else {
-//            player.setMaxHealth(20);
-//        }
         player.setWalkSpeed(0.2f);
         Fabled.unloadPlayerData(player, skipSaving);
     }
@@ -137,11 +130,7 @@ public class MainListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onLogin(AsyncPlayerPreLoginEvent event) {
-        final OfflinePlayer player;
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
-            player = Bukkit.getOfflinePlayer(event.getUniqueId());
-        else
-            player = Bukkit.getOfflinePlayer(event.getName());
+        final OfflinePlayer player = Bukkit.getOfflinePlayer(event.getUniqueId());
 
         if (Fabled.getSettings().isUseSql() && Fabled.getSettings().getSqlDelay() > 0)
             Fabled.initFakeData(player);
@@ -206,7 +195,7 @@ public class MainListener extends FabledListener {
 
         PlayerData data = Fabled.getData(event.getEntity());
         if (data.hasClass() && Fabled.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
-            data.stopPassives(event.getEntity());
+            data.stopSkills(event.getEntity());
             if (!Fabled.getSettings().shouldIgnoreExpLoss(event.getEntity().getWorld())) {
                 data.loseExp();
             }
@@ -462,7 +451,7 @@ public class MainListener extends FabledListener {
 
         PlayerData data = Fabled.getData(event.getPlayer());
         data.clearAllModifiers();
-        data.stopPassives(event.getPlayer());
+        data.stopSkills(event.getPlayer());
         ClassBoardManager.clear(event.getPlayer());
         if (Fabled.getSettings().isModifyHealth()) {
             event.getPlayer().setMaxHealth(Fabled.getSettings().getDefaultHealth());

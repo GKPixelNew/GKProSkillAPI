@@ -26,14 +26,16 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import studio.magemonkey.codex.util.NamespaceResolver;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerStatModifier;
-import studio.magemonkey.fabled.api.util.FlagManager;
-import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.util.*;
@@ -44,12 +46,12 @@ import java.util.*;
 public class CleanseMechanic extends MechanicComponent {
     public static final List<PotionEffectType> NEGATIVE_POTIONS = Arrays.asList(
             PotionEffectType.BLINDNESS,
-            PotionEffectType.CONFUSION,
+            NamespaceResolver.getPotion("CONFUSION", "NAUSEA"),
             PotionEffectType.HUNGER,
             PotionEffectType.LEVITATION,
             PotionEffectType.POISON,
-            PotionEffectType.SLOW,
-            PotionEffectType.SLOW_DIGGING,
+            NamespaceResolver.getPotion("SLOWNESS", "SLOW"),
+            NamespaceResolver.getPotion("SLOW_DIGGING", "MINING_FATIGUE"),
             PotionEffectType.UNLUCK,
             PotionEffectType.WEAKNESS,
             PotionEffectType.WITHER,
