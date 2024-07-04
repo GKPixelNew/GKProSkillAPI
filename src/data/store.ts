@@ -2,7 +2,7 @@ import type { Readable, Writable }                                             f
 import { derived, get, writable }                                              from 'svelte/store';
 import { localStore }                                                          from '$api/api';
 import { attributeStore }                                                      from './attribute-store';
-import type ProComponent                                                       from '$api/components/procomponent';
+import type FabledComponent                                                    from '$api/components/fabled-component';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import { socketService }                                                       from '$api/socket/socket-connector';
 import YAML                                                                    from 'yaml';
@@ -28,7 +28,7 @@ export const activeType: Readable<'class' | 'skill' | 'attribute' | ''>         
 	}
 );
 export const dragging: Writable<FabledClass | FabledSkill | FabledAttribute | FabledFolder> = writable();
-export const draggingComponent: Writable<ProComponent | undefined>                          = writable();
+export const draggingComponent: Writable<FabledComponent | undefined>                       = writable();
 export const showSidebar: Writable<boolean>                                                 = localStore('sidebarOpen', true);
 export const sidebarOpen: Writable<boolean>                                                 = writable(true);
 export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);
@@ -119,7 +119,10 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => 
 		return;
 	}
 
-	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, {
+		lineWidth:             0,
+		aliasDuplicateObjects: false
+	}));
 };
 
 export const getAttributeYaml = async () => {
@@ -136,7 +139,7 @@ export const getAttributeYaml = async () => {
 	for (const attr of get(attributeStore.attributes)) {
 		attributeYaml[attr.name] = attr.serializeYaml();
 	}
-	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0 });
+	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0, aliasDuplicateObjects: false });
 
 	text += yaml;
 	return text;
@@ -154,7 +157,7 @@ export const saveDataToServer = async (data?: FabledSkill | FabledClass | Fabled
 		return await socketService.saveAttributesToServer(await getAttributeYaml());
 	}
 
-	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() });
+	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 
 	const folder = folderStore.getFolder(act);
 	let path     = '';
@@ -212,7 +215,10 @@ export const saveAllToServer = async () => {
 	const classYaml     = await getAllClassYaml();
 	const attributeYaml = await getAttributeYaml();
 
-	return await socketService.exportAll(classYaml.toString(), skillYaml.toString(), attributeYaml.toString());
+	return await socketService.exportAll(
+		YAML.stringify(classYaml, { lineWidth: 0, aliasDuplicateObjects: false }),
+		YAML.stringify(skillYaml, { lineWidth: 0, aliasDuplicateObjects: false }),
+		attributeYaml.toString());
 };
 
 export const saveAll = async () => {
@@ -220,8 +226,8 @@ export const saveAll = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
-	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));
-	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0 }));
+	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0, aliasDuplicateObjects: false }));
+	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0, aliasDuplicateObjects: false }));
 	await saveAttributes();
 	skillStore.isSaving.set(false);
 };

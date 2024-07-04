@@ -1,19 +1,21 @@
-import type { Writable }                                                            from 'svelte/store';
-import { get, writable }                                                            from 'svelte/store';
-import { active }                                                                   from './store';
-import { parseBool, sort, toEditorCase, toProperCase }                              from '$api/api';
-import { parseYaml }                                                                from '$api/yaml';
-import { browser }                                                                  from '$app/environment';
-import { goto }                                                                     from '$app/navigation';
-import { base }                                                                     from '$app/paths';
-import type { ClassYamlData, Icon, MultiClassYamlData, ProClassData, Serializable } from '$api/types';
-import YAML                                                                         from 'yaml';
-import { socketService }                                                            from '$api/socket/socket-connector';
-import { notify }                                                                   from '$api/notification-service';
-import { Attribute }                                                                from '$api/stat';
-import type { SkillTree }                                                           from '$api/SkillTree';
-import FabledSkill, { skillStore }                                                  from './skill-store';
-import { FabledFolder, folderStore }                                                from './folder-store';
+import type { Writable }                                                               from 'svelte/store';
+import { get, writable }                                                               from 'svelte/store';
+import { active }                                                                      from './store';
+import { parseBool, sort, toEditorCase, toProperCase }                                 from '$api/api';
+import { parseYaml }                                                                   from '$api/yaml';
+import { browser }                                                                     from '$app/environment';
+import { goto }                                                                        from '$app/navigation';
+import { base }                                                                        from '$app/paths';
+import type { ClassYamlData, FabledClassData, Icon, MultiClassYamlData, Serializable } from '$api/types';
+import YAML                                                                            from 'yaml';
+import {
+	socketService
+}                                                                                      from '$api/socket/socket-connector';
+import { notify }                                                                      from '$api/notification-service';
+import { Attribute }                                                                   from '$api/stat';
+import type { SkillTree }                                                              from '$api/SkillTree';
+import FabledSkill, { skillStore }                                                     from './skill-store';
+import { FabledFolder, folderStore }                                                   from './folder-store';
 
 export default class FabledClass implements Serializable {
 	dataType                     = 'class';
@@ -72,7 +74,7 @@ export default class FabledClass implements Serializable {
 	qWhitelist: string[]  = [];
 	fWhitelist: string[]  = [];
 
-	constructor(data?: ProClassData) {
+	constructor(data?: FabledClassData) {
 		this.name   = data?.name || 'Class';
 		this.prefix = data?.prefix || '&6' + this.name;
 		if (!data) return;
@@ -81,7 +83,7 @@ export default class FabledClass implements Serializable {
 		if (data?.manaName) this.manaName = data.manaName;
 		if (data?.maxLevel) this.maxLevel = data.maxLevel;
 		if (data?.parent) this.parent = data.parent;
-		if (data?.permission) this.permission = data.permission;
+		if (data?.permission !== undefined) this.permission = data.permission;
 		if (data?.expSources) this.expSources = data.expSources;
 		if (data?.health) this.health = data.health;
 		if (data?.mana) this.mana = data.mana;
@@ -94,13 +96,13 @@ export default class FabledClass implements Serializable {
 		if (data?.actionBar) this.actionBar = data.actionBar;
 
 		// Combo starters
-		if (data?.lInverted) this.lInverted = data.lInverted;
-		if (data?.rInverted) this.rInverted = data.rInverted;
-		if (data?.lsInverted) this.lsInverted = data.lsInverted;
-		if (data?.rsInverted) this.rsInverted = data.rsInverted;
-		if (data?.pInverted) this.pInverted = data.pInverted;
-		if (data?.qInverted) this.qInverted = data.qInverted;
-		if (data?.fInverted) this.fInverted = data.fInverted;
+		if (data?.lInverted !== undefined) this.lInverted = data.lInverted;
+		if (data?.rInverted !== undefined) this.rInverted = data.rInverted;
+		if (data?.lsInverted !== undefined) this.lsInverted = data.lsInverted;
+		if (data?.rsInverted !== undefined) this.rsInverted = data.rsInverted;
+		if (data?.pInverted !== undefined) this.pInverted = data.pInverted;
+		if (data?.qInverted !== undefined) this.qInverted = data.qInverted;
+		if (data?.fInverted !== undefined) this.fInverted = data.fInverted;
 		if (data?.lWhitelist) this.lWhitelist = data.lWhitelist;
 		if (data?.rWhitelist) this.rWhitelist = data.rWhitelist;
 		if (data?.lsWhitelist) this.lsWhitelist = data.lsWhitelist;
@@ -178,9 +180,9 @@ export default class FabledClass implements Serializable {
 
 	public load = (yaml: ClassYamlData) => {
 		if (yaml.name) this.name = yaml.name;
-		if (yaml['action-bar']) this.actionBar = yaml['action-bar'];
-		if (yaml.mana) this.manaName = yaml.mana;
-		if (yaml.prefix) this.prefix = yaml.prefix;
+		if (yaml['action-bar'] !== undefined) this.actionBar = yaml['action-bar'];
+		if (yaml.mana !== undefined) this.manaName = yaml.mana;
+		if (yaml.prefix !== undefined) this.prefix = yaml.prefix;
 		if (yaml.group) this.group = yaml.group;
 		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
 		if (yaml.parent) this.parentStr = yaml.parent;
@@ -212,7 +214,7 @@ export default class FabledClass implements Serializable {
 		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
 		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
 		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
-		if (yaml['exp-source']) this.expSources = yaml['exp-source'];
+		if (yaml['exp-source'] !== null) this.expSources = yaml['exp-source'];
 
 		if (yaml['combo-starters']) {
 			// Combo starters
@@ -248,7 +250,7 @@ export default class FabledClass implements Serializable {
 			return;
 		}
 
-		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0 });
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 
 		if (this.previousName && this.previousName !== this.name) {
 			localStorage.removeItem('sapi.class.' + this.previousName);
@@ -296,7 +298,7 @@ class ClassStore {
 			// If we already have this class, don't add it
 			if (tempClasses.find(cl => cl.name === c)) return;
 
-			const clazz = new FabledClass({ name: c, location: 'server' });
+			const clazz = new FabledClass({ name, location: 'server' });
 			if (folder) folder.add(clazz);
 			tempClasses.push(clazz);
 		});
@@ -472,6 +474,11 @@ class ClassStore {
 			const yaml = await socketService.getClassYaml(data.name);
 			if (!yaml) return;
 			yamlData = <MultiClassYamlData>YAML.parse(yaml);
+		}
+
+		if (yamlData === null || Object.values(yamlData).length == 0) {
+			console.warn(`Failed to parse yaml for class ${data.name}`, localStorage.getItem(`sapi.class.${data.name}`));
+			return;
 		}
 
 		const clazz = Object.values(yamlData)[0];

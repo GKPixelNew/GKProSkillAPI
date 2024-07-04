@@ -21,7 +21,7 @@ import Registry, {
 import type {
 	Icon,
 	MultiSkillYamlData,
-	ProSkillData,
+	FabledSkillData,
 	Serializable,
 	SkillYamlData,
 	YamlComponentData
@@ -32,10 +32,10 @@ import {
 import {
 	notify
 }                                      from '$api/notification-service';
-import { Attribute }                   from '$api/stat';
-import ProTrigger                      from '$api/components/triggers';
-import type ProComponent               from '$api/components/procomponent';
-import YAML                            from 'yaml';
+import { Attribute }        from '$api/stat';
+import FabledTrigger        from '$api/components/triggers';
+import type FabledComponent from '$api/components/fabled-component';
+import YAML                 from 'yaml';
 import {
 	FabledFolder,
 	folderStore
@@ -80,13 +80,13 @@ export default class FabledSkill implements Serializable {
 			'&2Cooldown: {attr:cooldown}'
 		]
 	};
-	incompatible: FabledSkill[]        = [];
-	triggers: ProTrigger[]             = [];
+	incompatible: FabledSkill[] = [];
+	triggers: FabledTrigger[]   = [];
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
 
-	constructor(data?: ProSkillData) {
+	constructor(data?: FabledSkillData) {
 		this.name = data?.name || 'Skill';
 		if (!data) return;
 		if (data.location) this.location = data.location;
@@ -95,11 +95,11 @@ export default class FabledSkill implements Serializable {
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
 		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new Attribute(a.name, a.base, a.scale));
-		if (data.permission) this.permission = data.permission;
+		if (data.permission !== undefined) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
 		if (data.cooldown) this.cooldown = data.cooldown;
-		if (data.cooldownMessage) this.cooldownMessage = data.cooldownMessage;
+		if (data.cooldownMessage !== undefined) this.cooldownMessage = data.cooldownMessage;
 		if (data.mana) this.mana = data.mana;
 		if (data.minSpent) this.minSpent = data.minSpent;
 		if (data.castMessage) this.castMessage = data.castMessage;
@@ -109,22 +109,22 @@ export default class FabledSkill implements Serializable {
 		if (data.triggers) this.triggers = data.triggers;
 	}
 
-	public addComponent = (comp: ProComponent) => {
-		if (comp instanceof ProTrigger) {
+	public addComponent = (comp: FabledComponent) => {
+		if (comp instanceof FabledTrigger) {
 			this.triggers = [...this.triggers, comp];
 			return;
 		}
 
 		if (this.triggers.length === 0) {
-			this.triggers.push(<ProTrigger>Registry.getTriggerByName('cast')?.new());
+			this.triggers.push(<FabledTrigger>Registry.getTriggerByName('cast')?.new());
 		}
 
 		this.triggers[0].addComponent(comp);
 		this.triggers = [...this.triggers];
 	};
 
-	public removeComponent = (comp: ProComponent) => {
-		if (comp instanceof ProTrigger && this.triggers.includes(comp)) {
+	public removeComponent = (comp: FabledComponent) => {
+		if (comp instanceof FabledTrigger && this.triggers.includes(comp)) {
 			this.triggers.splice(this.triggers.indexOf(comp), 1);
 			return;
 		}
@@ -200,8 +200,8 @@ export default class FabledSkill implements Serializable {
 		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
 		if (yaml['skill-req']) this.skillReqStr = yaml['skill-req'];
 		if (yaml['skill-req-lvl']) this.skillReqLevel = yaml['skill-req-lvl'];
-		if (yaml['needs-permission']) this.permission = yaml['needs-permission'];
-		if (yaml['cooldown-message']) this.cooldownMessage = yaml['cooldown-message'];
+		if (yaml['needs-permission'] !== undefined) this.permission = yaml['needs-permission'];
+		if (yaml['cooldown-message'] !== undefined) this.cooldownMessage = yaml['cooldown-message'];
 		if (yaml.msg) this.castMessage = yaml.msg;
 		if (yaml.combo) this.combo = yaml.combo;
 
@@ -228,7 +228,7 @@ export default class FabledSkill implements Serializable {
 		return new Promise<void>((resolve) => {
 			unsub = initialized.subscribe(init => {
 				if (!init) return;
-				if (yaml.components) this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
+				if (yaml.components) this.triggers = <FabledTrigger[]>Registry.deserializeComponents(yaml.components);
 
 				if (unsub) {
 					unsub();
@@ -266,7 +266,10 @@ export default class FabledSkill implements Serializable {
 		this.previousName = this.name;
 
 		try {
-			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
+			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
+				lineWidth:             0,
+				aliasDuplicateObjects: false
+			});
 			localStorage.setItem('sapi.skill.' + this.name, yaml);
 			this.tooBig = false;
 		} catch (e: any) { // eslint-disable-line
