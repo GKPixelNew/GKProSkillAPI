@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.dynamic;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -67,9 +68,9 @@ public abstract class EffectComponent {
      *  Retrieves the settings of the dynamic component
      *
      * @return settings of the dynamic component
-
      */
     @Getter
+    @Setter
     protected Settings settings = new Settings();
     /**
      * Whether the component should display preview effects
@@ -132,19 +133,6 @@ public abstract class EffectComponent {
      * @return component type
      */
     public abstract ComponentType getType();
-
-    /**
-     * Retrieves the settings of the dynamic component
-     *
-     * @return settings of the dynamic component
-     */
-    public Settings getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Settings settings) {
-        this.settings = settings;
-    }
 
     /**
      * @return true if the component or its children should play their preview effects, or false otherwise

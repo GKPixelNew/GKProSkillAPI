@@ -42,7 +42,7 @@ import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.target.TargetComponent;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 
 import java.util.*;
 
@@ -140,7 +140,7 @@ public class WolfMechanic extends MechanicComponent {
                 if (dye != null) {
                     wolf.setCollarColor(dye);
                 }
-                if (name.length() > 0) {
+                if (!name.isEmpty()) {
                     wolf.setCustomName(name);
                     wolf.setCustomNameVisible(true);
                 }

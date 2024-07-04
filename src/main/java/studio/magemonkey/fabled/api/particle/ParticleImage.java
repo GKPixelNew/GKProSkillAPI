@@ -88,14 +88,7 @@ public class ParticleImage implements IParticleEffect {
             Location location = loc.clone().add(point.x, point.y, point.z);
             for (Player player : players) {
                 if (player.getLocation().distance(location) > view) continue;
-
-                Particle particle;
-                try {
-                    particle = Particle.DUST;
-                } catch (NoSuchFieldError e) {
-                    particle = Particle.valueOf("REDSTONE");
-                }
-                player.spawnParticle(particle,
+                player.spawnParticle(Particle.REDSTONE,
                         location,
                         1,
                         0,

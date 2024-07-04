@@ -17,7 +17,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.gkpixel.com/public/")
 }
-var codex_version = "1.0.0-R0.1-SNAPSHOT"
+var codex_version = "1.0.0-R0.18-SNAPSHOT"
 
 dependencies {
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.86.1")
@@ -27,7 +27,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
     testImplementation("org.slf4j:slf4j-reload4j:2.0.13")
     testImplementation("commons-io:commons-io:2.16.1")
-    testImplementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
     testImplementation("io.netty:netty-all:4.1.109.Final")
     testImplementation("studio.magemonkey:codex:${codex_version}")
     implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
