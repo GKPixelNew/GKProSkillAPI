@@ -1262,12 +1262,6 @@ public class TempEntity implements LivingEntity {
 
     @Nullable
     @Override
-    public String getAsString() {
-        return "TEMP_ENTITY";
-    }
-
-    @Nullable
-    @Override
     public EntitySnapshot createSnapshot() {
         return null;
     }
