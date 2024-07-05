@@ -11,7 +11,7 @@ import { DATA_1_20_4 }      from './1.20.4';
 
 export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest'];
 
-type Versions = '20.4' | '19' | '18' | '17' | '16';
+type Versions = '20.6' | '20.4' | '19' | '18' | '17' | '16';
 
 export const VERSIONS                           = {
 	'20.6': DATA_1_20_6,
