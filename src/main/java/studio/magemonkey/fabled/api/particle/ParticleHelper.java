@@ -71,7 +71,7 @@ public final class ParticleHelper {
             return Particle.valueOf(particleKey.toUpperCase(Locale.US).replace(' ', '_'));
         } catch (Exception ex) {
             Fabled.inst().getLogger().severe("Invalid particle key: " + particleKey + ". Using default value.");
-            return Particle.valueOf("VILLAGER_HAPPY");
+            return Particle.HAPPY_VILLAGER;
         }
     }
 
