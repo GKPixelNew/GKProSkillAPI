@@ -2871,6 +2871,30 @@ class ForgetTargetsMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class GKCooldownMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'GKCooldown',
+			description:  'Modifies the cooldown of the selected target\'s skill(s) in GKMagic\'s cooldown system.',
+			data:         [
+				new StringSelect('Skill', 'skill', '')
+					.setTooltip('The skill to modify the cooldown for, "all" to specify all the skills, leave it empty to specify the current skill.'),
+				new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
+					.setTooltip('The modification unit to use. Seconds will add/set seconds from the cooldown while Percent will add/set a percentage of its full cooldown'),
+				new DropdownSelect('Percent Reference', 'percent_reference', ['Skill Cooldown', 'Current Cooldown'], 'Skill Cooldown')
+					.requireValue('type', ['Percent'])
+					.setTooltip('How to determine type:percent\'s base value. Skill Cooldown is the cooldown of the skill stored in database, Current Cooldown is the current cooldown of the player on the skill'),
+				new DropdownSelect('Action', 'action', ['Add', 'Set'], 'Set')
+					.setTooltip('Whether to add or set the cooldown'),
+				new AttributeSelect('Value', 'value', 0, 0)
+					.setTooltip('The amount to add to/set the skill\'s cooldown, a negative amount means to subtract cooldown'),],
+				summaryItems: ['skill', 'type', 'value']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class HealMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -3231,6 +3255,26 @@ class LaunchMechanic extends FabledMechanic {
 					.setTooltip('The speed to give the target to their right')
 			],
 			summaryItems: ['relative', 'reset-y', 'forward', 'upward', 'right']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class LaunchToMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Launch To',
+			description:  'Launches the target to the caster or the caster to the target',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
+					.setTooltip('Determines launches target to caster or launches caster to target'),
+				new AttributeSelect('Speed', 'speed', 1, 0)
+					.setTooltip('The speed when player been launching. If higher, player will be launched farther'),
+				new AttributeSelect('Height', 'height', 1.0, 0)
+					.setTooltip('The height when launching')
+			],
+			summaryItems: ['type', 'speed', 'height']
 		}, false);
 	}
 
@@ -5327,6 +5371,7 @@ export const initComponents = () => {
 		FIRE:               { name: 'Fire', component: FireMechanic },
 		FOOD:               { name: 'Food', component: FoodMechanic },
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
+		GKCOOLDOWN:					{ name: 'GKCooldown', component: GKCooldownMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
 		HEALTH_SET:         { name: 'Health Set', component: HealthSetMechanic },
 		HELD_ITEM:          { name: 'Held Item', component: HeldItemMechanic },
@@ -5338,6 +5383,7 @@ export const initComponents = () => {
 		ITEM_PROJECTILE:    { name: 'Item Projectile', component: ItemProjectileMechanic },
 		ITEM_REMOVE:        { name: 'Item Remove', component: ItemRemoveMechanic },
 		LAUNCH:             { name: 'Launch', component: LaunchMechanic },
+		LAUNCH_TO:          { name: 'Launch To', component: LaunchToMechanic },
 		LIGHTNING:          { name: 'Lightning', component: LightningMechanic },
 		MANA:               { name: 'Mana', component: ManaMechanic },
 		MESSAGE:            { name: 'Message', component: MessageMechanic },
