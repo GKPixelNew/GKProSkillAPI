@@ -38,6 +38,7 @@ import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.enums.Direction;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Simplified particle utility compared to MCCore's
@@ -63,6 +64,7 @@ public final class ParticleHelper {
     public static final String DUST_COLOR         = "dust-color";
     public static final String FINAL_DUST_COLOR   = "final-dust-color";
     public static final String DUST_SIZE          = "dust-size";
+    private static final AtomicBoolean INVALID_PARTICLE_WARNED = new AtomicBoolean(false);
 
     private ParticleHelper() {}
 
@@ -70,7 +72,10 @@ public final class ParticleHelper {
         try {
             return Particle.valueOf(particleKey.toUpperCase(Locale.US).replace(' ', '_'));
         } catch (Exception ex) {
-            Fabled.inst().getLogger().severe("Invalid particle key: " + particleKey + ". Using default value.");
+            if (INVALID_PARTICLE_WARNED.compareAndSet(false, true)) {
+                Fabled.inst().getLogger().severe("Invalid particle key: " + particleKey + ". Using default value.");
+                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> INVALID_PARTICLE_WARNED.set(false), 20 * 5);
+            }
             return Particle.HAPPY_VILLAGER;
         }
     }
