@@ -281,7 +281,7 @@ public abstract class TargetHelper {
         // Not going through walls starts at the beginning and traverses forward
         else {
             Location temp = loc1.clone();
-            while (!temp.getBlock().isPassable() && steps > 0) {
+            while (temp.getBlock().isPassable() && steps > 0) {
                 temp.add(slope);
                 steps--;
             }
