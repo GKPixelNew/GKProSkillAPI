@@ -2895,6 +2895,49 @@ class GKCooldownMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class GKSummonMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'GKSummon',
+			description:  'Summon an entity. Some option have no use for some entities, for example, set move speed 69 for a shulker.',
+			data:         [
+				new StringSelect('Entity', 'entity', 'Allay')
+					.setTooltip('The entity to be summoned'),
+				new AttributeSelect('Health', 'health', 20, 0)
+					.setTooltip('The health of the entities'),
+				new AttributeSelect('Attack Damage', 'damage', 2, 0)
+					.setTooltip('The attack damage of the entities'),
+				new AttributeSelect('Knockback', 'knockback', 1, 0)
+					.setTooltip('The power of knockback when the entities attack others'),
+				new AttributeSelect('Walk Speed', 'walk_speed', -1, 0)
+					.setTooltip('The move speed of the entities, leave negative and their walk speed should be the same as they used to'),
+				new AttributeSelect('Fly Speed', 'fly_speed', -1, 0)
+					.setTooltip('The fly speed of the entities, leave negative and their fly speed should be the same as they used to'),
+				new AttributeSelect('Follow Range', 'follow_range', -1, 0)
+					.setTooltip('The entities can detect enemies within how many blocks and trace them, , leave negative and their follow range should be the same as they used to'),
+				new AttributeSelect('Armor', 'armor', 0, 0)
+					.setTooltip('The armor value of the entities'),
+				new BooleanSelect('Adult', 'adult', true)
+					.setTooltip('The entity should be an adult or a baby'),
+				new AttributeSelect('Duration', 'duration', 10, 0)
+					.setTooltip('How many seconds it should exist'),
+				new AttributeSelect('Amount', 'amount', 1, 0)
+					.setTooltip('How many entities will be summoned'),
+				new StringSelect('Target', 'target', '')
+					.requireValue('entity', ['Shulker bullet'])
+					.setTooltip('The target you want this bullet trace to'),
+				new BooleanSelect('Ride', 'ride', false)
+					.setTooltip('Whether to make launcher get on the entity'),
+				new StringListSelect('Skills', 'skills', [])
+					.setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
+			],
+			summaryItems: ['skill', 'type', 'value']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class HealMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5372,6 +5415,7 @@ export const initComponents = () => {
 		FOOD:               { name: 'Food', component: FoodMechanic },
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
 		GKCOOLDOWN:					{ name: 'GKCooldown', component: GKCooldownMechanic },
+		GKSUMMON:						{ name: 'GKSummon', component: GKSummonMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
 		HEALTH_SET:         { name: 'Health Set', component: HealthSetMechanic },
 		HELD_ITEM:          { name: 'Held Item', component: HeldItemMechanic },
