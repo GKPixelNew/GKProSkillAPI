@@ -2901,7 +2901,7 @@ class GKSummonMechanic extends FabledMechanic {
 			name:         'GKSummon',
 			description:  'Summon an entity. Some option have no use for some entities, for example, set move speed 69 for a shulker.',
 			data:         [
-				new StringSelect('Entity', 'entity', 'Allay')
+				new DropdownSelect('Entity', 'entity', getEntities, 'Zombie')
 					.setTooltip('The entity to be summoned'),
 				new AttributeSelect('Health', 'health', 20, 0)
 					.setTooltip('The health of the entities'),
