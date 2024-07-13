@@ -122,7 +122,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             offset.multiply(parseValues(caster, FORWARD, level, 0))
                     .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
             System.out.println("right offset: " + parseValues(caster, RIGHT, level, 0));
+            System.out.println("location before: " + location);
             location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+            System.out.println("location after: " + location);
 
             // Apply the spread type
             List<ParticleProjectile> list;
@@ -247,7 +249,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                     Vector   offset   = location.getDirection().setY(0).normalize();
                     offset.multiply(parseValues(caster, FORWARD, level, 0))
                             .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-                    System.out.println("right offset: " + parseValues(caster, RIGHT, level, 0));
                     location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
 
                     // Apply the spread type
