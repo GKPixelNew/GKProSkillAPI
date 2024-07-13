@@ -8,6 +8,7 @@ export interface Transformer<T, V> {
 export class NameTransformer implements Transformer<FabledSkill | FabledClass | string, string> {
 	transform(value: FabledSkill | FabledClass | string): string {
 		if (typeof value === 'string') return value;
+		if (value === undefined || value === null) return '';
 		return value.name;
 	}
 }
