@@ -198,8 +198,7 @@ public class StatusListener extends FabledListener {
     public void onDamaged(EntityDamageEvent event) {
         if ((event instanceof EntityDamageByEntityEvent
                 && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event))
-                || !(event.getEntity() instanceof LivingEntity)
-                || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
+                || !(event.getEntity() instanceof LivingEntity))
             return;
 
         checkAbsorbAndInvincible((LivingEntity) event.getEntity(), event, event.getDamage());

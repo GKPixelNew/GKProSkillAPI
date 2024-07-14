@@ -400,7 +400,6 @@ public class MainListener extends FabledListener {
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
                 || DefaultCombatProtection.isFakeDamageEvent(event)
-                || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
                 || !(event.getEntity() instanceof LivingEntity)
                 || event.getDamage() <= 0) {
             return;
