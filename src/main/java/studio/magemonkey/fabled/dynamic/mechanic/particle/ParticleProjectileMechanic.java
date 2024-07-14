@@ -45,6 +45,7 @@ import studio.magemonkey.fabled.api.projectile.ProjectileCallback;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
+import studio.magemonkey.fabled.util.VectorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +57,6 @@ import java.util.function.Supplier;
  * Heals each target
  */
 public class ParticleProjectileMechanic extends MechanicComponent implements ProjectileCallback {
-    private static final Vector UP = new Vector(0, 1, 0);
-
     private static final String GROUP    = "group";
     private static final String LIFESPAN = "lifespan";
     private static final String SPREAD   = "spread";
@@ -87,15 +86,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         return "particle projectile";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
@@ -117,11 +107,11 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
 
         // Fire from each target
         for (LivingEntity target : targets) {
-            Location location = target.getEyeLocation();
-            Vector   offset   = location.getDirection().setY(0).normalize();
-            offset.multiply(parseValues(caster, FORWARD, level, 0))
-                    .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-            location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+            Location location = VectorUtil.getOffsetLocation(target,
+                    parseValues(caster, FORWARD, level, 0),
+                    parseValues(caster, RIGHT, level, 0),
+                    parseValues(caster, UPWARD, level, 0)
+            );
 
             // Apply the spread type
             List<ParticleProjectile> list;
@@ -242,11 +232,11 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 List<ParticleProjectile> list = new ArrayList<>();
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
-                    Location location = target.getEyeLocation();
-                    Vector   offset   = location.getDirection().setY(0).normalize();
-                    offset.multiply(parseValues(caster, FORWARD, level, 0))
-                            .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-                    location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+                    Location location = VectorUtil.getOffsetLocation(target,
+                            parseValues(caster, FORWARD, level, 0),
+                            parseValues(caster, RIGHT, level, 0),
+                            parseValues(caster, UPWARD, level, 0)
+                    );
 
                     // Apply the spread type
                     if (spread.equals("rain")) {

@@ -26,13 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
@@ -47,6 +40,14 @@ import studio.magemonkey.fabled.api.projectile.ProjectileCallback;
 import studio.magemonkey.fabled.api.util.ItemStackReader;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.util.VectorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,11 +121,11 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
 
         // Fire from each target
         for (LivingEntity target : targets) {
-            Location location = target.getEyeLocation();
-            Vector   offset   = location.getDirection().setY(0).normalize();
-            offset.multiply(parseValues(caster, FORWARD, level, 0))
-                    .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-            location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+            Location location = VectorUtil.getOffsetLocation(target,
+                    parseValues(caster, FORWARD, level, 0),
+                    parseValues(caster, RIGHT, level, 0),
+                    parseValues(caster, UPWARD, level, 0)
+            );
 
             // Apply the spread type
             List<ItemProjectile> list;
@@ -250,11 +251,11 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 List<ParticleProjectile> list = new ArrayList<>();
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
-                    Location location = target.getEyeLocation();
-                    Vector   offset   = location.getDirection().setY(0).normalize();
-                    offset.multiply(parseValues(caster, FORWARD, level, 0))
-                            .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-                    location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+                    Location location = VectorUtil.getOffsetLocation(target,
+                            parseValues(caster, FORWARD, level, 0),
+                            parseValues(caster, RIGHT, level, 0),
+                            parseValues(caster, UPWARD, level, 0)
+                    );
 
                     // Apply the spread type
                     if (spread.equals("rain")) {

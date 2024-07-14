@@ -55,6 +55,7 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
+import studio.magemonkey.fabled.util.VectorUtil;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -134,11 +135,11 @@ public class PotionProjectileMechanic extends MechanicComponent {
         // Fire from each target
         List<ThrownPotion> projectiles = new ArrayList<>();
         for (LivingEntity target : targets) {
-            Location location = target.getEyeLocation();
-            Vector   offset   = location.getDirection().setY(0).normalize();
-            offset.multiply(parseValues(caster, FORWARD, level, 0))
-                    .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-            location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+            Location location = VectorUtil.getOffsetLocation(target,
+                    parseValues(caster, FORWARD, level, 0),
+                    parseValues(caster, RIGHT, level, 0),
+                    parseValues(caster, UPWARD, level, 0)
+            );
 
             // Apply the spread type
             if (spread.equals("rain")) {
@@ -358,11 +359,11 @@ public class PotionProjectileMechanic extends MechanicComponent {
                 List<ParticleProjectile> list = new ArrayList<>();
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
-                    Location location = target.getEyeLocation();
-                    Vector   offset   = location.getDirection().setY(0).normalize();
-                    offset.multiply(parseValues(caster, FORWARD, level, 0))
-                            .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
-                    location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+                    Location location = VectorUtil.getOffsetLocation(target,
+                            parseValues(caster, FORWARD, level, 0),
+                            parseValues(caster, RIGHT, level, 0),
+                            parseValues(caster, UPWARD, level, 0)
+                    );
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
