@@ -26,10 +26,12 @@
  */
 package studio.magemonkey.fabled.api.util;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
@@ -111,6 +113,7 @@ public class Nearby {
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
                             && entity.getLocation().distanceSquared(loc) < radius) {
+                        if (entity instanceof Player player && player.getGameMode() == GameMode.SPECTATOR) continue;
                         result.add((LivingEntity) entity);
                         distances.put(entity.getUniqueId(), entity.getLocation().distanceSquared(loc));
                     }
