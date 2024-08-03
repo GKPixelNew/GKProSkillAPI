@@ -67,7 +67,7 @@ public class BlockMechanic extends MechanicComponent {
     private static final String RIGHT     = "right";
     private static final String RESET_YAW = "reset-yaw";
     private static final String FILL = "fill";
-    private static final String BLOCK_DAMAGE_TYPE = "block_damage_TYPE";
+    private static final String BLOCK_DAMAGE_TYPE = "block_damage_type";
     private static final String BLOCK_DAMAGE = "block_damage";
     private static final Random random = new Random();
 
@@ -248,13 +248,13 @@ public class BlockMechanic extends MechanicComponent {
                 Logger.invalid("Invalid block type: " + settings.getString(BLOCK, "ICE"));
             }
         }
-        int  ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        int ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
 
         // Change blocks
         ArrayList<Location> states = new ArrayList<>();
         for (Block b : getAffectedBlocks(caster, level, targets)) {
             BlockState state = b.getState();
-            state.setType(block.get(random.nextInt(block.size())));
+            state.setType(block.get(block.size() > 1 ? random.nextInt(block.size()) : 0));
 
             var event = new BlockChangeEvent(b.getState(), state);
             Bukkit.getPluginManager().callEvent(event);
