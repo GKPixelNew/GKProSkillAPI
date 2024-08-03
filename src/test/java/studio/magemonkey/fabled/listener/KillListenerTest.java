@@ -6,6 +6,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.testutil.MockedTest;
 
@@ -17,9 +18,9 @@ import static org.mockito.Mockito.*;
 
 public class KillListenerTest extends MockedTest {
 
-    private PlayerMock                 player;
-    private PlayerMock                 target;
-    private KillListener              killListener;
+    private PlayerMock   player;
+    private PlayerMock   target;
+    private KillListener killListener;
 
     @BeforeEach
     public void setup() {
@@ -43,7 +44,10 @@ public class KillListenerTest extends MockedTest {
 
     @Test
     public void onDeath() {
-        EntityDeathEvent event = new EntityDeathEvent(target, DamageSource.builder(DamageType.MAGIC).build(), new ArrayList<>());
+        EntityDeathEvent event =
+                new EntityDeathEvent(target,
+                        DamageSource.builder(DamageType.GENERIC).withCausingEntity(player).build(),
+                        new ArrayList<>());
         killListener.onKill(event);
 
         verify(killListener, times(1)).giveExp(any(), any(), anyInt());
