@@ -237,7 +237,7 @@
 			{/if}
 		</div>
 		<div class='button socket-reload'
-				 title='Reload ProSkillAPI'
+				 title='Reload Fabled'
 				 tabindex='0'
 				 role='button'
 				 style:--rotation='{$rotation * 9}deg'

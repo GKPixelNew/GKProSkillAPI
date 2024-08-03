@@ -21,7 +21,7 @@
     >
         <h1 class='accent'>GKPixel&copy;</h1>
         <h2>技能編輯器&trade;</h2>
-        <div class='copy'>&copy; ProMCTeam and GKPixelTeam {new Date().getFullYear()}</div>
+        <div class='copy'>&copy; MageMonkeyStudio and GKPixelTeam {new Date().getFullYear()}</div>
     </div>
 
     <div class='socials'>
