@@ -2315,11 +2315,12 @@ class BlockMechanic extends FabledMechanic {
 					.setTooltip('The shape of the region to change the blocks for'),
 				new DropdownSelect('Type', 'type', (() => ['Air', 'Any', 'Solid', ...getBlocks()]), 'Solid')
 					.setTooltip('The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment'),
-				new DropdownSelect('Block', 'block', getBlocks, 'Ice')
-					.setTooltip('The type of block to turn the region into'),
 				new BooleanSelect('Randomize', 'randomize', false)
 					.setTooltip('Whether the set block should be randomized with the defined list of blocks'),
-				new DropdownSelect('Blocks', 'blocks', getBlocks, [])
+				new DropdownSelect('Block', 'block', getBlocks, 'Ice')
+					.setTooltip('The type of block to turn the region into')
+					.requireValue('randomize', [false]),
+				new DropdownSelect('Blocks', 'blocks', getBlocks, [], true)
 					.setTooltip('The list of blocks to randomly choose from when randomizing')
 					.requireValue('randomize', [true]),
 				new BooleanSelect('Reset Yaw', 'reset-yaw', false)
@@ -2365,7 +2366,7 @@ class BlockMechanic extends FabledMechanic {
 					.requireValue('per-target', [true])
 
 			],
-			summaryItems: ['shape', 'type', 'block', 'seconds']
+			summaryItems: ['shape', 'type', 'block', 'blocks', 'seconds']
 		});
 	}
 
