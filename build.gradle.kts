@@ -17,7 +17,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.gkpixel.com/public/")
 }
-var codex_version = "1.0.0-R0.18-SNAPSHOT"
+var codex_version = "1.0.0-R0.29-SNAPSHOT"
 
 dependencies {
     testImplementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
