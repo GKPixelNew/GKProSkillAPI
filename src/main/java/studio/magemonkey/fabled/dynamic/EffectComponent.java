@@ -269,7 +269,17 @@ public abstract class EffectComponent {
         Matcher match = pat.matcher(text);
         while (match.find()) {
             String key = match.group().substring(1, match.group().length() - 1);
-            if (data.contains(key)) text = text.replace(match.group(), data.get(key));
+            if (data.contains(key)) {
+                var raw = data.getRaw(key);
+                var value = "";
+                if (raw instanceof Player player)
+                    value = player.getName();
+                else if (raw instanceof LivingEntity entity)
+                    value = entity.getUniqueId().toString();
+                else
+                    value = data.get(key);
+                text = text.replace(match.group(), value);
+            }
             else if (key.equals("player")) text = text.replace(match.group(), caster.getName());
             else if (key.equals("target")) text = text.replace(match.group(), target.getName());
             else if (key.equals("targetUUID")) text = text.replace(match.group(), target.getUniqueId().toString());
