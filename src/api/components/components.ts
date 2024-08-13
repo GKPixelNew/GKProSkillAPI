@@ -4577,6 +4577,69 @@ class ThrowMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+// extend('MechanicTranslatedMessage', 'Component');
+//
+// function MechanicTranslatedMessage() {
+//     this.super('Translated Message', Type.MECHANIC, false);
+//
+//     this.description = 'Sends a translated message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.';
+//
+//     this.data.push(new ListValue('Type', 'type', ['Message', 'Title'], 'Message')
+//         .setTooltip('The type of message to send. Message sends to the chat')
+//     );
+//     this.data.push(new AttributeValue('Title Fade In', 'title_fade_in', 1, 0)
+//         .setTooltip('The time in seconds to take when fading in the title')
+//         .requireValue('type', ['Title'])
+//     );
+//     this.data.push(new AttributeValue('Title Stay', 'title_stay', 3, 0)
+//         .setTooltip('The time in seconds to stay at full opacity in the title')
+//         .requireValue('type', ['Title'])
+//     );
+//     this.data.push(new AttributeValue('Title Fade Out', 'title_fade_out', 1, 0)
+//         .setTooltip('The time in seconds to take when fading out the title')
+//         .requireValue('type', ['Title'])
+//     );
+//     this.data.push(new StringValue('Message', 'message', 'text')
+//         .setTooltip('The message\'s key to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
+//     );
+//     this.data.push(new StringValue('Subtitle Message', 'subtitle_message', 'text')
+//         .setTooltip('The subtitle message. Leave it empty if there\'s no subtitle you wanna show')
+//         .requireValue('type', ['Title']));
+//     this.data.push(new ListValue('Dynamic Translations', 'dyntra', ['True', 'False'], 'True')
+//         .setTooltip('Whether this message uses GKMagic\'s Dynamic Translations. If false, the message\'s key must be in magic.ini of GKMagic')
+//     );
+// }
+
+class TranslatedMessageMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name: 'Translated Message',
+			description: 'Sends a translated message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.',
+			data: [
+				new DropdownSelect('Type', 'type', ['Message', 'Title'], 'Message')
+					.setTooltip('The type of message to send. Message sends to the chat'),
+				new AttributeSelect('Title Fade In', 'title_fade_in', 1, 0)
+					.requireValue('type', ['Title'])
+					.setTooltip('The time in seconds to take when fading in the title'),
+				new AttributeSelect('Title Stay', 'title_stay', 3, 0)
+					.requireValue('type', ['Title'])
+					.setTooltip('The time in seconds to stay at full opacity in the title'),
+				new AttributeSelect('Title Fade Out', 'title_fade_out', 1, 0)
+					.requireValue('type', ['Title'])
+					.setTooltip('The time in seconds to take when fading out the title'),
+				new StringSelect('Message', 'message', 'text')
+					.setTooltip('The message\'s key to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"'),
+				new StringSelect('Subtitle Message', 'subtitle_message', 'text')
+					.requireValue('type', ['Title'])
+					.setTooltip('The subtitle message. Leave it empty if there\'s no subtitle you wanna show'),
+				new BooleanSelect('Dynamic Translations', 'dyntra', true)
+					.setTooltip('Whether this message uses GKMagic\'s Dynamic Translations. If false, the message\'s key must be in magic.ini of GKMagic')
+			],
+			summaryItems: ['type', 'message', 'dyntra']
+		})
+	}
+}
+
 class TriggerMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5452,6 +5515,7 @@ export const initComponents = () => {
 		SUMMON:             { name: 'Summon', component: SummonMechanic },
 		TAUNT:              { name: 'Taunt', component: TauntMechanic },
 		THROW:              { name: 'Throw', component: ThrowMechanic },
+		TRANSLATED_MESSAGE: { name: 'Translated Message', component: TranslatedMessageMechanic },
 		TRIGGER:            { name: 'Trigger', component: TriggerMechanic },
 		WOLF:               { name: 'Wolf', component: WolfMechanic },
 
