@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
@@ -124,6 +125,7 @@ public class RepeatMechanic extends MechanicComponent {
         private final LivingEntity       caster;
         private final boolean            stopOnFail;
         private final boolean            force;
+        @Getter
         private final DynamicSkill skill;
 
         private int count;
@@ -145,10 +147,6 @@ public class RepeatMechanic extends MechanicComponent {
             this.force = force;
 
             Fabled.schedule(this, delay, period);
-        }
-
-        public DynamicSkill getSkill() {
-            return skill;
         }
 
         @Override

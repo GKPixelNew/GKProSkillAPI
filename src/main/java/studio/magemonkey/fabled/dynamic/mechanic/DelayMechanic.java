@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -98,37 +99,17 @@ public class DelayMechanic extends MechanicComponent {
         }
     }
 
-    public class DelayTask {
-        @Getter
+    @Getter
+    @EqualsAndHashCode
+    public static class DelayTask {
         private final DynamicSkill skill;
-        private int taskId;
+        private final int taskId;
 
         DelayTask(
                 DynamicSkill skill,
                 int taskId) {
             this.skill = skill;
             this.taskId = taskId;
-        }
-
-        public DynamicSkill getSkill() {
-            return skill;
-        }
-
-        public int getTaskId() {
-            return taskId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            DelayTask delayTask = (DelayTask) o;
-            return taskId == delayTask.taskId && Objects.equals(skill, delayTask.skill);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(skill, taskId);
         }
 
         public void cancel() {
