@@ -31,6 +31,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.*;
 
@@ -41,7 +42,7 @@ public class DelayMechanic extends MechanicComponent {
     private static final String                   SECONDS         = "delay";
     private static final String                   CLEANUP         = "cleanup";
     private static final String                   SINGLE_INSTANCE = "single-instance";
-    final                Map<UUID, List<Integer>> tasks           = new HashMap<>();
+    public static final Map<UUID, List<DelayTask>> tasks = new HashMap<>();
 
     @Override
     public String getKey() {
@@ -64,7 +65,7 @@ public class DelayMechanic extends MechanicComponent {
             @Override
             public void run() {
                 executeChildren(caster, level, targets, force);
-                tasks.get(caster.getUniqueId()).remove(Integer.valueOf(this.getTaskId()));
+                tasks.get(caster.getUniqueId()).remove(new DelayTask(skill, this.getTaskId()));
             }
         }.runTaskLater(Fabled.inst(), (long) (seconds * 20));
 
@@ -74,11 +75,11 @@ public class DelayMechanic extends MechanicComponent {
             }
 
             if (singleInstance) {
-                list.forEach(Bukkit.getScheduler()::cancelTask);
+                list.forEach(DelayTask::cancel);
                 list.clear();
             }
 
-            list.add(task.getTaskId());
+            list.add(new DelayTask(skill, task.getTaskId()));
             return list;
         });
 
@@ -90,9 +91,39 @@ public class DelayMechanic extends MechanicComponent {
         boolean shouldGetCleanedUp = settings.getBool(CLEANUP, true);
         if (!shouldGetCleanedUp) return;
 
-        List<Integer> taskList = tasks.remove(caster.getUniqueId());
+        List<DelayTask> taskList = tasks.remove(caster.getUniqueId());
         if (taskList != null) {
-            taskList.forEach(Bukkit.getScheduler()::cancelTask);
+            taskList.forEach(DelayTask::cancel);
+        }
+    }
+
+    public class DelayTask {
+        private final DynamicSkill skill;
+        private int taskId;
+
+        DelayTask(
+                DynamicSkill skill,
+                int taskId) {
+            this.skill = skill;
+            this.taskId = taskId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            DelayTask delayTask = (DelayTask) o;
+            return taskId == delayTask.taskId && Objects.equals(skill, delayTask.skill);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(skill, taskId);
+        }
+
+        public void cancel() {
+            Bukkit.getScheduler().cancelTask(taskId);
+
         }
     }
 }

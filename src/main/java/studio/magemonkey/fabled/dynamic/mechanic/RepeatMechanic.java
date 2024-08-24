@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class RepeatMechanic extends MechanicComponent {
     private static final String PERIOD       = "period";
     private static final String STOP_ON_FAIL = "stop-on-fail";
 
-    private final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
+    public static final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
 
     /**
      * Executes the component
@@ -72,7 +73,7 @@ public class RepeatMechanic extends MechanicComponent {
                     count = execute(caster, targets, count, stopOnFail, force);
                 }
             } else {
-                final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
+                final RepeatTask task = new RepeatTask(caster, this.skill, targets, count, delay, period, stopOnFail, force);
                 tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
             }
             return true;
@@ -118,22 +119,25 @@ public class RepeatMechanic extends MechanicComponent {
         }
     }
 
-    private class RepeatTask extends BukkitRunnable {
+    public class RepeatTask extends BukkitRunnable {
         private final List<LivingEntity> targets;
         private final LivingEntity       caster;
         private final boolean            stopOnFail;
         private final boolean            force;
+        private final DynamicSkill skill;
 
         private int count;
 
         RepeatTask(
                 LivingEntity caster,
+                DynamicSkill skill,
                 List<LivingEntity> targets,
                 int count,
                 int delay,
                 int period,
                 boolean stopOnFail,
                 boolean force) {
+            this.skill = skill;
             this.targets = new ArrayList<>(targets);
             this.caster = caster;
             this.count = count;
@@ -141,6 +145,10 @@ public class RepeatMechanic extends MechanicComponent {
             this.force = force;
 
             Fabled.schedule(this, delay, period);
+        }
+
+        public DynamicSkill getSkill() {
+            return skill;
         }
 
         @Override
