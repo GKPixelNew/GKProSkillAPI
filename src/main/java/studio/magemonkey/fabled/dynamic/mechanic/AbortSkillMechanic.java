@@ -31,13 +31,22 @@ public class AbortSkillMechanic extends MechanicComponent {
                                 if (dynamicSkill.getName().equals(task.getSkill().getName())) {
                                     task.cancel();
                                 }
-                                ;
+                            }
+                            for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(caster.getUniqueId())) {
+                                if (dynamicSkill.getName().equals(task.getSkill().getName())) {
+                                    task.cancel();
+                                }
                             }
                             dynamicSkill.stopEffects(caster);
                             dynamicSkill.initialize(caster, level);
                         } else {
                             for (LivingEntity target : targets) {
                                 for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.get(target.getEntityId())) {
+                                    if (dynamicSkill.getName().equals(task.getSkill().getName())) {
+                                        task.cancel();
+                                    }
+                                }
+                                for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(target.getUniqueId())) {
                                     if (dynamicSkill.getName().equals(task.getSkill().getName())) {
                                         task.cancel();
                                     }
@@ -57,7 +66,11 @@ public class AbortSkillMechanic extends MechanicComponent {
                         if (skill.getName().equals(task.getSkill().getName())) {
                             task.cancel();
                         }
-                        ;
+                    }
+                    for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(caster.getUniqueId())) {
+                        if (skill.getName().equals(task.getSkill().getName())) {
+                            task.cancel();
+                        }
                     }
                     skill.stopEffects(caster);
                     skill.initialize(caster, level);
@@ -67,7 +80,11 @@ public class AbortSkillMechanic extends MechanicComponent {
                             if (skill.getName().equals(task.getSkill().getName())) {
                                 task.cancel();
                             }
-                            ;
+                        }
+                        for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(target.getUniqueId())) {
+                            if (skill.getName().equals(task.getSkill().getName())) {
+                                task.cancel();
+                            }
                         }
                         skill.stopEffects(target);
                         skill.initialize(target, level);
@@ -82,13 +99,22 @@ public class AbortSkillMechanic extends MechanicComponent {
                             if (specific.equals(task.getSkill().getName())) {
                                 task.cancel();
                             }
-                            ;
+                        }
+                        for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(caster.getUniqueId())) {
+                            if (specific.equals(task.getSkill().getName())) {
+                                task.cancel();
+                            }
                         }
                         specificSkill.stopEffects(caster);
                         specificSkill.initialize(caster, level);
                     } else {
                         for (LivingEntity target : targets) {
                             for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.get(target.getEntityId())) {
+                                if (specific.equals(task.getSkill().getName())) {
+                                    task.cancel();
+                                }
+                            }
+                            for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(target.getUniqueId())) {
                                 if (specific.equals(task.getSkill().getName())) {
                                     task.cancel();
                                 }

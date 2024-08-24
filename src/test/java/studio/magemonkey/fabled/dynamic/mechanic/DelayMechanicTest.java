@@ -40,14 +40,14 @@ public class DelayMechanicTest extends MockedTest {
         DelayMechanic mechanic = getMechanic(2, false, false);
 
         mechanic.execute(player, 1, List.of(player), false);
-        int taskId = mechanic.tasks.get(player.getUniqueId()).get(0);
+        DelayMechanic.DelayTask delayTask = mechanic.tasks.get(player.getUniqueId()).get(0);
         assertEquals(1, mechanic.tasks.get(player.getUniqueId()).size());
-        assertTrue(server.getScheduler().isQueued(taskId));
+        assertTrue(server.getScheduler().isQueued(delayTask.getTaskId()));
 
         server.getScheduler().performTicks(40);
-        List<Integer> tasks = mechanic.tasks.get(player.getUniqueId());
+        List<DelayMechanic.DelayTask> tasks = mechanic.tasks.get(player.getUniqueId());
         assertEquals(0, tasks.size());
-        assertFalse(server.getScheduler().isQueued(taskId));
+        assertFalse(server.getScheduler().isQueued(delayTask.getTaskId()));
     }
 
     @Test
@@ -56,13 +56,13 @@ public class DelayMechanicTest extends MockedTest {
 
         mechanic.execute(player, 1, List.of(player), false);
         assertEquals(1, mechanic.tasks.get(player.getUniqueId()).size());
-        int taskId = mechanic.tasks.get(player.getUniqueId()).get(0);
+        DelayMechanic.DelayTask delayTask = mechanic.tasks.get(player.getUniqueId()).get(0);
         server.getScheduler().performTicks(10);
 
         mechanic.execute(player, 1, List.of(player), false);
         assertEquals(1, mechanic.tasks.get(player.getUniqueId()).size());
-        assertNotEquals(taskId, mechanic.tasks.get(player.getUniqueId()).get(0));
-        assertFalse(server.getScheduler().isQueued(taskId));
+        assertNotEquals(delayTask.getTaskId(), mechanic.tasks.get(player.getUniqueId()).get(0));
+        assertFalse(server.getScheduler().isQueued(delayTask.getTaskId()));
     }
 
     @Test

@@ -108,6 +108,14 @@ public class DelayMechanic extends MechanicComponent {
             this.taskId = taskId;
         }
 
+        public DynamicSkill getSkill() {
+            return skill;
+        }
+
+        public int getTaskId() {
+            return taskId;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
