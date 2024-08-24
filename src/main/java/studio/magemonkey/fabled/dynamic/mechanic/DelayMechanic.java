@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -98,6 +99,7 @@ public class DelayMechanic extends MechanicComponent {
     }
 
     public class DelayTask {
+        @Getter
         private final DynamicSkill skill;
         private int taskId;
 
