@@ -2176,7 +2176,7 @@ class AbortSkillMechanic extends FabledMechanic {
 			name:         'Abort Skill',
 			description:  'Cancels skill mechanics',
 			data:         [
-                new DropdownSelect('Type','type',['All','Current','Specific','AllButCurrent'],'All')
+                new DropdownSelect('Type','type',['All','Current','Specific','All but current'],'All')
                 .setTooltip('The option used to determined the scope'),
                 new BooleanSelect('Self','self',true)
                 .setTooltip('This option determines whether the skill of caster or target will be aborted,True will abort caster.'),
