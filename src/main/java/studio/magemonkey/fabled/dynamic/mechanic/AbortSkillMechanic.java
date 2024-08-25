@@ -29,6 +29,11 @@ public class AbortSkillMechanic extends MechanicComponent {
                     .filter(s -> s instanceof DynamicSkill)
                     .map(s -> (DynamicSkill) s)
                     .toList();
+            case "allbutcurrent" -> Fabled.getSkills().values().stream()
+                    .filter(s -> s instanceof DynamicSkill)
+                    .filter(s -> !s.getName().equals(skill.getName()))
+                    .map(s -> (DynamicSkill) s)
+                    .toList();
             case "current" -> List.of(skill);
             case "specific" -> Stream.of(Fabled.getSkill(specific))
                     .filter(s -> s instanceof DynamicSkill)
@@ -39,6 +44,7 @@ public class AbortSkillMechanic extends MechanicComponent {
                 yield List.of();
             }
         };
+
         if (self) targets = List.of(caster);
         for (DynamicSkill s : skills) {
             for (LivingEntity target : targets) {
