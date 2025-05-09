@@ -16,6 +16,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://jitpack.io")
     maven("https://repo.gkpixel.com/public/")
+    maven("https://repo.aikar.co/nexus/content/groups/aikar/")
 }
 var codex_version = "1.0.0-R0.29-SNAPSHOT"
 
@@ -31,11 +32,11 @@ dependencies {
     testImplementation("io.netty:netty-all:4.1.109.Final")
     testImplementation("studio.magemonkey:codex:${codex_version}")
     implementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.5")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
-    compileOnly("org.projectlombok:lombok:1.18.32")
+    compileOnly("org.projectlombok:lombok:1.18.38")
     compileOnly("LibsDisguises:LibsDisguises:10.0.44") {
         exclude(group = "org.spigotmc", module = "spigot-api")
         exclude(group = "org.ow2.asm", module = "asm")
@@ -50,8 +51,8 @@ dependencies {
     compileOnly("studio.magemonkey:codex:${codex_version}")
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("dev.robothanzo.gk.replay:GKReplay:1.8.2-SNAPSHOT")
-    annotationProcessor("org.projectlombok:lombok:1.18.32")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 configurations {
@@ -63,12 +64,12 @@ configurations {
 group = "dev.robothanzo.gk.sapi"
 version = "1.3.2-R0.3-SNAPSHOT"
 description = "GKProSkillAPI"
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_23
 
 tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(21)
+        options.release.set(23)
     }
 
     processResources {
