@@ -19,7 +19,7 @@
 <!--	};-->
 <!--</script>-->
 
-<!--<svelte:window on:beforeunload={() => socketService.disconnect} />-->
+<!--<svelte:window onbeforeunload={() => socketService.disconnect} />-->
 
 <!--<div id='messages'>-->
 <!--	{#each $messages as message (message.id)}-->
@@ -46,8 +46,8 @@
 <!--	<div class='socket-tab'-->
 <!--			 role='button'-->
 <!--			 tabindex='0'-->
-<!--			 on:click={ () => socketOpen = !socketOpen }-->
-<!--			 on:keypress={ e => e.key === 'Enter' ? socketOpen = !socketOpen : null }>-->
+<!--			 onclick={ () => socketOpen = !socketOpen }-->
+<!--			 onkeypress={ e => e.key === 'Enter' ? socketOpen = !socketOpen : null }>-->
 <!--		<span class='material-symbols-rounded icon' class:open={socketOpen}>-->
 <!--			double_arrow-->
 <!--		</span>-->
@@ -66,23 +66,23 @@
 <!--					<div class='button center reload'-->
 <!--							 role='button'-->
 <!--							 tabindex='0'-->
-<!--							 on:click={ () => socketService.reloadSapi() }-->
-<!--							 on:keypress={ e => e.key === 'Enter' ? socketService.reloadSapi() : null }-->
+<!--							 onclick={ () => socketService.reloadSapi() }-->
+<!--							 onkeypress={ e => e.key === 'Enter' ? socketService.reloadSapi() : null }-->
 <!--					>Reload PSAPI-->
 <!--					</div>-->
 <!--					<div class='button center'-->
 <!--							 role='button'-->
 <!--							 tabindex='0'-->
-<!--							 on:click={ () => socketService.disconnect() }-->
-<!--							 on:keypress={ e => e.key === 'Enter' ? socketService.disconnect() : null }-->
+<!--							 onclick={ () => socketService.disconnect() }-->
+<!--							 onkeypress={ e => e.key === 'Enter' ? socketService.disconnect() : null }-->
 <!--					>Disconnect-->
 <!--					</div>-->
 <!--				{:else}-->
 <!--					<div class='button center connect'-->
 <!--							 role='button'-->
 <!--							 tabindex='0'-->
-<!--							 on:click={ connect }-->
-<!--							 on:keypress={ e => e.key === 'Enter' ? connect() : null }-->
+<!--							 onclick={ connect }-->
+<!--							 onkeypress={ e => e.key === 'Enter' ? connect() : null }-->
 <!--					>Connect-->
 <!--					</div>-->
 <!--				{/if}-->

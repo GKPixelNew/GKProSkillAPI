@@ -3,10 +3,10 @@ import {userManager} from "$api/oauth";
 import { active, loadRaw } from '../data/store';
 import {notifyFailure, notifySuccess} from "$api/notify";
 import {get} from "svelte/store";
-import FabledAttribute from '$api/fabled-attribute';
+import FabledAttribute from '$api/fabled-attribute.svelte';
 import YAML from 'yaml';
-import FabledClass, { classStore } from '../data/class-store';
-import { skillStore } from '../data/skill-store';
+import FabledClass, { classStore } from '../data/class-store.svelte';
+import { skillStore } from '../data/skill-store.svelte';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];

@@ -129,8 +129,8 @@
 />
 
 <div id='sidebar'
-		 on:introend={() => sidebarOpen.set(true)}
-		 on:outroend={() => sidebarOpen.set(false)}
+		 onintroend={() => sidebarOpen.set(true)}
+		 onoutroend={() => sidebarOpen.set(false)}
 		 style:--height='100%'
 		 transition:squish
 		 use:clickOutside={clickOut}>
@@ -152,7 +152,7 @@
 				<SidebarEntry
 					data={cl}
 					delay={200 + 100*i}
-					on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
+					onclick={() => goto(`${base}/class/${cl.name}/edit`)}>
 					{cl.name}{cl.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
@@ -161,13 +161,13 @@
 				<div class='new'>
 					<span tabindex='0'
 								role='button'
-								on:click={() => classStore.addClass()}
-								on:keypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
+								onclick={() => classStore.addClass()}
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
-								on:click={() => classStore.addClassFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}>New Folder</span>
+								onclick={() => classStore.addClassFolder(new FabledFolder())}
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 			<SidebarEntry delay={200 + 100*($classes.length+2)}>
@@ -175,12 +175,12 @@
 					<span tabindex='0'
 								role='button'
 								style="font-size: 14.9px"
-								on:click={() => onImportClass()}
-								on:keypress={(e) => e.key === 'Enter' && onImportClass()}>匯入信仰</span>
+								onclick={() => onImportClass()}
+								onkeypress={(e) => e.key === 'Enter' && onImportClass()}>匯入信仰</span>
 					<span tabindex='0'
 								role='button'
-								on:click={() => reloadAllClasses()}
-								on:keypress={(e) => e.key === 'Enter' && reloadAllClasses()}>重新整理</span>
+								onclick={() => reloadAllClasses()}
+								onkeypress={(e) => e.key === 'Enter' && reloadAllClasses()}>重新整理</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -196,7 +196,7 @@
 					data={sk}
 					direction='right'
 					delay={200 + 100*i}
-					on:click={() => goto(`${base}/skill/${sk.name}`)}>
+					onclick={() => goto(`${base}/skill/${sk.name}`)}>
 					{sk.name}{sk.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
@@ -206,25 +206,25 @@
 				<div class='new'>
 					<span tabindex='0'
 								role='button'
-								on:click={() => skillStore.addSkill()}
-								on:keypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span>
+								onclick={() => skillStore.addSkill()}
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span>
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
-								on:click={() => skillStore.addSkillFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}>New Folder</span>
+								onclick={() => skillStore.addSkillFolder(new FabledFolder())}
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 			<SidebarEntry delay={200 + 100*($classes.length+2)} direction="right">
 				<div class='new'>
 						<span tabindex='0'
 									role='button'
-									on:click={() => onImportSkill()}
-									on:keypress={(e) => e.key === 'Enter' && onImportSkill()}>匯入技能</span>
+									onclick={() => onImportSkill()}
+									onkeypress={(e) => e.key === 'Enter' && onImportSkill()}>匯入技能</span>
 					<span tabindex='0'
 								role='button'
-								on:click={() => reloadAllSkills()}
-								on:keypress={(e) => e.key === 'Enter' && reloadAllSkills()}>重新整理</span>
+								onclick={() => reloadAllSkills()}
+								onkeypress={(e) => e.key === 'Enter' && reloadAllSkills()}>重新整理</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -237,7 +237,7 @@
 					data={att}
 					direction='right'
 					delay={200 + 100*i}
-					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}>
+					onclick={() => goto(`${base}/attribute/${att.name}/edit`)}>
 					{att.name}{att.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
@@ -247,15 +247,16 @@
 				<div class='new'>
 					<span tabindex='0'
 								role='button'
-								on:click={() => attributeStore.addAttribute()}
-								on:keypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}>New Attribute</span>
+								onclick={() => attributeStore.addAttribute()}
+								onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}>New Attribute</span>
 				</div>
 			</SidebarEntry>
 		</div>
 	{/if}
 </div>
 
-<Modal on:close={closeModal} open={importing === "class"} width="300px">
+{#if importing === "class"}
+<Modal onclose={closeModal} width="300px">
 	<h2>匯入信仰</h2>
 	<hr />
 	<div class='import-container'>
@@ -270,15 +271,16 @@
 				</select>
 			{/if}
 		</ProInput>
-		<button on:click={() => importClass(importChoice)}
-						on:keypress={(e) => e.key === 'Enter' && importClass(importChoice)}
+		<button onclick={() => importClass(importChoice)}
+						onkeypress={(e) => e.key === 'Enter' && importClass(importChoice)}
 						class="button"
 						style="grid-column: 1 / span 2"
 						tabindex='0'>確認匯入</button>
 	</div>
 </Modal>
-
-<Modal on:close={closeModal} open={importing === "skill"} width="500px">
+{/if}
+{#if importing === "skill"}
+<Modal onclose={closeModal} width="500px">
 	<h2>匯入技能</h2>
 	<hr />
 	<div class='import-container'>
@@ -293,13 +295,14 @@
 				</select>
 			{/if}
 		</ProInput>
-		<button on:click={() => importSkill(importChoice)}
-					on:keypress={(e) => e.key === 'Enter' && importSkill(importChoice)}
+		<button onclick={() => importSkill(importChoice)}
+					onkeypress={(e) => e.key === 'Enter' && importSkill(importChoice)}
 						class="button"
 						style="grid-column: 1 / span 2"
 					tabindex='0'>確認匯入</button>
 	</div>
 </Modal>
+{/if}
 
 <style>
     .import-container {

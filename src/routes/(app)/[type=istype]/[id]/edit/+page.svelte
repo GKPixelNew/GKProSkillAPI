@@ -17,7 +17,7 @@
 </script>
 
 <svelte:head>
-	<title>Fabled Dynamic Editor - {data.data.name}</title>
+	<title>GKPixel 技能編輯器 - {data.data.name}</title>
 </svelte:head>
 <h1>{data?.data?.name}
 	{#if data?.data instanceof FabledSkill}

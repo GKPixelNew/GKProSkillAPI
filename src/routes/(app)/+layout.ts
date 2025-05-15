@@ -1,7 +1,7 @@
 import type { LayoutLoad }                  from './$types';
 import { getHaste }            from '$api/hastebin';
 import { base }                             from '$app/paths';
-import { initComponents }                   from '$api/components/components';
+import { initComponents }                   from '$api/components/components.svelte';
 import {refreshAxios} from "$api/cdn";
 import {initOAuth} from "$api/oauth";
 import { socketService }           from '$api/socket/socket-connector';

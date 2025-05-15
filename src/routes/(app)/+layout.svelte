@@ -6,14 +6,13 @@
 		loadFile,
 		saveAll,
 		saveAllToServer,
-		saveData,
 		saveDataToServer,
 		saveError,
 		showSidebar,
 		triggerAutoSync
 	}                                                                        from '../../data/store';
-	import { closeModal, modalData, ModalService, openModal }                from '../data/modal-service.svelte';
-	import { skillStore }                                                    from '../data/skill-store.svelte.js';
+	import { closeModal, modalData, ModalService, openModal }                from '../../data/modal-service.svelte';
+	import { skillStore }                                                    from '../../data/skill-store.svelte.js';
 	import { onDestroy, onMount }                                            from 'svelte';
 	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
 	import { quadInOut }                                                     from 'svelte/easing';
@@ -23,15 +22,12 @@
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
 	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                 from '../../data/modal-service';
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
 	import {SvelteToast} from "@zerodevx/svelte-toast";
 	import { upload } from '$api/cdn';
 	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
-	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
-	import { skillStore }                                                    from '../../data/skill-store.js';
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -209,9 +205,8 @@
 			 role='button'
 			 style:--distance='{$distance}rem'
 			 style:--rotation='{$rotation * 3}deg'
-			 style:--distance='{$distance}rem'
-			 on:click={() => upload()}
-			 on:keypress={(e) => { if (e.key === 'Enter') upload() }}
+			 onclick={() => upload()}
+			 onkeypress={(e) => { if (e.key === 'Enter') upload() }}
 	>
 		<span class='material-symbols-rounded'>upload</span>
 	</div>

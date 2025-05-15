@@ -30,8 +30,8 @@
                  tabindex='0'
                  role='button'
                  style="background-color: #0079d9"
-                 on:click|stopPropagation={login}
-                 on:keypress={(e) => {
+                 onclick={login}
+                 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
 						 e.stopPropagation();
 						 login();
@@ -48,8 +48,8 @@
 				 tabindex='0'
 				 role='button'
 				 style="background-color: #d92800"
-				 on:click|stopPropagation={logout}
-				 on:keypress={(e) => {
+				 onclick={logout}
+				 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
 						 e.stopPropagation();
 						 logout();

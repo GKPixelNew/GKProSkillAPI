@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-	<title>Fabled Dynamic Editor - {skill.name}</title>
+	<title>GKPixel 技能編輯器 - {skill.name}</title>
 </svelte:head>
 <div class='header'>
 	<h2>

@@ -19,7 +19,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.0",
-    "@zerodevx/svelte-toast": "^0.9.5",
+    "@zerodevx/svelte-toast": "^0.9.6",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-svelte": "^3.5.1",
