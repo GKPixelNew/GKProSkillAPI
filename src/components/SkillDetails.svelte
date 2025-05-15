@@ -1,20 +1,21 @@
 <script lang='ts'>
-	import { updateSidebar }           from '../data/store';
 	import ProInput                    from './input/ProInput.svelte';
 	import SearchableSelect            from './input/SearchableSelect.svelte';
 	import Toggle                      from './input/Toggle.svelte';
 	import AttributeInput              from './input/AttributeInput.svelte';
 	import IconInput                   from './input/IconInput.svelte';
 	import DynamicAttributeInput       from '$input/DynamicAttributeInput.svelte';
-	import FabledSkill, { skillStore } from '../data/skill-store';
+	import FabledSkill, { skillStore } from '../data/skill-store.svelte';
 
-	export let data: FabledSkill;
-	const skills = skillStore.skills;
-
-	$: {
-		if (data?.name) updateSidebar();
-		data.save();
+	interface Props {
+		data: FabledSkill;
+		onsave?: () => void;
 	}
+
+	let { data = $bindable(), onsave }: Props = $props();
+	const skills                      = skillStore.skills;
+
+	$effect(() => onsave?.());
 </script>
 
 {#if data}
@@ -68,7 +69,7 @@
 						tooltip='The level that the required skill needs to reach before this one can be unlocked'
 						bind:value={data.skillReqLevel} />
 	<ProInput label='Permission'
-						tooltip='Whether this skill requires a permission to unlock. The permission would be "skillapi.skill.{data.name}"'>
+						tooltip='Whether this skill requires a permission to unlock. The permission would be "fabled.skill.{data.name}"'>
 		<Toggle bind:data={data.permission} />
 	</ProInput>
 	<ProInput label='Level Req'

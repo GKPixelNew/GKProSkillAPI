@@ -2,15 +2,16 @@ import type { Readable, Writable }                                             f
 import { derived, get, writable }                                              from 'svelte/store';
 import { localStore }                                                          from '$api/api';
 import { attributeStore }                                                      from './attribute-store';
-import type FabledComponent                                                    from '$api/components/fabled-component';
+import type FabledComponent
+																																							 from '$api/components/fabled-component.svelte';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import { socketService }                                                       from '$api/socket/socket-connector';
 import YAML                                                                    from 'yaml';
-import FabledAttribute                                                         from '$api/fabled-attribute';
+import FabledAttribute                                                         from '$api/fabled-attribute.svelte';
 import { Tab }                                                                 from '$api/tab';
-import FabledSkill, { skillStore }                                             from './skill-store';
-import FabledClass, { classStore }                                             from './class-store';
-import { FabledFolder, folderStore }                                           from './folder-store';
+import FabledSkill, { skillStore }                                             from './skill-store.svelte';
+import FabledClass, { classStore }                                             from './class-store.svelte';
+import { FabledFolder, folderStore }                                           from './folder-store.svelte';
 
 export const active: Writable<FabledClass | FabledSkill | FabledAttribute | undefined>      = writable(undefined);
 export const activeType: Readable<'class' | 'skill' | 'attribute' | ''>                     = derived(
@@ -33,26 +34,12 @@ export const showSidebar: Writable<boolean>                                     
 export const sidebarOpen: Writable<boolean>                                                 = writable(true);
 export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);
 export const importing: Writable<boolean>                                                   = writable(false);
+export const localSyncList: Writable<Map<FileSystemFileHandle, FabledSkill | FabledClass | FabledAttribute>> = writable(new Map());
 
-export const updateSidebar = () => {
-	if (!get(showSidebar)) return;
-	switch (get(activeType)) {
-		case 'class': {
-			classStore.refreshClasses();
-			break;
-		}
-		case 'skill': {
-			skillStore.refreshSkills();
-			break;
-		}
-		case 'attribute': {
-			attributeStore.refreshAttributes();
-			break;
-		}
-	}
-	folderStore.updateFolders();
+export const toggleSidebar = (e: Event) => {
+	e.stopPropagation();
+	showSidebar.set(!get(showSidebar));
 };
-export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
 export const closeSidebar  = () => showSidebar.set(false);
 export const setImporting  = (bool: boolean) => importing.set(bool);
 
@@ -109,7 +96,10 @@ export const loadFile = (file: File) => {
 	reader.readAsText(file);
 };
 
-export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => {
+export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute, e?: Event) => {
+	e?.preventDefault();
+	e?.stopPropagation();
+
 	const act = data || get(active);
 	if (!act) return;
 	if (act instanceof FabledAttribute) {
@@ -127,7 +117,7 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => 
 
 export const getAttributeYaml = async () => {
 	let text = '';
-	for (const line of (await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text())).split('\n')) {
+	for (const line of (await fetch('https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml').then(r => r.text())).split('\n')) {
 		if (line.startsWith('#') || line.length === 0) {
 			text = text + line + '\n';
 		} else {
@@ -246,6 +236,63 @@ const saveToFile = (file: string, data: string) => {
 	document.body.appendChild(element);
 	element.click();
 	document.body.removeChild(element);
+};
+
+export const isSyncLocal = (data: FabledSkill | FabledClass | FabledAttribute) => {
+	return findFileHandle(data) !== undefined;
+};
+
+export const toggleSyncLocal = async (data: FabledSkill | FabledClass | FabledAttribute) => {
+	if (isSyncLocal(data)) {
+		removeSyncLocal(data);
+	} else {
+		await addSyncLocal(data);
+	}
+};
+
+export const triggerAutoSync = async (data: FabledSkill | FabledClass | FabledAttribute) => {
+	console.log('triggerAutoSync');
+	const fileHandle = findFileHandle(data);
+	if (fileHandle) {
+		const writable = await fileHandle.createWritable();
+		await writable.write(YAML.stringify({ [data.name]: data.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false }));
+		await writable.close();
+
+		console.log(fileHandle.name);
+	}
+};
+
+const addSyncLocal = async (data: FabledSkill | FabledClass | FabledAttribute) => {
+	if (!('showOpenFilePicker' in window)) return;
+
+	// @ts-ignore
+	const file = await window.showOpenFilePicker({
+		types: [{ description: 'Choose a yaml file to sync', accept: { 'text/yaml': ['.yml', '.yaml'] } }],
+		multiple: false,
+		excludeAcceptAllOption: true
+	});
+	const fileHandle = await file[0] as FileSystemFileHandle;
+	const writable = await fileHandle.createWritable();
+	if (!writable || writable.locked) return;
+	localSyncList.update(list => {
+		list.set(fileHandle, data);
+		triggerAutoSync(data)
+		return list;
+	});
+};
+
+const removeSyncLocal = (data: FabledSkill | FabledClass | FabledAttribute) => {
+	localSyncList.update(list => {
+		const fileHandle = findFileHandle(data);
+		if (fileHandle) {
+			list.delete(fileHandle);
+		}
+		return list;
+	});
+};
+
+const findFileHandle = (data: FabledSkill | FabledClass | FabledAttribute) => {
+	return get(localSyncList).entries().find(([_, value]) => value === data)?.[0];
 };
 
 export const saveError: Writable<{ name: string, acknowledged: boolean } | undefined> = writable();

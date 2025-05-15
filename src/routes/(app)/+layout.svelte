@@ -9,15 +9,19 @@
 		saveData,
 		saveDataToServer,
 		saveError,
-		showSidebar
+		showSidebar,
+		triggerAutoSync
 	}                                                                        from '../../data/store';
+	import { closeModal, modalData, ModalService, openModal }                from '../data/modal-service.svelte';
+	import { skillStore }                                                    from '../data/skill-store.svelte.js';
 	import { onDestroy, onMount }                                            from 'svelte';
+	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
+	import { quadInOut }                                                     from 'svelte/easing';
+	import { fly }                                                           from 'svelte/transition';
 	import { browser }                                                       from '$app/environment';
 	import ImportModal                                                       from '$components/ImportModal.svelte';
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
-	import { fly }                                                           from 'svelte/transition';
-	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
 	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
 	import { activeModal, closeModal, modalData, openModal }                 from '../../data/modal-service';
 	import SettingsModal
@@ -28,22 +32,26 @@
 	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
 	import { skillStore }                                                    from '../../data/skill-store.js';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
+	let { children }: Props = $props();
 	const isSaving = skillStore.isSaving;
 
-	let dragging    = false;
-	let displaySave = false;
+	let dragging    = $state(false);
+	let displaySave = $state(false);
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let button                                 = '';
-	let serverSaveStatus                       = 'NONE';
+	let button                                 = $state('');
+	let serverSaveStatus                       = $state('NONE');
 	const statusMap: { [key: string]: string } = {
 		'SAVING': 'hourglass_empty',
 		'SAVED':  'check',
 		'ERROR':  'error'
 	};
-	let copied                                 = false;
+	let copied                                 = $state(false);
 
 	const passphrase = socketService.keyphrase;
 	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
@@ -93,7 +101,7 @@
 	});
 
 	const dragover = (e: DragEvent) => {
-		if (!e?.dataTransfer?.types || !(e.dataTransfer.types.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
+		if (!e?.dataTransfer?.types || !(e.dataTransfer.types.length > 0 && e.dataTransfer?.types.includes('Files'))) return;
 
 		e.dataTransfer.dropEffect = 'copy';
 		e.stopPropagation();
@@ -121,7 +129,11 @@
 
 	const save = () => {
 		skillStore.skills.set([...get(skillStore.skills)]);
-		get(active)?.save();
+		const vActive = get(active)
+		if (vActive) {
+			vActive.save();
+			triggerAutoSync(vActive)
+		}
 	};
 
 	const acknowledgeSaveError = () => {
@@ -171,30 +183,31 @@
 
 <HeaderBar />
 <NavBar />
-<div id='body-container' class:empty={!$active}>
+<div class:empty={!$active} id='body-container'>
 	{#if $showSidebar}
 		<Sidebar />
 	{/if}
-	<div id='body' class:centered={!$active}>
-		<slot />
+	<div class:centered={!$active} id='body'>
+		{@render children?.()}
 	</div>
 </div>
 <!--<SocketPanel />-->
 
 <div id='floating-buttons'>
-	<div class='button backup' title='Backup All Data'
-			 tabindex='0'
+	<div class='button backup' onclick={saveAll}
+			 onkeypress={(e) => e.key === 'Enter' && saveAll()}
 			 role='button'
-			 style:--rotation='{$rotation}deg'
 			 style:--distance='{$distance}rem'
-			 on:click={saveAll}
-			 on:keypress={(e) => e.key === 'Enter' && saveAll()}
+			 style:--rotation='{$rotation}deg'
+			 tabindex='0'
+			 title='Backup All Data'
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
 	<div class='button save' title='Upload'
 			 tabindex='0'
 			 role='button'
+			 style:--distance='{$distance}rem'
 			 style:--rotation='{$rotation * 3}deg'
 			 style:--distance='{$distance}rem'
 			 on:click={() => upload()}
@@ -211,8 +224,8 @@
 				 style:--rotation='{$rotation * 5}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => saveServerInfo()}
-				 on:keypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
+				 onclick={() => saveServerInfo()}
+				 onkeypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
 		>
 			{#if button === 'save' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -227,8 +240,8 @@
 				 style:--rotation='{$rotation * 7}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => exportAllToServer()}
-				 on:keypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
+				 onclick={() => exportAllToServer()}
+				 onkeypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
 		>
 			{#if button === 'export' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -243,8 +256,8 @@
 				 style:--rotation='{$rotation * 9}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => reload()}
-				 on:keypress={(e) => { if (e.key === 'Enter') reload() }}
+				 onclick={() => reload()}
+				 onkeypress={(e) => { if (e.key === 'Enter') reload() }}
 		>
 			{#if button === 'reload' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -253,13 +266,13 @@
 			{/if}
 		</div>
 	{/if}
-	<div class='button settings' title='Change Settings'
-			 tabindex='0'
+	<div class='button settings' onclick={() => openModal(SettingsModal)}
+			 onkeypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
 			 role='button'
-			 style:--rotation='60deg'
 			 style:--distance='1rem'
-			 on:click={() => openModal(SettingsModal)}
-			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+			 style:--rotation='60deg'
+			 tabindex='0'
+			 title='Change Settings'
 	>
 		<span class='material-symbols-rounded'>settings</span>
 	</div>
@@ -278,45 +291,49 @@
 		<div class='acknowledge button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => { acknowledgeSaveError() }}
-				 on:keypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
+				 onclick={() => { acknowledgeSaveError() }}
+				 onkeypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
 		>I Understand
 		</div>
 	</div>
 {/if}
 
 <!-- Display our active modal -->
-<svelte:component
-	this={$activeModal}
-	data={$modalData}
-	on:close={closeModal}
-	on:save={save} />
+{#if ModalService.activeModal}
+	<ModalService.activeModal
+		data={$modalData}
+		onclose={closeModal}
+		onsave={save}
+	/>
+{/if}
 
 {#if displaySave}
 	<div class='saving' transition:fly={{y: -20}}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
 {/if}
 
 {#if dragging}
-	<div class='dragging' role='form' on:dragleave={dragleave}>
+	<div class='dragging' role='form' ondragleave={dragleave}>
 		Drop to Import
 	</div>
 {/if}
 
-<Modal open={!!$passphrase && !$socketTrusted}>
-	<h3>Untrusted Connection to Server</h3>
-	<div>Server is not trusted. Please run
-		<div class='code'
-				 class:copied
-				 tabindex='0'
-				 role='button'
-				 on:click={copyText}
-				 on:keypress={(e) => { if (e.key === 'Enter') copyText() }}
-		>
-			/synth trust {$passphrase}
+{#if !!$passphrase && !$socketTrusted}
+	<Modal>
+		<h3>Untrusted Connection to Server</h3>
+		<div>Server is not trusted. Please run
+			<div class='code'
+					 class:copied
+					 onclick={copyText}
+					 onkeypress={(e) => { if (e.key === 'Enter') copyText() }}
+					 role='button'
+					 tabindex='0'
+			>
+				/synth trust {$passphrase}
+			</div>
+			from the server
 		</div>
-		from the server
-	</div>
-</Modal>
+	</Modal>
+{/if}
 
 {#if $dcWarning > 0}
 	<div class='dc-warning' transition:fly={{y: -20}}>
@@ -324,8 +341,8 @@
 		<div class='button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => socketService.ping()}
-				 on:keypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
+				 onclick={() => socketService.ping()}
+				 onkeypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
 		>Click to remain connected
 		</div>
 	</div>

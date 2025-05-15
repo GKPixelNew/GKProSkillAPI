@@ -1,9 +1,9 @@
 import { browser }           from '$app/environment';
 import { writable }          from 'svelte/store';
-import type FabledAttribute  from './fabled-attribute';
-import type FabledClass      from '../data/class-store';
-import type FabledSkill      from '../data/skill-store';
-import type { FabledFolder } from '../data/folder-store';
+import type FabledAttribute  from './fabled-attribute.svelte';
+import type FabledClass      from '../data/class-store.svelte';
+import type FabledSkill      from '../data/skill-store.svelte';
+import type { FabledFolder } from '../data/folder-store.svelte';
 
 export const toProperCase = (s: string) => {
 	return s
@@ -32,7 +32,7 @@ export const localStore = <T>(key: string, def: T) => {
 			}
 		}
 
-		if (typeof def === 'number') saved = <T>parseInt(<string>localStorage.getItem(key));
+		if (typeof def === 'number') saved = <T>parseFloat(<string>localStorage.getItem(key));
 		else if (typeof def === 'boolean') saved = <T>(<string>localStorage.getItem(key) === 'true');
 		else if (typeof def === 'string') saved = <T>localStorage.getItem(key);
 		else saved = JSON.parse(<string>localStorage.getItem(key));

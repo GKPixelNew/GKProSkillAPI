@@ -1,10 +1,9 @@
-<!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
 	import { closeSidebar, shownTab, sidebarOpen } from '../../data/store';
 	import SidebarEntry                            from './SidebarEntry.svelte';
 	import { squish }                              from '../../data/squish';
 	import { goto }                                from '$app/navigation';
-	import { beforeUpdate, onDestroy, onMount }    from 'svelte';
+	import { onDestroy, onMount }                  from 'svelte';
 	import type { Unsubscriber }                   from 'svelte/store';
 	import { get }                                 from 'svelte/store';
 	import Folder                                  from '../Folder.svelte';
@@ -15,11 +14,11 @@
 	import { base }                                from '$app/paths';
 	import { socketService }                       from '$api/socket/socket-connector';
 	import { Tab }                                 from '$api/tab';
-	import FabledSkill, { skillStore }             from '../../data/skill-store.js';
-	import type FabledAttribute                    from '$api/fabled-attribute';
-	import FabledClass, { classStore }             from '../../data/class-store';
-	import { attributeStore }                      from '../../data/attribute-store.js';
-	import { FabledFolder }                        from '../../data/folder-store';
+	import FabledSkill, { skillStore }             from '../../data/skill-store.svelte';
+	import FabledClass, { classStore }             from '../../data/class-store.svelte';
+	import { attributeStore }                      from '../../data/attribute-store';
+	import { FabledFolder }                        from '../../data/folder-store.svelte';
+	import { sort }                                from '$api/api';
 	import { getAllClasses, getAllSkills, reloadAllClasses, reloadAllSkills } from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
@@ -27,14 +26,17 @@
 	import { importClass, importSkill } from '$api/cdn.js';
 
 	let folders: FabledFolder[] = [];
+	let tabSub: Unsubscriber;
 	let classSub: Unsubscriber;
 	let skillSub: Unsubscriber;
-	let classIncluded: Array<FabledClass | FabledSkill> = [];
-	let skillIncluded: Array<FabledClass | FabledSkill> = [];
+	let classIncluded: Array<FabledClass | FabledSkill> = $state([]);
+	let skillIncluded: Array<FabledClass | FabledSkill> = $state([]);
 
-	let width: number;
-	let height: number;
-	let scrollY: number;
+	let built = $state(false);
+
+	let width: number   = $state(0);
+	let height: number  = $state(0);
+	let scrollY: number = $state(0);
 
 	let importing: 'class' | 'skill' | 'none' = 'none';
 	let options = {
@@ -49,24 +51,22 @@
 	const classFolders = classStore.classFolders;
 	const attributes   = attributeStore.attributes;
 
-	const appendIncluded = (item: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> | FabledFolder | FabledClass | FabledSkill | FabledAttribute, include: Array<FabledClass | FabledSkill>) => {
-		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
-		if (item instanceof FabledFolder) appendIncluded(item.data, include);
-		else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
-	};
-
 	const rebuildFolders = (fold?: FabledFolder[]) => {
 		switch (get(shownTab)) {
 			case Tab.CLASSES: {
 				folders = fold || get(classFolders);
 				classIncluded = [];
-				appendIncluded(folders, classIncluded);
+				for (let folder of folders) {
+					classIncluded.push(...folder.getAllClasses());
+				}
 				break;
 			}
 			case Tab.SKILLS: {
-				folders       = fold || get(skillStore.skillFolders);
+				folders       = fold || get(skillFolders);
 				skillIncluded = [];
-				appendIncluded(folders, skillIncluded);
+				for (let folder of folders) {
+					skillIncluded.push(...folder.getAllSkills());
+				}
 				break;
 			}
 		}
@@ -96,13 +96,15 @@
 	onMount(() => {
 		if (!browser) return;
 
+		tabSub   = shownTab.subscribe(() => rebuildFolders());
 		classSub = classFolders.subscribe(rebuildFolders);
-		skillSub = skillStore.skillFolders.subscribe(rebuildFolders);
+		skillSub = skillFolders.subscribe(rebuildFolders);
+		rebuildFolders();
+		built = true;
 	});
 
-	beforeUpdate(rebuildFolders);
-
 	onDestroy(() => {
+		if (tabSub) tabSub();
 		if (classSub) classSub();
 		if (skillSub) skillSub();
 	});
@@ -119,17 +121,24 @@
 	};
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY}
-							 on:beforeunload={() => socketService.disconnect()} />
+<svelte:window
+	bind:innerHeight={height}
+	bind:innerWidth={width}
+	bind:scrollY
+	onbeforeunload={() => socketService.disconnect()}
+/>
 
 <div id='sidebar'
 		 on:introend={() => sidebarOpen.set(true)}
 		 on:outroend={() => sidebarOpen.set(false)}
-		 style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'
+		 style:--height='100%'
 		 transition:squish
 		 use:clickOutside={clickOut}>
 	<div class='type-wrap'>
-		<Tabs bind:selectedTab={$shownTab} color='#111' data={["Classes", "Skills", "Attributes"]} inline={false} />
+		<Tabs
+			bind:selectedTab={$shownTab}
+			color='#111' data={['Classes', 'Skills', 'Attributes']}
+			inline={false} />
 		<hr />
 	</div>
 	{#if $shownTab === Tab.CLASSES}

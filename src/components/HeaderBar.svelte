@@ -16,8 +16,8 @@
     <div class='home'
          tabindex='0'
          role='button'
-         on:click={() => goto(`${base}/`)}
-         on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
+         onclick={() => goto(`${base}/`)}
+         onkeypress={(e) => e.key === "Enter" && goto(`${base}/`)}
     >
         <h1 class='accent'>GKPixel&copy;</h1>
         <h2>技能編輯器&trade;</h2>
