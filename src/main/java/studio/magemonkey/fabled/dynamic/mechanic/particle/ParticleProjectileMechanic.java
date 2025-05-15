@@ -97,7 +97,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
         int life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
-        int distance = (int) (parseValues(caster, DISTANCE, level, settings.getDouble(DISTANCE, 2)));
+        int distance = (int) (parseValues(caster, DISTANCE, level, settings.getDouble(DISTANCE, 50)));
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 0.8), 0);
@@ -221,7 +221,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 String  spread   = settings.getString(SPREAD, "cone").toLowerCase();
                 boolean ally     = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
                 int     life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
-                int     distance = (int) parseValues(caster, DISTANCE, level, settings.getInt(DISTANCE, 2));
+                int distance = (int) parseValues(caster, DISTANCE, level, settings.getInt(DISTANCE, 50));
 
                 final Settings copy = new Settings(settings);
                 copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 0.8));
