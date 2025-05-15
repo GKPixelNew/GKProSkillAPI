@@ -18,7 +18,6 @@
 	import FabledClass, { classStore }             from '../../data/class-store.svelte';
 	import { attributeStore }                      from '../../data/attribute-store';
 	import { FabledFolder }                        from '../../data/folder-store.svelte';
-	import { sort }                                from '$api/api';
 	import { getAllClasses, getAllSkills, reloadAllClasses, reloadAllSkills } from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
@@ -32,19 +31,17 @@
 	let classIncluded: Array<FabledClass | FabledSkill> = $state([]);
 	let skillIncluded: Array<FabledClass | FabledSkill> = $state([]);
 
-	let built = $state(false);
-
 	let width: number   = $state(0);
 	let height: number  = $state(0);
 	let scrollY: number = $state(0);
 
-	let importing: 'class' | 'skill' | 'none' = 'none';
-	let options = {
+	let importing: 'class' | 'skill' | 'none' = $state('none');
+	let options = $state({
 		classes: [],
 		skills: []
-	};
-	let importChoice = '';
-	let loadingOptions = false;
+	});
+	let importChoice = $state('');
+	let loadingOptions = $state(false);
 	const skills       = skillStore.skills;
 	const skillFolders = skillStore.skillFolders;
 	const classes      = classStore.classes;
@@ -100,7 +97,6 @@
 		classSub = classFolders.subscribe(rebuildFolders);
 		skillSub = skillFolders.subscribe(rebuildFolders);
 		rebuildFolders();
-		built = true;
 	});
 
 	onDestroy(() => {
@@ -271,8 +267,8 @@
 				</select>
 			{/if}
 		</ProInput>
-		<button onclick={() => importClass(importChoice)}
-						onkeypress={(e) => e.key === 'Enter' && importClass(importChoice)}
+		<button onclick={() => importClass(importChoice).then(() => closeModal())}
+						onkeypress={(e) => e.key === 'Enter' && importClass(importChoice).then(() => closeModal())}
 						class="button"
 						style="grid-column: 1 / span 2"
 						tabindex='0'>確認匯入</button>
@@ -295,8 +291,8 @@
 				</select>
 			{/if}
 		</ProInput>
-		<button onclick={() => importSkill(importChoice)}
-					onkeypress={(e) => e.key === 'Enter' && importSkill(importChoice)}
+		<button onclick={() => importSkill(importChoice).then(() => closeModal())}
+					onkeypress={(e) => e.key === 'Enter' && importSkill(importChoice).then(() => closeModal())}
 						class="button"
 						style="grid-column: 1 / span 2"
 					tabindex='0'>確認匯入</button>
