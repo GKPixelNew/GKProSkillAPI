@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +39,7 @@ import java.util.Locale;
 /**
  * Adds to a cast data value
  */
+@Deprecated
 public class ValueRoundMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";

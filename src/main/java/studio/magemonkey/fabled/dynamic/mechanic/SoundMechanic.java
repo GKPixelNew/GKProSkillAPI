@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.util.SoundUT;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,18 +48,9 @@ public class SoundMechanic extends MechanicComponent {
         return "sound";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
@@ -67,7 +58,8 @@ public class SoundMechanic extends MechanicComponent {
                 settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase(Locale.US).replace(" ", "_");
         try {
             String sound =
-                    type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();
+                    type.equals("CUSTOM") ? settings.getString(CUSTOM, "")
+                            : SoundUT.getSound(type).getKey().toString();
             float volume = (float) parseValues(caster, VOLUME, level, 100.0) / 100;
             float pitch  = (float) parseValues(caster, PITCH, level, 0.0);
 
@@ -77,7 +69,7 @@ public class SoundMechanic extends MechanicComponent {
             for (LivingEntity target : targets) {
                 target.getWorld().playSound(target.getLocation(), sound, volume, pitch);
             }
-            return targets.size() > 0;
+            return !targets.isEmpty();
         } catch (Exception ex) {
             Logger.invalid("Invalid sound type: " + type);
             return false;

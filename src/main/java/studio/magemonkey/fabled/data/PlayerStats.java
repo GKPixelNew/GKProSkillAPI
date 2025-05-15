@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.data;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.scoreboard.StatHolder;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class PlayerStats implements StatHolder {
      * by the API on startup so do not call this method.
      */
     public static void init() {
-        if (statMap.size() == 0) {
+        if (statMap.isEmpty()) {
             load(EXP, BASE + EXP);
             load(HEALTH, BASE + HEALTH);
             load(LEVEL, BASE + LEVEL);
@@ -84,7 +84,7 @@ public class PlayerStats implements StatHolder {
     }
 
     /**
-     * @return map of stats for the scoreboard
+     * @return list of stats for the scoreboard
      */
     @Override
     public List<String> getNames() {

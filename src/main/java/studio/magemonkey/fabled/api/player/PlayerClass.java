@@ -59,9 +59,9 @@ public class PlayerClass {
 
     // If shared-skill-points is enabled, this tracks the points gained (not lost) by each class,
     // so that if it is later disabled, points can be distributed properly
-    private       int         points;
+    private int points;
 
-    private       double      exp;
+    private double exp;
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -302,9 +302,10 @@ public class PlayerClass {
         // Add the points if not cancelled
         if (!event.isCancelled()) {
             if (Fabled.getSettings().isSharedSkillPoints()) {
-                this.getPlayerData().setPoints((int) (this.getPlayerData().getPoints()+event.getAmount()));
+                this.getPlayerData().setPoints((int) (this.getPlayerData().getPoints() + event.getAmount()));
             }
-            if (!Fabled.getSettings().isSharedSkillPoints() || source != PointSource.REFUND) points += event.getAmount();
+            if (!Fabled.getSettings().isSharedSkillPoints() || source != PointSource.REFUND)
+                points += event.getAmount();
         }
     }
 
@@ -326,7 +327,7 @@ public class PlayerClass {
 
         // Use the points
         if (Fabled.getSettings().isSharedSkillPoints()) {
-            this.getPlayerData().setPoints(this.getPlayerData().getPoints()-amount);
+            this.getPlayerData().setPoints(this.getPlayerData().getPoints() - amount);
         } else {
             this.points -= amount;
         }
@@ -367,6 +368,9 @@ public class PlayerClass {
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, amount, source);
         event.setCancelled(!classData.receivesExp(source) || level >= classData.getMaxLevel());
         Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager()
+                .callEvent(new com.sucy.skill.api.event.PlayerExperienceGainEvent(new com.sucy.skill.api.player.PlayerClass(
+                        this), amount, source));
 
         int rounded = (int) Math.ceil(event.getExp());
 
@@ -396,8 +400,9 @@ public class PlayerClass {
      * @param percent     whether to take the amount as a percentage
      * @param changeLevel whether to lower the level if the exp lost exceeds the current exp,
      *                    or to cap at 0 exp and keep the current level
+     * @param showMessage whether to display the loss message
      */
-    public void loseExp(double amount, boolean percent, boolean changeLevel) {
+    public void loseExp(double amount, boolean percent, boolean changeLevel, boolean showMessage) {
         Preconditions.checkArgument(amount > 0, "Amount must be positive");
         if (percent) {
             amount *= getRequiredExp();
@@ -417,7 +422,7 @@ public class PlayerClass {
 
 
             // Exp loss message
-            if (Fabled.getSettings().isShowLossExpMessages() && (int) amount > 0) {
+            if (showMessage && Fabled.getSettings().isShowLossExpMessages() && (int) amount > 0) {
                 TitleManager.show(
                         player.getPlayer(),
                         TitleType.EXP_LOST,
@@ -436,7 +441,7 @@ public class PlayerClass {
      *
      * @param percent percent of experience to lose
      */
-    public void loseExp(double percent) {loseExp(percent, true, false);}
+    public void loseExp(double percent) {loseExp(percent, true, false, true);}
 
     /**
      * <p>Checks whether the player has leveled up based on
@@ -532,6 +537,8 @@ public class PlayerClass {
         // Call the event
         PlayerLevelUpEvent event = new PlayerLevelUpEvent(this, amount);
         Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager()
+                .callEvent(new com.sucy.skill.api.event.PlayerLevelUpEvent(this, amount));
 
         // Apply the effect
         if (Fabled.getSettings().hasLevelUpEffect()) {

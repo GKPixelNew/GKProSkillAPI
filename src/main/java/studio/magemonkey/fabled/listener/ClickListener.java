@@ -26,8 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.KeyPressEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,6 +35,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.KeyPressEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -59,28 +59,31 @@ public class ClickListener extends FabledListener {
     public void onClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
-        if (dropPlayers.contains(event.getPlayer().getUniqueId())) {
-            dropPlayers.remove(event.getPlayer().getUniqueId());
-            return;
-        }
-
-        // Left clicks
-        if (!Fabled.getSettings().isAnimationLeftClick()) {
-            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-
-                Bukkit.getServer()
-                        .getPluginManager()
-                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+        // Delay the click firing by 1 tick just to ensure that the player clicked instead of dropping an item
+        Bukkit.getScheduler().runTaskLater(Fabled.getPlugin(Fabled.class), () -> {
+            // Drop event
+            if (dropPlayers.contains(event.getPlayer().getUniqueId())) {
+                dropPlayers.remove(event.getPlayer().getUniqueId());
                 return;
             }
-        }
 
-        // Right clicks
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-            Bukkit.getServer()
-                    .getPluginManager()
-                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
-        }
+            // Left clicks
+            if (!Fabled.getSettings().isAnimationLeftClick()) {
+                if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    Bukkit.getServer()
+                            .getPluginManager()
+                            .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+                    return;
+                }
+            }
+
+            // Right clicks
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+                Bukkit.getServer()
+                        .getPluginManager()
+                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+            }
+        }, 1L);
     }
 
     @EventHandler

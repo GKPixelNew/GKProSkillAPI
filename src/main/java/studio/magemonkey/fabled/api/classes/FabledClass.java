@@ -26,9 +26,18 @@
  */
 package studio.magemonkey.fabled.api.classes;
 
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.ReadOnlySettings;
 import studio.magemonkey.fabled.api.Settings;
@@ -43,15 +52,6 @@ import studio.magemonkey.fabled.gui.tool.IconHolder;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.tree.basic.InventoryTree;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -503,7 +503,7 @@ public abstract class FabledClass implements IconHolder {
     /**
      * Checks whether this class has mana regeneration
      *
-     * @return true if has mana regeneration, false otherwise
+     * @return true if the class has mana regeneration, false otherwise
      */
     public boolean hasManaRegen() {
         return manaRegen > 0;
@@ -620,9 +620,9 @@ public abstract class FabledClass implements IconHolder {
         settings.save(config.createSection(ATTR));
         config.set(REGEN, manaRegen);
         config.set(TREE, tree.toString());
-        config.set(BLACKLIST, new ArrayList<Material>(blacklist));
+        config.set(BLACKLIST, new ArrayList<>(blacklist));
 
-        ArrayList<String> skillNames = new ArrayList<String>();
+        ArrayList<String> skillNames = new ArrayList<>();
         for (Skill skill : skills) {
             skillNames.add(skill.getName());
         }
@@ -669,10 +669,10 @@ public abstract class FabledClass implements IconHolder {
             icon.setItemMeta(iconMeta);
         }
 
-        actionBar = TextFormatter.colorString(config.getString(ACTION_BAR, ""));
-        prefix = TextFormatter.colorString(config.getString(PREFIX, prefix));
+        actionBar = StringUT.color(config.getString(ACTION_BAR, ""));
+        prefix = StringUT.color(config.getString(PREFIX, prefix));
         group = config.getString(GROUP, "class");
-        mana = TextFormatter.colorString(config.getString(MANA, mana));
+        mana = StringUT.color(config.getString(MANA, mana));
         maxLevel = config.getInt(MAX, maxLevel);
         expSources = config.getInt(EXP, expSources);
         manaRegen = config.getDouble(REGEN, manaRegen);

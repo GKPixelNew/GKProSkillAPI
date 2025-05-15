@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 
@@ -109,10 +109,12 @@ public final class ItemStackReader {
 
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
-            damageable.setDamage(readDurability(settings));
+            int        damage     = readDurability(settings);
+            if (damage > 0) damageable.setDamage(damage);
             meta.setUnbreakable(settings.getBool(UNBREAKABLE, false));
         }
-        meta.setCustomModelData(readCustomModelData(settings));
+        int modelData = readCustomModelData(settings);
+        if (modelData != 0) meta.setCustomModelData(modelData);
 
         for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
             try {
@@ -122,11 +124,11 @@ public final class ItemStackReader {
         }
 
         if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
-            String name = TextFormatter.colorString(settings.getString(NAME, ""));
+            String name = StringUT.color(settings.getString(NAME, ""));
             if (!name.isEmpty()) {
                 meta.setDisplayName(name);
             }
-            List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
+            List<String> lore = StringUT.color(settings.getStringList(LORE));
             meta.setLore(lore);
         }
 

@@ -26,14 +26,16 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.util.StringUT;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Summons a mob to the target location
@@ -62,7 +64,7 @@ public class SummonMechanic extends MechanicComponent {
         double health = parseValues(player, HEALTH, level, 10.0);
         String type   = settings.getString(TYPE, "Zombie");
         String name =
-                TextFormatter.colorString(filter(caster,
+                StringUT.color(filter(caster,
                         null,
                         settings.getString(NAME, "").replace("{player}", player.getName())));
         double amount = parseValues(player, AMOUNT, level, 1.0);

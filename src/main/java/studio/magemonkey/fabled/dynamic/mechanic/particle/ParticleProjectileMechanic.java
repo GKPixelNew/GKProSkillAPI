@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,6 +51,7 @@ import studio.magemonkey.fabled.util.VectorUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -59,6 +61,7 @@ import java.util.function.Supplier;
 public class ParticleProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final String GROUP    = "group";
     private static final String LIFESPAN = "lifespan";
+    private static final String DISTANCE = "distance";
     private static final String SPREAD   = "spread";
     private static final String AMOUNT   = "amount";
     private static final String ANGLE    = "angle";
@@ -93,7 +96,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         String  spread = settings.getString(SPREAD, "cone").toLowerCase();
         boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
-        int life = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+        int life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+        int distance = (int) (parseValues(caster, DISTANCE, level, settings.getDouble(DISTANCE, 2)));
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 0.8), 0);
@@ -125,7 +129,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, HEIGHT, level, 8.0),
                         amount,
                         this,
-                        life);
+                        life,
+                        distance);
             } else {
                 Vector dir = location.getDirection();
                 if (spread.equals("horizontal cone")) {
@@ -141,8 +146,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, ANGLE, level, 30.0),
                         amount,
                         this,
-                        life
-                );
+                        life,
+                        distance);
             }
 
             // Set metadata for when the callback happens
@@ -167,6 +172,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         return !targets.isEmpty();
     }
 
+    private final List<UUID> hitEntities = new ArrayList<>();
+
     /**
      * The callback for the projectiles that applies child components
      *
@@ -178,13 +185,22 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
+
+        if (hitEntities.contains(hit.getUniqueId())) return;
         if (hit instanceof TempEntity && !targetBlocks) return;
+
+        List<LivingEntity> targets = new ArrayList<>();
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
         executeChildren(projectile.getShooter(),
                 Fabled.getMetaInt(projectile, LEVEL),
                 targets,
                 skill.isForced(projectile.getShooter()));
+
+        // This prevents us from hitting entities with the same parent projectile multiple times
+        hitEntities.add(hit.getUniqueId());
+        LivingEntity finalHit = hit;
+        Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> hitEntities.remove(finalHit.getUniqueId()), 2L);
     }
 
     /**
@@ -202,10 +218,11 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             public void run() {
                 targets.clear();
 
-                int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-                String  spread = settings.getString(SPREAD, "cone").toLowerCase();
-                boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
-                int     life   = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+                int     amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
+                String  spread   = settings.getString(SPREAD, "cone").toLowerCase();
+                boolean ally     = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
+                int     life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+                int     distance = (int) parseValues(caster, DISTANCE, level, settings.getInt(DISTANCE, 2));
 
                 final Settings copy = new Settings(settings);
                 copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 0.8));
@@ -240,7 +257,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        list.addAll(ParticleProjectile.rain(caster,
+                        list.addAll(ParticleProjectile.rain(
+                                caster,
                                 level,
                                 location,
                                 copy,
@@ -248,7 +266,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                life));
+                                life,
+                                distance
+                        ));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -264,7 +284,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                life
+                                life,
+                                distance
                         ));
                     }
 

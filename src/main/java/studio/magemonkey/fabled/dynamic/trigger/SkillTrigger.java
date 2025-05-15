@@ -32,7 +32,7 @@ public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {
         final boolean empty = types.isEmpty() || types.get(0).isEmpty() || types.get(0).equals("default");
         if (!empty) Fabled.inst().getLogger().warning("Skill damage trigger category is not empty, values: " + types);
         return event.getDamage() >= min && event.getDamage() <= max &&
-                (empty || types.contains(event.getClassification()));
+                (empty || types.contains("default") || types.contains(event.getClassification()));
     }
 
     /**

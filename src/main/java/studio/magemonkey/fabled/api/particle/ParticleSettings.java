@@ -26,12 +26,13 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.api.Settings;
 
 import java.util.Locale;
 
@@ -156,6 +157,14 @@ public class ParticleSettings {
      * @param z Z-axis coordinates
      */
     public void instance(Player player, double x, double y, double z) {
-        player.spawnParticle(type, x, y, z, amount, dx, dy, dz, speed, object);
+        ParticleHelper.spawnParticle(player,
+                type,
+                new Location(player.getWorld(), x, y, z),
+                amount,
+                dx,
+                dy,
+                dz,
+                speed,
+                object);
     }
 }

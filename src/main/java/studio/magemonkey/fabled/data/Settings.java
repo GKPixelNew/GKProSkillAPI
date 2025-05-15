@@ -43,7 +43,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CombatProtection;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
@@ -61,7 +61,7 @@ import java.util.*;
 /**
  * <p>The management class for Fabled's config.yml settings.</p>
  */
-public class Settings {
+public class Settings extends com.sucy.skill.data.Settings {
 
     private static final String GUI_BASE = "GUI.";
     private static final String
@@ -84,84 +84,97 @@ public class Settings {
             GUI_FADEO                    = GUI_BASE + "title-fade-out",
             GUI_LIST                     = GUI_BASE + "title-messages",
 
-    DEFAULT_YIELD                  = "default",
-            ACCOUNT_BASE           = "Accounts.",
-            ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
-            ACCOUNT_SHARED_SP      = ACCOUNT_BASE + "shared-skill-points",
-            ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
-            ACCOUNT_MAX            = ACCOUNT_BASE + "max-accounts",
-            ACCOUNT_PERM           = ACCOUNT_BASE + "perm-accounts",
-            TARGET_BASE            = "Targeting.",
-            TARGET_MONSTER         = TARGET_BASE + "monsters-enemy",
-            TARGET_PASSIVE         = TARGET_BASE + "passive-ally",
-            TARGET_PLAYER          = TARGET_BASE + "player-ally",
-            TARGET_NPC             = TARGET_BASE + "affect-npcs",
-            TARGET_STANDS          = TARGET_BASE + "affect-armor-stands",
-            SAVE_BASE              = "Saving.",
-            SAVE_AUTO              = SAVE_BASE + "auto-save",
-            SAVE_MINS              = SAVE_BASE + "minutes",
-            SAVE_SQL               = SAVE_BASE + "sql-database",
-            SAVE_SQLD              = SAVE_BASE + "sql-details",
-            CLASS_BASE             = "Classes.",
-            CLASS_MODIFY           = CLASS_BASE + "modify-health",
-            CLASS_HP               = CLASS_BASE + "classless-hp",
-            CLASS_SHOW             = CLASS_BASE + "show-auto-skills",
-            CLASS_ATTRIB           = CLASS_BASE + "attributes-enabled",
-            CLASS_REFUND           = CLASS_BASE + "attributes-downgrade",
-            CLASS_REFUND_PRICE     = CLASS_BASE + "attributes-downgrade-price",
-            CLASS_LEVEL            = CLASS_BASE + "level-up-skill",
-            MANA_BASE              = "Mana.",
-            MANA_ENABLED           = MANA_BASE + "enabled",
-            MANA_FREQ              = MANA_BASE + "freq",
-            SKILL_BASE             = "Skills.",
+    DEFAULT_YIELD             = "default",
+            ACCOUNT_BASE      = "Accounts.",
+            ACCOUNT_MAIN      = ACCOUNT_BASE + "main-class-group",
+            ACCOUNT_SHARED_SP = ACCOUNT_BASE + "shared-skill-points",
+            ACCOUNT_EACH      = ACCOUNT_BASE + "one-per-class",
+            ACCOUNT_MAX       = ACCOUNT_BASE + "max-accounts",
+            ACCOUNT_PERM      = ACCOUNT_BASE + "perm-accounts",
+
+    TARGET_BASE            = "Targeting.",
+            TARGET_MONSTER = TARGET_BASE + "monsters-enemy",
+            TARGET_PASSIVE = TARGET_BASE + "passive-ally",
+            TARGET_PLAYER  = TARGET_BASE + "player-ally",
+            TARGET_NPC     = TARGET_BASE + "affect-npcs",
+            TARGET_STANDS  = TARGET_BASE + "affect-armor-stands",
+
+    SAVE_BASE         = "Saving.",
+            SAVE_AUTO = SAVE_BASE + "auto-save",
+            SAVE_MINS = SAVE_BASE + "minutes",
+            SAVE_SQL  = SAVE_BASE + "sql-database",
+            SAVE_SQLD = SAVE_BASE + "sql-details",
+
+    CLASS_BASE                 = "Classes.",
+            CLASS_MODIFY       = CLASS_BASE + "modify-health",
+            CLASS_HP           = CLASS_BASE + "classless-hp",
+            CLASS_SHOW         = CLASS_BASE + "show-auto-skills",
+            CLASS_ATTRIB       = CLASS_BASE + "attributes-enabled",
+            CLASS_REFUND       = CLASS_BASE + "attributes-downgrade",
+            CLASS_REFUND_PRICE = CLASS_BASE + "attributes-downgrade-price",
+            CLASS_LEVEL        = CLASS_BASE + "level-up-skill",
+
+    MANA_BASE            = "Mana.",
+            MANA_ENABLED = MANA_BASE + "enabled",
+            MANA_FREQ    = MANA_BASE + "freq",
+
+    SKILL_BASE                     = "Skills.",
             SKILL_DOWNGRADE        = SKILL_BASE + "allow-downgrade",
             SKILL_MESSAGE          = SKILL_BASE + "show-messages",
             SKILL_RADIUS           = SKILL_BASE + "message-radius",
             SKILL_BLOCKS           = SKILL_BASE + "block-filter",
             SKILL_KNOCKBACK        = SKILL_BASE + "knockback-no-damage",
             SKILL_REFUND_ON_CHANGE = SKILL_BASE + "refund-on-change",
-            ITEM_BASE              = "Items.",
-            ITEM_LORE              = ITEM_BASE + "lore-requirements",
-            ITEM_DROP              = ITEM_BASE + "drop-weapon",
-            ITEM_SKILLS            = ITEM_BASE + "skill-requirements",
-            ITEM_ATTRIBS           = ITEM_BASE + "lore-attributes",
-            ITEM_CLASS             = ITEM_BASE + "lore-class-text",
-            ITEM_SKILL             = ITEM_BASE + "lore-skill-text",
-            ITEM_LEVEL             = ITEM_BASE + "lore-level-text",
-            ITEM_EXCLUDE           = ITEM_BASE + "lore-exclude-text",
-            ITEM_ATTR              = ITEM_BASE + "lore-attribute-text",
-            ITEM_STATS             = ITEM_BASE + "attribute-text",
-            ITEM_SLOTS             = ITEM_BASE + "slots",
-            PVP_BASE               = "PVP.",
-            PVP_MIN_LEVEL          = PVP_BASE + "min-level",
-            PVP_LEVEL_RANGE        = PVP_BASE + "level-range",
-            CAST_BASE              = "Casting.",
-            CAST_ENABLED           = CAST_BASE + "enabled",
-            CAST_MODE              = CAST_BASE + "mode",
-            CAST_SLOT              = CAST_BASE + "slot",
-            CAST_ITEM              = CAST_BASE + "item",
-            CAST_COOLDOWN          = CAST_BASE + "cooldown",
-            CAST_HOVER             = CAST_BASE + "hover-item",
-            CAST_INSTANT           = CAST_BASE + "instant-item",
-            CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
-            CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
-            INTERACT_BASE          = "Interaction",
-            INTERACT_CLICK         = INTERACT_BASE + ".interact-is-right-click",
-            ANIMATION_LEFT_CLICK   = INTERACT_BASE + ".animation-is-left-click",
-            COMBO_BASE             = "Click Combos.",
-            COMBO_ENABLED          = COMBO_BASE + "enabled",
-            COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
-            COMBO_CLICK            = COMBO_BASE + "use-click-",
-            COMBO_SIZE             = COMBO_BASE + "combo-size",
-            COMBO_TIME             = COMBO_BASE + "click-time",
-            COMBO_AUTO             = COMBO_BASE + "auto-assign",
-            EXP_BASE               = "Experience.",
-            WORLD_BASE             = "Worlds.",
-            WORLD_ENABLE           = WORLD_BASE + "enable",
-            WORLD_TYPE             = WORLD_BASE + "use-as-enabling",
-            WORLD_LIST             = WORLD_BASE + "worlds",
-            WG_SKILLS              = "disable-skills",
-            WG_EXP                 = "disable-exp";
+
+    ITEM_BASE            = "Items.",
+            ITEM_LORE    = ITEM_BASE + "lore-requirements",
+            ITEM_DROP    = ITEM_BASE + "drop-weapon",
+            ITEM_SKILLS  = ITEM_BASE + "skill-requirements",
+            ITEM_ATTRIBS = ITEM_BASE + "lore-attributes",
+            ITEM_CLASS   = ITEM_BASE + "lore-class-text",
+            ITEM_SKILL   = ITEM_BASE + "lore-skill-text",
+            ITEM_LEVEL   = ITEM_BASE + "lore-level-text",
+            ITEM_EXCLUDE = ITEM_BASE + "lore-exclude-text",
+            ITEM_ATTR    = ITEM_BASE + "lore-attribute-text",
+            ITEM_STATS   = ITEM_BASE + "attribute-text",
+            ITEM_SLOTS   = ITEM_BASE + "slots",
+
+    PVP_BASE                = "PVP.",
+            PVP_MIN_LEVEL   = PVP_BASE + "min-level",
+            PVP_LEVEL_RANGE = PVP_BASE + "level-range",
+
+    CAST_BASE                     = "Casting.",
+            CAST_ENABLED          = CAST_BASE + "enabled",
+            CAST_MODE             = CAST_BASE + "mode",
+            CAST_SLOT             = CAST_BASE + "slot",
+            CAST_ITEM             = CAST_BASE + "item",
+            CAST_COOLDOWN         = CAST_BASE + "cooldown",
+            CAST_HOVER            = CAST_BASE + "hover-item",
+            CAST_INSTANT          = CAST_BASE + "instant-item",
+            CAST_FORMAT_SKILL     = CAST_BASE + "message-mode-format.skill",
+            CAST_FORMAT_SEPARATOR = CAST_BASE + "message-mode-format.separator",
+
+    INTERACT_BASE                = "Interaction",
+            INTERACT_CLICK       = INTERACT_BASE + ".interact-is-right-click",
+            ANIMATION_LEFT_CLICK = INTERACT_BASE + ".animation-is-left-click",
+
+    COMBO_BASE            = "Click Combos.",
+            COMBO_ENABLED = COMBO_BASE + "enabled",
+            COMBO_CUSTOM  = COMBO_BASE + "allow-custom",
+            COMBO_CLICK   = COMBO_BASE + "use-click-",
+            COMBO_SIZE    = COMBO_BASE + "combo-size",
+            COMBO_TIME    = COMBO_BASE + "click-time",
+            COMBO_AUTO    = COMBO_BASE + "auto-assign",
+
+    EXP_BASE = "Experience.",
+
+    WORLD_BASE           = "Worlds.",
+            WORLD_ENABLE = WORLD_BASE + "enable",
+            WORLD_TYPE   = WORLD_BASE + "use-as-enabling",
+            WORLD_LIST   = WORLD_BASE + "worlds",
+
+    WG_SKILLS      = "disable-skills",
+            WG_EXP = "disable-exp";
 
     private final HashMap<String, Double>        yields           = new HashMap<>();
     private final HashMap<String, GroupSettings> groups           = new HashMap<>();
@@ -235,8 +248,21 @@ public class Settings {
     @Setter
     private CombatProtection    combatProtection = new DefaultCombatProtection();
     private boolean             auto;
+    /**
+     * -- GETTER --
+     *  Checks whether the plugin is using SQL Database saving
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             useSql;
     private int                 minutes;
+    /**
+     * -- GETTER --
+     *
+     * @return time in milliseconds to wait before loading SQL data
+     */
+    @Getter
     private int                 sqlDelay;
     /**
      * Retrieves the host IP for the database
@@ -259,7 +285,21 @@ public class Settings {
      */
     @Getter
     private String              sqlDatabase;
+    /**
+     * -- GETTER --
+     *  Retrieves the username for the database credentials
+     *
+     * @return SQL database username
+     */
+    @Getter
     private String              sqlUser;
+    /**
+     * -- GETTER --
+     *  Retrieves the password for the database credentials
+     *
+     * @return SQL database password
+     */
+    @Getter
     private String              sqlPass;
     /**
      * -- GETTER --
@@ -999,40 +1039,6 @@ public class Settings {
         return minutes * 60 * 20;
     }
 
-    /**
-     * Checks whether the plugin is using SQL Database saving
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isUseSql() {
-        return useSql;
-    }
-
-    /**
-     * Retrieves the username for the database credentials
-     *
-     * @return SQL database username
-     */
-    public String getSqlUser() {
-        return sqlUser;
-    }
-
-    /**
-     * Retrieves the password for the database credentials
-     *
-     * @return SQL database password
-     */
-    public String getSqlPass() {
-        return sqlPass;
-    }
-
-    /**
-     * @return time in milliseconds to wait before loading SQL data
-     */
-    public int getSqlDelay() {
-        return sqlDelay;
-    }
-
     private void loadSaveSettings() {
         auto = config.getBoolean(SAVE_AUTO);
         minutes = config.getInt(SAVE_MINS);
@@ -1193,7 +1199,7 @@ public class Settings {
         downScaling = config.getBoolean(GUI_DOWNSCALE);
         forceScaling = config.getBoolean(GUI_FORCE);
         levelBar = config.getString(GUI_LVLBAR);
-        levelText = TextFormatter.colorString(config.getString(GUI_LVLTXT, "Level"));
+        levelText = StringUT.color(config.getString(GUI_LVLTXT, "Level"));
         foodBar = config.getString(GUI_FOOD);
         blockSaturation = config.getBoolean(GUI_SATURATION, true);
         useActionBar = config.getBoolean(GUI_ACTION);
@@ -1259,7 +1265,10 @@ public class Settings {
 
         enabledClicks = new boolean[Click.values().length + 1];
         for (int i = 1; i <= Click.values().length; i++) {
-            final String key = COMBO_CLICK + Click.getById(i).name().toLowerCase().replace('_', '-');
+            Click click = Click.getById(i);
+            if (click == null) continue;
+
+            final String key = COMBO_CLICK + click.name().toLowerCase().replace('_', '-');
             enabledClicks[i] = config.getBoolean(key);
         }
 
@@ -1327,7 +1336,7 @@ public class Settings {
                 for (String line : levelsConfig.getConfig().getList("level-exp")) {
                     levelsExp.add(Integer.parseInt(line));
                 }
-                if (levelsExp.size() < 1) {
+                if (levelsExp.isEmpty()) {
                     throw new IndexOutOfBoundsException();
                 }
                 this.levelsExp = levelsExp;
@@ -1373,11 +1382,11 @@ public class Settings {
             }
 
             if (icon.isList("text")) {
-                List<String> format = TextFormatter.colorStringList(icon.getList("text"));
+                List<String> format = StringUT.color(icon.getList("text"));
                 meta.setDisplayName(format.remove(0));
                 meta.setLore(format);
             } else {
-                meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
+                meta.setDisplayName(StringUT.color(icon.getString("text", "&7Unassigned")));
             }
 
             if (meta instanceof Damageable) {

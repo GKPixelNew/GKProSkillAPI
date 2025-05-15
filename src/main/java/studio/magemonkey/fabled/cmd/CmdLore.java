@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.CommandManager;
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import studio.magemonkey.codex.mccore.commands.CommandManager;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.util.StringUT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public class CmdLore implements IFunction {
                 if (lore == null) lore = new ArrayList<String>();
                 String combined = args[0];
                 for (int i = 1; i < args.length; i++) combined += " " + args[i];
-                lore.add(TextFormatter.colorString(combined));
+                lore.add(StringUT.color(combined));
                 meta.setLore(lore);
                 held.setItemMeta(meta);
             }

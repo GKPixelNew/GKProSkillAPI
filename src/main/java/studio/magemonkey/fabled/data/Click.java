@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.data;
 
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -119,6 +119,6 @@ public enum Click {
      * @return formatted click type name
      */
     public String getName() {
-        return TextFormatter.colorString(Fabled.getLanguage().getMessage("Combo." + name().toLowerCase()).get(0));
+        return StringUT.color(Fabled.getLanguage().getMessage("Combo." + name().toLowerCase()).get(0));
     }
 }

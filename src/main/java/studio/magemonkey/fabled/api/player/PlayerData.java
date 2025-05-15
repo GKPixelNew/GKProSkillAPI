@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import com.sucy.skill.api.classes.RPGClass;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.compat.VersionManager;
+import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.util.EnumUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.*;
@@ -295,7 +299,7 @@ public class PlayerData {
      */
     public HashMap<String, Integer> getAttributes() {
         HashMap<String, Integer> map = new HashMap<>();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
+        for (String key : Fabled.getAttributesManager().getKeys()) {
             map.put(key, getAttribute(key));
         }
         return map;
@@ -417,7 +421,7 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return false;
 
         int max          = fabledAttribute.getMax();
@@ -457,7 +461,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int currentStage = getInvestedAttributeStage(key);
@@ -478,7 +482,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer modifier) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int currentStage  = getInvestedAttributeStage(key);
@@ -501,7 +505,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer from, Integer to) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int     totalCost = 0;
@@ -528,7 +532,7 @@ public class PlayerData {
      */
     public boolean giveAttribute(String key, int amount) {
         key = key.toLowerCase();
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return false;
 
         int max          = fabledAttribute.getMax();
@@ -596,7 +600,7 @@ public class PlayerData {
      * @param update   calculate player stat immediately and apply to him
      */
     public void addAttributeModifier(String key, PlayerAttributeModifier modifier, boolean update) {
-        key = Fabled.getAttributeManager().normalize(key);
+        key = Fabled.getAttributesManager().normalize(key);
         List<PlayerAttributeModifier> modifiers = this.getAttributeModifiers(key);
         modifiers.add(modifier);
         this.attributesModifiers.put(key, modifiers);
@@ -758,7 +762,7 @@ public class PlayerData {
             }
         }
 
-        final IAttributeManager manager = Fabled.getAttributeManager();
+        final IAttributeManager manager = Fabled.getAttributesManager();
         if (manager == null) {
             return defaultValue;
         }
@@ -810,7 +814,7 @@ public class PlayerData {
      * @return the modified value
      */
     public double scaleDynamic(EffectComponent component, String key, double value) {
-        final IAttributeManager manager = Fabled.getAttributeManager();
+        final IAttributeManager manager = Fabled.getAttributesManager();
         if (manager == null) {
             return value;
         }
@@ -850,7 +854,7 @@ public class PlayerData {
                                     true,
                                     FilterType.COLOR, RPGFilter.POINTS.setReplacement(attribPoints + ""),
                                     Filter.PLAYER.setReplacement(player.getName())
-                            ).get(0), Fabled.getAttributeManager().getAttributes()
+                            ).get(0), Fabled.getAttributesManager().getAttributes()
                     );
             return true;
         }
@@ -1101,6 +1105,7 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillUpgradeEvent event = new PlayerSkillUpgradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUpgradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1147,6 +1152,7 @@ public class PlayerData {
             // Unlock event
             if (skill.getLevel() == 1) {
                 Bukkit.getPluginManager().callEvent(new PlayerSkillUnlockEvent(this, skill));
+                Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUnlockEvent(this, skill));
                 this.autoLevel();
             }
         }
@@ -1190,6 +1196,8 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillDowngradeEvent event = new PlayerSkillDowngradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerSkillDowngradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1490,8 +1498,8 @@ public class PlayerData {
                     if (reset) {
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
+                        resetAttribs(true);
                     }
-                    resetAttribs(true);
                 }
             }
         } else {
@@ -1613,7 +1621,7 @@ public class PlayerData {
                     ((PassiveSkill) ps.getData()).stopEffects(getPlayer());
                 }
 
-                points += ps.getInvestedCost();
+                if (ps != null) points += ps.getInvestedCost();
                 comboData.removeSkill(skill);
             }
             if (Fabled.getSettings().isSharedSkillPoints())
@@ -1624,6 +1632,10 @@ public class PlayerData {
 
             // Call the event
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(playerClass, data, null));
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(
+                            playerClass),
+                            new RPGClass(data), null));
         }
 
         // Restore default class if applicable
@@ -1735,6 +1747,10 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(
+                            current),
+                            previous == null ? null : new RPGClass(previous), new RPGClass(current.getData())));
             if (fabledClass.getParent() == null || isResetting)
                 skillPoints += fabledClass.getGroupSettings().getStartingPoints();
             current.givePoints(skillPoints);
@@ -1775,10 +1791,12 @@ public class PlayerData {
      *
      * @param amount  percent of experience to lose
      * @param percent whether to take the amount as a percentage
+     * @param changeLevel whether to change the level of the player
+     * @param showMessage whether to show the configured message if enabled
      */
-    public void loseExp(double amount, boolean percent, boolean changeLevel) {
+    public void loseExp(double amount, boolean percent, boolean changeLevel, boolean showMessage) {
         for (PlayerClass playerClass : classes.values()) {
-            playerClass.loseExp(amount, percent, changeLevel);
+            playerClass.loseExp(amount, percent, changeLevel, showMessage);
         }
     }
 
@@ -1790,6 +1808,19 @@ public class PlayerData {
             double penalty = playerClass.getData().getGroupSettings().getDeathPenalty();
             if (penalty > 0) {
                 playerClass.loseExp(penalty);
+            }
+        }
+    }
+
+    public void setExp(double amount, ExpSource expSource, boolean showMessage) {
+        for (PlayerClass playerClass : classes.values()) {
+            // We want to use lose/giveExp to trigger the event and change their level,
+            // so we need to calculate the difference
+            double diff = amount - playerClass.getExp();
+            if (diff > 0) {
+                playerClass.giveExp(diff, expSource, showMessage);
+            } else {
+                playerClass.loseExp(-diff, false, true, showMessage);
             }
         }
     }
@@ -1824,8 +1855,23 @@ public class PlayerData {
      */
     public void loseLevels(int amount) {
         classes.values().stream()
-                .filter(playerClass -> amount > 0)
                 .forEach(playerClass -> playerClass.loseLevels(amount));
+    }
+
+    public boolean setLevel(int amount, ExpSource source) {
+        boolean success = true;
+
+        for (PlayerClass playerClass : classes.values()) {
+            int diff = amount - playerClass.getLevel();
+
+            if (diff > 0) {
+                success = success && giveLevels(diff, source);
+            } else if (diff < 0) {
+                loseLevels(-diff);
+            }
+        }
+
+        return success;
     }
 
     public int getPoints() {
@@ -1926,7 +1972,8 @@ public class PlayerData {
 
         // Update health if it's been changed
         if (oldMaxHealth != this.maxHealth
-                || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
+                || player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue()
+                != this.maxHealth) {
             this.updateHealth(player);
         } else {
             // Health scaling is available starting with 1.6.2
@@ -1939,15 +1986,138 @@ public class PlayerData {
         }
 
         // Others stats
-        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
-        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
-        this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
+        // Min and Max Values determined by the following: https://minecraft.wiki/w/Attribute
         this.updateMCAttribute(player,
-                Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                VersionManager.getNms().getAttribute("ATTACK_SPEED"),
+                AttributeManager.ATTACK_SPEED,
+                0,
+                1024);
+        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ARMOR"), AttributeManager.ARMOR, 0, 30);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("LUCK"),
+                AttributeManager.LUCK,
+                -1024,
+                1024);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("KNOCKBACK_RESISTANCE"),
                 AttributeManager.KNOCKBACK_RESIST,
                 0,
                 1.0);
-        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("ARMOR_TOUGHNESS"),
+                AttributeManager.ARMOR_TOUGHNESS,
+                0,
+                20);
+        // Initialize 1.21+ attributes only if version is 1.21+
+        if (Version.CURRENT.isAtLeast(Version.V1_21_R1)) {
+            // Generic stats 1.21+
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("ATTACK_DAMAGE"),
+                    AttributeManager.ATTACK_DAMAGE,
+                    0.0f,
+                    2048.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("ATTACK_KNOCKBACK"),
+                    AttributeManager.ATTACK_KNOCKBACK,
+                    0.0f,
+                    5.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("MAX_ABSORPTION"),
+                    AttributeManager.ABSORPTION,
+                    0.0f,
+                    2048.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SCALE"),
+                    AttributeManager.SCALE,
+                    0.0625f,
+                    16.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("STEP_HEIGHT"),
+                    AttributeManager.STEP_HEIGHT,
+                    0.0f,
+                    10.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("JUMP_STRENGTH"),
+                    AttributeManager.JUMP_STRENGTH,
+                    0.0f,
+                    32.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("GRAVITY"),
+                    AttributeManager.GRAVITY,
+                    -1.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SAFE_FALL_DISTANCE"),
+                    AttributeManager.SAFE_FALL_DISTANCE,
+                    -1024.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("FALL_DAMAGE_MULTIPLIER"),
+                    AttributeManager.FALL_DAMAGE_MULTIPLIER,
+                    0.0f,
+                    100.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("BURNING_TIME"),
+                    AttributeManager.BURNING_TIME,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("EXPLOSION_KNOCKBACK_RESISTANCE"),
+                    AttributeManager.EXPLOSION_KNOCKBACK_RESISTANCE,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("MOVEMENT_EFFICIENCY"),
+                    AttributeManager.MOVEMENT_EFFICIENCY,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("OXYGEN_BONUS"),
+                    AttributeManager.OXYGEN_BONUS,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("WATER_MOVEMENT_EFFICIENCY"),
+                    AttributeManager.WATER_MOVEMENT_EFFICIENCY,
+                    0.0f,
+                    1.0f);
+            // Player only stats 1.21+
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("BLOCK_INTERACTION_RANGE"),
+                    AttributeManager.BLOCK_INTERACTION_RANGE,
+                    0.0f,
+                    64.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("ENTITY_INTERACTION_RANGE"),
+                    AttributeManager.ENTITY_INTERACTION_RANGE,
+                    0.0f,
+                    64.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("BLOCK_BREAK_SPEED"),
+                    AttributeManager.BLOCK_BREAK_SPEED,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("MINING_EFFICIENCY"),
+                    AttributeManager.MINING_EFFICIENCY,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SNEAKING_SPEED"),
+                    AttributeManager.SNEAKING_SPEED,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SUBMERGED_MINING_SPEED"),
+                    AttributeManager.SUBMERGED_MINING_SPEED,
+                    0.0f,
+                    20.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SWEEPING_DAMAGE_RATIO"),
+                    AttributeManager.SWEEPING_DAMAGE_RATIO,
+                    0.0f,
+                    1.0f);
+        }
     }
 
     /**
@@ -1979,7 +2149,7 @@ public class PlayerData {
             this.maxHealth = Fabled.getSettings().getDefaultHealth();
         }
 
-        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        final AttributeInstance attribute = player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH"));
         Objects.requireNonNull(attribute).setBaseValue(this.maxHealth);
 
         // Health scaling is available starting with 1.6.2
@@ -1997,11 +2167,21 @@ public class PlayerData {
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
         try {
             AttributeInstance instance = player.getAttribute(attribute);
-            double            def      = instance.getDefaultValue();
-            double            modified = this.scaleStat(attribKey, def, min, max);
+            if (instance == null) return;
+            double def = instance.getDefaultValue();
+            if (attribKey.equalsIgnoreCase(AttributeManager.ATTACK_DAMAGE)) {
+                // The player's default attack damage is *actually* 1 instead of the attribute's default value of 2
+                def = 1.0;
+            }
+            double modified = this.scaleStat(attribKey, def, min, max);
             instance.setBaseValue(/*def + */modified);
         } catch (Exception e) {
-            Logger.log("Failed to update attribute " + attribute.name() + " for " + player.getName());
+            if (e.getClass().getSimpleName().equals("UnimplementedOperationException")) return;
+            Logger.log(
+                    "Failed to update attribute " + (attribute == null ? "null" : EnumUT.getName(attribute)) + " for "
+                            + player.getName() + ": "
+                            + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -2669,6 +2849,7 @@ public class PlayerData {
      * @param player player to set up for
      */
     public void init(Player player) {
+        if (player == null) return;
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             return;
         }

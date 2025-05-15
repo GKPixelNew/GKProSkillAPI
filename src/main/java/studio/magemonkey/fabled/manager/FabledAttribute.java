@@ -1,5 +1,12 @@
 package studio.magemonkey.fabled.manager;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
@@ -11,13 +18,6 @@ import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.gui.tool.IconHolder;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
-import lombok.Getter;
-import lombok.Setter;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,12 +47,11 @@ public class FabledAttribute implements IconHolder {
     private String    display;
     private ItemStack icon;
     /**
-     * --- GETTER ---
+     * -- GETTER --
      * Retrieves the max amount the attribute can be raised to
      *
      * @return max attribute amount
-     *
-     * --- SETTER ---
+     * -- SETTER --
      * Sets the max level for the attribute
      */
     @Getter
@@ -264,7 +263,7 @@ public class FabledAttribute implements IconHolder {
                 values[i++] = new AttributeValue(formula);
             }
             target.put(lower, values);
-            Fabled.getAttributeManager().addByComponent(lower, this);
+            Fabled.getAttributesManager().addByComponent(lower, this);
         }
     }
 
@@ -281,7 +280,7 @@ public class FabledAttribute implements IconHolder {
                     key,
                     new Formula(data.getString(key, "v"), new CustomValue("v"), new CustomValue("a")));
 
-            Fabled.getAttributeManager().addByStat(key, this);
+            Fabled.getAttributesManager().addByStat(key, this);
         }
     }
 }

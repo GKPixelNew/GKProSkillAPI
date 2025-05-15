@@ -1,15 +1,14 @@
 package studio.magemonkey.fabled.hook;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import org.junit.jupiter.api.Disabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.testutil.MockedTest;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockito.MockedStatic;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.testutil.MockedTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,13 +46,13 @@ public class PlaceholderAPIHookTest extends MockedTest {
 
     @Test
     public void account1MainClass() {
-        String placeholder = hook.onRequest(player, "fabled_player_account_1_mainclass");
+        String placeholder = hook.onRequest(player, "fabled_accountinfo_1_class");
         assertEquals("Honor Guard", placeholder);
     }
 
     @Test
     public void account1Level() {
-        String placeholder = hook.onRequest(player, "fabled_player_account_1_level");
+        String placeholder = hook.onRequest(player, "fabled_accountinfo_1_level");
         assertEquals("1", placeholder);
     }
 }

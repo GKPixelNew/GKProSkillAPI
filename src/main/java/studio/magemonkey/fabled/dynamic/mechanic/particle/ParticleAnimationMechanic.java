@@ -102,8 +102,8 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final double   cos;
         private final Settings settings;
         private final double   sin;
-        private final boolean withRotation;
-        private       int     life;
+        private final boolean  withRotation;
+        private       int      life;
 
         ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings, Skill skill) {
             this.targets = targets;

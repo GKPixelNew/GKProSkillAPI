@@ -25,14 +25,14 @@ if is_dev:
     version = '-'.join(split)
 if not is_dev:
     url = re.sub(
-        'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/studiomagemonkey-\d+',
+        r'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/studiomagemonkey-\d+',
         'https://s01.oss.sonatype.org/service/local/repositories/releases/content',
         url)
 embed = {
     'username': 'Dev Mage',
     'author': {
         'name': 'New ' + ('Dev ' if is_dev else '') + 'Build Available!',
-        'url': 'https://github.com/promcteam/' + name
+        'url': 'https://github.com/magemonkeystudio/' + name
     },
     'image': {
         'url': 'https://fabled.magemonkey.studio/' + ('dev_build.gif' if is_dev else 'release_build.gif')

@@ -69,10 +69,11 @@ public class BlockMechanic extends MechanicComponent {
     private static final String FILL = "fill";
     private static final String BLOCK_DAMAGE_TYPE = "block_damage_type";
     private static final String BLOCK_DAMAGE = "block_damage";
+    private static final String PERMANENT = "permanent";
     private static final Random random = new Random();
 
-    private static final HashMap<Location, Integer> pending = new HashMap<>();
-    private static final HashMap<Location, BlockState> original = new HashMap<>();
+    private static final Map<Location, Integer> pending = new HashMap<>();
+    private static final Map<Location, BlockState> original = new HashMap<>();
 
     private final Map<Integer, List<RevertTask>> tasks = new HashMap<>();
 
@@ -213,15 +214,6 @@ public class BlockMechanic extends MechanicComponent {
         return blocks;
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
@@ -248,10 +240,12 @@ public class BlockMechanic extends MechanicComponent {
                 Logger.invalid("Invalid block type: " + settings.getString(BLOCK, "ICE"));
             }
         }
-        int ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        int     ticks     = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        byte    data      = (byte) settings.getInt(DATA, 0);
+        boolean permanent = settings.getBool(PERMANENT, false);
 
         // Change blocks
-        ArrayList<Location> states = new ArrayList<>();
+        List<Location> states = new ArrayList<>();
         for (Block b : getAffectedBlocks(caster, level, targets)) {
             BlockState state = b.getState();
             state.setType(block.get(block.size() > 1 ? random.nextInt(block.size()) : 0));
@@ -264,11 +258,16 @@ public class BlockMechanic extends MechanicComponent {
             }
             // Increment the counter
             Location loc = b.getLocation();
-            if (pending.containsKey(loc)) {
-                pending.put(loc, pending.get(loc) + 1);
+            if (permanent) {
+                pending.remove(loc);
+                original.remove(loc);
             } else {
-                pending.put(loc, 1);
-                original.put(loc, b.getState());
+                if (isPending(loc)) {
+                    pending.put(loc, pending.get(loc) + 1);
+                } else {
+                    pending.put(loc, 1);
+                    original.put(loc, b.getState());
+                }
             }
 
             states.add(b.getLocation());
@@ -280,10 +279,12 @@ public class BlockMechanic extends MechanicComponent {
             }
         }
 
-        // Revert after duration
-        final RevertTask task = new RevertTask(caster, states);
-        task.runTaskLater(Fabled.inst(), ticks);
-        tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
+        if (!permanent) {
+            // Revert after duration
+            final RevertTask task = new RevertTask(caster, states);
+            task.runTaskLater(Fabled.inst(), ticks);
+            tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
+        }
 
         return true;
     }
@@ -319,10 +320,10 @@ public class BlockMechanic extends MechanicComponent {
      * Reverts block changes after a duration
      */
     private class RevertTask extends BukkitRunnable {
-        private final ArrayList<Location> locs;
-        private final LivingEntity        caster;
+        private final List<Location> locs;
+        private final LivingEntity   caster;
 
-        RevertTask(final LivingEntity caster, final ArrayList<Location> locs) {
+        RevertTask(final LivingEntity caster, final List<Location> locs) {
             this.caster = caster;
             this.locs = locs;
         }

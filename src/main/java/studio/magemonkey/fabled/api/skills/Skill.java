@@ -32,19 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -53,13 +40,14 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import org.bukkit.util.Vector;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.registry.damage.DamageRegistry;
+import studio.magemonkey.codex.registry.DamageRegistry;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.ReadOnlySettings;
 import studio.magemonkey.fabled.api.Settings;
@@ -100,14 +88,15 @@ public abstract class Skill implements IconHolder {
     private static final String            MSG              = "msg";
     private static final String            PERM             = "needs-permission";
     private static final String            COOLDOWN_MESSAGE = "cooldown-message";
+    private static final String            INCOMPATIBLE     = "incompatible";
     private static final String            DESC             = "desc";
     private static final String            ATTR             = "attributes";
     private static final String            COMBO            = "combo";
     /**
      * -- GETTER --
-     *  Checks whether the current damage event is due to
-     *  skills damaging an entity. This method is used by the API
-     *  and shouldn't be used by other plugins.
+     * Checks whether the current damage event is due to
+     * skills damaging an entity. This method is used by the API
+     * and shouldn't be used by other plugins.
      *
      * @return true if caused by a skill, false otherwise
      */
@@ -123,7 +112,7 @@ public abstract class Skill implements IconHolder {
     private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
     /**
      * -- GETTER --
-     *  Retrieves the configuration key for the skill
+     * Retrieves the configuration key for the skill
      *
      * @return configuration key for the skill
      */
@@ -132,7 +121,7 @@ public abstract class Skill implements IconHolder {
     private              List<String>      iconLore;
     /**
      * -- GETTER --
-     *  Retrieves the indicator representing the skill for menus
+     * Retrieves the indicator representing the skill for menus
      *
      * @return indicator for the skill
      */
@@ -140,7 +129,7 @@ public abstract class Skill implements IconHolder {
     private              ItemStack         indicator;
     /**
      * -- GETTER --
-     *  Retrieves the name of the skill
+     * Retrieves the name of the skill
      *
      * @return skill name
      */
@@ -148,7 +137,7 @@ public abstract class Skill implements IconHolder {
     private              String            name;
     /**
      * -- GETTER --
-     *  Retrieves the descriptive type of the skill
+     * Retrieves the descriptive type of the skill
      *
      * @return descriptive type of the skill
      */
@@ -156,7 +145,7 @@ public abstract class Skill implements IconHolder {
     private              String            type;
     /**
      * -- GETTER --
-     *  Retrieves the message for the skill to display when cast.
+     * Retrieves the message for the skill to display when cast.
      *
      * @return cast message of the skill
      */
@@ -164,7 +153,7 @@ public abstract class Skill implements IconHolder {
     private              String            message;
     /**
      * -- GETTER --
-     *  Retrieves the skill required to be upgraded before this one
+     * Retrieves the skill required to be upgraded before this one
      *
      * @return required skill
      */
@@ -172,7 +161,7 @@ public abstract class Skill implements IconHolder {
     private              String            skillReq;
     /**
      * -- GETTER --
-     *  Retrieves the max level the skill can reach
+     * Retrieves the max level the skill can reach
      *
      * @return max skill level
      */
@@ -180,8 +169,8 @@ public abstract class Skill implements IconHolder {
     private              int               maxLevel;
     /**
      * -- GETTER --
-     *  Retrieves the level of the required skill needed to be obtained
-     *  before this one can be upgraded.
+     * Retrieves the level of the required skill needed to be obtained
+     * before this one can be upgraded.
      *
      * @return required skill level
      */
@@ -189,14 +178,14 @@ public abstract class Skill implements IconHolder {
     private              int               skillReqLevel;
     private              boolean           needsPermission;
     private              boolean           cooldownMessage;
+    private              List<String>      incompatibleSkills;
     /**
      * -- GETTER --
-     *  Retrieves the ID of the skill's combo
+     * Retrieves the ID of the skill's combo
      *
      * @return combo ID
      * -- SETTER --
-     *  Sets the click combo for the skill
-     *
+     * Sets the click combo for the skill
      * @param combo new combo
      */
     @Setter
@@ -412,7 +401,7 @@ public abstract class Skill implements IconHolder {
      * @return true if requires, false otherwise
      */
     private boolean doesRequireAttributes(int level) {
-        Set<String> attributes = Fabled.getAttributeManager().getKeys();
+        Set<String> attributes = Fabled.getAttributesManager().getKeys();
         for (String key : attributes) {
             if (settings.getAttr(key, level, 0) != 0) return true;
         }
@@ -520,7 +509,7 @@ public abstract class Skill implements IconHolder {
     }
 
     public boolean isCompatible(final PlayerData playerData) {
-        for (final String skillName : settings.getStringList(SkillAttribute.INCOMPATIBLE)) {
+        for (final String skillName : incompatibleSkills) {
             final PlayerSkill skill = playerData.getSkill(skillName);
             if (skill != null && skill.getLevel() > 0) {
                 return false;
@@ -539,7 +528,7 @@ public abstract class Skill implements IconHolder {
     }
 
     public boolean hasEnoughAttributes(final PlayerData playerData) {
-        Set<String> attributes = Fabled.getAttributeManager().getKeys();
+        Set<String> attributes = Fabled.getAttributesManager().getKeys();
         for (String attr : attributes) {
             if (!checkSingleAttribute(playerData, attr)) return false;
         }
@@ -594,7 +583,7 @@ public abstract class Skill implements IconHolder {
         final String        skillReq             = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
         final String        attrReq              = hasEnoughAttributes(skillData.getPlayerData()) ? MET : NOT_MET;
         Map<String, String> attributeSpecificReq = new HashMap<>();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
+        for (String key : Fabled.getAttributesManager().getKeys()) {
             attributeSpecificReq.put(key, checkSingleAttribute(skillData.getPlayerData(), key) ? MET : NOT_MET);
         }
 
@@ -777,7 +766,7 @@ public abstract class Skill implements IconHolder {
      * @param classification type of damage to deal
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification) {
-        damage(target, damage, source, classification, true);
+        damage(target, damage, source, classification, true, true);
     }
 
     /**
@@ -788,13 +777,21 @@ public abstract class Skill implements IconHolder {
      * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
      * @param knockback      whether the damage should apply knockback
+     * @param ignoreDivinity whether the skill's damage should use divinity's overrides
      */
     public void damage(LivingEntity target,
                        double damage,
                        LivingEntity source,
                        String classification,
-                       boolean knockback) {
-        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.CUSTOM);
+                       boolean knockback,
+                       boolean ignoreDivinity) {
+        damage(target,
+                damage,
+                source,
+                classification,
+                knockback,
+                ignoreDivinity,
+                EntityDamageEvent.DamageCause.CUSTOM);
     }
 
     /**
@@ -805,6 +802,7 @@ public abstract class Skill implements IconHolder {
      * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
      * @param knockback      whether the damage should apply knockback
+     * @param ignoreDivinity whether the skill's damage should use divinity's overrides
      * @param cause          the cause of the damage, might affect death messages
      */
     public void damage(LivingEntity target,
@@ -812,6 +810,7 @@ public abstract class Skill implements IconHolder {
                        LivingEntity source,
                        String classification,
                        boolean knockback,
+                       boolean ignoreDivinity,
                        EntityDamageEvent.DamageCause cause) {
         if (target instanceof TempEntity) {
             return;
@@ -825,7 +824,8 @@ public abstract class Skill implements IconHolder {
             return;
         }
 
-        SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
+        SkillDamageEvent event =
+                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -877,7 +877,7 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
-                    target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+                    target.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue()), 0));
         }
     }
 
@@ -902,6 +902,7 @@ public abstract class Skill implements IconHolder {
         config.set(REQLVL, skillReqLevel);
         config.set(PERM, needsPermission);
         config.set(COOLDOWN_MESSAGE, cooldownMessage);
+        config.set(INCOMPATIBLE, incompatibleSkills);
         if (combo >= 0 && canCast())
             config.set(COMBO, Fabled.getComboManager().getSaveString(combo));
         settings.save(config.createSection(ATTR));
@@ -933,15 +934,16 @@ public abstract class Skill implements IconHolder {
      */
     public void load(DataSection config) {
         name = config.getString(NAME, name);
-        type = TextFormatter.colorString(config.getString(TYPE, name));
+        type = StringUT.color(config.getString(TYPE, name));
         indicator = Data.parseIcon(config);
         maxLevel = config.getInt(MAX, maxLevel);
         skillReq = config.getString(REQ);
         if (skillReq == null || skillReq.isEmpty()) skillReq = null;
         skillReqLevel = config.getInt(REQLVL, skillReqLevel);
-        message = TextFormatter.colorString(config.getString(MSG, message));
+        message = StringUT.color(config.getString(MSG, message));
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
         cooldownMessage = config.getBoolean(COOLDOWN_MESSAGE, true);
+        incompatibleSkills = config.getList(INCOMPATIBLE, new ArrayList<>());
         combo = Fabled.getComboManager().parseCombo(config.getString(COMBO));
 
         if (config.isList(DESC)) {
@@ -949,7 +951,7 @@ public abstract class Skill implements IconHolder {
             description.addAll(config.getList(DESC));
         }
         if (config.isList(LAYOUT)) {
-            iconLore = TextFormatter.colorStringList(config.getList(LAYOUT));
+            iconLore = StringUT.color(config.getList(LAYOUT));
         }
 
         settings.load(config.getSection(ATTR));

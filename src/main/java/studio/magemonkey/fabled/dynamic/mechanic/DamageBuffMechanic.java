@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.Buff;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.BuffType;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
@@ -47,18 +47,9 @@ public class DamageBuffMechanic extends MechanicComponent {
         return "damage buff";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
@@ -74,6 +65,6 @@ public class DamageBuffMechanic extends MechanicComponent {
                     new Buff(this.skill.getName(), value, percent),
                     ticks);
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }

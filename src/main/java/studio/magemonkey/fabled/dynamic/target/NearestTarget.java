@@ -50,9 +50,6 @@ import java.util.function.Supplier;
 public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
@@ -119,7 +116,7 @@ public class NearestTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
+            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
@@ -178,7 +175,7 @@ public class NearestTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
+            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }
@@ -188,10 +185,10 @@ public class NearestTarget extends TargetComponent {
         return "nearest";
     }
 
-    private static class DistanceComparator implements Comparator<LivingEntity> {
+    public static class DistanceComparator implements Comparator<LivingEntity> {
         private final Location loc;
 
-        private DistanceComparator(final Location loc) {
+        public DistanceComparator(final Location loc) {
             this.loc = loc;
         }
 

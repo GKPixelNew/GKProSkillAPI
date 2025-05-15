@@ -88,7 +88,8 @@ public class ParticleImage implements IParticleEffect {
             Location location = loc.clone().add(point.x, point.y, point.z);
             for (Player player : players) {
                 if (player.getLocation().distance(location) > view) continue;
-                player.spawnParticle(Particle.DUST,
+                ParticleHelper.spawnParticle(player,
+                        Particle.DUST,
                         location,
                         1,
                         0,

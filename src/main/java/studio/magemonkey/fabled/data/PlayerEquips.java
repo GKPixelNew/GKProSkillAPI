@@ -27,6 +27,11 @@
 package studio.magemonkey.fabled.data;
 
 import com.google.common.base.Objects;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.Operation;
@@ -34,11 +39,6 @@ import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -329,13 +329,13 @@ public class PlayerEquips {
 
                     // Attribute requirements
                     if (attributes && !done) {
-                        for (String attr : Fabled.getAttributeManager().getLookupKeys()) {
+                        for (String attr : Fabled.getAttributesManager().getLookupKeys()) {
                             String text = settings.getAttrReqText(attr);
                             if (lower.startsWith(text)) {
                                 if (attrReq == null)
                                     attrReq = new HashMap<>();
 
-                                String normalized = Fabled.getAttributeManager().normalize(attr);
+                                String normalized = Fabled.getAttributesManager().normalize(attr);
                                 attrReq.put(normalized, NumberParser.parseInt(lower.substring(text.length())));
                                 break;
                             }
@@ -345,7 +345,7 @@ public class PlayerEquips {
                                 if (attribs == null)
                                     attribs = new HashMap<>();
 
-                                String normalized = Fabled.getAttributeManager().normalize(attr);
+                                String normalized = Fabled.getAttributesManager().normalize(attr);
                                 int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
                                 int extra =
                                         NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));

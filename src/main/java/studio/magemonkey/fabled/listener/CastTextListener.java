@@ -16,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
 import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
@@ -27,6 +27,8 @@ import studio.magemonkey.fabled.cast.CastMode;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
 import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -60,7 +62,7 @@ public class CastTextListener extends FabledListener {
     }
 
     private void init(Player player) {
-        Inventory top = InventoryUtil.getTopInventory(player.getOpenInventory());
+        Inventory top = VersionManager.getCompat().getTopInventory(player);
         if (top != null && top.getHolder() instanceof SkillHandler) player.closeInventory();
         Fabled.getData(player).getTextCastingData().validate();
     }
@@ -116,8 +118,8 @@ public class CastTextListener extends FabledListener {
         Player player = ((Player) event.getWhoClicked());
         if (!isWorldEnabled(player)) return;
 
-        Inventory topInventory     = InventoryUtil.getTopInventory(event);
-        Inventory bottomInventory  = InventoryUtil.getBottomInventory(event);
+        Inventory topInventory     = VersionManager.getCompat().getTopInventory(event);
+        Inventory bottomInventory  = VersionManager.getCompat().getBottomInventory(event);
         Inventory clickedInventory = event.getClickedInventory();
 
         if (topInventory.getHolder() instanceof SkillHandler) {
@@ -199,6 +201,9 @@ public class CastTextListener extends FabledListener {
                 return;
             }
             String message = playerData.getTextCastingData().getMessage();
+            if (PluginChecker.isPlaceholderAPIActive()) {
+                message = PlaceholderAPIHook.format(message, player);
+            }
             switch (castMode) {
                 case ACTION_BAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
                 case TITLE -> player.sendTitle(message, "", 0, 20, 0);

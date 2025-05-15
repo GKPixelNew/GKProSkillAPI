@@ -31,6 +31,7 @@ import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.fabled.api.skills.Skill;
 
 /**
@@ -40,15 +41,32 @@ import studio.magemonkey.fabled.api.skills.Skill;
 public class SkillDamageEvent extends DamageEvent {
     private static final HandlerList  handlers  = new HandlerList();
     @Getter
+    @Nullable
     private final        String       classification;
     /**
      * Returns skill used to deal the damage
      */
     @Getter
     private final        Skill        skill;
+    /**
+     * -- GETTER --
+     *  Retrieves the amount of damage dealt
+     *
+     * @return amount of damage dealt
+     * -- SETTER --
+     *  Sets the amount of damage dealt
+     *
+     * @param damage amount of damage dealt
+     */
+    @Setter
+    @Getter
+    private              double       damage;
     @Getter
     @Setter
     private              boolean      knockback;
+    @Getter
+    private              boolean      ignoreDivinity;
+    private              boolean      cancelled = false;
 
     /**
      * Initializes a new event
@@ -57,14 +75,37 @@ public class SkillDamageEvent extends DamageEvent {
      * @param damager        entity dealing the damage
      * @param target         entity receiving the damage
      * @param damage         the amount of damage dealt
-     * @param classification
+     * @param classification the damage type to use
+     * @param knockback      whether to apply knockback to the target
+     * @param ignoreDivinity whether to ignore divinity
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
-                            String classification, boolean knockback) {
+                            @Nullable String classification, boolean knockback, boolean ignoreDivinity) {
         super(damager, target, damage, false);
         this.skill = skill;
         this.classification = classification;
         this.knockback = knockback;
+        this.ignoreDivinity = ignoreDivinity;
+    }
+
+    /**
+     * Checks whether the event is cancelled
+     *
+     * @return true if cancelled, false otherwise
+     */
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * Sets the cancelled state of the event
+     *
+     * @param cancelled the cancelled state of the event
+     */
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     /**

@@ -25,6 +25,7 @@
 package studio.magemonkey.fabled;
 
 import com.sucy.skill.SkillAPI;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -33,9 +34,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -44,8 +43,10 @@ import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.codex.migration.MigrationUtil;
-import studio.magemonkey.codex.registry.attribute.AttributeProvider;
-import studio.magemonkey.codex.registry.attribute.AttributeRegistry;
+import studio.magemonkey.codex.registry.AttributeRegistry;
+import studio.magemonkey.codex.registry.BuffRegistry;
+import studio.magemonkey.codex.registry.provider.AttributeProvider;
+import studio.magemonkey.codex.registry.provider.BuffProvider;
 import studio.magemonkey.fabled.api.FabledAttributeProvider;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -55,11 +56,13 @@ import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.data.PlayerStats;
 import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.data.io.ConfigIO;
 import studio.magemonkey.fabled.data.io.IOManager;
-import studio.magemonkey.fabled.data.io.SQLIO;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
+import studio.magemonkey.fabled.data.sql.SQLManager;
 import studio.magemonkey.fabled.dynamic.DynamicClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
@@ -71,6 +74,7 @@ import studio.magemonkey.fabled.hook.mimic.MimicHook;
 import studio.magemonkey.fabled.listener.*;
 import studio.magemonkey.fabled.listener.attribute.AttributeListener;
 import studio.magemonkey.fabled.manager.*;
+import studio.magemonkey.fabled.shield.ShieldManager;
 import studio.magemonkey.fabled.task.CooldownTask;
 import studio.magemonkey.fabled.task.GUITask;
 import studio.magemonkey.fabled.task.ManaTask;
@@ -89,10 +93,9 @@ public class Fabled extends SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
-    private final Map<String, Skill>          skills  = new HashMap<>();
-    private final Map<String, FabledClass>    classes = new HashMap<>();
-    private final Map<String, PlayerAccounts> players = new HashMap<>();
-    private final List<String>                groups  = new ArrayList<>();
+    private final Map<String, Skill>       skills  = new HashMap<>();
+    private final Map<String, FabledClass> classes = new HashMap<>();
+    private final List<String>             groups  = new ArrayList<>();
 
     private final List<FabledListener> listeners = new ArrayList<>();
 
@@ -105,6 +108,10 @@ public class Fabled extends SkillAPI {
     private RegistrationManager registrationManager;
     private IAttributeManager   attributeManager = new NullAttributeManager();
     private AttributeProvider   fabledProvider   = null;
+    private BuffProvider        buffManager      = null;
+
+    @Getter
+    private ShieldManager shieldManager;
 
     private MainThread mainThread;
     private BukkitTask manaTask;
@@ -153,6 +160,15 @@ public class Fabled extends SkillAPI {
     }
 
     /**
+     * Retrieves the IO manager for Fabled
+     *
+     * @return Fabled IO manager
+     */
+    public static IOManager getIO() {
+        return inst().io;
+    }
+
+    /**
      * Retrieves the language file data for Fabled
      *
      * @return Fabled language file data
@@ -175,7 +191,7 @@ public class Fabled extends SkillAPI {
      *
      * @return attribute manager
      */
-    public static IAttributeManager getAttributeManager() {
+    public static IAttributeManager getAttributesManager() {
         return inst().attributeManager;
     }
 
@@ -204,7 +220,7 @@ public class Fabled extends SkillAPI {
     }
 
     /**
-     * Checks whether a skill is registered.
+     * Checks whether a skill is registered
      *
      * @param name name of the skill
      * @return true if registered, false otherwise
@@ -317,63 +333,6 @@ public class Fabled extends SkillAPI {
     }
 
     /**
-     * Loads the data for a player when they join the server. This is handled
-     * by the API and doesn't need to be used elsewhere unless you want to
-     * load a player's data without them logging on. This should be run
-     * asynchronously since it is loading configuration files.
-     *
-     * @param player player to load the data for
-     */
-    public static PlayerAccounts loadPlayerAccounts(OfflinePlayer player) {
-        if (player == null) {
-            return null;
-        }
-
-        // Already loaded for some reason, no need to load again
-        String id = player.getUniqueId().toString().toLowerCase();
-        if (inst().players.containsKey(id)) {
-            return singleton.players.get(id);
-        }
-
-        // Load the data
-        return doLoad(player);
-    }
-
-    private static PlayerAccounts doLoad(OfflinePlayer player) {
-        // Load the data
-        PlayerAccounts data = singleton.io.loadData(player);
-        singleton.players.put(player.getUniqueId().toString(), data);
-        return data;
-    }
-
-    /**
-     * Used to fake player data until SQL data is loaded when both SQL and the SQL delay are enabled.
-     * This should not be used by other plugins. If the player data already exists, this does nothing.
-     *
-     * @param player player to fake data for
-     */
-    public static void initFakeData(final OfflinePlayer player) {
-        inst().players.computeIfAbsent(player.getUniqueId().toString(), id -> new PlayerAccounts(player));
-    }
-
-    /**
-     * Do not use this method outside onJoin. This will delete any progress a player
-     * has made since joining.
-     */
-    public static void reloadPlayerData(final Player player) {
-        doLoad(player);
-    }
-
-    /**
-     * Saves all player data to the configs. This
-     * should be called asynchronously to avoid problems
-     * with the main server loop.
-     */
-    public static void saveData() {
-        inst().io.saveAll();
-    }
-
-    /**
      * Checks whether Fabled currently has loaded data for the
      * given player. This returning false doesn't necessarily mean the
      * player doesn't have any data at all, just not data that is
@@ -383,19 +342,7 @@ public class Fabled extends SkillAPI {
      * @return true if data has loaded, false otherwise
      */
     public static boolean hasPlayerData(OfflinePlayer player) {
-        return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId()
-                .toString()
-                .toLowerCase());
-    }
-
-    /**
-     * Unloads player data from memory, saving it to the config
-     * first and then removing it from the map.
-     *
-     * @param player player to unload data for
-     */
-    public static void unloadPlayerData(final OfflinePlayer player) {
-        unloadPlayerData(player, false);
+        return PlayerLoader.hasPlayerAccounts(player);
     }
 
     /**
@@ -407,17 +354,13 @@ public class Fabled extends SkillAPI {
      *                   before unloading
      */
     public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
-        if (singleton == null || player == null || singleton.disabling
-                || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {
+        if (singleton == null || player == null || singleton.disabling || !PlayerLoader.hasPlayerAccounts(player)) {
             return;
         }
 
         singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
-            PlayerAccounts accounts = getPlayerAccounts(player);
-            if (!skipSaving) {
-                singleton.io.saveData(accounts);
-            }
-            singleton.players.remove(player.getUniqueId().toString().toLowerCase());
+            if (!skipSaving)
+                PlayerLoader.unloadPlayer(player);
         });
     }
 
@@ -434,24 +377,7 @@ public class Fabled extends SkillAPI {
             return null;
         }
 
-        String id = player.getUniqueId().toString().toLowerCase();
-        if (!inst().players.containsKey(id)) {
-            PlayerAccounts data = loadPlayerAccounts(player);
-            singleton.players.put(id, data);
-            return data;
-        } else {
-            return singleton.players.get(id);
-        }
-    }
-
-    /**
-     * Retrieves all the player data of Fabled. It is recommended not to
-     * modify this map. Instead, use helper methods within individual player data.
-     *
-     * @return all Fabled player data
-     */
-    public static Map<String, PlayerAccounts> getPlayerAccounts() {
-        return inst().players;
+        return PlayerLoader.getPlayerAccounts(player);
     }
 
     /**
@@ -581,8 +507,6 @@ public class Fabled extends SkillAPI {
         }
 
         MimicHook.init(this);
-        fabledProvider = new FabledAttributeProvider(this);
-        AttributeRegistry.registerProvider(fabledProvider);
     }
 
     /**
@@ -599,10 +523,17 @@ public class Fabled extends SkillAPI {
         disabling = true;
 
         AttributeRegistry.unregisterProvider(fabledProvider);
+        BuffRegistry.unregisterProvider(buffManager);
+        BuffRegistry.unregisterProvider(shieldManager);
 
         GUITool.cleanUp();
         EffectManager.cleanUp();
         ArmorStandManager.cleanUp();
+
+        for (FabledListener listener : listeners) {
+            listener.cleanup();
+        }
+        listeners.clear();
 
         if (mainThread != null) {
             mainThread.disable();
@@ -613,11 +544,6 @@ public class Fabled extends SkillAPI {
             manaTask.cancel();
             manaTask = null;
         }
-
-        for (FabledListener listener : listeners) {
-            listener.cleanup();
-        }
-        listeners.clear();
 
         // Clear scoreboards
         ClassBoardManager.clearAll();
@@ -631,7 +557,7 @@ public class Fabled extends SkillAPI {
 
         skills.clear();
         classes.clear();
-        players.clear();
+        PlayerLoader.saveAllPlayerAccounts();
 
         HandlerList.unregisterAll(this);
         cmd.clear();
@@ -685,7 +611,13 @@ public class Fabled extends SkillAPI {
         comboManager = new ComboManager();
         registrationManager = new RegistrationManager(this);
         cmd = new CmdManager(this);
-        io = settings.isUseSql() ? new SQLIO(this) : new ConfigIO(this);
+        if (settings.isUseSql()) {
+            SQLManager.reload();
+            SQLManager.runMigrations();
+            io = SQLManager.players();
+        } else {
+            io = new ConfigIO(this);
+        }
         PlayerStats.init();
         ClassBoardManager.registerText();
         if (settings.isAttributesEnabled()) {
@@ -757,8 +689,8 @@ public class Fabled extends SkillAPI {
         GUITool.init();
 
         // Load player data
-        players.putAll(io.loadAll());
-        for (PlayerAccounts accounts : players.values()) {
+        PlayerLoader.loadAllPlayerAccounts();
+        for (PlayerAccounts accounts : PlayerLoader.getAllPlayerAccounts().values()) {
             accounts.getActiveData().init(accounts.getPlayer());
         }
 
@@ -778,22 +710,30 @@ public class Fabled extends SkillAPI {
             getLogger().info("ProSkillAPI hook into GKReplay: " + ChatColor.GREEN + "success.");
         }
 
+        fabledProvider = new FabledAttributeProvider();
+        AttributeRegistry.registerProvider(fabledProvider);
+
+        buffManager = new BuffManager();
+        shieldManager = new ShieldManager(this);
+        BuffRegistry.registerProvider(buffManager);
+        BuffRegistry.registerProvider(shieldManager);
+
         loaded = true;
     }
 
     public void listen(FabledListener listener, boolean enabled) {
-        if (enabled) {
-            // Prevent double listener registering
-            for (Iterator<FabledListener> iterator = this.listeners.iterator(); iterator.hasNext(); ) {
-                FabledListener listener1 = iterator.next();
-                if (listener.getClass().equals(listener1.getClass())) {
-                    HandlerList.unregisterAll(listener1);
-                    iterator.remove();
-                }
+        if (!enabled) return;
+
+        // Prevent double listener registering
+        for (Iterator<FabledListener> iterator = this.listeners.iterator(); iterator.hasNext(); ) {
+            FabledListener listener1 = iterator.next();
+            if (listener.getClass().equals(listener1.getClass())) {
+                HandlerList.unregisterAll(listener1);
+                iterator.remove();
             }
-            Bukkit.getPluginManager().registerEvents(listener, this);
-            this.listeners.add(listener);
         }
+        Bukkit.getPluginManager().registerEvents(listener, this);
+        this.listeners.add(listener);
     }
 
     /**

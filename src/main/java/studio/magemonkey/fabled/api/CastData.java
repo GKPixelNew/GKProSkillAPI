@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.api;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.util.MobManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class CastData {
 
         // Load the player's attributes as attr:<attribute> into the castData map
         if (caster instanceof Player) {
-            for (String attr : Fabled.getAttributeManager().getAttributes().keySet()) {
+            for (String attr : Fabled.getAttributesManager().getAttributes().keySet()) {
                 data.put("attr:" + attr.toLowerCase(), (PlayerDataConsumer) () -> {
                     PlayerData playerData = Fabled.getData((Player) caster);
                     int        stage      = playerData.getInvestedAttributeStage(attr);

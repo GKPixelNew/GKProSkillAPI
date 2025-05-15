@@ -5,6 +5,8 @@ gh-pages/
 settings.xml
 toolchains.xml
 log.txt
+.svelte-kit/
+node_modules/
 
 # Ignore Gradle project-specific cache directory
 .gradle

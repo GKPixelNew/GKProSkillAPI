@@ -100,6 +100,7 @@ public class TempEntity implements LivingEntity {
         return 0.2;
     }
 
+    @NotNull
     public Location getEyeLocation() {
         return getLocation().add(0, 0, 0);
     }
@@ -108,8 +109,9 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @NotNull
     public List<Block> getLineOfSight(Set<Material> set, int i) {
-        return null;
+        return List.of();
     }
 
     public Block getTargetBlock(HashSet<Byte> hashSet, int i) {
@@ -118,7 +120,7 @@ public class TempEntity implements LivingEntity {
 
     @NotNull
     public Block getTargetBlock(Set<Material> set, int i) {
-        return null;
+        return getLocation().getBlock();
     }
 
     @Override
@@ -160,8 +162,9 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @NotNull
     public List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
-        return null;
+        return List.of(getLocation().getBlock(), getLocation().getBlock().getRelative(BlockFace.NORTH));
     }
 
     @Override
@@ -685,6 +688,10 @@ public class TempEntity implements LivingEntity {
     public boolean isRiptiding() {
         return false;
     }
+
+//    @Override
+//    public void setRiptiding(boolean b) {
+//    }
 
     @Override
     public boolean isSleeping() {
@@ -1242,6 +1249,7 @@ public class TempEntity implements LivingEntity {
     public void setFallDistance(float v) {
 
     }
+
 
     public EntityDamageEvent getLastDamageCause() {
         return null;

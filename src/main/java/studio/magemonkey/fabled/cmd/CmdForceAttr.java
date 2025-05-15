@@ -26,14 +26,6 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.CommandManager;
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.config.CustomFilter;
-import studio.magemonkey.codex.mccore.config.Filter;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.language.RPGFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,6 +36,14 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.commands.CommandManager;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.config.CustomFilter;
+import studio.magemonkey.codex.mccore.config.Filter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.language.RPGFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,7 +98,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
         }
 
         // Validate the attribute
-        if (Fabled.getAttributeManager().getAttribute(args[1]) == null) {
+        if (Fabled.getAttributesManager().getAttribute(args[1]) == null) {
             cmd.sendMessage(sender,
                     NOT_ATTR,
                     ChatColor.GOLD + "{name}" + ChatColor.RED + " is not a valid attribute name",
@@ -165,7 +165,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
         if (args.length == 1) {
             return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
         } else if (args.length > 1) {
-            return ConfigurableCommand.getTabCompletions(Fabled.getAttributeManager().getKeys(),
+            return ConfigurableCommand.getTabCompletions(Fabled.getAttributesManager().getKeys(),
                     Arrays.copyOfRange(args, 1, args.length));
         }
         return null;

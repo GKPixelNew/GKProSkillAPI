@@ -41,10 +41,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -178,8 +178,8 @@ public class GUITool implements ToolMenu {
                 ((Damageable) meta).setDamage(data.getInt("durability"));
             }
 
-            meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
-            meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
+            meta.setDisplayName(StringUT.color(data.getString("name")));
+            meta.setLore(StringUT.color(data.getList("lore")));
 
             item.setItemMeta(meta);
         }
@@ -491,8 +491,8 @@ public class GUITool implements ToolMenu {
     private String populateAttributes() {
         i = 9;
         GUIPage page = guiData.getPage();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
-            FabledAttribute attr  = Fabled.getAttributeManager().getAttribute(key);
+        for (String key : Fabled.getAttributesManager().getKeys()) {
+            FabledAttribute attr  = Fabled.getAttributesManager().getAttribute(key);
             int             index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();
@@ -509,7 +509,9 @@ public class GUITool implements ToolMenu {
         if (event.getAction() == InventoryAction.HOTBAR_SWAP
                 || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
             event.setCancelled(true);
-        else if (event.getRawSlot() < InventoryUtil.getTopInventory(event).getSize()) { // Clicked upper inventory
+        else if (event.getRawSlot() < VersionManager.getCompat()
+                .getTopInventory(event)
+                .getSize()) { // Clicked upper inventory
             if (guiData.getPages() > 1) { // Check if clicked next or prev buttons
                 if (guiData.getSize() > 9) { // Next and prev buttons are placed vertically
                     switch (event.getSlot()) {

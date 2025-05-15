@@ -26,14 +26,12 @@
  */
 package studio.magemonkey.fabled.manager;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.cmd.*;
-import studio.magemonkey.fabled.cmd.*;
-import studio.magemonkey.fabled.data.Permissions;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.SenderType;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.cmd.*;
+import studio.magemonkey.fabled.data.Permissions;
 
 /**
  * Sets up commands for the plugin
@@ -110,7 +108,7 @@ public class CmdManager {
                         SenderType.ANYONE,
                         new CmdExp(),
                         "Gives players exp",
-                        "[player] <amount> [group]",
+                        "[player] <add|remove|set> <amount> [group] [-s]",
                         Permissions.LVL),
                 new ConfigurableCommand(api,
                         "info",
@@ -124,7 +122,7 @@ public class CmdManager {
                         SenderType.ANYONE,
                         new CmdLevel(),
                         "Gives players levels",
-                        "[player] <amount> [group]",
+                        "[player] <add|remove|set> <amount> [group] [-s]",
                         Permissions.LVL),
                 new ConfigurableCommand(api,
                         "list",
