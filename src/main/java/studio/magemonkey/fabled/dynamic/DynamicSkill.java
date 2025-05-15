@@ -376,6 +376,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
 
         final DataSection triggers = config.getSection("components");
         if (triggers == null) {
+            Logger.invalid("No components found for the skill \"" + getName() + "\"");
             return;
         }
 
