@@ -62,7 +62,7 @@ public class MoonCondition extends ConditionComponent {
      *
      */
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final World  world        = target.getWorld();
         final int    day          = ((int) (world.getFullTime() / 24000L) % 8);
         final String currentPhase = phaseNames[day];

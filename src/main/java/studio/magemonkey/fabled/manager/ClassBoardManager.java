@@ -48,8 +48,8 @@ public class ClassBoardManager {
      * @param player player reference
      */
     public static void clear(Player player) {
-        Chat.getPlayerData(player.getName()).clearPluginPrefix("Fabled");
-        BoardManager.getPlayerBoards(player.getName()).removeBoards("Fabled");
+        Chat.getPlayerData(player.getName()).clearPluginPrefix("GKProSkillAPI");
+        BoardManager.getPlayerBoards(player.getName()).removeBoards("GKProSkillAPI");
         BoardManager.clearTeam(player.getName());
         BoardManager.clearScore(player.getName());
     }
@@ -58,7 +58,7 @@ public class ClassBoardManager {
      * Clears all scoreboards for the plugin
      */
     public static void clearAll() {
-        BoardManager.clearPluginBoards("Fabled");
+        BoardManager.clearPluginBoards("GKProSkillAPI");
     }
 
     /**
@@ -73,14 +73,14 @@ public class ClassBoardManager {
             if (Fabled.getSettings().isShowClassName()) {
                 // Give a chat prefix
                 Chat.getPlayerData(player.getPlayerName()).setPluginPrefix(
-                        new Prefix("Fabled", prefix, braceColor)
+                        new Prefix("GKProSkillAPI", prefix, braceColor)
                 );
             }
 
             PlayerBoards boards = BoardManager.getPlayerBoards(player.getPlayerName());
 
             // Clear previous data
-            boards.removeBoards("Fabled");
+            boards.removeBoards("GKProSkillAPI");
             BoardManager.clearTeam(player.getPlayerName());
 
             // Apply new data
@@ -89,7 +89,7 @@ public class ClassBoardManager {
                         PlaceholderUtil.colorizeAndReplace(
                                 Fabled.getSettings().getScoreboardTitle(),
                                 player.getPlayer()
-                        ), "Fabled");
+                        ), "GKProSkillAPI");
                 StatHolder holder = new CustomScoreboardHolder(player.getPlayer());
                 board.addStats(holder);
                 boards.addBoard(board);

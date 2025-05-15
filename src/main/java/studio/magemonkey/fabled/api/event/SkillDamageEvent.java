@@ -86,6 +86,7 @@ public class SkillDamageEvent extends DamageEvent {
         this.classification = classification;
         this.knockback = knockback;
         this.ignoreDivinity = ignoreDivinity;
+        this.damage = damage;
     }
 
     /**

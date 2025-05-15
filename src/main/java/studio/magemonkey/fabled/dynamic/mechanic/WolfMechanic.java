@@ -120,7 +120,7 @@ public class WolfMechanic extends MechanicComponent {
                 wolf.setSilent(silent);
                 wolf.setAware(!noAI);
                 wolf.setCollidable(!noAI);
-                AttributeInstance maxHealth = wolf.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                AttributeInstance maxHealth = wolf.getAttribute(Attribute.MAX_HEALTH);
                 if (maxHealth != null)
                     maxHealth.setBaseValue(health);
                 wolf.setHealth(health);

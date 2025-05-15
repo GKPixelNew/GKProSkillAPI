@@ -55,7 +55,6 @@ public class AreaTarget extends TargetComponent {
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-
         final double  radius = parseValues(caster, RADIUS, level, 3.0);
         final boolean random = settings.getBool(RANDOM, false);
         return determineTargets(caster, level, targets, t -> shuffle(Nearby.getLivingNearby(t, radius, true), random));

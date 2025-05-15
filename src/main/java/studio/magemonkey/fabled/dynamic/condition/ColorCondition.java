@@ -28,7 +28,7 @@ public class ColorCondition extends ConditionComponent {
     }
 
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+    public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         return target instanceof Colorable && ((Colorable) target).getColor().equals(color);
     }
 }

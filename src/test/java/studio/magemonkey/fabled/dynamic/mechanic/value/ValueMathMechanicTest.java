@@ -33,7 +33,7 @@ class ValueMathMechanicTest {
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         fabled = mockStatic(Fabled.class);
         fabledMock = mock(Fabled.class);
-        Logger logger = Logger.getLogger("Fabled");
+        Logger logger = Logger.getLogger("GKProSkillAPI");
         when(fabledMock.getLogger()).thenReturn(logger);
         fabled.when(Fabled::inst).thenReturn(fabledMock);
         fabled.when(Fabled::getAttributesManager).thenReturn(mock(IAttributeManager.class));

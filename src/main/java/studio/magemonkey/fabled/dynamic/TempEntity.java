@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.dynamic;
 import com.destroystokyo.paper.block.TargetBlockInfo;
 import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.google.common.collect.ImmutableList;
+import io.papermc.paper.entity.LookAnchor;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.threadedregions.scheduler.EntityScheduler;
 import net.kyori.adventure.text.Component;
@@ -657,6 +658,11 @@ public class TempEntity implements LivingEntity {
         return "";
     }
 
+    @Override
+    public void broadcastHurtAnimation(@NotNull Collection<Player> collection) {
+
+    }
+
     public boolean isLeashed() {
         return false;
     }
@@ -687,6 +693,10 @@ public class TempEntity implements LivingEntity {
     @Override
     public boolean isRiptiding() {
         return false;
+    }
+
+    @Override
+    public void setRiptiding(boolean b) {
     }
 
 //    @Override
@@ -1093,6 +1103,11 @@ public class TempEntity implements LivingEntity {
     @Override
     public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag... teleportFlags) {
         return false;
+    }
+
+    @Override
+    public void lookAt(double v, double v1, double v2, @NotNull LookAnchor lookAnchor) {
+
     }
 
     public boolean teleport(Location location) {

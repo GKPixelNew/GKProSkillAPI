@@ -38,8 +38,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.legacy.utils.Utils;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -112,7 +112,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     }
 
     private static final NamespacedKey namespaceKey =
-            new NamespacedKey(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Fabled")),
+            new NamespacedKey(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("GKProSkillAPI")),
                     "proj_start_location");
 
     @Override

@@ -190,7 +190,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         if (hit instanceof TempEntity && !targetBlocks) return;
 
         List<LivingEntity> targets = new ArrayList<>();
-        ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
         executeChildren(projectile.getShooter(),
                 Fabled.getMetaInt(projectile, LEVEL),

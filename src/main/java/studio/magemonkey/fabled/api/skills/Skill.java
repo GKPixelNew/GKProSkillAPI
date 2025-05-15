@@ -387,6 +387,16 @@ public abstract class Skill implements IconHolder {
         return settings.getAttr(SkillAttribute.MANA, level);
     }
 
+    /**
+     * Retrieves the cooldown of the skill in seconds
+     *
+     * @param level current level of the skill
+     * @return cooldown
+     */
+    public double getCooldown(int level) {
+        return settings.getAttr(SkillAttribute.COOLDOWN, level);
+    }
+
     public double getCooldown(int level, PlayerData player) {
         return player.scaleStat(AttributeManager.COOLDOWN, settings.getAttr(SkillAttribute.COOLDOWN, level));
     }
@@ -823,7 +833,6 @@ public abstract class Skill implements IconHolder {
         if (!Fabled.getSettings().canAttack(source, target, cause)) {
             return;
         }
-
         SkillDamageEvent event =
                 new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
         Bukkit.getPluginManager().callEvent(event);
@@ -842,7 +851,6 @@ public abstract class Skill implements IconHolder {
         int ticks = target.getNoDamageTicks();
         target.setNoDamageTicks(0);
         skillDamage = true;
-
         if (knockback) {
             if (!DamageRegistry.dealDamage(target, damage, classification, source))
                 target.damage(damage, source);

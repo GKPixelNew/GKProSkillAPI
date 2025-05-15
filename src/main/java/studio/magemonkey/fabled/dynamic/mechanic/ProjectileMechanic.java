@@ -38,8 +38,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.legacy.utils.Utils;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
@@ -122,7 +122,7 @@ public class ProjectileMechanic extends MechanicComponent {
     }
 
     private static final NamespacedKey namespaceKey = new NamespacedKey(Objects.requireNonNull(Bukkit.getPluginManager()
-            .getPlugin("Fabled")), "proj_start_location");
+            .getPlugin("GKProSkillAPI")), "proj_start_location");
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {

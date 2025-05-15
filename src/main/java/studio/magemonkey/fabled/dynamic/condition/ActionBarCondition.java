@@ -11,7 +11,7 @@ public class ActionBarCondition extends ConditionComponent {
     private boolean casting;
 
     @Override
-    boolean test(LivingEntity caster, int level, LivingEntity target) {
+    public boolean test(LivingEntity caster, int level, LivingEntity target) {
         final PlayerTextCastingData castingData = Fabled.getData((Player) target).getTextCastingData();
         casting = settings.getString(CASTING, "true").toLowerCase().equals("true");
         return target instanceof Player && casting == castingData.isCasting();

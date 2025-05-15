@@ -14,24 +14,30 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.citizensnpcs.co/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://jitpack.io")
     maven("https://repo.gkpixel.com/public/")
     maven("https://repo.aikar.co/nexus/content/groups/aikar/")
 }
-var codex_version = "1.0.0-R0.29-SNAPSHOT"
+var codex_version = "1.1.0-R0.20-SNAPSHOT"
 
 dependencies {
-    testImplementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.89.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testImplementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.48.1")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
     testImplementation("org.mockito:mockito-inline:5.2.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
-    testImplementation("org.slf4j:slf4j-reload4j:2.0.13")
-    testImplementation("commons-io:commons-io:2.16.1")
-    testImplementation("io.netty:netty-all:4.1.109.Final")
-    testImplementation("studio.magemonkey:codex:${codex_version}")
-    implementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.17.0")
+    testImplementation("org.slf4j:slf4j-reload4j:2.0.17")
+    testImplementation("commons-io:commons-io:2.19.0")
+    testImplementation("io.netty:netty-all:4.2.1.Final")
+    testImplementation("studio.magemonkey:codex:${codex_version}") {
+        exclude(group = "com.sk89q.worldedit")
+        exclude(group = "com.sk89q.worldguard")
+    }
+
+    implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.5")
@@ -42,13 +48,17 @@ dependencies {
         exclude(group = "org.ow2.asm", module = "asm")
     }
     compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT") {
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT") {
+        exclude(group = "com.sk89q.worldedit")
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
-    compileOnly("com.sk89q.worldedit:worldedit-core:7.1.0-SNAPSHOT") {
+    compileOnly("com.sk89q.worldedit:worldedit-core:7.3.11-SNAPSHOT") {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
-    compileOnly("studio.magemonkey:codex:${codex_version}")
+    compileOnly("studio.magemonkey:codex:${codex_version}") {
+        exclude(group = "com.sk89q.worldedit")
+        exclude(group = "com.sk89q.worldguard")
+    }
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("dev.robothanzo.gk.replay:GKReplay:1.8.2-SNAPSHOT")
     annotationProcessor("org.projectlombok:lombok:1.18.38")

@@ -1,6 +1,7 @@
 package studio.magemonkey.fabled.mobcast;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
 import org.junit.jupiter.api.AfterEach;
@@ -23,12 +24,12 @@ public class MobCastTest extends MockedTest {
 
     @BeforeEach
     public void setup() {
-        skill = (SkillShot) plugin.getSkill("Brilliance Strike");
+        skill = (SkillShot) Fabled.getSkill("Brilliance Strike");
     }
 
     @AfterEach
     public void teardown() {
-        world.getEntities().forEach(e -> e.remove());
+        world.getEntities().forEach(Entity::remove);
     }
 
     @Test

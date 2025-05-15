@@ -241,7 +241,6 @@ public class BlockMechanic extends MechanicComponent {
             }
         }
         int     ticks     = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte    data      = (byte) settings.getInt(DATA, 0);
         boolean permanent = settings.getBool(PERMANENT, false);
 
         // Change blocks
