@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.api.util;
 
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,6 +42,7 @@ import java.util.Map;
 /**
  * Represents buffs set on an entity
  */
+@ToString
 public class BuffData {
     private final Map<String, Map<String, Buff>> buffs = new HashMap<>();
 
