@@ -33,6 +33,8 @@ import studio.magemonkey.fabled.api.util.BuffType;
 
 import java.util.List;
 
+import static studio.magemonkey.fabled.api.util.BuffManager.getBuffData;
+
 /**
  * Applies a flag to each target
  */
@@ -73,7 +75,7 @@ public class DefenseBuffMechanic extends MechanicComponent {
                     skill ? BuffType.SKILL_DEFENSE : BuffType.DEFENSE,
                     new Buff(this.skill.getName(), value, percent),
                     ticks);
-            System.out.println("DefenseBuffMechanic: " + target.getName() + " " + value + " " + percent);
+            System.out.println("new buff: " + target.getName() + " " + getBuffData(target, true));
         }
         return true;
     }
