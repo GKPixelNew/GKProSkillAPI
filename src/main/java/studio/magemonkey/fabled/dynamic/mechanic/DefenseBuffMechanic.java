@@ -58,7 +58,7 @@ public class DefenseBuffMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
@@ -73,7 +73,8 @@ public class DefenseBuffMechanic extends MechanicComponent {
                     skill ? BuffType.SKILL_DEFENSE : BuffType.DEFENSE,
                     new Buff(this.skill.getName(), value, percent),
                     ticks);
+            System.out.println("DefenseBuffMechanic: " + target.getName() + " " + value + " " + percent);
         }
-        return targets.size() > 0;
+        return true;
     }
 }
