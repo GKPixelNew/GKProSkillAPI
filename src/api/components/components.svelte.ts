@@ -5971,6 +5971,7 @@ export const initComponents = () => {
 
 // Add deprecated components to this list
 export const deprecated: (typeof FabledComponent)[] = [
+	MessageMechanic,
 	ValueAddMechanic,
 	ValueDivideMechanic,
 	ValueMultiplyMechanic,
