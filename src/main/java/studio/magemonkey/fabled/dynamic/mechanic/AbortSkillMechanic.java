@@ -21,13 +21,18 @@ public class AbortSkillMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        final String type = settings.getString(TYPE, "all").toLowerCase();
+        final String type = settings.getString(TYPE, "all").toLowerCase().replace(' ', '_');
         final String specific = settings.getString(SKILL, "");
         final boolean self = settings.getBool(SELF, true);
         final List<DynamicSkill> skills = switch (type) {
             case "all" -> Fabled.getSkills().values().stream()
                     .filter(s -> s instanceof DynamicSkill)
                     .map(s -> (DynamicSkill) s)
+                    .toList();
+            case "all_but_current" -> Fabled.getSkills().values().stream()
+                    .filter(s -> s instanceof DynamicSkill)
+                    .map(s -> (DynamicSkill) s)
+                    .filter(s -> !s.getName().equals(skill.getName()))
                     .toList();
             case "current" -> List.of(skill);
             case "specific" -> Stream.of(Fabled.getSkill(specific))
