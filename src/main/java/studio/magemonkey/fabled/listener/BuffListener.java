@@ -34,6 +34,8 @@ public class BuffListener extends FabledListener {
             defenseType = BuffType.SKILL_DEFENSE.getLocalizedName() + "_" + classification;
         }
 
+        System.out.println(damageType + " " + defenseType);
+
         double withDamageBuffs = BuffRegistry.scaleValue(damageType, damager, damage);
         // With defense buffs
         return BuffRegistry.scaleValue(defenseType, target, withDamageBuffs);
