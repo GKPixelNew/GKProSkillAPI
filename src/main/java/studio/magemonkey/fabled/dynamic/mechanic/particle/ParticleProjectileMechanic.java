@@ -64,6 +64,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     private static final String DISTANCE = "distance";
     private static final String SPREAD   = "spread";
     private static final String AMOUNT   = "amount";
+    private static final String MULTI_CALLABCK = "multi-callback";
     private static final String ANGLE    = "angle";
     private static final String HEIGHT   = "height";
     private static final String RADIUS   = "rain-radius";
@@ -77,11 +78,13 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     private static final String EFFECT_KEY = "effect-key";
 
     private boolean targetBlocks;
+    private boolean multiCallback;
 
     @Override
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
         targetBlocks = settings.getBool(TARGET_BLOCKS, false);
+        multiCallback = settings.getBool(MULTI_CALLABCK, true);
     }
 
     @Override
@@ -186,7 +189,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             hit = new TempEntity(projectile.getLocation());
         }
 
-        if (hitEntities.contains(hit.getUniqueId())) return;
+        if (!multiCallback && hitEntities.contains(hit.getUniqueId())) return;
         if (hit instanceof TempEntity && !targetBlocks) return;
 
         List<LivingEntity> targets = new ArrayList<>();
