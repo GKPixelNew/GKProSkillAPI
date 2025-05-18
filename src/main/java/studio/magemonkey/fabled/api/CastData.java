@@ -6,6 +6,7 @@ import studio.magemonkey.codex.mccore.util.MobManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,8 @@ public class CastData {
         Object obj = data.get(key);
         if (obj instanceof Object[])
             obj = ((Object[]) obj)[0]; // Get the first element of the array
+        if (obj instanceof Collection)
+            obj = ((Collection<?>) obj).iterator().next(); // Get the first element of the collection
 
         if (obj instanceof Player) {
             obj = ((Player) obj).getName();
