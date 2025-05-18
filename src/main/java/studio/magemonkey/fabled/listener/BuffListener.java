@@ -43,6 +43,7 @@ public class BuffListener extends FabledListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysical(final PhysicalDamageEvent event) {
+        System.out.println("PhysicalDamageEvent: " + event.getDamager().getName() + " " + event.getTarget().getName());
         double scaledDamage = scaleDamage(event.getDamager(), event.getTarget(), event.getDamage(), null);
 
         if (scaledDamage <= 0) event.setCancelled(true);
@@ -51,6 +52,7 @@ public class BuffListener extends FabledListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSkill(final SkillDamageEvent event) {
+        System.out.println("SkillDamageEvent: " + event.getDamager().getName() + " " + event.getTarget().getName());
         double scaledDamage =
                 scaleDamage(event.getDamager(), event.getTarget(), event.getDamage(), event.getClassification());
 
