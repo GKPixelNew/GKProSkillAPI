@@ -158,12 +158,12 @@
 					<span tabindex='0'
 								role='button'
 								onclick={() => classStore.addClass()}
-								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>新增信仰</span>
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
 								onclick={() => classStore.addClassFolder(new FabledFolder())}
-								onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}>New Folder</span>
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}>新資料夾</span>
 				</div>
 			</SidebarEntry>
 			<SidebarEntry delay={200 + 100*($classes.length+2)}>
@@ -203,12 +203,12 @@
 					<span tabindex='0'
 								role='button'
 								onclick={() => skillStore.addSkill()}
-								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span>
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>新增技能</span>
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
 								onclick={() => skillStore.addSkillFolder(new FabledFolder())}
-								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}>New Folder</span>
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}>新資料夾</span>
 				</div>
 			</SidebarEntry>
 			<SidebarEntry delay={200 + 100*($classes.length+2)} direction="right">

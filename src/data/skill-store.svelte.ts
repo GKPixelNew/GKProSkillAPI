@@ -40,8 +40,8 @@ export default class FabledSkill implements Serializable {
 	skillReqLevel                       = $state(0);
 	attributeRequirements: IAttribute[] = $state([]);
 	permission: boolean                 = $state(false);
-	levelReq: IAttribute                = $state({ name: 'level', base: 1, scale: 0 });
-	cost: IAttribute                    = $state({ name: 'cost', base: 1, scale: 0 });
+	levelReq: IAttribute                = $state({ name: 'level', base: 0, scale: 0 });
+	cost: IAttribute                    = $state({ name: 'cost', base: 0, scale: 0 });
 	cooldown: IAttribute                = $state({ name: 'cooldown', base: 1, scale: 0 });
 	cooldownMessage: boolean            = $state(true);
 	mana: IAttribute                    = $state({ name: 'mana', base: 0, scale: 0 });
