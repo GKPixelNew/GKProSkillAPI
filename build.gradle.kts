@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     `maven-publish`
 }
 
@@ -55,7 +55,7 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.11-SNAPSHOT") {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
-    compileOnly("studio.magemonkey:codex:${codex_version}") {
+    api("studio.magemonkey:codex:${codex_version}") {
         exclude(group = "com.sk89q.worldedit")
         exclude(group = "com.sk89q.worldguard")
     }
