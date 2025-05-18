@@ -271,6 +271,7 @@ public abstract class EffectComponent {
             String key = match.group().substring(1, match.group().length() - 1);
             if (data.contains(key)) {
                 var raw = data.getRaw(key);
+                System.out.println("Raw of " + key + ": " + raw);
                 var value = "";
                 if (raw instanceof Player player)
                     value = player.getName();
