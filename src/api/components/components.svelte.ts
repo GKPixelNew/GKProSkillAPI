@@ -2296,8 +2296,6 @@ const particleOptions = (): ComponentOption[] => {
 			.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
 		new IntSelect('Visible Radius', 'visible-radius', 25)
 			.setTooltip('How far away players can see the particles from in blocks'),
-		new BooleanSelect('Exclusive', 'exclusive', false)
-			.setTooltip('Whether to only show the particles to the target'),
 		new DoubleSelect('DX', 'dx')
 			.setTooltip('Offset in the X direction, used as the Red value for some particles'),
 		new DoubleSelect('DY', 'dy')
