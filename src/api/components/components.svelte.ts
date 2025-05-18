@@ -3982,9 +3982,9 @@ class ParticleProjectileMechanic extends FabledMechanic {
 					.setTooltip('Amount of collision steps to run per meter travelled.'),
 				new AttributeSelect('Collision Radius', 'collision-radius', 0.8)
 					.setTooltip('The radius of the projectile considered when calculating collisions.'),
-				new AttributeSelect('Gravity', 'gravity', -0.04)
+				new AttributeSelect('Gravity', 'gravity', 0.0)
 					.setTooltip('Vertical acceleration the projectile is subjected to, in meters per squared tick. Negative values make it fall while positive values make it rise.'),
-				new AttributeSelect('Drag', 'drag', 0.02)
+				new AttributeSelect('Drag', 'drag', 0.0)
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
