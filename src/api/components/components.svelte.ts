@@ -4847,6 +4847,25 @@ class SoundMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class SoundStopMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Sound Stop',
+			description:  'Stops a playing sound for all targets',
+			data:         [
+				new DropdownSelect('Sounds', 'sounds', (() => ['Custom', ...getSounds()]), [], true)
+					.setTooltip('The sounds to stop, leave empty to stop all sounds'),
+				new StringListSelect('Custom sound names', 'custom', ['myrp:some_sound'])
+					.requireValue('sound', ['Custom'])
+					.setTooltip('Namespaced key of your custom sound')
+			],
+			summaryItems: ['sounds']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5900,6 +5919,7 @@ export const initComponents = () => {
 		SIGNAL_EMIT:        { name: 'Signal Emit', component: SignalEmitMechanic },
 		SKILL_CAST:         { name: 'Skill Cast', component: SkillCastMechanic },
 		SOUND:              { name: 'Sound', component: SoundMechanic },
+		SOUND_STOP:         { name: 'Sound Stop', component: SoundStopMechanic },
 		STAT:               { name: 'Stat', component: StatMechanic },
 		STATUS:             { name: 'Status', component: StatusMechanic },
 		SUMMON:             { name: 'Summon', component: SummonMechanic },
