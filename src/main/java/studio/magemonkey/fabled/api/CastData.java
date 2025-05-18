@@ -55,6 +55,9 @@ public class CastData {
         if (!contains(key)) return null;
 
         Object obj = data.get(key);
+        if (obj instanceof Object[])
+            obj = ((Object[]) obj)[0]; // Get the first element of the array
+
         if (obj instanceof Player) {
             obj = ((Player) obj).getName();
         } else if (obj instanceof LivingEntity) {
