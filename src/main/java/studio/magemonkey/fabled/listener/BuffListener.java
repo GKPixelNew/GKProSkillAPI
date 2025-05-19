@@ -4,6 +4,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +14,7 @@ import studio.magemonkey.fabled.api.event.BuffExpiredEvent;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.api.event.SkillDamageEvent;
 import studio.magemonkey.fabled.api.event.SkillHealEvent;
+import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.BuffType;
 import studio.magemonkey.fabled.hook.PluginChecker;
@@ -34,16 +37,27 @@ public class BuffListener extends FabledListener {
             defenseType = BuffType.SKILL_DEFENSE.getLocalizedName() + "_" + classification;
         }
 
-        System.out.println(damageType + " " + defenseType);
-
-        double withDamageBuffs = BuffRegistry.scaleValue(damageType, damager, damage);
+        double withDamageBuffs = damage;
+        if (damager != null)
+            withDamageBuffs = BuffRegistry.scaleValue(damageType, damager, damage);
         // With defense buffs
         return BuffRegistry.scaleValue(defenseType, target, withDamageBuffs);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEnvironmental(final EntityDamageEvent event) {
+        if (Skill.isSkillDamage() ||
+                event instanceof EntityDamageByEntityEvent ||
+                !(event.getEntity() instanceof LivingEntity target))
+            return;
+        double scaledDamage = scaleDamage(null, target, event.getDamage(), null);
+
+        if (scaledDamage <= 0) event.setCancelled(true);
+        else event.setDamage(scaledDamage);
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysical(final PhysicalDamageEvent event) {
-        System.out.println("PhysicalDamageEvent: " + event.getDamager().getName() + " " + event.getTarget().getName());
         double scaledDamage = scaleDamage(event.getDamager(), event.getTarget(), event.getDamage(), null);
 
         if (scaledDamage <= 0) event.setCancelled(true);
@@ -52,7 +66,6 @@ public class BuffListener extends FabledListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSkill(final SkillDamageEvent event) {
-        System.out.println("SkillDamageEvent: " + event.getDamager().getName() + " " + event.getTarget().getName());
         double scaledDamage =
                 scaleDamage(event.getDamager(), event.getTarget(), event.getDamage(), event.getClassification());
 
