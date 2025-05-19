@@ -2967,7 +2967,10 @@ class DisguiseMechanic extends FabledMechanic {
 			name:         'Disguise',
 			description:  'Disguises each target according to the settings. This mechanic requires the LibsDisguise plugin to be installed on your server',
 			data:         [
+				new BooleanSelect('Next', 'next', false)
+					.setTooltip('Whether to directly disguise the next entity spawned, always use this for Wolf disguises'),
 				new AttributeSelect('Duration', 'duration', -1)
+					.requireValue('next', [false])
 					.setTooltip('How long to apply the disguise for in seconds. Use a negative number to permanently disguise the targets'),
 				new DropdownSelect('Type', 'type', ['Mob', 'Player', 'Misc'], 'Mob')
 					.setTooltip('The type of disguise to use, as defined by the LibsDisguise plugin'),
@@ -2985,6 +2988,11 @@ class DisguiseMechanic extends FabledMechanic {
 
 				new BooleanSelect('Change Name', 'change-name', false)
 					.requireValue('type', ['Player'])
+					.setTooltip('Whether to change the entity\'s name to the player after disguising them'),
+
+				new BooleanSelect('Change Name', 'change_name', false)
+					.requireValue('type', ['Player'])
+					.requireValue('next', [false])
 					.setTooltip('Whether to change the entity\'s name to the player after disguising them'),
 
 				new DropdownSelect('Misc', 'misc', getMiscDisguises, 'Painting')
@@ -3031,7 +3039,7 @@ class DisguiseMechanic extends FabledMechanic {
 					.requireValue('misc', ['Falling block'])
 					.setTooltip('Block to use for the disguise type.')
 			],
-			summaryItems: ['duration', 'type', 'mob', 'player', 'misc']
+			summaryItems: ['next', 'duration', 'type', 'mob', 'player', 'misc']
 		}, false);
 	}
 
