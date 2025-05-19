@@ -38,6 +38,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.log.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 
 /**
@@ -51,12 +52,15 @@ public class DisguiseHook {
      * @param type   type of mob to disguise as
      * @param adult  whether the mob is an adult
      */
-    public static void disguiseMob(LivingEntity target, String type, boolean adult) {
+    public static void disguiseMob(@Nullable LivingEntity target, String type, boolean adult) {
         try {
-            String       name        = target.getCustomName();
+            String name = target == null ? null : target.getCustomName();
             DisguiseType disguise    = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
             MobDisguise  mobDisguise = new MobDisguise(disguise, adult);
-            DisguiseAPI.disguiseToAll(target, mobDisguise);
+            if (target == null)
+                DisguiseAPI.disguiseNextEntity(mobDisguise);
+            else
+                DisguiseAPI.disguiseToAll(target, mobDisguise);
             if (name != null)
                 target.setCustomName(name);
         } catch (Exception ex) {
@@ -70,12 +74,15 @@ public class DisguiseHook {
      * @param target target to disguise
      * @param player player to disguise as
      */
-    public static void disguisePlayer(LivingEntity target, String player, boolean changeName) {
+    public static void disguisePlayer(@Nullable LivingEntity target, String player, boolean changeName) {
         try {
-            String name = target.getCustomName();
+            String name = target == null ? null : target.getCustomName();
             PlayerDisguise playerDisguise = new PlayerDisguise(player);
-            DisguiseAPI.disguiseToAll(target, playerDisguise);
-            if (!changeName) {
+            if (target == null)
+                DisguiseAPI.disguiseNextEntity(playerDisguise);
+            else
+                DisguiseAPI.disguiseToAll(target, playerDisguise);
+            if (target != null && !changeName) {
                 target.setCustomName(name);
                 playerDisguise.getWatcher().setCustomName(name);
             }
@@ -91,12 +98,15 @@ public class DisguiseHook {
      * @param type   disguise type
      * @param data   disguise data value
      */
-    public static void disguiseMisc(LivingEntity target, String type, int data) {
+    public static void disguiseMisc(@Nullable LivingEntity target, String type, int data) {
         try {
-            String       name         = target.getCustomName();
+            String name = target == null ? null : target.getCustomName();
             DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, data);
-            DisguiseAPI.disguiseToAll(target, miscDisguise);
+            if (target == null)
+                DisguiseAPI.disguiseNextEntity(miscDisguise);
+            else
+                DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
                 target.setCustomName(name);
         } catch (Exception ex) {
@@ -111,12 +121,15 @@ public class DisguiseHook {
      * @param type   disguise type
      * @param mat    disguise material value
      */
-    public static void disguiseMisc(LivingEntity target, String type, Material mat) {
+    public static void disguiseMisc(@Nullable LivingEntity target, String type, Material mat) {
         try {
-            String       name         = target.getCustomName();
+            String name = target == null ? null : target.getCustomName();
             DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, mat);
-            DisguiseAPI.disguiseToAll(target, miscDisguise);
+            if (target == null)
+                DisguiseAPI.disguiseNextEntity(miscDisguise);
+            else
+                DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
                 target.setCustomName(name);
         } catch (Exception ex) {

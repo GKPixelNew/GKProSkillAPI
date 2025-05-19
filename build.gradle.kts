@@ -18,6 +18,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.gkpixel.com/public/")
     maven("https://repo.aikar.co/nexus/content/groups/aikar/")
+    maven("https://repo.md-5.net/content/groups/public/")
 }
 var codex_version = "1.1.0-R0.20-SNAPSHOT"
 
@@ -43,7 +44,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.5")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
     compileOnly("org.projectlombok:lombok:1.18.38")
-    compileOnly("LibsDisguises:LibsDisguises:10.0.44") {
+    compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.0") {
         exclude(group = "org.spigotmc", module = "spigot-api")
         exclude(group = "org.ow2.asm", module = "asm")
     }

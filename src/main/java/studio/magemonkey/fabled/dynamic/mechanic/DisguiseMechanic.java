@@ -34,6 +34,7 @@ import studio.magemonkey.fabled.hook.DisguiseHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.listener.MechanicListener;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,6 +51,7 @@ public class DisguiseMechanic extends MechanicComponent {
     private static final String MATERIAL = "mat";
     private static final String DURATION = "duration";
     private static final String CHANGE_NAME = "change_name";
+    private static final String NEXT = "next";
 
     @Override
     public String getKey() {
@@ -73,40 +75,41 @@ public class DisguiseMechanic extends MechanicComponent {
 
         String type = settings.getString(TYPE);
         boolean changeName = settings.getBool(CHANGE_NAME, false);
+        boolean next = settings.getBool(NEXT, false);
 
         // Mob disguises
         if (type.equalsIgnoreCase("mob")) {
-            for (LivingEntity target : targets) {
+            for (Object target : (next ? Collections.singletonList(null) : targets)) {
                 if (!(target instanceof TempEntity)) {
-                    DisguiseHook.disguiseMob(target, settings.getString(MOB, "Zombie"), settings.getBool(ADULT, true));
+                    DisguiseHook.disguiseMob((LivingEntity) target, settings.getString(MOB, "Zombie"), settings.getBool(ADULT, true));
                 }
             }
         }
 
         // Player disguises
         else if (type.equalsIgnoreCase("player")) {
-            for (LivingEntity target : targets) {
+            for (Object target : (next ? Collections.singletonList(null) : targets)) {
                 if (!(target instanceof TempEntity)) {
                     DisguiseHook.disguisePlayer(
-                            target,
-                            filter(caster, target, settings.getString(PLAYER, "Eniripsa96")), changeName);
+                            (LivingEntity) target,
+                            filter(caster, (LivingEntity) target, settings.getString(PLAYER, "Eniripsa96")), changeName);
                 }
             }
         }
 
         // Miscellaneous disguises
         else if (type.equalsIgnoreCase("misc")) {
-            for (LivingEntity target : targets) {
+            for (Object target : (next ? Collections.singletonList(null) : targets)) {
                 if (!(target instanceof TempEntity)) {
                     String dataType = settings.getString(MISC, "Painting");
                     if (dataType.equals("Dropped Item") || dataType.equals("Falling Block")) {
-                        DisguiseHook.disguiseMisc(target,
+                        DisguiseHook.disguiseMisc((LivingEntity) target,
                                 dataType,
                                 Material.valueOf(settings.getString(MATERIAL, "Anvil")
                                         .toUpperCase(Locale.US)
                                         .replace(" ", "_")));
                     } else
-                        DisguiseHook.disguiseMisc(target, dataType, settings.getInt(DATA, 0));
+                        DisguiseHook.disguiseMisc((LivingEntity) target, dataType, settings.getInt(DATA, 0));
                 }
             }
         }
@@ -117,13 +120,15 @@ public class DisguiseMechanic extends MechanicComponent {
         }
 
         // Apply Flag duration
-        int ticks = (int) (parseValues(caster, DURATION, level, -1) * 20);
-        for (LivingEntity target : targets) {
-            if (!(target instanceof TempEntity)) {
-                FlagManager.addFlag(target, MechanicListener.DISGUISE_KEY, ticks);
+        int ticks = next ? -1 : (int) (parseValues(caster, DURATION, level, -1) * 20);
+        if (ticks != -1) {
+            for (LivingEntity target : targets) {
+                if (!(target instanceof TempEntity)) {
+                    FlagManager.addFlag(target, MechanicListener.DISGUISE_KEY, ticks);
+                }
             }
         }
 
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }
