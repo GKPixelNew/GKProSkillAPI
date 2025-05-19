@@ -5,6 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -47,12 +48,12 @@ public class AbortSkillMechanic extends MechanicComponent {
         if (self) targets = List.of(caster);
         for (DynamicSkill s : skills) {
             for (LivingEntity target : targets) {
-                for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.get(target.getEntityId())) {
+                for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.getOrDefault(target.getEntityId(), Collections.emptyList())) {
                     if (s.getName().equals(task.getSkill().getName())) {
                         task.cancel();
                     }
                 }
-                for (DelayMechanic.DelayTask task : DelayMechanic.tasks.get(target.getUniqueId())) {
+                for (DelayMechanic.DelayTask task : DelayMechanic.tasks.getOrDefault(target.getUniqueId(), Collections.emptyList())) {
                     if (s.getName().equals(task.getSkill().getName())) {
                         task.cancel();
                     }
