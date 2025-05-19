@@ -1,5 +1,10 @@
 <script lang='ts'>
-	import { closeSidebar, shownTab, sidebarOpen } from '../../data/store';
+	import {
+		closeSidebar,
+		deleteAllProSkills,
+		shownTab,
+		sidebarOpen
+	} from '../../data/store';
 	import SidebarEntry                            from './SidebarEntry.svelte';
 	import { squish }                              from '../../data/squish';
 	import { goto }                                from '$app/navigation';
@@ -18,7 +23,7 @@
 	import FabledClass, { classStore }             from '../../data/class-store.svelte';
 	import { attributeStore }                      from '../../data/attribute-store';
 	import { FabledFolder }                        from '../../data/folder-store.svelte';
-	import { getAllClasses, getAllSkills, reloadAllClasses, reloadAllSkills } from '$api/cdn';
+	import { getAllClasses, getAllSkills, importAllSkills, reloadAllClasses, reloadAllSkills } from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
@@ -42,6 +47,7 @@
 	});
 	let importChoice = $state('');
 	let loadingOptions = $state(false);
+	let deletingAll = $state(false);
 	const skills       = skillStore.skills;
 	const skillFolders = skillStore.skillFolders;
 	const classes      = classStore.classes;
@@ -84,7 +90,6 @@
 		loadingOptions = true;
 		getAllSkills().then(res => {
 			options.skills = res;
-
 		}).finally(() => {
 			loadingOptions = false;
 		});
@@ -223,6 +228,18 @@
 								onkeypress={(e) => e.key === 'Enter' && reloadAllSkills()}>重新整理</span>
 				</div>
 			</SidebarEntry>
+			<SidebarEntry delay={200 + 100*($classes.length+2)} direction="right">
+				<div class='new'>
+						<span tabindex='0'
+									role='button'
+									onclick={() => deletingAll = true}
+									onkeypress={() => deletingAll = true}>刪除全部</span>
+					<span tabindex='0'
+								role='button'
+								onclick={() => importAllSkills()}
+								onkeypress={(e) => e.key === 'Enter' && importAllSkills()}>匯入全部</span>
+				</div>
+			</SidebarEntry>
 		</div>
 	{:else if $shownTab === Tab.ATTRIBUTES}
 		<div class='items'
@@ -298,6 +315,25 @@
 					tabindex='0'>確認匯入</button>
 	</div>
 </Modal>
+{/if}
+{#if deletingAll}
+	<Modal>
+		<h3>是否確認刪除所有本機技能？</h3>
+		<div class='modal-buttons'>
+			<div class='button' onclick={() => deletingAll = false }
+					 onkeypress={(event) => { if (event?.key === 'Enter') deletingAll = false; }}
+					 role='button'
+					 tabindex='0'
+			>取消
+			</div>
+			<div class='button modal-delete' onclick={() => {deleteAllProSkills(); deletingAll = false}}
+					 onkeypress={(event) => { if (event?.key === 'Enter') {deleteAllProSkills(); deletingAll = false} }}
+					 role='button'
+					 tabindex='0'
+			>刪除
+			</div>
+		</div>
+	</Modal>
 {/if}
 
 <style>
@@ -378,5 +414,9 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
+    }
+
+    .modal-delete {
+        background-color: #b60000;
     }
 </style>

@@ -53,6 +53,15 @@ export const deleteProData = (data: FabledClass | FabledSkill | FabledAttribute 
 	folderStore.updateFolders();
 };
 
+export const deleteAllProSkills = () => {
+	for (const folder of get(skillStore.skillFolders)) {
+		skillStore.deleteSkillFolder(folder);
+	}
+	for (const skills of get(skillStore.skills)) {
+		skillStore.deleteSkill(skills);
+	}
+}
+
 const skillFileRegex        = /['"]?(components|combo)['"]?:/;
 /**
  * Loads an individual skill or class file

@@ -7,6 +7,7 @@ import FabledAttribute from '$api/fabled-attribute.svelte';
 import YAML from 'yaml';
 import FabledClass, { classStore } from '../data/class-store.svelte';
 import { skillStore } from '../data/skill-store.svelte';
+import { FabledFolder } from '../data/folder-store.svelte';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
@@ -33,38 +34,40 @@ export const importClass = async (classId: string) => {
             CONFIGURED_AXIOS.get('download/' + response.data.class.fileId).then(response => {
                 loadRaw(response.data, false)
             })
-            notifySuccess('匯入成功');
+            notifySuccess(`成功匯入: ${classId}`);
         } else {
-            notifyFailure('匯入失敗');
+            notifyFailure(`匯入失敗: ${classId}`)
         }
     }).catch(error => {
         if (error.response.status === 404) {
-            notifyFailure('匯入失敗，找不到信仰');
+            notifyFailure(`匯入失敗，找不到信仰: ${classId}`);
         } else {
-            notifyFailure('匯入失敗，錯誤 ' + error.response.status);
+            notifyFailure(`匯入${classId}失敗，錯誤 ` + error.response.status);
         }
     })
 }
 
 export const importSkill = async (skillId: string) => {
-    CONFIGURED_AXIOS.get('skill/' + skillId).then(response => {
+    try {
+        const response = await CONFIGURED_AXIOS.get('skill/' + skillId);
         if (response.data.success) {
-            CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId).then(response => {
-                loadRaw(response.data, false)
-                notifySuccess('匯入成功');
-            }).catch((error: AxiosError) => {
-                notifyFailure('匯入失敗: ' + error.status);
-            })
+            try {
+                const file = await CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId);
+                await loadRaw(file.data, false);
+                notifySuccess(`成功匯入: ${skillId}`);
+            } catch (error) {
+                notifyFailure(`匯入${skillId}失敗: ` + error.status);
+            }
         } else {
-            notifyFailure('匯入失敗');
+            notifyFailure(`匯入失敗: ${skillId}`);
         }
-    }).catch(error => {
-        if (error.response.status === 404) {
-            notifyFailure('匯入失敗，找不到技能');
+    } catch (error) {
+        if (error.response?.status === 404) {
+            notifyFailure(`匯入失敗，找不到技能: ${skillId}`);
         } else {
-            notifyFailure('匯入失敗，錯誤 ' + error.response.status);
+            notifyFailure(`匯入${skillId}失敗，錯誤 ` + error.response.status);
         }
-    })
+    }
 }
 
 export const reloadAllClasses = async () => {
@@ -84,6 +87,33 @@ export const reloadAllSkills = async () => {
         });
     }
 }
+
+function getFolderName(skillId: string): string {
+    if (skillId.toLowerCase().includes('test')) return 'Test';
+    return skillId.split('_')[0].replace(/[0-9]+/, '').toLowerCase().replace(/^[a-z]/, (c) => c.toUpperCase());
+}
+
+export const importAllSkills = async () => {
+    const tasks = [];
+    for (const skill of await getAllSkills()) {
+        tasks.push(async function () {
+            await importSkill(skill);
+            const folderName = getFolderName(skill);
+            let folder = get(skillStore.skillFolders).filter(f => f.name === folderName)[0];
+            const realSkill = skillStore.getSkill(skill);
+            if (folder) {
+                folder.add(realSkill);
+            } else {
+                folder = new FabledFolder();
+                folder.name = folderName;
+                skillStore.addSkillFolder(folder);
+                folder?.add(realSkill);
+            }
+        }());
+    }
+    await Promise.all(tasks);
+    notifySuccess('成功匯入所有技能');
+};
 
 export const getAllClasses = async () => {
     try {
