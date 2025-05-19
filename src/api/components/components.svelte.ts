@@ -1090,9 +1090,7 @@ class RememberTarget extends FabledTarget {
 			description:  'Targets entities stored using the "Remember Targets" mechanic for the matching key. If it was never set, this will fail',
 			data:         [
 				new StringSelect('Key', 'key', 'target')
-					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill'),
-				new BooleanSelect('Overwrite', 'overwrite', true)
-					.setTooltip('Whether to overwrite an existing target group, setting this to False would append all targets to said group')
+					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill')
 			],
 			preview:      [
 				...particlesAtTargetPreviewOptions()
@@ -4719,7 +4717,9 @@ class RememberTargetsMechanic extends FabledMechanic {
 			description:  'Stores the current targets for later use under a specified key',
 			data:         [
 				new StringSelect('Key', 'key', 'target')
-					.setTooltip('The unique key to store the targets under. The "Remember" target will use this key to apply effects to the targets later on')
+					.setTooltip('The unique key to store the targets under. The "Remember" target will use this key to apply effects to the targets later on'),
+				new BooleanSelect('Overwrite', 'overwrite', true)
+					.setTooltip('Whether to overwrite an existing target group, setting this to False would append all targets to said group')
 			],
 			summaryItems: ['key']
 		}, false);
