@@ -34,6 +34,7 @@ import me.libraryaddict.disguise.utilities.DisguiseValues;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.log.Logger;
@@ -55,7 +56,8 @@ public class DisguiseHook {
     public static void disguiseMob(@Nullable LivingEntity target, String type, boolean adult) {
         try {
             String name = target == null ? null : target.getCustomName();
-            DisguiseType disguise    = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
+            DisguiseType disguise = DisguiseType.getType(
+                    EntityType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_")));
             MobDisguise  mobDisguise = new MobDisguise(disguise, adult);
             if (target == null)
                 DisguiseAPI.disguiseNextEntity(mobDisguise);
@@ -101,7 +103,8 @@ public class DisguiseHook {
     public static void disguiseMisc(@Nullable LivingEntity target, String type, int data) {
         try {
             String name = target == null ? null : target.getCustomName();
-            DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
+            DisguiseType disguise = DisguiseType.getType(
+                    EntityType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_")));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, data);
             if (target == null) {
                 DisguiseAPI.disguiseNextEntity(miscDisguise);
@@ -125,7 +128,8 @@ public class DisguiseHook {
     public static void disguiseMisc(@Nullable LivingEntity target, String type, Material mat) {
         try {
             String name = target == null ? null : target.getCustomName();
-            DisguiseType disguise     = DisguiseType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_"));
+            DisguiseType disguise = DisguiseType.getType(
+                    EntityType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_")));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, mat);
             if (target == null)
                 DisguiseAPI.disguiseNextEntity(miscDisguise);
