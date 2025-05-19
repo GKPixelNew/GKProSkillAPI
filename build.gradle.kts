@@ -44,10 +44,11 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.5")
     compileOnly("ru.endlesscode.mimic:mimic-bukkit-api:0.8.0")
     compileOnly("org.projectlombok:lombok:1.18.38")
-    implementation("me.libraryaddict.disguises:libsdisguises:11.0.0") {
+    compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.0") {
         exclude(group = "org.spigotmc", module = "spigot-api")
         exclude(group = "org.ow2.asm", module = "asm")
     }
+    compileOnly("com.github.retrooper:packetevents-spigot:2.8.0")
     compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT") {
         exclude(group = "com.sk89q.worldedit")
