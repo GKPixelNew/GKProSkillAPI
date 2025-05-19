@@ -50,7 +50,7 @@ dependencies {
         exclude(group = "org.ow2.asm", module = "asm")
     }
     compileOnly("com.github.retrooper:packetevents-spigot:2.8.0")
-    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
+    compileOnly("fr.neatmonster:nocheatplus:3.16.0-RC")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT") {
         exclude(group = "com.sk89q.worldedit")
         exclude(group = "org.spigotmc", module = "spigot-api")
