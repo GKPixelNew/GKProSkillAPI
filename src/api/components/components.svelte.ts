@@ -1090,7 +1090,9 @@ class RememberTarget extends FabledTarget {
 			description:  'Targets entities stored using the "Remember Targets" mechanic for the matching key. If it was never set, this will fail',
 			data:         [
 				new StringSelect('Key', 'key', 'target')
-					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill')
+					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill'),
+				new BooleanSelect('Overwrite', 'overwrite', true)
+					.setTooltip('Whether to overwrite an existing target group, setting this to False would append all targets to said group')
 			],
 			preview:      [
 				...particlesAtTargetPreviewOptions()
