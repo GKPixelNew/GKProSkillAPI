@@ -175,7 +175,6 @@
 				<div class='new'>
 					<span tabindex='0'
 								role='button'
-								style="font-size: 14.9px"
 								onclick={() => onImportClass()}
 								onkeypress={(e) => e.key === 'Enter' && onImportClass()}>匯入信仰</span>
 					<span tabindex='0'
