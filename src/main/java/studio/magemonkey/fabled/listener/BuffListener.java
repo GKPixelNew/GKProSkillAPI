@@ -75,6 +75,7 @@ public class BuffListener extends FabledListener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onHeal(final SkillHealEvent event) {
+        System.out.println("SkillHealEvent: " + event.getAmount());
         final double withBuff = BuffRegistry.scaleValue(
                 BuffType.HEALING.getLocalizedName(),
                 event.getTarget(),
