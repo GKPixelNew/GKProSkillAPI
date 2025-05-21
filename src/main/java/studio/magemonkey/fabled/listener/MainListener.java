@@ -333,6 +333,8 @@ public class MainListener extends FabledListener {
      */
     @EventHandler
     public void onSaturationHeal(EntityRegainHealthEvent event) {
+        System.out.println("HealTrigger: shouldTrigger,  event.getAmount() = " + event.getAmount() + ", event.getRegainReason() = " + event.getRegainReason());
+
         String foodBar = Fabled.getSettings().getFoodBar().toLowerCase();
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED
                 && Fabled.getSettings().isBlockSaturation()
