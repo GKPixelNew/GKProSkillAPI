@@ -25,6 +25,7 @@ public class HealTrigger implements Trigger<EntityRegainHealthEvent> {
      */
     @Override
     public boolean shouldTrigger(EntityRegainHealthEvent event, int level, Settings settings) {
+        System.out.println("HealTrigger: shouldTrigger,  event.getAmount() = " + event.getAmount());
         final double min = settings.getDouble("heal-min");
         final double max = settings.getDouble("heal-max");
         return event.getAmount() >= min && event.getAmount() <= max;
