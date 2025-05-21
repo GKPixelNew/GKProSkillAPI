@@ -106,10 +106,9 @@ public class DisguiseHook {
             DisguiseType disguise = DisguiseType.getType(
                     EntityType.valueOf(type.toUpperCase(Locale.US).replace(" ", "_")));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, data);
-            if (target == null) {
+            if (target == null)
                 DisguiseAPI.disguiseNextEntity(miscDisguise);
-                System.out.println(miscDisguise);
-            } else
+            else
                 DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
                 target.setCustomName(name);
