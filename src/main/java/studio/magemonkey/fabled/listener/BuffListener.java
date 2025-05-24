@@ -35,7 +35,6 @@ public class BuffListener extends FabledListener {
         if (classification != null && !classification.equalsIgnoreCase(PHYSICAL)) {
             damageType = BuffType.SKILL_DAMAGE.getLocalizedName() + "_" + classification;
             defenseType = BuffType.SKILL_DEFENSE.getLocalizedName() + "_" + classification;
-            System.out.println(damageType + " " + defenseType);
         }
 
         double withDamageBuffs = damage;
