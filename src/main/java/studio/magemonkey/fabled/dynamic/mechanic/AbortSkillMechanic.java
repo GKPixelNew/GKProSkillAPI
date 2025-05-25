@@ -3,7 +3,6 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.Collections;
@@ -46,12 +45,12 @@ public class AbortSkillMechanic extends MechanicComponent {
                 yield List.of();
             }
         };
-        System.out.println("Abort type: " + type);
-        System.out.println("Aborting skills: " + skills.stream().map(Skill::getName).toList());
         if (self) targets = List.of(caster);
         for (DynamicSkill s : skills) {
             for (LivingEntity target : targets) {
                 for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.getOrDefault(target.getEntityId(), Collections.emptyList())) {
+                    System.out.println(
+                            "Checking repeat task: " + task.getSkill().getName() + " against " + s.getName());
                     if (s.getName().equals(task.getSkill().getName())) {
                         task.cancel();
                     }
