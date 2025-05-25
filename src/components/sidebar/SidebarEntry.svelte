@@ -12,6 +12,7 @@
 	import FabledClass, { classStore }                                          from '../../data/class-store.svelte';
 	import { FabledFolder, folderStore }                                        from '../../data/folder-store.svelte.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
+	import { importSkill, reloadAllSkills } from '$api/cdn';
 
 
 	interface Props {
@@ -144,13 +145,13 @@
 			
 			{#if !browser || ('showOpenFilePicker' in window)}
 			{#key sync}
-			<div onclick={(e) => toggleSyncLocal(data).then(() => sync = isSyncLocal(data))}
-				onkeypress={(event) => {if (event?.key === 'Enter') toggleSyncLocal(data).then(() => sync = isSyncLocal(data));}}
+			<div onclick={(e) => importSkill(data.name)}
+				onkeypress={(event) => {if (event?.key === 'Enter') importSkill(data.name)}}
 				class:activeSync={sync}
 				tabindex='0'
 				role='button'
 				class='sync'
-				title='Local Sync: {sync ? "On" : "Off"}'>
+				title='重新整理本技能'>
 			   <span class='material-symbols-rounded'>sync</span>
 			</div>
 			{/key}
