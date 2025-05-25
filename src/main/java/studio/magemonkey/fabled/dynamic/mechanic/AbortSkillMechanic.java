@@ -49,8 +49,6 @@ public class AbortSkillMechanic extends MechanicComponent {
         for (DynamicSkill s : skills) {
             for (LivingEntity target : targets) {
                 for (RepeatMechanic.RepeatTask task : RepeatMechanic.tasks.getOrDefault(target.getEntityId(), Collections.emptyList())) {
-                    System.out.println(
-                            "Checking repeat task: " + task.getSkill().getName() + " against " + s.getName());
                     if (s.getName().equals(task.getSkill().getName())) {
                         task.cancel();
                     }
