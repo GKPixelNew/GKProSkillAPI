@@ -82,7 +82,7 @@ java.sourceCompatibility = JavaVersion.VERSION_23
 tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(23)
+        options.release.set(24)
     }
 
     processResources {
