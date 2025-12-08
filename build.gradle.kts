@@ -20,8 +20,10 @@ repositories {
     maven("https://repo.gkpixel.com/public/")
     maven("https://repo.aikar.co/nexus/content/groups/aikar/")
     maven("https://repo.md-5.net/content/groups/public/")
+    maven("https://repo.travja.dev/releases")
+    maven("https://repo.travja.dev/snapshots")
 }
-var codex_version = "1.1.0-R0.20-SNAPSHOT"
+var codex_version = "1.1.1-R0.16-SNAPSHOT"
 
 dependencies {
     testImplementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
@@ -64,6 +66,8 @@ dependencies {
     }
     compileOnly("com.mojang:authlib:3.11.50")
     compileOnly("dev.robothanzo.gk.replay:GKReplay:1.8.2-SNAPSHOT")
+    compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
+    compileOnly("io.lumine:Mythic:5.11.1")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 }
@@ -97,7 +101,7 @@ tasks {
     test {
         doFirst {
             environment("CODEX_VERSION", codex_version)
-            environment("FABLED_VERSION", project.version)
+            environment("FABLED_VERSION", version)
         }
         useJUnitPlatform()
     }

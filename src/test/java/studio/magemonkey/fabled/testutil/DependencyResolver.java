@@ -5,14 +5,19 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Log4j2
 public class DependencyResolver {
-    private static List<String> repositories =
-            List.of("https://central.sonatype.com/repository/maven-snapshots/", "https://repo1.maven.org/maven2");
+    private static final Map<String, String> urlCache     = new HashMap<>();
+    private static       List<String>        repositories =
+            List.of("https://repo.travja.dev/snapshots/",
+                    "https://central.sonatype.com/repository/maven-snapshots/",
+                    "https://repo1.maven.org/maven2");
 
     public static File resolve(String dependency) throws FileNotFoundException {
         log.info("Attempting to resolve dependency " + dependency);
@@ -50,6 +55,9 @@ public class DependencyResolver {
 
     private static String findArtifactUrl(String groupId, String artifact, String version) throws
             FileNotFoundException {
+        if (urlCache.containsKey(groupId + artifact + version)) {
+            return urlCache.get(groupId + artifact + version);
+        }
         for (String rep : repositories) {
             StringBuilder html       = new StringBuilder();
             String        repository = rep + (groupId + "/" + artifact).replace('.', '/') + "/" + version + "/";
@@ -68,16 +76,19 @@ public class DependencyResolver {
             String text = html.toString();
             Pattern pat = Pattern.compile(
                     "<a href=\"("
-                            + (repository + artifact + "-" + version.replace("-SNAPSHOT", ""))
-                            .replace("/", "\\/")
-                            .replace(".", "\\.")
-                            + "-?[^>]*?(?<!sources)(?<!javadocs)"
+                            + "(?:" + repository + "|./)"
+                            + artifact + "-" + version.replace("-SNAPSHOT", "-\\d*\\.\\d*-\\d*")
+                            + "-?[^>]*?(?<!sources)(?<!javadocs)(?<!javadoc)"
                             + "\\.jar)\">");
             Matcher mat = pat.matcher(text);
             String  url = "NO_URL";
             while (mat.find()) {
                 url = mat.group(1);
             }
+            if (url.startsWith("./")) {
+                url = repository + url.replace("./", "");
+            }
+            urlCache.put(groupId + artifact + version, url);
             if (!url.equals("NO_URL"))
                 return url;
         }

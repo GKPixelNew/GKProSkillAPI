@@ -35,6 +35,7 @@ class ExperienceMechanicTest extends MockedTest {
 
     private void initGroupsFile() throws IOException {
         File groupsFile = new File(getPluginFolder(), "groups.yml");
+        groupsFile.getParentFile().mkdirs();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(MockedTest.class
                 .getClassLoader()
                 .getResourceAsStream("groups.yml"))));

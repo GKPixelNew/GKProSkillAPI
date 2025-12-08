@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.DyeColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -49,6 +50,7 @@ import java.util.*;
 /**
  * Applies a flag to each target
  */
+@Slf4j
 public class WolfMechanic extends MechanicComponent {
     public static final  String SKILL_META = "sapi_wolf_skills";
     public static final  String LEVEL      = "sapi_wolf_level";
@@ -112,6 +114,7 @@ public class WolfMechanic extends MechanicComponent {
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
             aggroTargets = aggroTarget.getTargets(caster, level, targets);
+            log.info(aggroTargets.toString());
         }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
@@ -126,7 +129,7 @@ public class WolfMechanic extends MechanicComponent {
                 wolf.setHealth(health);
                 wolf.setSitting(sitting);
                 if (!aggroTargets.isEmpty()) {
-                    wolf.setTarget(aggroTargets.get(0));
+                    wolf.setTarget(aggroTargets.getFirst());
                     wolf.setAngry(true);
                 }
                 wolf.setHealth(health);
