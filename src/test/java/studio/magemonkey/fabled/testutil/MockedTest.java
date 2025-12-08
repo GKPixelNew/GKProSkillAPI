@@ -241,6 +241,10 @@ public abstract class MockedTest {
         MockBukkit.unmock();
     }
 
+    protected String getPluginFolder() {
+        return server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System.getProperty("FABLED_VERSION");
+    }
+
     @BeforeEach
     public void initClasses() {
         String fabledVersion = System.getenv("FABLED_VERSION");

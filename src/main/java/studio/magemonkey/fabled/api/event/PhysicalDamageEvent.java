@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.api.event;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An event for when an entity is damaged by another entity without the
@@ -46,7 +47,7 @@ public class PhysicalDamageEvent extends DamageEvent {
      * @param damage     the amount of damage dealt
      * @param projectile whether it was a projectile attack
      */
-    public PhysicalDamageEvent(LivingEntity damager, LivingEntity target, double damage, boolean projectile) {
+    public PhysicalDamageEvent(@Nullable LivingEntity damager, @NotNull LivingEntity target, double damage, boolean projectile) {
         super(damager, target, damage, false);
         this.projectile = projectile;
     }

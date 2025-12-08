@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
 /**
@@ -42,6 +43,7 @@ public class CmdSkill implements IFunction {
     private static final String CANNOT_USE = "cannot-use";
     private static final String NO_SKILLS  = "no-skills";
     private static final String DISABLED   = "world-disabled";
+    private static final String INVALID_GROUP = "invalid-group";
     private static final String MAP_GIVEN  = "map-given";
     private static final String MAP_OWNED  = "map-owned";
 
@@ -52,26 +54,40 @@ public class CmdSkill implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only plays have skills to view
         else if (sender instanceof Player) {
             Player     p    = (Player) sender;
             PlayerData data = Fabled.getData(p);
-            if (!data.showSkills(p)) {
-                cmd.sendMessage(sender, NO_SKILLS, ChatColor.RED + "You have no skills to view");
+            if (args.length > 0){
+                String group = String.join("", args);
+                PlayerClass className = data.getClass(group);
+                if (className == null){
+                    cmd.sendMessage(sender, INVALID_GROUP, ChatColor.RED + "The specified group was not found", silent);
+                }
+                else if (!data.showSkills(p, className)) {
+                    cmd.sendMessage(sender, NO_SKILLS, ChatColor.RED + "You have no skills to view for the given group",
+                            silent);
+                }
+            }
+            else {
+                if (!data.showSkills(p)) {
+                    cmd.sendMessage(sender, NO_SKILLS, ChatColor.RED + "You have no skills to view", silent);
+                }
             }
         }
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 }

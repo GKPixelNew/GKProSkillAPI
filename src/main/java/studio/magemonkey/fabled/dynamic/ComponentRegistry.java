@@ -49,6 +49,7 @@ public class ComponentRegistry {
         register(new CrouchTrigger());
         register(new DeathTrigger());
         register(new DropItemTrigger());
+        register(new EntityResurrectTrigger());
         register(new EntityTargetTrigger());
         register(new EnvironmentalTrigger());
         register(new ExperienceTrigger());
@@ -58,6 +59,9 @@ public class ComponentRegistry {
         register(new FishingGrabTrigger());
         register(new FishingGroundTrigger());
         register(new FishingReelTrigger());
+        register(new FlagTrigger());
+        register(new FlagExpireTrigger());
+        register(new FlightToggleTrigger());
         register(new GlideTrigger());
         register(new HarvestTrigger());
         register(new HealTrigger());
@@ -80,6 +84,7 @@ public class ComponentRegistry {
         register(new TeleportTrigger());
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
+        register(new StripLogTrigger());
         register(new WorldChangeTrigger());
 
         // Targets
@@ -201,6 +206,7 @@ public class ComponentRegistry {
         register(new MineMechanic());
         register(new MoneyMechanic());
         register(new MountMechanic());
+        register(new MythicMobSkill());
         register(new ParticleAnimationMechanic());
         register(new ParticleEffectMechanic());
         register(new ParticleImageMechanic());

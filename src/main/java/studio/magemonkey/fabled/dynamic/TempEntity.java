@@ -78,6 +78,8 @@ import java.util.function.Consumer;
  */
 public class TempEntity implements LivingEntity {
 
+    private final UUID uuid = UUID.randomUUID();
+
     private EffectTarget target;
 
     /**
@@ -1275,7 +1277,7 @@ public class TempEntity implements LivingEntity {
     }
 
     public UUID getUniqueId() {
-        return null;
+        return uuid;
     }
 
     public int getTicksLived() {
