@@ -112,7 +112,7 @@ public class WolfMechanic extends MechanicComponent {
         List<LivingEntity> aggroTargets = List.of();
         if (aggroTarget != null) {
             aggroTargets = aggroTarget.getTargets(caster, level, targets);
-            System.out.println(aggroTargets.toArray().toString());
+            System.out.println(aggroTargets.toString());
         }
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
