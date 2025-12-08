@@ -54,8 +54,8 @@ public class NearestTarget extends TargetComponent {
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        log.info(settings.getString("group"));
-        log.info(settings.getString("caster"));
+        log.warn(settings.getString("group"));
+        log.warn(settings.getString("caster"));
         final double             radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
