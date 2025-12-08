@@ -41,7 +41,7 @@ dependencies {
         exclude(group = "com.sk89q.worldguard")
     }
 
-    api("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.5")
@@ -60,7 +60,7 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.11-SNAPSHOT") {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
-    implementation("studio.magemonkey:codex:${codex_version}") {
+    api("studio.magemonkey:codex:${codex_version}") {
         exclude(group = "com.sk89q.worldedit")
         exclude(group = "com.sk89q.worldguard")
     }
