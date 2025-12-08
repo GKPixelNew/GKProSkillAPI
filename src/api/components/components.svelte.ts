@@ -174,7 +174,7 @@ class ConsumeTrigger extends FabledTrigger {
 			name:         'Consume',
 			description:  'Applies skill effects when a player consumes an item',
 			data:         [
-				...itemConditionOptions(new DropdownSelect('Material', 'material', getAnyConsumable, 'Any')
+				...itemConditionOptions(new DropdownSelect('Material', 'material', getAnyConsumable, 'Any', true)
 					.setTooltip('The type of item that the player has consumed.')
 					.requireValue('check-mat', [true]))
 			],
@@ -221,6 +221,17 @@ class DropItemTrigger extends FabledTrigger {
 					.setTooltip('Whether the player has to drop multiple items or a single item')
 			],
 			summaryItems: ['drop multiple']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class EntityResurrectTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Entity Resurrect',
+			description: 'Applies skill effects when an entity is resurrected.'
 		});
 	}
 
@@ -337,6 +348,59 @@ class FishingReelTrigger extends FabledTrigger {
 		super({
 			name:        'Fishing Reel',
 			description: 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class FlagTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Flag',
+			description:  'Applies skill effects when the player receives a flag from a mechanic.',
+			data:         [
+				new StringListSelect('Flags', 'flags', ['Any'])
+					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
+				new IntSelect('Min Duration', 'min-duration', 0)
+					.setTooltip('The minimum duration the specified flags must be set for'),
+				new BooleanSelect('Inverse', 'inverse', false)
+					.setTooltip('Whether to trigger when NOT applying the specified flags')
+			],
+			summaryItems: ['flags', 'min-duration', 'inverse']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class FlagExpireTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Flag Expire',
+			description:  'Applies skill effects when a flag expires on a player.',
+			data:         [
+				new StringListSelect('Flags', 'flags', ['Any'])
+					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
+				new BooleanSelect('Inverse', 'inverse', false)
+					.setTooltip('Whether to trigger when NOT applying the specified flags')
+			],
+			summaryItems: ['flags', 'inverse']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class FlightToggleTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Flight Toggle',
+			description:  'Applies skill effects when a player starts or stops flying.',
+			data:         [
+				new DropdownSelect('Flying', 'type', ['Start Flying', 'Stop Flying', 'Both'])
+			],
+			summaryItems: ['type']
 		});
 	}
 
@@ -466,9 +530,9 @@ class LaunchTrigger extends FabledTrigger {
 		super({
 			name:         'Launch',
 			description:  'Applies skill effects when a player launches a projectile',
-			data:         [new DropdownSelect('Type', 'type', getAnyProjectiles, 'Any')
+			data:         [new DropdownSelect('Types', 'types', getAnyProjectiles, 'Any', true)
 				.setTooltip('The type of projectile that should be launched')],
-			summaryItems: ['type']
+			summaryItems: ['types']
 		});
 	}
 
@@ -513,7 +577,7 @@ class PhysicalDamageTrigger extends FabledTrigger {
 				new DoubleSelect('Min Damage', 'dmg-min', 0)
 					.setTooltip('The minimum damage that needs to be dealt'),
 				new DoubleSelect('Max Damage', 'dmg-max', 999)
-					.setTooltip('The minimum damage that needs to be dealt')
+					.setTooltip('The maximum damage that needs to be dealt')
 			],
 			summaryItems: ['target', 'type', 'dmg-min', 'dmg-max']
 		});
@@ -682,6 +746,22 @@ class SprintTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class StripLogTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Strip Log',
+			description:  'Applies skill effects when a player strips a block matching the given details',
+			data:         [new BlockSelect(
+				'The type of block expected to be broken',
+				'The expected data value of the block (-1 for any data value)'
+			)],
+			summaryItems: ['block']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class TookPhysicalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -736,9 +816,9 @@ class ShieldTrigger extends FabledTrigger {
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
 				new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
 					.setTooltip('The type of damage dealt'),
-				new DoubleSelect('Damage Heal', 'dmg-min', 0)
+				new DoubleSelect('Damage Blocked', 'dmg-min', 0)
 					.setTooltip('The minimum damage that needs to be blocked'),
-				new DoubleSelect('Damage Heal', 'dmg-max', 999)
+				new DoubleSelect('Damage Blocked', 'dmg-max', 999)
 					.setTooltip('The maximum damage that needs to be blocked')
 			],
 			summaryItems: ['target', 'type', 'dmg-min', 'dmg-max']
@@ -1451,9 +1531,11 @@ class ClassLevelCondition extends FabledCondition {
 				new IntSelect('Min Level', 'min-level', 2)
 					.setTooltip('The minimum class level the player should be. If the player has multiple classes, this will be of their main class'),
 				new IntSelect('Max Level', 'max-level', 99)
-					.setTooltip('The maximum class level the player should be. If the player has multiple classes, this will be of their main class')
+					.setTooltip('The maximum class level the player should be. If the player has multiple classes, this will be of their main class'),
+				new StringSelect('Group', 'group', 'main')
+					.setTooltip('The specified group to check the class level for. If set to main will choose the main class group.')
 			],
-			summaryItems: ['min-level', 'max-level']
+			summaryItems: ['min-level', 'max-level', 'group']
 		});
 	}
 
@@ -1900,9 +1982,11 @@ class PermissionCondition extends FabledCondition {
 			description:  'Applies child components if the caster has the required permission',
 			data:         [
 				new StringSelect('Permission', 'perm', 'some.permission')
-					.setTooltip('The permission the player needs to have')
+					.setTooltip('The permission the player needs to have'),
+				new BooleanSelect('Negate', 'negate', false)
+					.setTooltip('Whether to negate the permission check. If true, the player must NOT have the permission to pass the condition')
 			],
-			summaryItems: ['perm']
+			summaryItems: ['perm', 'negate']
 		});
 	}
 
@@ -2878,7 +2962,10 @@ class DamageBuffMechanic extends FabledMechanic {
 				new AttributeSelect('Value', 'value', 1)
 					.setTooltip('The amount to increase/decrease the damage by. A negative amount with the "Flat" type will decrease damage, similar to a number less than 1 for the multiplier'),
 				new AttributeSelect('Seconds', 'seconds', 3)
-					.setTooltip('The duration of the buff in seconds')
+					.setTooltip('The duration of the buff in seconds'),
+				new StringSelect('Classification', 'classification', 'default')
+					.setTooltip('The classification of the buff. This is intended to be used with damage classifiers from the DamageMechanic, or Divinity damage types using <code>DIVINITY_type</code>')
+					.requireValue('skill', [true])
 			],
 			summaryItems: ['type', 'skill', 'value', 'seconds']
 		}, false);
@@ -2931,7 +3018,10 @@ class DefenseBuffMechanic extends FabledMechanic {
 				new AttributeSelect('Value', 'value', 1)
 					.setTooltip('The amount to increase/decrease incoming damage by'),
 				new AttributeSelect('Seconds', 'seconds', 3)
-					.setTooltip('The duration of the buff in seconds')
+					.setTooltip('The duration of the buff in seconds'),
+				new StringSelect('Classification', 'classification', 'default')
+					.setTooltip('The classification of the buff. This is intended to be used with damage classifiers from the DamageMechanic, or Divinity damage types using <code>DIVINITY_type</code>')
+					.requireValue('skill', [true])
 			],
 			summaryItems: ['type', 'skill', 'value', 'seconds']
 		}, false);
@@ -3182,16 +3272,21 @@ class FlyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fly',
-			description:  'Grants creative flight to a target for a set duration.',
+			description:  'Grants creative flight to a target for a set duration. Can also be used to revoke flight.',
 			data:         [
+				new BooleanSelect('Allow Flight', 'allow-flight', true)
+					.setTooltip('Should the player be allowed to fly when in Survival or Adventure mode? Setting this to false will revoke flight in Survival or Adventure mode.'),
 				new AttributeSelect('Seconds', 'seconds', 3, 1)
-					.setTooltip('The duration of the flight in seconds'),
+					.setTooltip('The duration for how long flight should be granted in seconds.')
+					.requireValue('allow-flight', [true]),
 				new AttributeSelect('Flyspeed', 'flyspeed', 0.1, 0)
-					.setTooltip('How fast the player should be able to fly. NOTE: The value should be between -1 and 1. Values higher than this may show no change in speed.'),
-				new BooleanSelect('Flying', 'flying', true)
-					.setTooltip('If the player should be able to fly. Setting this to false will revoke flight regardless of time left. If set to false, the seconds value is ignored.')
+					.setTooltip('How fast the player should be able to fly. NOTE: Default flight speed is 0.1, and values greater than 1 or less than -1 will show no change in speed.')
+					.requireValue('allow-flight', [true]),
+				new BooleanSelect('Force Flight', 'flying', true)
+					.setTooltip('If the player is in the air, should they be forced to fly.')
+					.requireValue('allow-flight', [true])
 			],
-			summaryItems: ['seconds', 'flyspeed', 'flying']
+			summaryItems: ['allow-flight', 'seconds', 'flyspeed', 'flying']
 		});
 	}
 
@@ -3828,6 +3923,22 @@ class MountMechanic extends FabledMechanic {
 					.setTooltip('The maximum amount of entities to stack')
 			],
 			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class MythicMobSkill extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'MythicMob Skill',
+			description:  'Casts a MythicMob skill on current the targets.',
+			data:         [
+				new StringSelect('MythicMob Skill', 'skill')
+					.setTooltip('The MythicMob skill to cast')
+			],
+			summaryItems: ['skill']
 		});
 	}
 
@@ -4818,14 +4929,14 @@ class SkillCastMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Skill cast',
-			description:  'Make target cast other skill. Applicable to players only!',
+			description:  'Make target cast other skill. Recommended for use on players.',
 			data:         [
 				new DropdownSelect('Cast mode', 'mode', ['All', 'First', 'Random'], 'All')
 					.setTooltip('Choose which skills to cast (excluding unavailable skills).'),
 				new BooleanSelect('Force cast', 'force', false)
-					.setTooltip('True if player will cast regardless of whether they have that skill or not'),
+					.setTooltip('True if target will cast regardless of whether they have that skill or not'),
 				new StringListSelect('Skills', 'skills')
-					.setTooltip('The list of skills.Each skill can come with the level like "example skill:3". If player has skill, level will is available level. Else, level is 1.')
+					.setTooltip('The list of skills. Each skill can come with the level like "example skill:3". If the target is a player and has the skill, level will is available level. Else, level is 1.')
 			],
 			summaryItems: ['mode', 'force', 'skills']
 		}, false);
@@ -5755,38 +5866,41 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
-		AIR:           { name: 'Air', component: AirTrigger },
-		ATTR_CHANGE:   { name: 'Attribute Change', component: AttributeChangeTrigger },
-		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
-		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
-		CAST:          { name: 'Cast', component: CastTrigger },
-		CHAT:          { name: 'Chat', component: ChatTrigger },
-		CLEANUP:       { name: 'Cleanup', component: CleanupTrigger },
-		CROUCH:        { name: 'Crouch', component: CrouchTrigger },
-		DEATH:         { name: 'Death', component: DeathTrigger },
-		ENTITY_TARGET: { name: 'Entity Target', component: EntityTargetTrigger },
-		EXPERIENCE:    { name: 'Experience', component: ExperienceTrigger },
-		GLIDE:         { name: 'Glide', component: GlideTrigger },
-		HARVEST:       { name: 'Harvest', component: HarvestTrigger },
-		HEAL:          { name: 'Heal', component: HealTrigger },
-		INIT:          { name: 'Initialize', component: InitializeTrigger },
-		JUMP:          { name: 'Jump', component: JumpTrigger },
-		KILL:          { name: 'Kill', component: KillTrigger },
-		LAND:          { name: 'Land', component: LandTrigger },
-		LEFT_CLICK:    { name: 'Left Click', component: LeftClickTrigger },
-		RIGHT_CLICK:   { name: 'Right Click', component: RightClickTrigger },
-		MOVE:          { name: 'Move', component: MoveTrigger },
-		PROJ_HIT:      { name: 'Projectile Hit', component: ProjectileHitTrigger },
-		PROJ_LAUNCH:   { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
-		PROJ_TICK:     { name: 'Projectile Tick', component: ProjectileTickTrigger },
-		RIPTIDE:       { name: 'Riptide', component: RiptideTrigger },
-		SHEAR:         { name: 'Shear', component: ShearTrigger },
-		SHIELD:        { name: 'Shield', component: ShieldTrigger },
-		SIGNAL:        { name: 'Signal', component: SignalTrigger },
-		SKILL_CAST:    { name: 'Skill Cast', component: SkillCastTrigger },
-		SPRINT:        { name: 'Sprint', component: SprintTrigger },
+		AIR:              { name: 'Air', component: AirTrigger },
+		ATTR_CHANGE:      { name: 'Attribute Change', component: AttributeChangeTrigger },
+		BLOCK_BREAK:      { name: 'Block Break', component: BlockBreakTrigger },
+		BLOCK_PLACE:      { name: 'Block Place', component: BlockPlaceTrigger },
+		CAST:             { name: 'Cast', component: CastTrigger },
+		CHAT:             { name: 'Chat', component: ChatTrigger },
+		CLEANUP:          { name: 'Cleanup', component: CleanupTrigger },
+		CROUCH:           { name: 'Crouch', component: CrouchTrigger },
+		DEATH:            { name: 'Death', component: DeathTrigger },
+		ENTITY_TARGET:    { name: 'Entity Target', component: EntityTargetTrigger },
+		ENTITY_RESURRECT: { name: 'Entity Resurrect', component: EntityResurrectTrigger },
+		EXPERIENCE:       { name: 'Experience', component: ExperienceTrigger },
+		FLIGHT_TOGGLE:    { name: 'Flight Toggle', component: FlightToggleTrigger },
+		GLIDE:            { name: 'Glide', component: GlideTrigger },
+		HARVEST:          { name: 'Harvest', component: HarvestTrigger },
+		HEAL:             { name: 'Heal', component: HealTrigger },
+		INIT:             { name: 'Initialize', component: InitializeTrigger },
+		JUMP:             { name: 'Jump', component: JumpTrigger },
+		KILL:             { name: 'Kill', component: KillTrigger },
+		LAND:             { name: 'Land', component: LandTrigger },
+		LEFT_CLICK:       { name: 'Left Click', component: LeftClickTrigger },
+		RIGHT_CLICK:      { name: 'Right Click', component: RightClickTrigger },
+		MOVE:             { name: 'Move', component: MoveTrigger },
+		PROJ_HIT:         { name: 'Projectile Hit', component: ProjectileHitTrigger },
+		PROJ_LAUNCH:      { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
+		PROJ_TICK:        { name: 'Projectile Tick', component: ProjectileTickTrigger },
+		RIPTIDE:          { name: 'Riptide', component: RiptideTrigger },
+		SHEAR:            { name: 'Shear', component: ShearTrigger },
+		SHIELD:           { name: 'Shield', component: ShieldTrigger },
+		SIGNAL:           { name: 'Signal', component: SignalTrigger },
+		SKILL_CAST:       { name: 'Skill Cast', component: SkillCastTrigger },
+		SPRINT:           { name: 'Sprint', component: SprintTrigger },
+		STRIP_LOG:        { name: 'Strip Log', component: StripLogTrigger },
 		TELEPORT: { name: 'Teleport', component: TeleportTrigger },
-		WORLD_CHANGE:  { name: 'World Change', component: WorldChangeTrigger },
+		WORLD_CHANGE:     { name: 'World Change', component: WorldChangeTrigger },
 
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
@@ -5805,6 +5919,10 @@ export const initComponents = () => {
 		TOOK_PHYS:    { name: 'Took Physical Damage', component: TookPhysicalTrigger, section: 'Damage' },
 		SKILL_DAMAGE: { name: 'Skill Damage', component: SkillDamageTrigger, section: 'Damage' },
 		TOOK_SKILL:   { name: 'Took Skill Damage', component: TookSkillTrigger, section: 'Damage' },
+
+		FLAG:        { name: 'Flag', component: FlagTrigger, section: 'Flag' },
+		FLAG_EXPIRE: { name: 'Flag Expire', component: FlagExpireTrigger, section: 'Flag' }
+
 	});
 	targets.set({
 		AREA:     { name: 'Area', component: AreaTarget },
@@ -5924,6 +6042,7 @@ export const initComponents = () => {
 		MINE:               { name: 'Mine', component: MineMechanic },
 		MONEY:              { name: 'Money', component: MoneyMechanic },
 		MOUNT:              { name: 'Mount', component: MountMechanic },
+		MYTHICMOB_SKILL:    { name: 'MythicMob Skill', component: MythicMobSkill },
 		PASSIVE:            { name: 'Passive', component: PassiveMechanic },
 		PERMISSION:         { name: 'Permission', component: PermissionMechanic },
 		POTION:             { name: 'Potion', component: PotionMechanic },
