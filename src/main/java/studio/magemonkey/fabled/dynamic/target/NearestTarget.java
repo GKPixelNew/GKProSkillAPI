@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -47,13 +47,15 @@ import java.util.function.Supplier;
  * Applies child components to the closest all nearby entities around
  * each of the current targets.
  */
+@Slf4j
 public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
 
     @Override
     public List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-
+        log.info(settings.getString("group"));
+        log.info(settings.getString("caster"));
         final double             radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
