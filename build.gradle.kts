@@ -60,7 +60,7 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-core:7.3.11-SNAPSHOT") {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
-    api("studio.magemonkey:codex:${codex_version}") {
+    implementation("studio.magemonkey:codex:${codex_version}") {
         exclude(group = "com.sk89q.worldedit")
         exclude(group = "com.sk89q.worldguard")
     }
