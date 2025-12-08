@@ -62,7 +62,7 @@ public class WolfMechanic extends MechanicComponent {
     private static final String SKILLS     = "skills";
     private static final String AMOUNT     = "amount";
     private static final String SITTING    = "sitting";
-    private static final String AGGRO_TARGET = "aggro-target";
+    private static final String AGGRO_TARGET = "aggro_target";
     private static final String SILENT = "silent";
     private static final String NO_AI = "no_ai";
 
