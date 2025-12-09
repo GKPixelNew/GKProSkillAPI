@@ -29,9 +29,11 @@ package studio.magemonkey.fabled.dynamic;
 import com.destroystokyo.paper.block.TargetBlockInfo;
 import com.destroystokyo.paper.entity.TargetEntityInfo;
 import com.google.common.collect.ImmutableList;
+import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.entity.LookAnchor;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.threadedregions.scheduler.EntityScheduler;
+import io.papermc.paper.world.damagesource.CombatTracker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
@@ -437,6 +439,11 @@ public class TempEntity implements LivingEntity {
     @Override
     public Set<Player> getTrackedBy() {
         return Set.of();
+    }
+
+    @Override
+    public boolean isTrackedBy(@NotNull Player player) {
+        return false;
     }
 
     public void setCustomNameVisible(boolean b) {
@@ -986,6 +993,11 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public @NotNull CombatTracker getCombatTracker() {
+        return null;
+    }
+
+    @Override
     public void setInvisible(boolean invisible) {
     }
 
@@ -1161,8 +1173,19 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
+    @NotNull
+    @Override
+    public TriState getVisualFire() {
+        return null;
+    }
+
     @Override
     public void setVisualFire(boolean b) {
+
+    }
+
+    @Override
+    public void setVisualFire(@NotNull TriState triState) {
 
     }
 
@@ -1257,6 +1280,12 @@ public class TempEntity implements LivingEntity {
 
     public boolean eject() {
         return false;
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getPickItemStack() {
+        return null;
     }
 
     public float getFallDistance() {
@@ -1459,5 +1488,21 @@ public class TempEntity implements LivingEntity {
     @Override
     public void setFrictionState(@NotNull TriState triState) {
 
+    }
+
+    @Override
+    public <T> @org.jspecify.annotations.Nullable T getData(DataComponentType.Valued<T> valued) {
+        return null;
+    }
+
+    @Override
+    public <T> @org.jspecify.annotations.Nullable T getDataOrDefault(DataComponentType.Valued<? extends T> valued,
+                                                                     @org.jspecify.annotations.Nullable T t) {
+        return null;
+    }
+
+    @Override
+    public boolean hasData(DataComponentType dataComponentType) {
+        return false;
     }
 }
