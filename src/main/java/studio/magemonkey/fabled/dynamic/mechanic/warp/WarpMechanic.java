@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.warp;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -44,6 +45,7 @@ import java.util.function.Supplier;
 /**
  * Warps the target relative to their current location
  */
+@Slf4j
 public class WarpMechanic extends AbstractWarpingMechanic {
     private static final Vector UP = new Vector(0, 1, 0);
 
@@ -68,7 +70,7 @@ public class WarpMechanic extends AbstractWarpingMechanic {
         Vector   dir  = target.getLocation().getDirection();
         Vector   side = dir.clone().crossProduct(UP).multiply(right);
         Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0);
-
+        log.info("Calculated warp location at " + loc);
         if (openOnly) {
             loc.add(0, 1, 0);
             loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
