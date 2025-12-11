@@ -26,12 +26,14 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.warp;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
+@Slf4j
 abstract class AbstractWarpingMechanic extends MechanicComponent {
     protected static final String PRESERVE  = "preserve";
     protected static final String SET_YAW   = "setYaw";
@@ -60,6 +62,7 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
     }
 
     public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
+        log.info("Warping {} from {} to {}", target.getName(), target.getLocation(), location);
         if (setYaw()) {
             boolean relative = relativeYaw();
             float   yaw      = (float) parseValues(caster, YAW, level, 0);
