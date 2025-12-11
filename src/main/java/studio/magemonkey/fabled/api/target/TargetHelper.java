@@ -272,7 +272,7 @@ public abstract class TargetHelper {
         if (throughWall) {
             Location temp = loc2.clone();
             while (steps > 0) {
-                if (!temp.getBlock().isPassable() && !temp.getBlock()
+                if (temp.getBlock().isPassable() && temp.getBlock()
                         .getRelative(BlockFace.UP)
                         .isPassable()) {
                     temp.setX(temp.getBlockX() + 0.5);
@@ -288,7 +288,7 @@ public abstract class TargetHelper {
             Location temp      = loc1.clone();
             Location lastValid = null;
             while (steps > 0) {
-                if (!temp.getBlock().isPassable() && !temp.getBlock()
+                if (temp.getBlock().isPassable() && temp.getBlock()
                         .getRelative(BlockFace.UP)
                         .isPassable()) {
                     lastValid = temp.clone();
