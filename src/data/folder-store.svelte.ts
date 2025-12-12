@@ -43,7 +43,7 @@ export class FabledFolder {
 									.map(d => {
 										if (d instanceof FabledFolder) return d.toJSON();
 
-										return d.name;
+										return d?.name ?? '';
 									})
 									.filter(d => !!d),
 			open:     this.open

@@ -28,6 +28,7 @@
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
 	import { importClass, importSkill } from '$api/cdn.js';
+	import { classChinese } from '../../version/data';
 
 	let folders: FabledFolder[] = [];
 	let tabSub: Unsubscriber;
@@ -163,7 +164,7 @@
 					<span tabindex='0'
 								role='button'
 								onclick={() => classStore.addClass()}
-								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>新增信仰</span>
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>新增{classChinese()}</span>
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
@@ -176,7 +177,7 @@
 					<span tabindex='0'
 								role='button'
 								onclick={() => onImportClass()}
-								onkeypress={(e) => e.key === 'Enter' && onImportClass()}>匯入信仰</span>
+								onkeypress={(e) => e.key === 'Enter' && onImportClass()}>匯入{classChinese()}</span>
 					<span tabindex='0'
 								role='button'
 								onclick={() => reloadAllClasses()}
@@ -269,10 +270,10 @@
 
 {#if importing === "class"}
 <Modal onclose={closeModal} width="300px">
-	<h2>匯入信仰</h2>
+	<h2>匯入{classChinese()}</h2>
 	<hr />
 	<div class='import-container'>
-		<ProInput label='信仰 ID' tooltip='要匯入的信仰 ID'>
+		<ProInput label='信仰 ID' tooltip='要匯入的{classChinese()} ID'>
 			{#if loadingOptions}
 				<Circle size="25" color="#0083ef" />
 			{:else}

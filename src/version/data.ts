@@ -26,6 +26,11 @@ export const VERSIONS                           = {
 export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]]);
 
 export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]);
+
+export const targetGame: Writable<string> = localStore<string>('target-game', 'gkpm');
+export const getTargetGame = () => get(targetGame);
+export const classChinese = () => getTargetGame() === 'gkpm' ? '信仰' : '角色';
+
 version.subscribe((ver: Versions) => {
 	if (!(ver in VERSIONS)) {
 		ver = <Versions>Object.keys(VERSIONS)[0];

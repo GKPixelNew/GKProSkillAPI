@@ -71,7 +71,7 @@ export const animationEnabled: Writable<boolean> = ((): Writable<boolean> => {
 })();
 
 export const blocklyMode: Writable<boolean> = ((): Writable<boolean> => {
-	let saved = false;
+	let saved = true;
 	if (browser) {
 		const stored = localStorage.getItem('blockly-mode');
 		saved        = stored !== null ? stored === 'true' : saved;

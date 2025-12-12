@@ -8,6 +8,7 @@ import YAML from 'yaml';
 import FabledClass, { classStore } from '../data/class-store.svelte';
 import { skillStore } from '../data/skill-store.svelte';
 import { FabledFolder } from '../data/folder-store.svelte';
+import { classChinese, getTargetGame } from '../version/data';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
@@ -20,7 +21,7 @@ export const refreshAxios = async () => {
     }
     CONFIGURED_AXIOS = axios.create({
         // baseURL: 'http://localhost:81/v1/',
-        baseURL: 'https://cdn.gkpixel.com/v1/',
+        baseURL: 'https://cdn.gkpixel.com/v2/',
         headers: {
             'Authorization': 'Bearer ' + user.access_token,
         }
@@ -29,7 +30,7 @@ export const refreshAxios = async () => {
 }
 
 export const importClass = async (classId: string) => {
-    CONFIGURED_AXIOS.get('class/' + classId).then(response => {
+    CONFIGURED_AXIOS.get(`class/${getTargetGame()}/${classId}`).then(response => {
         if (response.data.success) {
             CONFIGURED_AXIOS.get('download/' + response.data.class.fileId).then(response => {
                 loadRaw(response.data, false)
@@ -40,7 +41,7 @@ export const importClass = async (classId: string) => {
         }
     }).catch(error => {
         if (error.response.status === 404) {
-            notifyFailure(`匯入失敗，找不到信仰: ${classId}`);
+            notifyFailure(`匯入失敗，找不到${classChinese()}: ${classId}`);
         } else {
             notifyFailure(`匯入${classId}失敗，錯誤 ` + error.response.status);
         }
@@ -49,23 +50,24 @@ export const importClass = async (classId: string) => {
 
 export const importSkill = async (skillId: string) => {
     try {
-        const response = await CONFIGURED_AXIOS.get('skill/' + skillId);
+        const response = await CONFIGURED_AXIOS.get(`skill/${getTargetGame()}/${skillId}`);
         if (response.data.success) {
             try {
                 const file = await CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId);
                 await loadRaw(file.data, false);
                 notifySuccess(`成功匯入: ${skillId}`);
             } catch (error) {
-                notifyFailure(`匯入${skillId}失敗: ` + error.status);
+                notifyFailure(`匯入${skillId}失敗: ` + (error as AxiosError).status);
             }
         } else {
             notifyFailure(`匯入失敗: ${skillId}`);
         }
     } catch (error) {
-        if (error.response?.status === 404) {
+        const status = (error as AxiosError).response?.status;
+        if (status === 404) {
             notifyFailure(`匯入失敗，找不到技能: ${skillId}`);
         } else {
-            notifyFailure(`匯入${skillId}失敗，錯誤 ` + error.response.status);
+            notifyFailure(`匯入${skillId}失敗，錯誤 ` + status);
         }
     }
 }
@@ -90,7 +92,11 @@ export const reloadAllSkills = async () => {
 
 function getFolderName(skillId: string): string {
     if (skillId.toLowerCase().includes('test')) return 'Test';
-    return skillId.split('_')[0].replace(/[0-9]+/, '').toLowerCase().replace(/^[a-z]/, (c) => c.toUpperCase());
+    if (getTargetGame() === 'gkpm')
+        return skillId.split('_')[0].replace(/[0-9]+/, '').toLowerCase().replace(/^[a-z]/, (c) => c.toUpperCase());
+    else if (getTargetGame() === 'gkpl')
+        return skillId.split('_')[0].toLowerCase();
+    else return 'undefined game';
 }
 
 export const importAllSkills = async () => {
@@ -100,7 +106,7 @@ export const importAllSkills = async () => {
             await importSkill(skill);
             const folderName = getFolderName(skill);
             let folder = get(skillStore.skillFolders).filter(f => f.name === folderName)[0];
-            const realSkill = skillStore.getSkill(skill);
+            const realSkill = skillStore.getSkill(skill)!;
             if (folder) {
                 folder.add(realSkill);
             } else {
@@ -117,17 +123,17 @@ export const importAllSkills = async () => {
 
 export const getAllClasses = async () => {
     try {
-        const response = await CONFIGURED_AXIOS.get("class");
+        const response = await CONFIGURED_AXIOS.get(`class/${getTargetGame()}`);
         if (response.data.success) {
             return response.data.classes.map((s: { classId: unknown; }) => {
                 return s.classId
             }).sort();
         } else {
-            notifyFailure('讀取信仰列表失敗')
+            notifyFailure(`讀取${classChinese()}列表失敗`)
         }
     } catch (error) {
         if (error instanceof AxiosError){
-            notifyFailure('讀取信仰列表失敗，錯誤 ' + error.response?.status)
+            notifyFailure(`讀取${classChinese()}列表失敗，錯誤 ` + error.response?.status)
         }
     }
     return []
@@ -135,7 +141,7 @@ export const getAllClasses = async () => {
 
 export const getAllSkills = async () => {
     try {
-        const response = await CONFIGURED_AXIOS.get("skill");
+        const response = await CONFIGURED_AXIOS.get(`skill/${getTargetGame()}`);
         if (response.data.success) {
             return response.data.skills.map((s: { skillId: unknown; }) => {
                 return s.skillId
@@ -171,7 +177,7 @@ export const upload = async () => {
     formData.append('file', new File([new Blob([YAML.stringify({ [act.name]: act.serializeYaml() })], {
         type: 'application/x-yaml'
     })], act.name + ".yml"));
-    CONFIGURED_AXIOS.post(act instanceof FabledClass ? 'class' : 'skill', formData).then(function (response) {
+    CONFIGURED_AXIOS.post((act instanceof FabledClass ? 'class' : 'skill') + `/${getTargetGame()}`, formData).then(function (response) {
         if (response.data.success) {
             notifySuccess('上傳成功')
         } else {

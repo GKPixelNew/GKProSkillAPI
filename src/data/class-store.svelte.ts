@@ -682,6 +682,7 @@ class ClassStoreSvelte {
 				: this.addClass(key)));
 			if (fromServer) clazz.location = 'server';
 			clazz.load(data[key]);
+			clazz.name = clazz.name.toLowerCase();
 			this.refreshClasses();
 			return;
 		}
@@ -692,6 +693,7 @@ class ClassStoreSvelte {
 					? this.getClass(key)
 					: this.addClass(key)));
 				clazz.load(data[key]);
+				clazz.name = clazz.name.toLowerCase();
 			}
 		}
 		this.refreshClasses();

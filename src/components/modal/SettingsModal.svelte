@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import { version, VERSIONS }                              from '../../version/data';
+	import { classChinese, targetGame, version, VERSIONS } from '../../version/data';
 	import { animationEnabled, showSummaryItems, useSymbols, blocklyMode } from '../../data/settings';
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
@@ -30,6 +30,12 @@
 				{#each Object.keys(VERSIONS).sort((a, b) => Number.parseFloat(b) - Number.parseFloat(a)) as opt}
 					<option value={opt}>1.{opt}</option>
 				{/each}
+			</select>
+		</ProInput>
+		<ProInput label='遊戲' tooltip='選擇要編輯技能/{classChinese()}的遊戲'>
+			<select bind:value={$targetGame}>
+				<option value="gkpm" label="GKPixel: Magic"></option>
+				<option value="gkpl" label="GKPixel: Legends"></option>
 			</select>
 		</ProInput>
 		<ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
