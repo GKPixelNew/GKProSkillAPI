@@ -98,6 +98,10 @@ tasks {
         }
     }
 
+    java {
+        withSourcesJar()
+    }
+
     test {
         doFirst {
             environment("CODEX_VERSION", codex_version)
