@@ -1961,11 +1961,9 @@ public class PlayerData {
         this.maxHealth = 0;
         this.maxMana = 0;
 
-        if (!this.hasClass()) {
-            for (PlayerClass playerClass : classes.values()) {
-                this.maxHealth += playerClass.getHealth();
-                this.maxMana += playerClass.getMana();
-            }
+        for (PlayerClass playerClass : classes.values()) {
+            this.maxHealth += playerClass.getHealth();
+            this.maxMana += playerClass.getMana();
         }
 
         this.maxHealth = this.scaleStat(AttributeManager.HEALTH, maxHealth);
