@@ -36,7 +36,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
     @Override
     public String getKey() {
-        return "accurate-launch";
+        return "accurate launch";
     }
 
     @Override
