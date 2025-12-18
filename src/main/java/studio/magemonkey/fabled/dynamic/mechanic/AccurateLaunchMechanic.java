@@ -153,7 +153,9 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     }
 
     private Vector getDirection(LivingEntity caster, LivingEntity target, String relative) {
-        return switch (relative) {
+        // Normalize relative string to handle spaces or dashes
+        String normalized = relative.replace(" ", "-");
+        return switch (normalized) {
             case "caster-looking", "caster" -> caster.getLocation().getDirection();
             case "target-looking", "target" -> target.getLocation().getDirection();
             case "caster-to-target" -> target.getLocation().toVector().subtract(caster.getLocation().toVector());
