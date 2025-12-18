@@ -3760,6 +3760,36 @@ class LaunchMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class AccurateLaunchMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Accurate Launch',
+			description:  'Launches the target using a ballistic-style trajectory toward an offset point based on the chosen relative direction.',
+			data:         [
+				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
+					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the target to the caster'),
+				new BooleanSelect('Reset Y', 'reset-y', true)
+					.setTooltip('Whether to zero out the Y of the facing direction before applying offsets'),
+				new AttributeSelect('Forward Offset', 'forward', 0)
+					.setTooltip('How far forward from the chosen relative direction to aim the landing point'),
+				new AttributeSelect('Upward Offset', 'upward', 0)
+					.setTooltip('Vertical offset for the landing point'),
+				new AttributeSelect('Right Offset', 'right', 0)
+					.setTooltip('How far to the right of the chosen direction to aim the landing point (negative = left)'),
+				new AttributeSelect('Speed', 'speed', 2)
+					.setTooltip('Base speed used to solve the ballistic path'),
+				new AttributeSelect('Max Velocity', 'max-velocity', 4)
+					.setTooltip('Clamp for the final launch velocity magnitude'),
+				new AttributeSelect('Minimum Ticks', 'min-ticks', 5, 1)
+					.setTooltip('Minimum flight ticks used when solving the ballistic trajectory (higher = smoother arc)')
+			],
+			summaryItems: ['relative', 'forward', 'upward', 'right', 'speed', 'max-velocity']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class LaunchToMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6036,6 +6066,7 @@ export const initComponents = () => {
 		ITEM_REMOVE:        { name: 'Item Remove', component: ItemRemoveMechanic },
 		LAUNCH:             { name: 'Launch', component: LaunchMechanic },
 		LAUNCH_TO:          { name: 'Launch To', component: LaunchToMechanic },
+		ACCURATE_LAUNCH:    { name: 'Accurate Launch', component: AccurateLaunchMechanic },
 		LIGHTNING:          { name: 'Lightning', component: LightningMechanic },
 		MANA:               { name: 'Mana', component: ManaMechanic },
 		MESSAGE:            { name: 'Message', component: MessageMechanic },
