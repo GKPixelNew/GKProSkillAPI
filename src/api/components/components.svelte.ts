@@ -3780,10 +3780,12 @@ class AccurateLaunchMechanic extends FabledMechanic {
 					.setTooltip('Base speed used to solve the ballistic path'),
 				new AttributeSelect('Max Velocity', 'max-velocity', 4)
 					.setTooltip('Clamp for the final launch velocity magnitude'),
+				new AttributeSelect('Far Launch Threshold', 'far-threshold', 4)
+					.setTooltip('Velocity threshold to trigger sustained flight (far launch) mode'),
 				new AttributeSelect('Minimum Ticks', 'min-ticks', 5, 1)
 					.setTooltip('Minimum flight ticks used when solving the ballistic trajectory (higher = smoother arc)')
 			],
-			summaryItems: ['relative', 'forward', 'upward', 'right', 'speed', 'max-velocity']
+			summaryItems: ['relative', 'forward', 'upward', 'right', 'speed', 'max-velocity', 'far-threshold']
 		}, false);
 	}
 
