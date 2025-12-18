@@ -79,7 +79,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             switch (relative) {
                 case "caster-looking", "caster":
                 case "target-looking", "target":
-                    origin.add(dir.multiply(speed));
+                    offset.add(rawDir.multiply(speed));
                     break;
             }
             Location destination = origin.clone().add(offset);
