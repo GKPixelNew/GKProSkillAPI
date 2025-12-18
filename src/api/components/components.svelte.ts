@@ -2920,6 +2920,26 @@ class CooldownMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class CooldownByRegexMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Cooldown By Regex',
+			description:  'Lowers the cooldowns of the target\'s skill(s) matching a regex. If you provide a negative amount, it will increase the cooldown',
+			data:         [
+				new StringSelect('Regex', 'regex', '.*')
+					.setTooltip('The regex to match skill names'),
+				new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
+					.setTooltip('The modification unit to use. Seconds will add/subtract seconds from the cooldown while Percent will add/subtract a percentage of its full cooldown'),
+				new AttributeSelect('Value', 'value', -1)
+					.setTooltip('The amount to add/subtract from the skill\'s cooldown')
+			],
+			summaryItems: ['regex', 'type', 'value']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class DamageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6041,6 +6061,7 @@ export const initComponents = () => {
 		CLEANSE:            { name: 'Cleanse', component: CleanseMechanic },
 		COMMAND:            { name: 'Command', component: CommandMechanic },
 		COOLDOWN:           { name: 'Cooldown', component: CooldownMechanic },
+		COOLDOWN_BY_REGEX:  { name: 'Cooldown By Regex', component: CooldownByRegexMechanic },
 		DAMAGE:             { name: 'Damage', component: DamageMechanic },
 		DAMAGE_BUFF:        { name: 'Damage Buff', component: DamageBuffMechanic },
 		DAMAGE_LORE:        { name: 'Damage Lore', component: DamageLoreMechanic },
