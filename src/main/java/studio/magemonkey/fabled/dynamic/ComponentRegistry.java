@@ -199,6 +199,7 @@ public class ComponentRegistry {
         register(new ItemMechanic());
         register(new ItemProjectileMechanic());
         register(new ItemRemoveMechanic());
+        register(new AccurateLaunchMechanic());
         register(new LaunchMechanic());
         register(new LightningMechanic());
         register(new ManaMechanic());
