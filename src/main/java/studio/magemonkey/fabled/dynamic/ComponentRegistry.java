@@ -173,6 +173,7 @@ public class ComponentRegistry {
         register(new CleanseMechanic());
         register(new CommandMechanic());
         register(new CooldownMechanic());
+        register(new CooldownByRegexMechanic());
         register(new DamageBuffMechanic());
         register(new DamageLoreMechanic());
         register(new DamageMechanic());
