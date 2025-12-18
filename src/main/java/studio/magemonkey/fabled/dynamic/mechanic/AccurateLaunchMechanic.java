@@ -95,32 +95,14 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 rightVec = dir.clone().crossProduct(up);
             }
 
-            // 3. Speed as Power for Looking Modes
-            if (relative.contains("looking") || relative.equals("caster") || relative.equals("target")) {
-                Vector launchDir = dir.clone().multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
-                if (launchDir.lengthSquared() < 1e-5) {
-                    launchDir = dir.clone();
-                }
-                launchSubject.setVelocity(launchDir.normalize().multiply(speed));
-            } else {
-                // "to" / "between" modes - use Ballistic
-                double forwardOffset = rawDir.length() + forward;
-
-                Vector offset = dir.clone().multiply(forwardOffset)
-                        .add(rightVec.multiply(right))
-                        .add(new Vector(0, upward, 0));
-
-                Location origin      = launchSubject.getLocation();
-                Location destination = origin.clone().add(offset);
-
-                Vector velocity = calculateBallisticVelocity(origin.toVector(), destination.toVector(), speed, minTicks);
-                if (velocity != null && velocity.lengthSquared() > 0) {
-                    if (velocity.length() > maxVelocity) {
-                        velocity.normalize().multiply(maxVelocity);
-                    }
-                    launchSubject.setVelocity(velocity);
-                }
+            // 3. Speed as Power for ALL Modes
+            // We use the calculated direction and apply the speed directly as velocity.
+            // This ensures that high speed always results in high velocity, regardless of distance.
+            Vector launchDir = dir.clone().multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
+            if (launchDir.lengthSquared() < 1e-5) {
+                launchDir = dir.clone();
             }
+            launchSubject.setVelocity(launchDir.normalize().multiply(speed));
 
             // 2. First Only for Caster Launch
             if (launchSubject == caster) {
