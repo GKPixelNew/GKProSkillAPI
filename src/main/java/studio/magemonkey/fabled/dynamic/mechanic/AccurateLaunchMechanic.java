@@ -6,17 +6,18 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.ComponentType;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Launches targets toward a computed destination using a ballistic-style
@@ -130,7 +131,11 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
                 // Homing setup
                 if (relative.equals("caster-to-target")) {
-                    launchData.targetEntity = target;
+                    if (target instanceof TempEntity) {
+                        launchData.targetLocation = target.getLocation();
+                    } else {
+                        launchData.targetEntity = target;
+                    }
                 } else if (relative.equals("target-to-caster")) {
                     launchData.targetEntity = caster;
                 }
@@ -195,6 +200,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     private static class ExtraLaunch {
         LivingEntity entity;
         LivingEntity targetEntity;
+        Location targetLocation;
         Vector vector;
         int times;
         int schedId;
@@ -215,6 +221,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         public void run() {
             LivingEntity entity = launchData.entity;
             LivingEntity target = launchData.targetEntity;
+            Location targetLoc = launchData.targetLocation;
 
             if (entity == null || !entity.isValid()) {
                 cancel();
@@ -235,11 +242,18 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             }
 
             // Homing Logic
+            Location dest = null;
             if (target != null && target.isValid()) {
-                double dist = entity.getLocation().distance(target.getLocation());
+                dest = target.getLocation();
+            } else if (targetLoc != null) {
+                dest = targetLoc;
+            }
+
+            if (dest != null) {
+                double dist = entity.getLocation().distance(dest);
                 if (dist > 25.0) { // Close enough distance
                     // Update vector to point to target
-                    Vector dir = target.getLocation().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(launchData.speed);
+                    Vector dir = dest.clone().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(launchData.speed);
                     launchData.vector = dir;
                     
                     // Extend flight
@@ -247,9 +261,10 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 } else {
                     // Close enough, stop homing and apply final exact trajectory
                     launchData.targetEntity = null;
+                    launchData.targetLocation = null;
                     
                     // Calculate exact trajectory for the final approach
-                    Vector finalVelocity = calculateBallisticVelocity(entity.getLocation().toVector(), target.getLocation().add(0, 1.5, 0).toVector(), launchData.speed, 5);
+                    Vector finalVelocity = calculateBallisticVelocity(entity.getLocation().toVector(), dest.clone().add(0, 1.5, 0).toVector(), launchData.speed, 5);
                     if (finalVelocity != null) {
                         entity.setVelocity(finalVelocity);
                     }
