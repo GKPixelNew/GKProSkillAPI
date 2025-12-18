@@ -14,22 +14,23 @@ import studio.magemonkey.fabled.dynamic.ComponentType;
 import java.util.List;
 
 /**
- * Launches targets toward a computed destination using a ballistic-style trajectory.
+ * Launches targets toward a computed destination using a ballistic-style
+ * trajectory.
  */
 public class AccurateLaunchMechanic extends MechanicComponent {
 
-    private static final String RELATIVE     = "relative";     // caster-looking | target-looking | caster-to-target | target-to-caster (legacy: caster, target, between)
-    private static final String RESET_Y      = "reset-y";
-    private static final String FORWARD      = "forward";
-    private static final String UPWARD       = "upward";
-    private static final String RIGHT        = "right";
-    private static final String SPEED        = "speed";
+    private static final String RELATIVE = "relative";     // caster-looking | target-looking | caster-to-target | target-to-caster (legacy: caster, target, between)
+    private static final String RESET_Y = "reset-y";
+    private static final String FORWARD = "forward";
+    private static final String UPWARD = "upward";
+    private static final String RIGHT = "right";
+    private static final String SPEED = "speed";
     private static final String MAX_VELOCITY = "max-velocity";
-    private static final String MIN_TICKS    = "min-ticks";
+    private static final String MIN_TICKS = "min-ticks";
 
-    private static final double DEFAULT_SPEED        = 2.0;
+    private static final double DEFAULT_SPEED = 2.0;
     private static final double DEFAULT_MAX_VELOCITY = 4.0;
-    private static final int    DEFAULT_MIN_TICKS    = 5;
+    private static final int DEFAULT_MIN_TICKS = 5;
 
     @Override
     public String getKey() {
@@ -43,15 +44,17 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.isEmpty()) return false;
+        if (targets.isEmpty()) {
+            return false;
+        }
 
-        boolean resetY      = settings.getBool(RESET_Y, true);
-        double  forward     = parseValues(caster, FORWARD, level, 0);
-        double  upward      = parseValues(caster, UPWARD, level, 0);
-        double  right       = parseValues(caster, RIGHT, level, 0);
-        double  speed       = parseValues(caster, SPEED, level, DEFAULT_SPEED);
-        double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
-        int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
+        boolean resetY = settings.getBool(RESET_Y, true);
+        double forward = parseValues(caster, FORWARD, level, 0);
+        double upward = parseValues(caster, UPWARD, level, 0);
+        double right = parseValues(caster, RIGHT, level, 0);
+        double speed = parseValues(caster, SPEED, level, DEFAULT_SPEED);
+        double maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
+        int minTicks = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
 
         String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
@@ -63,13 +66,22 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 continue;
             }
 
-            if (resetY) dir.setY(0);
+            if (resetY) {
+                dir.setY(0);
+            }
             dir.normalize();
-            Vector up       = new Vector(0, 1, 0);
+            Vector up = new Vector(0, 1, 0);
             Vector rightVec = dir.clone().crossProduct(up);
 
-            Vector   offset      = dir.multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
-            Location origin      = target.getLocation();
+            Vector offset = dir.multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
+
+            Location origin = target.getLocation();
+            switch (relative) {
+                case "caster-looking", "caster":
+                case "target-looking", "target":
+                    origin.add(dir.multiply(speed));
+                    break;
+            }
             Location destination = origin.clone().add(offset);
 
             Vector velocity = calculateBallisticVelocity(origin.toVector(), destination.toVector(), speed, minTicks);
@@ -88,19 +100,25 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
     private Vector getDirection(LivingEntity caster, LivingEntity target, String relative, double speed) {
         return switch (relative) {
-            case "caster-looking", "caster" -> caster.getLocation().getDirection().multiply(speed);
-            case "target-looking", "target" -> target.getLocation().getDirection().multiply(speed);
-            case "caster-to-target" -> target.getLocation().toVector().subtract(caster.getLocation().toVector());
-            case "target-to-caster", "between" -> caster.getLocation().toVector().subtract(target.getLocation().toVector());
-            default -> target.getLocation().getDirection().multiply(speed);
+            case "caster-looking", "caster" ->
+                caster.getLocation().getDirection().multiply(speed);
+            case "target-looking", "target" ->
+                target.getLocation().getDirection().multiply(speed);
+            case "caster-to-target" ->
+                target.getLocation().toVector().subtract(caster.getLocation().toVector());
+            case "target-to-caster", "between" ->
+                caster.getLocation().toVector().subtract(target.getLocation().toVector());
+            default ->
+                target.getLocation().getDirection().multiply(speed);
         };
     }
 
     /**
-     * Ballistic-style trajectory inspired by CmdLaunch: gravity and drag approximations.
+     * Ballistic-style trajectory inspired by CmdLaunch: gravity and drag
+     * approximations.
      */
     private Vector calculateBallisticVelocity(Vector start, Vector end, double speed, int minTicks) {
-        double g     = 0.08;
+        double g = 0.08;
         double dragH = 0.91;
         double dragV = 0.98;
 
@@ -125,6 +143,5 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         double term2 = gravity != 0 ? (gravity * drag / (1 - drag)) * (t / a - 1) : 0;
         return term1 + term2;
     }
-
 
 }
