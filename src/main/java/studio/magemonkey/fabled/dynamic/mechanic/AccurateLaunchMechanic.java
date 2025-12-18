@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class AccurateLaunchMechanic extends MechanicComponent {
 
-    private static final String RELATIVE     = "relative";     // caster | target | between
+    private static final String RELATIVE     = "relative";     // caster-looking | target-looking | caster-to-target | target-to-caster (legacy: caster, target, between)
     private static final String RESET_Y      = "reset-y";
     private static final String FORWARD      = "forward";
     private static final String UPWARD       = "upward";
@@ -53,14 +53,11 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
         int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
 
-        String relative = settings.getString(RELATIVE, "target").toLowerCase();
+        String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
         for (LivingEntity target : targets) {
-            Vector dir = switch (relative) {
-                case "caster" -> caster.getLocation().getDirection();
-                case "between" -> target.getLocation().toVector().subtract(caster.getLocation().toVector());
-                default -> target.getLocation().getDirection(); // "target"
-            };
+            Vector dir = getDirection(caster, target, relative);
+            if (dir == null || dir.lengthSquared() == 0) continue;
 
             if (resetY) dir.setY(0);
             dir.normalize();
@@ -83,6 +80,16 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             target.setVelocity(velocity);
         }
         return true;
+    }
+
+    private Vector getDirection(LivingEntity caster, LivingEntity target, String relative) {
+        return switch (relative) {
+            case "caster-looking", "caster" -> caster.getLocation().getDirection();
+            case "target-looking", "target" -> target.getLocation().getDirection();
+            case "caster-to-target" -> target.getLocation().toVector().subtract(caster.getLocation().toVector());
+            case "target-to-caster", "between" -> caster.getLocation().toVector().subtract(target.getLocation().toVector());
+            default -> target.getLocation().getDirection();
+        };
     }
 
     /**
