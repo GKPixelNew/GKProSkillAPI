@@ -6,12 +6,17 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Launches targets toward a computed destination using a ballistic-style
@@ -53,6 +58,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         double  speed       = parseValues(caster, SPEED, level, DEFAULT_SPEED);
         double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
         int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
+        double  farThreshold = parseValues(caster, FAR_THRESHOLD, level, DEFAULT_FAR_THRESHOLD);
 
         String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
@@ -65,6 +71,12 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             LivingEntity launchSubject = target;
             if (relative.startsWith("caster")) {
                 launchSubject = caster;
+            }
+
+            // Cancel existing launch task if any
+            if (launching.containsKey(launchSubject.getUniqueId())) {
+                ExtraLaunch existing = launching.remove(launchSubject.getUniqueId());
+                Bukkit.getScheduler().cancelTask(existing.schedId);
             }
 
             Vector rawDir = getDirection(caster, target, relative);
@@ -102,7 +114,30 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             if (launchDir.lengthSquared() < 1e-5) {
                 launchDir = dir.clone();
             }
-            launchSubject.setVelocity(launchDir.normalize().multiply(speed));
+            
+            Vector velocity = launchDir.normalize().multiply(speed);
+
+            // Check for Far Launch
+            if (velocity.length() > farThreshold) {
+                ExtraLaunch launchData = new ExtraLaunch();
+                launchData.entity = launchSubject;
+                launchData.speed = speed;
+
+                // Homing setup
+                if (relative.equals("caster-to-target")) {
+                    launchData.targetEntity = target;
+                } else if (relative.equals("target-to-caster")) {
+                    launchData.targetEntity = caster;
+                }
+
+                launchData.times = Math.max(1, (int)((velocity.length() - farThreshold) * 5.0));
+                Vector safeVelocity = velocity.clone().normalize().multiply(farThreshold);
+                launchData.vector = safeVelocity;
+
+                startLaunch(launchData);
+            } else {
+                launchSubject.setVelocity(velocity);
+            }
 
             // 2. First Only for Caster Launch
             if (launchSubject == caster) {
@@ -143,6 +178,111 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             return null;
         }
         return new Vector(vX, vY, vZ);
+    }
+
+    private void startLaunch(ExtraLaunch launchData) {
+        launching.put(launchData.entity.getUniqueId(), launchData);
+        launchData.schedId = Bukkit.getScheduler().scheduleSyncRepeatingTask(Fabled.inst(), new LaunchRunnable(launchData), 0L, 2L);
+    }
+
+    private static class ExtraLaunch {
+        LivingEntity entity;
+        LivingEntity targetEntity;
+        Vector vector;
+        int times;
+        int schedId;
+        Location prevLoc;
+        double speed;
+        Location stuckCheckLoc;
+        int stuckCheckTicks;
+    }
+
+    private class LaunchRunnable implements Runnable {
+        private final ExtraLaunch launchData;
+
+        public LaunchRunnable(ExtraLaunch data) {
+            this.launchData = data;
+        }
+
+        @Override
+        public void run() {
+            LivingEntity entity = launchData.entity;
+            LivingEntity target = launchData.targetEntity;
+
+            if (entity == null || !entity.isValid()) {
+                cancel();
+                return;
+            }
+
+            // Stuck Check
+            launchData.stuckCheckTicks++;
+            if (launchData.stuckCheckTicks >= 3) {
+                if (launchData.stuckCheckLoc != null) {
+                    if (entity.getLocation().distance(launchData.stuckCheckLoc) <= 5) {
+                        cancel();
+                        return;
+                    }
+                }
+                launchData.stuckCheckLoc = entity.getLocation();
+                launchData.stuckCheckTicks = 0;
+            }
+
+            // Homing Logic
+            if (target != null && target.isValid()) {
+                double dist = entity.getLocation().distance(target.getLocation());
+                if (dist > 25.0) { // Close enough distance
+                    // Update vector to point to target
+                    Vector dir = target.getLocation().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(launchData.speed);
+                    launchData.vector = dir;
+                    
+                    // Extend flight
+                    launchData.times = 20; 
+                } else {
+                    // Close enough, stop homing and apply final exact trajectory
+                    launchData.targetEntity = null;
+                    
+                    // Calculate exact trajectory for the final approach
+                    Vector finalVelocity = calculateBallisticVelocity(entity.getLocation().toVector(), target.getLocation().add(0, 1.5, 0).toVector(), launchData.speed, 5);
+                    if (finalVelocity != null) {
+                        entity.setVelocity(finalVelocity);
+                    }
+                    
+                    cancel();
+                    return;
+                }
+            }
+
+            // 1. Simulate Drag/Gravity
+            launchData.vector.setY(launchData.vector.getY() - 0.075);
+
+            boolean isRegistered = launching.containsKey(entity.getUniqueId());
+            boolean hasTimeLeft = launchData.times > 0;
+
+            if (isRegistered && hasTimeLeft) {
+                boolean isFirstTick = launchData.prevLoc == null;
+                boolean isInAir = !entity.isOnGround();
+                boolean isFlying = entity instanceof Player && ((Player) entity).isFlying();
+                boolean isGliding = entity instanceof Player && ((Player) entity).isGliding();
+
+                boolean highVerticalVelocity = launchData.vector.getY() > 1.0;
+                boolean hasNotMoved = launchData.prevLoc != null && launchData.prevLoc.distance(entity.getLocation()) < 0.1;
+                boolean hitCeiling = highVerticalVelocity && hasNotMoved;
+
+                if (isFirstTick || (isInAir && !isFlying && !isGliding && !hitCeiling)) {
+                    launchData.prevLoc = entity.getLocation();
+                    entity.setVelocity(launchData.vector);
+                    launchData.times--;
+                    return;
+                }
+            }
+
+            cancel();
+        }
+
+        private void cancel() {
+            Bukkit.getScheduler().cancelTask(launchData.schedId);
+            launching.remove(launchData.entity.getUniqueId());
+        }
     }
 
     private double component(double start, double end, int t, double gravity, double drag) {
