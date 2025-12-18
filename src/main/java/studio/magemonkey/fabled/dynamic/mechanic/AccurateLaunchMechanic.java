@@ -8,13 +8,10 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Launches targets toward a computed destination using a ballistic-style trajectory.
@@ -46,74 +43,56 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.isEmpty()) return false;
 
-    boolean debug      = true;
-    Player  debugSink = debug && caster instanceof Player ? (Player) caster : null;
-    Logger  log       = debug ? Fabled.inst().getLogger() : null;
-    debug(debugSink, log, String.format("[AccurateLaunch] execute called by caster=%s level=%d targets=%d",
-            caster.getName(), level, targets.size()));
-    if (targets.isEmpty()) return false;
+        boolean resetY      = settings.getBool(RESET_Y, true);
+        double  forward     = parseValues(caster, FORWARD, level, 0);
+        double  upward      = parseValues(caster, UPWARD, level, 0);
+        double  right       = parseValues(caster, RIGHT, level, 0);
+        double  speed       = parseValues(caster, SPEED, level, DEFAULT_SPEED);
+        double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
+        int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
 
-    boolean resetY     = settings.getBool(RESET_Y, true);
-    double  forward     = parseValues(caster, FORWARD, level, 0);
-    double  upward      = parseValues(caster, UPWARD, level, 0);
-    double  right       = parseValues(caster, RIGHT, level, 0);
-    double  speed       = parseValues(caster, SPEED, level, DEFAULT_SPEED);
-    double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
-    int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
-
-    String  relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
-
-    debug(debugSink, log, String.format("[AccurateLaunch] start relative=%s resetY=%s forward=%.3f upward=%.3f right=%.3f speed=%.3f maxVel=%.3f minTicks=%d targets=%d",
-            relative, resetY, forward, upward, right, speed, maxVelocity, minTicks, targets.size()));
+        String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
         for (LivingEntity target : targets) {
-            Vector rawDir = getDirection(caster, target, relative);
-            debug(debugSink, log, String.format("[AccurateLaunch] target=%s rawDir=%s", target.getName(), fmtVec(rawDir)));
+            Vector rawDir = getDirection(caster, target, relative, speed);
 
             Vector dir = rawDir;
             if (dir == null || dir.lengthSquared() == 0) {
-                debug(debugSink, log, String.format("[AccurateLaunch] dir is zero/invalid for target=%s", target.getName()));
                 continue;
             }
 
             if (resetY) dir.setY(0);
             dir.normalize();
-            debug(debugSink, log, String.format("[AccurateLaunch] target=%s dirAfterResetNorm=%s", target.getName(), fmtVec(dir)));
-            Vector up = new Vector(0, 1, 0);
+            Vector up       = new Vector(0, 1, 0);
             Vector rightVec = dir.clone().crossProduct(up);
 
-            Vector offset = dir.multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
-            Location origin = target.getLocation();
+            Vector   offset      = dir.multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
+            Location origin      = target.getLocation();
             Location destination = origin.clone().add(offset);
-            debug(debugSink, log, String.format("[AccurateLaunch] target=%s origin=%s dest=%s offset=%s", target.getName(), fmtLoc(origin), fmtLoc(destination), fmtVec(offset)));
 
             Vector velocity = calculateBallisticVelocity(origin.toVector(), destination.toVector(), speed, minTicks);
-            debug(debugSink, log, String.format("[AccurateLaunch] target=%s rawVelocity=%s", target.getName(), fmtVec(velocity)));
             if (velocity == null || velocity.lengthSquared() == 0) {
-                debug(debugSink, log, String.format("[AccurateLaunch] computed velocity is null/zero for target=%s", target.getName()));
                 continue;
             }
 
             if (velocity.length() > maxVelocity) {
                 velocity.normalize().multiply(maxVelocity);
-                debug(debugSink, log, String.format("[AccurateLaunch] velocity clamped to maxVel for target=%s", target.getName()));
             }
 
             target.setVelocity(velocity);
-
-            debug(debugSink, log, String.format("[AccurateLaunch] target=%s finalVel=%s len=%.3f", target.getName(), fmtVec(velocity), velocity.length()));
         }
         return true;
     }
 
-    private Vector getDirection(LivingEntity caster, LivingEntity target, String relative) {
+    private Vector getDirection(LivingEntity caster, LivingEntity target, String relative, double speed) {
         return switch (relative) {
-            case "caster-looking", "caster" -> caster.getLocation().getDirection();
-            case "target-looking", "target" -> target.getLocation().getDirection();
+            case "caster-looking", "caster" -> caster.getLocation().getDirection().multiply(speed);
+            case "target-looking", "target" -> target.getLocation().getDirection().multiply(speed);
             case "caster-to-target" -> target.getLocation().toVector().subtract(caster.getLocation().toVector());
             case "target-to-caster", "between" -> caster.getLocation().toVector().subtract(target.getLocation().toVector());
-            default -> target.getLocation().getDirection();
+            default -> target.getLocation().getDirection().multiply(speed);
         };
     }
 
@@ -147,20 +126,5 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         return term1 + term2;
     }
 
-    private String fmtVec(Vector v) {
-        return String.format("(%.3f, %.3f, %.3f) len=%.3f", v.getX(), v.getY(), v.getZ(), v.length());
-    }
 
-    private String fmtLoc(Location loc) {
-        return String.format("(%.3f, %.3f, %.3f)", loc.getX(), loc.getY(), loc.getZ());
-    }
-
-    private void debug(Player sink, Logger log, String msg) {
-        if (sink != null) {
-            sink.sendMessage(msg);
-        }
-        if (log != null) {
-            log.info(msg);
-        }
-    }
 }
