@@ -32,10 +32,15 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     private static final String SPEED = "speed";
     private static final String MAX_VELOCITY = "max-velocity";
     private static final String MIN_TICKS = "min-ticks";
+    private static final String FAR_THRESHOLD = "far-threshold";
 
     private static final double DEFAULT_SPEED = 2.0;
     private static final double DEFAULT_MAX_VELOCITY = 4.0;
     private static final int DEFAULT_MIN_TICKS = 5;
+    private static final double DEFAULT_FAR_THRESHOLD = 4.0;
+
+    // Map to handle extended high-power launches
+    private static final HashMap<UUID, ExtraLaunch> launching = new HashMap<>();
 
     @Override
     public String getKey() {
