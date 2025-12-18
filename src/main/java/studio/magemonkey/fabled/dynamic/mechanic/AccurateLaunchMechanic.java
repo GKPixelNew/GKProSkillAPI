@@ -46,7 +46,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
 
-    boolean debug      = settings.getBool("debug", false);
+    boolean debug      = true;
     boolean resetY     = settings.getBool(RESET_Y, true);
     double  forward     = parseValues(caster, FORWARD, level, 0);
     double  upward      = parseValues(caster, UPWARD, level, 0);
