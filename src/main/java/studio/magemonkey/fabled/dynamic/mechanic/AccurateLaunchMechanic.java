@@ -57,6 +57,11 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
         for (LivingEntity target : targets) {
+            // 1. Cross-world check
+            if (caster.getWorld() != target.getWorld()) {
+                continue;
+            }
+
             LivingEntity launchSubject = target;
             if (relative.startsWith("caster")) {
                 launchSubject = caster;
@@ -74,35 +79,53 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             }
             dir.normalize();
 
-            Vector up       = new Vector(0, 1, 0);
-            Vector rightVec = dir.clone().crossProduct(up);
-
-            // Calculate the destination offset
-            double forwardOffset = forward;
-            if (relative.contains("looking") || relative.equals("caster") || relative.equals("target")) {
-                forwardOffset += speed;
+            // 4. Vertical Fix
+            Vector up = new Vector(0, 1, 0);
+            Vector rightVec;
+            if (Math.abs(dir.getY()) > 0.99) {
+                if (relative.contains("looking") || relative.equals("caster") || relative.equals("target")) {
+                    LivingEntity dirSource = relative.contains("target") ? target : caster;
+                    Location loc = dirSource.getLocation();
+                    loc.setPitch(0);
+                    rightVec = loc.getDirection().crossProduct(up);
+                } else {
+                    rightVec = new Vector(1, 0, 0);
+                }
             } else {
-                // caster-to-target, target-to-caster, between
-                forwardOffset += rawDir.length();
+                rightVec = dir.clone().crossProduct(up);
             }
 
-            Vector offset = dir.clone().multiply(forwardOffset)
-                    .add(rightVec.multiply(right))
-                    .add(new Vector(0, upward, 0));
+            // 3. Speed as Power for Looking Modes
+            if (relative.contains("looking") || relative.equals("caster") || relative.equals("target")) {
+                Vector launchDir = dir.clone().multiply(forward).add(rightVec.multiply(right)).add(new Vector(0, upward, 0));
+                if (launchDir.lengthSquared() < 1e-5) {
+                    launchDir = dir.clone();
+                }
+                launchSubject.setVelocity(launchDir.normalize().multiply(speed));
+            } else {
+                // "to" / "between" modes - use Ballistic
+                double forwardOffset = rawDir.length() + forward;
 
-            Location origin      = launchSubject.getLocation();
-            Location destination = origin.clone().add(offset);
+                Vector offset = dir.clone().multiply(forwardOffset)
+                        .add(rightVec.multiply(right))
+                        .add(new Vector(0, upward, 0));
 
-            Vector velocity = calculateBallisticVelocity(origin.toVector(), destination.toVector(), speed, minTicks);
-            if (velocity == null || velocity.lengthSquared() == 0) {
-                continue;
+                Location origin      = launchSubject.getLocation();
+                Location destination = origin.clone().add(offset);
+
+                Vector velocity = calculateBallisticVelocity(origin.toVector(), destination.toVector(), speed, minTicks);
+                if (velocity != null && velocity.lengthSquared() > 0) {
+                    if (velocity.length() > maxVelocity) {
+                        velocity.normalize().multiply(maxVelocity);
+                    }
+                    launchSubject.setVelocity(velocity);
+                }
             }
 
-            if (velocity.length() > maxVelocity) {
-                velocity.normalize().multiply(maxVelocity);
+            // 2. First Only for Caster Launch
+            if (launchSubject == caster) {
+                break;
             }
-
-            launchSubject.setVelocity(velocity);
         }
         return true;
     }
