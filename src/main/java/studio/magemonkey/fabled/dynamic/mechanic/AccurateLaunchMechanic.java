@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.ComponentType;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 /**
  * Launches targets toward a computed destination using a ballistic-style
