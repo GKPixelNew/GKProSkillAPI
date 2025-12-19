@@ -2920,6 +2920,26 @@ class CooldownMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class CooldownByRegexMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Cooldown By Regex',
+			description:  'Lowers the cooldowns of the target\'s skill(s) matching a regex. If you provide a negative amount, it will increase the cooldown',
+			data:         [
+				new StringSelect('Regex', 'regex', '.*')
+					.setTooltip('The regex to match skill names'),
+				new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
+					.setTooltip('The modification unit to use. Seconds will add/subtract seconds from the cooldown while Percent will add/subtract a percentage of its full cooldown'),
+				new AttributeSelect('Value', 'value', -1)
+					.setTooltip('The amount to add/subtract from the skill\'s cooldown')
+			],
+			summaryItems: ['regex', 'type', 'value']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class DamageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -3754,6 +3774,38 @@ class LaunchMechanic extends FabledMechanic {
 					.setTooltip('The speed to give the target to their right')
 			],
 			summaryItems: ['relative', 'reset-y', 'forward', 'upward', 'right']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class AccurateLaunchMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Accurate Launch',
+			description:  'Launches the target using a ballistic-style trajectory toward an offset point based on the chosen relative direction.',
+			data:         [
+				new DropdownSelect('Relative', 'relative', ['Caster looking', 'Target looking', 'Caster to Target', 'Target to Caster'], 'Target looking')
+					.setTooltip('How to aim the arc: caster-looking uses caster facing, target-looking uses target facing, caster-to-target aims from caster toward target, target-to-caster aims from target toward caster'),
+				new BooleanSelect('Reset Y', 'reset-y', true)
+					.setTooltip('Whether to zero out the Y of the facing direction before applying offsets'),
+				new AttributeSelect('Forward Offset', 'forward', 0)
+					.setTooltip('How far forward from the chosen relative direction to aim the landing point'),
+				new AttributeSelect('Upward Offset', 'upward', 0)
+					.setTooltip('Vertical offset for the landing point'),
+				new AttributeSelect('Right Offset', 'right', 0)
+					.setTooltip('How far to the right of the chosen direction to aim the landing point (negative = left)'),
+				new AttributeSelect('Speed', 'speed', 2)
+					.setTooltip('Base speed used to solve the ballistic path'),
+				new AttributeSelect('Max Velocity', 'max-velocity', 4)
+					.setTooltip('Clamp for the final launch velocity magnitude'),
+				new AttributeSelect('Far Launch Threshold', 'far-threshold', 4)
+					.setTooltip('Velocity threshold to trigger sustained flight (far launch) mode'),
+				new AttributeSelect('Minimum Ticks', 'min-ticks', 5, 1)
+					.setTooltip('Minimum flight ticks used when solving the ballistic trajectory (higher = smoother arc)')
+			],
+			summaryItems: ['relative', 'forward', 'upward', 'right', 'speed', 'max-velocity', 'far-threshold']
 		}, false);
 	}
 
@@ -6009,6 +6061,7 @@ export const initComponents = () => {
 		CLEANSE:            { name: 'Cleanse', component: CleanseMechanic },
 		COMMAND:            { name: 'Command', component: CommandMechanic },
 		COOLDOWN:           { name: 'Cooldown', component: CooldownMechanic },
+		COOLDOWN_BY_REGEX:  { name: 'Cooldown By Regex', component: CooldownByRegexMechanic },
 		DAMAGE:             { name: 'Damage', component: DamageMechanic },
 		DAMAGE_BUFF:        { name: 'Damage Buff', component: DamageBuffMechanic },
 		DAMAGE_LORE:        { name: 'Damage Lore', component: DamageLoreMechanic },
@@ -6036,6 +6089,7 @@ export const initComponents = () => {
 		ITEM_REMOVE:        { name: 'Item Remove', component: ItemRemoveMechanic },
 		LAUNCH:             { name: 'Launch', component: LaunchMechanic },
 		LAUNCH_TO:          { name: 'Launch To', component: LaunchToMechanic },
+		ACCURATE_LAUNCH:    { name: 'Accurate Launch', component: AccurateLaunchMechanic },
 		LIGHTNING:          { name: 'Lightning', component: LightningMechanic },
 		MANA:               { name: 'Mana', component: ManaMechanic },
 		MESSAGE:            { name: 'Message', component: MessageMechanic },
