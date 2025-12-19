@@ -104,17 +104,6 @@ export const importAllClasses = async () => {
     for (const clazz of await getAllClasses()) {
         tasks.push(async function () {
             await importClass(clazz);
-            const folderName = getFolderName(clazz);
-            let folder = get(classStore.classFolders).filter(f => f.name === folderName)[0];
-            const realClass = classStore.getClass(clazz)!;
-            if (folder) {
-                folder.add(realClass);
-            } else {
-                folder = new FabledFolder();
-                folder.name = folderName;
-                classStore.addClassFolder(folder);
-                folder?.add(realClass);
-            }
         }());
     }
     await Promise.all(tasks);
