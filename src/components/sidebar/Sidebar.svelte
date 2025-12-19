@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import {
-		closeSidebar,
+		closeSidebar, deleteAllProClasses,
 		deleteAllProSkills,
 		shownTab,
 		sidebarOpen
@@ -23,7 +23,14 @@
 	import FabledClass, { classStore }             from '../../data/class-store.svelte';
 	import { attributeStore }                      from '../../data/attribute-store';
 	import { FabledFolder }                        from '../../data/folder-store.svelte';
-	import { getAllClasses, getAllSkills, importAllSkills, reloadAllClasses, reloadAllSkills } from '$api/cdn';
+	import {
+		getAllClasses,
+		getAllSkills,
+		importAllClasses,
+		importAllSkills,
+		reloadAllClasses,
+		reloadAllSkills
+	} from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
@@ -48,7 +55,8 @@
 	});
 	let importChoice = $state('');
 	let loadingOptions = $state(false);
-	let deletingAll = $state(false);
+	let deletingAllClasses = $state(false);
+	let deletingAllSkills = $state(false);
 	const skills       = skillStore.skills;
 	const skillFolders = skillStore.skillFolders;
 	const classes      = classStore.classes;
@@ -184,6 +192,19 @@
 								onkeypress={(e) => e.key === 'Enter' && reloadAllClasses()}>重新整理</span>
 				</div>
 			</SidebarEntry>
+
+			<SidebarEntry delay={200 + 100*($classes.length+2)} direction="right">
+				<div class='new'>
+						<span tabindex='0'
+									role='button'
+									onclick={() => deletingAllClasses = true}
+									onkeypress={() => deletingAllClasses = true}>刪除全部</span>
+					<span tabindex='0'
+								role='button'
+								onclick={() => importAllClasses()}
+								onkeypress={(e) => e.key === 'Enter' && importAllClasses()}>匯入全部</span>
+				</div>
+			</SidebarEntry>
 		</div>
 	{:else if $shownTab === Tab.SKILLS}
 		<div class='items'
@@ -232,8 +253,8 @@
 				<div class='new'>
 						<span tabindex='0'
 									role='button'
-									onclick={() => deletingAll = true}
-									onkeypress={() => deletingAll = true}>刪除全部</span>
+									onclick={() => deletingAllSkills = true}
+									onkeypress={() => deletingAllSkills = true}>刪除全部</span>
 					<span tabindex='0'
 								role='button'
 								onclick={() => importAllSkills()}
@@ -316,18 +337,37 @@
 	</div>
 </Modal>
 {/if}
-{#if deletingAll}
+{#if deletingAllClasses}
 	<Modal>
-		<h3>是否確認刪除所有本機技能？</h3>
+		<h3>是否確認刪除所有本機{classChinese()}？</h3>
 		<div class='modal-buttons'>
-			<div class='button' onclick={() => deletingAll = false }
-					 onkeypress={(event) => { if (event?.key === 'Enter') deletingAll = false; }}
+			<div class='button' onclick={() => deletingAllClasses = false }
+					 onkeypress={(event) => { if (event?.key === 'Enter') deletingAllClasses = false; }}
 					 role='button'
 					 tabindex='0'
 			>取消
 			</div>
-			<div class='button modal-delete' onclick={() => {deleteAllProSkills(); deletingAll = false}}
-					 onkeypress={(event) => { if (event?.key === 'Enter') {deleteAllProSkills(); deletingAll = false} }}
+			<div class='button modal-delete' onclick={() => {deleteAllProClasses(); deletingAllClasses = false}}
+					 onkeypress={(event) => { if (event?.key === 'Enter') {deleteAllProClasses(); deletingAllClasses = false} }}
+					 role='button'
+					 tabindex='0'
+			>刪除
+			</div>
+		</div>
+	</Modal>
+{/if}
+{#if deletingAllSkills}
+	<Modal>
+		<h3>是否確認刪除所有本機技能？</h3>
+		<div class='modal-buttons'>
+			<div class='button' onclick={() => deletingAllSkills = false }
+					 onkeypress={(event) => { if (event?.key === 'Enter') deletingAllSkills = false; }}
+					 role='button'
+					 tabindex='0'
+			>取消
+			</div>
+			<div class='button modal-delete' onclick={() => {deleteAllProSkills(); deletingAllSkills = false}}
+					 onkeypress={(event) => { if (event?.key === 'Enter') {deleteAllProSkills(); deletingAllSkills = false} }}
 					 role='button'
 					 tabindex='0'
 			>刪除

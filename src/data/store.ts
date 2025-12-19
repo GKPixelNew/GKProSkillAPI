@@ -53,6 +53,15 @@ export const deleteProData = (data: FabledClass | FabledSkill | FabledAttribute 
 	folderStore.updateFolders();
 };
 
+export const deleteAllProClasses = () => {
+	for (const folder of get(classStore.classFolders)) {
+		classStore.deleteClassFolder(folder);
+	}
+	for (const cls of get(classStore.classes)) {
+		classStore.deleteClass(cls);
+	}
+}
+
 export const deleteAllProSkills = () => {
 	for (const folder of get(skillStore.skillFolders)) {
 		skillStore.deleteSkillFolder(folder);

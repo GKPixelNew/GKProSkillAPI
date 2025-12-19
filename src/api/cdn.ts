@@ -99,6 +99,28 @@ function getFolderName(skillId: string): string {
     else return 'undefined game';
 }
 
+export const importAllClasses = async () => {
+    const tasks = [];
+    for (const clazz of await getAllClasses()) {
+        tasks.push(async function () {
+            await importClass(clazz);
+            const folderName = getFolderName(clazz);
+            let folder = get(classStore.classFolders).filter(f => f.name === folderName)[0];
+            const realClass = classStore.getClass(clazz)!;
+            if (folder) {
+                folder.add(realClass);
+            } else {
+                folder = new FabledFolder();
+                folder.name = folderName;
+                classStore.addClassFolder(folder);
+                folder?.add(realClass);
+            }
+        }());
+    }
+    await Promise.all(tasks);
+    notifySuccess('成功匯入所有' + classChinese());
+};
+
 export const importAllSkills = async () => {
     const tasks = [];
     for (const skill of await getAllSkills()) {
