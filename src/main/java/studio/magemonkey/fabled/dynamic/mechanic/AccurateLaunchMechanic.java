@@ -35,6 +35,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     private static final String MAX_VELOCITY = "max-velocity";
     private static final String MIN_TICKS = "min-ticks";
     private static final String FAR_THRESHOLD = "far-threshold";
+    private static final String CASTER = "caster";
 
     private static final double DEFAULT_SPEED = 2.0;
     private static final double DEFAULT_MAX_VELOCITY = 4.0;
@@ -58,18 +59,19 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
 
-        boolean resetY      = settings.getBool(RESET_Y, true);
-        double  forward     = parseValues(caster, FORWARD, level, 0);
-        double  upward      = parseValues(caster, UPWARD, level, 0);
-        double  right       = parseValues(caster, RIGHT, level, 0);
-        double  speed       = parseValues(caster, SPEED, level, DEFAULT_SPEED);
-        double  maxVelocity = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
-        int     minTicks    = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
+        boolean resetY       = settings.getBool(RESET_Y, true);
+        boolean launchCaster = settings.getBool(CASTER, false);
+        double  forward      = parseValues(caster, FORWARD, level, 0);
+        double  upward       = parseValues(caster, UPWARD, level, 0);
+        double  right        = parseValues(caster, RIGHT, level, 0);
+        double  speed        = parseValues(caster, SPEED, level, DEFAULT_SPEED);
+        double  maxVelocity  = parseValues(caster, MAX_VELOCITY, level, DEFAULT_MAX_VELOCITY);
+        int     minTicks     = (int) Math.max(1, parseValues(caster, MIN_TICKS, level, DEFAULT_MIN_TICKS));
         double  farThreshold = parseValues(caster, FAR_THRESHOLD, level, DEFAULT_FAR_THRESHOLD);
 
         String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
-        for (LivingEntity target : targets) {
+        for (LivingEntity target : launchCaster ? List.of(caster) : targets) {
             // 1. Cross-world check
             if (caster.getWorld() != target.getWorld()) {
                 continue;
