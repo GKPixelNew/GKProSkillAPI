@@ -467,6 +467,22 @@ class InitializeTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class ItemHeldTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Item Held',
+			description:  'Applies skill effects upon holding a different item on the hotbar, use {api-old-slot} for the old slot and {api-new-slot} for the new slot',
+			data:         [
+				new BooleanSelect('Cancel Swap', 'cancel', true)
+					.setTooltip('True cancels the item hold. False allows the item hold')
+			],
+			summaryItems: ['cancel']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ItemSwapTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -5959,6 +5975,7 @@ export const initComponents = () => {
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
 		DROP_ITEM:   { name: 'Drop Item', component: DropItemTrigger, section: 'Item' },
+		ITEM_HELD:   { name: 'Item Held', component: ItemHeldTrigger, section: 'Item' },
 		ITEM_SWAP:   { name: 'Item Swap', component: ItemSwapTrigger, section: 'Item' },
 
 		FISHING:        { name: 'Fishing', component: FishingTrigger, section: 'Fishing' },
