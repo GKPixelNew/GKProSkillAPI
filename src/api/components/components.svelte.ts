@@ -3788,6 +3788,8 @@ class AccurateLaunchMechanic extends FabledMechanic {
 			data:         [
 				new DropdownSelect('Relative', 'relative', ['Caster looking', 'Target looking', 'Caster to Target', 'Target to Caster'], 'Target looking')
 					.setTooltip('How to aim the arc: caster-looking uses caster facing, target-looking uses target facing, caster-to-target aims from caster toward target, target-to-caster aims from target toward caster'),
+				new BooleanSelect('Caster', 'caster', false)
+					.setTooltip('Setting this to true will launch the caster, false will launch the targets'),
 				new BooleanSelect('Reset Y', 'reset-y', true)
 					.setTooltip('Whether to zero out the Y of the facing direction before applying offsets'),
 				new AttributeSelect('Forward Offset', 'forward', 0)
