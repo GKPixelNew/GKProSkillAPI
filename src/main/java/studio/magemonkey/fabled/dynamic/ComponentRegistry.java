@@ -65,6 +65,7 @@ public class ComponentRegistry {
         register(new GlideTrigger());
         register(new HarvestTrigger());
         register(new HealTrigger());
+        register(new ItemHeldTrigger());
         register(new ItemSwapTrigger());
         register(new JumpTrigger());
         register(new KillTrigger());
