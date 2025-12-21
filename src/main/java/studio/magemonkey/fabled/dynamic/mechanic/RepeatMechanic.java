@@ -157,6 +157,9 @@ public class RepeatMechanic extends MechanicComponent {
             final List<RepeatTask> casterTasks = tasks.get(caster.getEntityId());
             if (casterTasks != null) {
                 casterTasks.remove(this);
+                log.info("Cancelled repeat task for caster {}, {} remaining.",
+                        caster.getEntityId(),
+                        tasks.values().stream().map(List::size).reduce(0, Integer::sum));
             } else {
                 log.warn("No repeat tasks found for caster {}, cannot cancel.", caster.getEntityId());
             }
