@@ -33,10 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Executes child components multiple times
@@ -77,7 +74,7 @@ public class RepeatMechanic extends MechanicComponent {
                 }
             } else {
                 final RepeatTask task = new RepeatTask(caster, this.skill, targets, count, delay, period, stopOnFail, force);
-                tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
+                tasks.computeIfAbsent(caster.getEntityId(), _ -> new LinkedList<>()).add(task);
             }
             return true;
         }
@@ -157,11 +154,6 @@ public class RepeatMechanic extends MechanicComponent {
             final List<RepeatTask> casterTasks = tasks.get(caster.getEntityId());
             if (casterTasks != null) {
                 casterTasks.remove(this);
-                log.info("Cancelled repeat task for caster {}, {} remaining.",
-                        caster.getEntityId(),
-                        tasks.values().stream().map(List::size).reduce(0, Integer::sum));
-            } else {
-                log.warn("No repeat tasks found for caster {}, cannot cancel.", caster.getEntityId());
             }
         }
 
