@@ -26,18 +26,22 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Executes child components multiple times
  */
+@Slf4j
 public class RepeatMechanic extends MechanicComponent {
     private static final String REPETITIONS  = "repetitions";
     private static final String DELAY        = "delay";
@@ -118,7 +122,6 @@ public class RepeatMechanic extends MechanicComponent {
         }
     }
 
-    @EqualsAndHashCode(callSuper = false)
     public class RepeatTask extends BukkitRunnable {
         private final List<LivingEntity> targets;
         private final LivingEntity       caster;
@@ -128,8 +131,6 @@ public class RepeatMechanic extends MechanicComponent {
         private final DynamicSkill skill;
 
         private int count;
-        @EqualsAndHashCode.Include // to differentiate tasks only, the default hashCode is not stable enough
-        private final UUID uuid;
 
         RepeatTask(
                 LivingEntity caster,
@@ -146,7 +147,6 @@ public class RepeatMechanic extends MechanicComponent {
             this.count = count;
             this.stopOnFail = stopOnFail;
             this.force = force;
-            this.uuid = UUID.randomUUID();
 
             Fabled.schedule(this, delay, period);
         }
@@ -157,6 +157,8 @@ public class RepeatMechanic extends MechanicComponent {
             final List<RepeatTask> casterTasks = tasks.get(caster.getEntityId());
             if (casterTasks != null) {
                 casterTasks.remove(this);
+            } else {
+                log.warn("No repeat tasks found for caster {}, cannot cancel.", caster.getEntityId());
             }
         }
 
