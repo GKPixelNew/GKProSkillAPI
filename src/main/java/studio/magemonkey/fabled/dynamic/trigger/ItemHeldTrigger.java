@@ -18,7 +18,7 @@ public class ItemHeldTrigger implements Trigger<PlayerItemHeldEvent> {
 
     @Override
     public boolean shouldTrigger(PlayerItemHeldEvent event, int level, Settings settings) {
-        boolean cancelEvent = settings.getBool("cancel");
+        boolean cancelEvent = settings.getBool("cancel", false);
         if (cancelEvent) {
             event.setCancelled(true);
         }
