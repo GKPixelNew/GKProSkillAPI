@@ -2802,7 +2802,7 @@ public class PlayerData {
 
         SkillStatus status = skill.getStatus();
         int         level  = skill.getLevel();
-        double      cost   = skill.getData().getManaCost(level);
+        double      cost   = skill.getData().getManaCost(level, this);
 
         // Not unlocked
         if (level <= 0) {
