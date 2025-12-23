@@ -5061,7 +5061,7 @@ class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/attributes.yml">attribute stats</a>',
+			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/creating-attributes">attribute stats</a>',
 			data:         [
 				new StringSelect('Stat', 'key', 'health')
 					.setTooltip('The name of the stat to add to'),
