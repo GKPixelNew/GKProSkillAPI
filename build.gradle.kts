@@ -26,8 +26,8 @@ repositories {
 var codex_version = "1.1.1-R0.16-SNAPSHOT"
 
 dependencies {
-    testImplementation("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.93.0") // 4.93.0 is the last working version for 1.21.8, do not change unless minecraft version is upgraded
+    testImplementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.98.0") // 4.98.0 is the last working version for 1.21.10, do not change unless minecraft version is upgraded
     testImplementation("org.junit.platform:junit-platform-launcher:1.12.2")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.12.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
@@ -41,7 +41,7 @@ dependencies {
         exclude(group = "com.sk89q.worldguard")
     }
 
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.5")
