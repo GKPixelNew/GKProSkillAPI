@@ -6,7 +6,7 @@
 	import ByteSelect                  from './input/ByteSelect.svelte';
 	import { expSources }              from '../version/data';
 	import { toProperCase }            from '$api/api';
-	import { onDestroy, onMount }      from 'svelte';
+	import { onDestroy, onMount, untrack }      from 'svelte';
 	import ProInput                    from './input/ProInput.svelte';
 	import Toggle                      from './input/Toggle.svelte';
 	import LoreInput                   from '$input/LoreInput.svelte';
@@ -53,19 +53,22 @@
 
 	// Extract variables from the first language's lore
 	const extractVariables = (): LoreVariable[] => {
-		const langs = getLanguages();
-		if (langs.length === 0) return [];
+		// Use untrack to prevent reactive dependency on translatedLore
+		return untrack(() => {
+			const langs = Object.keys(data.translatedLore);
+			if (langs.length === 0) return [];
 
-		const firstLang = langs[0];
-		const loreLines = data.translatedLore[firstLang] || [];
-		const fullText = loreLines.join('\n');
-		const numbers = extractNumbers(fullText);
+			const firstLang = langs[0];
+			const loreLines = data.translatedLore[firstLang] || [];
+			const fullText = loreLines.join('\n');
+			const numbers = extractNumbers(fullText);
 
-		return numbers.map((value, idx) => ({
-			index: idx + 1,
-			name: `Var ${idx + 1}`,
-			value
-		}));
+			return numbers.map((value, idx) => ({
+				index: idx + 1,
+				name: `Var ${idx + 1}`,
+				value
+			}));
+		});
 	};
 
 	// Replace the Nth number occurrence in text with a new value
@@ -156,10 +159,18 @@
 		}
 	};
 
-	// Refresh variables when translated lore section is shown
+	// Track if we've already loaded variables for this session
+	let varsLoaded = $state(false);
+
+	// Only refresh variables ONCE when section is first opened
 	$effect(() => {
-		if (translatedLoreShown) {
-			refreshVariables();
+		if (translatedLoreShown && !varsLoaded) {
+			varsLoaded = true;
+			// Use setTimeout to break out of the reactive tracking
+			setTimeout(() => refreshVariables(), 0);
+		}
+		if (!translatedLoreShown) {
+			varsLoaded = false;
 		}
 	});
 
