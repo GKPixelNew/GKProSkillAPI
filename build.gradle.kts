@@ -79,7 +79,7 @@ configurations {
 }
 
 group = "dev.robothanzo.gk.sapi"
-version = "1.3.2-R0.3-SNAPSHOT"
+version = "1.3.2-R0.4-SNAPSHOT"
 description = "GKProSkillAPI"
 java.sourceCompatibility = JavaVersion.VERSION_23
 
