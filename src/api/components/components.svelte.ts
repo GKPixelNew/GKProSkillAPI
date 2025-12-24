@@ -1209,6 +1209,17 @@ class SelfTarget extends FabledTarget {
 	public static override new = () => new this();
 }
 
+class AngryAtTarget extends FabledTarget {
+	public constructor() {
+		super({
+			name:        'Angry At',
+			description: 'Targets the entity that the current mob target is angry at (has aggro on). Only works if the caster is a mob.'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class SingleTarget extends FabledTarget {
 	public constructor() {
 		super({
@@ -5996,6 +6007,7 @@ export const initComponents = () => {
 
 	});
 	targets.set({
+		ANGRY_AT: { name: 'Angry At', component: AngryAtTarget },
 		AREA:     { name: 'Area', component: AreaTarget },
 		CONE:     { name: 'Cone', component: ConeTarget },
 		LINEAR:   { name: 'Linear', component: LinearTarget },
