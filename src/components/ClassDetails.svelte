@@ -24,7 +24,6 @@
 
 	let combosShown = $state(false);
 	let translatedLoreShown = $state(false);
-	let selectedLang = $state('zh-TW');
 	let newLangCode = $state('');
 	let sub: Unsubscriber;
 
@@ -38,28 +37,17 @@
 	const addLanguage = () => {
 		if (newLangCode && !data.translatedLore[newLangCode]) {
 			data.translatedLore[newLangCode] = [];
-			selectedLang = newLangCode;
 			newLangCode = '';
 		}
 	};
 
-	// Remove current language
-	const removeLanguage = () => {
-		if (selectedLang && data.translatedLore[selectedLang]) {
-			delete data.translatedLore[selectedLang];
+	// Remove a specific language
+	const removeLanguage = (langCode: string) => {
+		if (langCode && data.translatedLore[langCode]) {
+			delete data.translatedLore[langCode];
 			data.translatedLore = { ...data.translatedLore }; // Trigger reactivity
-			const langs = getLanguages();
-			selectedLang = langs.length > 0 ? langs[0] : '';
 		}
 	};
-
-	// Ensure selectedLang is valid
-	$effect(() => {
-		const langs = getLanguages();
-		if (langs.length > 0 && !langs.includes(selectedLang)) {
-			selectedLang = langs[0];
-		}
-	});
 
 	onMount(() => {
 		sub = attributeStore.attributes.subscribe(value => {
@@ -180,19 +168,17 @@
 	</div>
 	{#if translatedLoreShown}
 		<div class='info'>Define multiple language versions of the class lore. The first language (zh-TW) is used as the default fallback.</div>
-		<ProInput label='Language'
-							tooltip='Select the language to edit'>
-			<div class='lang-controls'>
-				<select bind:value={selectedLang}>
-					{#each getLanguages() as lang}
-						<option value={lang}>{lang}</option>
-					{/each}
-				</select>
-				<button class='remove-btn' onclick={removeLanguage} title='Remove current language'>
-					<span class='material-symbols-rounded'>delete</span>
-				</button>
-			</div>
-		</ProInput>
+		{#each getLanguages() as lang (lang)}
+			<ProInput label='Lore ({lang})'
+								tooltip='The lore text for {lang} (one line per row)'>
+				<div class='lore-with-delete'>
+					<LoreInput bind:value={data.translatedLore[lang]} />
+					<button class='remove-lang-btn' onclick={() => removeLanguage(lang)} title='Remove {lang}'>
+						<span class='material-symbols-rounded'>delete</span>
+					</button>
+				</div>
+			</ProInput>
+		{/each}
 		<ProInput label='Add Language'
 							tooltip='Add a new language code (e.g., en-US, zh-CN)'>
 			<div class='lang-controls'>
@@ -202,12 +188,6 @@
 				</button>
 			</div>
 		</ProInput>
-		{#if selectedLang && data.translatedLore[selectedLang] !== undefined}
-			<ProInput label='Lore ({selectedLang})'
-								tooltip='The lore text for this language (one line per row)'>
-				<LoreInput bind:value={data.translatedLore[selectedLang]} />
-			</ProInput>
-		{/if}
 	{/if}
 
 	<div class='header combos'
@@ -329,7 +309,6 @@
         width: 100%;
     }
 
-    .lang-controls select,
     .lang-controls input {
         flex: 1;
     }
@@ -354,16 +333,38 @@
         background-color: #45a049;
     }
 
-    .remove-btn {
-        background-color: #f44336;
-        color: white;
+    .lore-with-delete {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-start;
+        width: 100%;
     }
 
-    .remove-btn:hover {
+    .lore-with-delete :global(textarea) {
+        flex: 1;
+    }
+
+    .remove-lang-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        background-color: #f44336;
+        color: white;
+        height: fit-content;
+        margin-top: 0.25rem;
+    }
+
+    .remove-lang-btn:hover {
         background-color: #da190b;
     }
 
-    .lang-controls .material-symbols-rounded {
+    .lang-controls .material-symbols-rounded,
+    .remove-lang-btn .material-symbols-rounded {
         font-size: 1.2rem;
     }
 </style>
