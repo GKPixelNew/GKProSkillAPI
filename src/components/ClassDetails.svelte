@@ -23,10 +23,43 @@
 	let { data = $bindable(), onsave }: Props = $props();
 
 	let combosShown = $state(false);
+	let translatedLoreShown = $state(false);
+	let selectedLang = $state('zh-TW');
+	let newLangCode = $state('');
 	let sub: Unsubscriber;
 
 	const classes = classStore.classes;
 	const skills  = skillStore.skills;
+
+	// Get available languages from translatedLore
+	const getLanguages = () => Object.keys(data.translatedLore);
+
+	// Add a new language
+	const addLanguage = () => {
+		if (newLangCode && !data.translatedLore[newLangCode]) {
+			data.translatedLore[newLangCode] = [];
+			selectedLang = newLangCode;
+			newLangCode = '';
+		}
+	};
+
+	// Remove current language
+	const removeLanguage = () => {
+		if (selectedLang && data.translatedLore[selectedLang]) {
+			delete data.translatedLore[selectedLang];
+			data.translatedLore = { ...data.translatedLore }; // Trigger reactivity
+			const langs = getLanguages();
+			selectedLang = langs.length > 0 ? langs[0] : '';
+		}
+	};
+
+	// Ensure selectedLang is valid
+	$effect(() => {
+		const langs = getLanguages();
+		if (langs.length > 0 && !langs.includes(selectedLang)) {
+			selectedLang = langs[0];
+		}
+	});
 
 	onMount(() => {
 		sub = attributeStore.attributes.subscribe(value => {
@@ -136,6 +169,47 @@
 		<MaterialSelect multiple bind:selected={data.unusableItems} />
 	</ProInput>
 
+	<div class='header translated-lore'
+			 role='button'
+			 tabindex='0'
+			 onclick={() => translatedLoreShown = !translatedLoreShown}
+			 onkeypress={e => {
+			 	if (e.key === 'Enter') translatedLoreShown = !translatedLoreShown;
+			 }}>
+		Translated Lore <span class='material-symbols-rounded'>{translatedLoreShown ? 'expand_less' : 'expand_more'}</span>
+	</div>
+	{#if translatedLoreShown}
+		<div class='info'>Define multiple language versions of the class lore. The first language (zh-TW) is used as the default fallback.</div>
+		<ProInput label='Language'
+							tooltip='Select the language to edit'>
+			<div class='lang-controls'>
+				<select bind:value={selectedLang}>
+					{#each getLanguages() as lang}
+						<option value={lang}>{lang}</option>
+					{/each}
+				</select>
+				<button class='remove-btn' onclick={removeLanguage} title='Remove current language'>
+					<span class='material-symbols-rounded'>delete</span>
+				</button>
+			</div>
+		</ProInput>
+		<ProInput label='Add Language'
+							tooltip='Add a new language code (e.g., en-US, zh-CN)'>
+			<div class='lang-controls'>
+				<input type='text' bind:value={newLangCode} placeholder='e.g., en-US' />
+				<button class='add-btn' onclick={addLanguage} title='Add language'>
+					<span class='material-symbols-rounded'>add</span>
+				</button>
+			</div>
+		</ProInput>
+		{#if selectedLang && data.translatedLore[selectedLang] !== undefined}
+			<ProInput label='Lore ({selectedLang})'
+								tooltip='The lore text for this language (one line per row)'>
+				<LoreInput bind:value={data.translatedLore[selectedLang]} />
+			</ProInput>
+		{/if}
+	{/if}
+
 	<div class='header combos'
 			 role='button'
 			 tabindex='0'
@@ -244,7 +318,52 @@
         margin: 1rem auto;
     }
 
-    .combos {
+    .combos, .translated-lore {
         cursor: pointer;
+    }
+
+    .lang-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        width: 100%;
+    }
+
+    .lang-controls select,
+    .lang-controls input {
+        flex: 1;
+    }
+
+    .lang-controls button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .add-btn {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .add-btn:hover {
+        background-color: #45a049;
+    }
+
+    .remove-btn {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .remove-btn:hover {
+        background-color: #da190b;
+    }
+
+    .lang-controls .material-symbols-rounded {
+        font-size: 1.2rem;
     }
 </style>

@@ -24,6 +24,7 @@ export interface FabledClassData {
 	icon?: Icon;
 	unusableItems?: string[];
 	actionBar?: string;
+	translatedLore?: { [langCode: string]: string[] };
 	lInverted?: boolean;
 	rInverted?: boolean;
 	lsInverted?: boolean;
@@ -154,6 +155,7 @@ export interface ClassYamlData {
 	'icon-data': number;
 	'icon-lore': string[];
 	'exp-source': number;
+	'translated-lore'?: { [langCode: string]: string[] };
 
 	'combo-starters': ComboStarters;
 }
