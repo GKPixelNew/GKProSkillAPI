@@ -966,10 +966,6 @@ public class Settings extends com.sucy.skill.data.Settings {
             if (playerAlly) return false;
             if (playerWorlds.contains(target.getWorld().getName())) return false;
         } else if (target instanceof Tameable tameable) {
-            if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
-                return false;
-            }
-
             if (tameable.isTamed() && (tameable.getOwner() instanceof Player)) {
                 return (tameable.getOwner() != target)
                         && canAttack(attacker, (Player) tameable.getOwner());
