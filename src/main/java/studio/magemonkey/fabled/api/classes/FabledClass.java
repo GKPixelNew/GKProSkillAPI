@@ -60,30 +60,32 @@ import java.util.*;
  * the class to extend when creating your own classes.
  */
 public abstract class FabledClass implements IconHolder {
-    private static final String                   SKILLS        = "skills";
-    private static final String                   PARENT        = "parent";
-    private static final String                   NAME          = "name";
-    private static final String                   PREFIX        = "prefix";
-    private static final String                   ACTION_BAR    = "action-bar";
-    private static final String                   GROUP         = "group";
-    private static final String                   MANA          = "mana";
-    private static final String                   MAX           = "max-level";
-    private static final String                   EXP           = "exp-source";
-    private static final String                   REGEN         = "mana-regen";
-    private static final String                   PERM          = "needs-permission";
-    private static final String                   ATTR          = "attributes";
-    private static final String                   OLD_TREE      = "tree";
-    private static final String                   TREE          = "skill-tree";
-    private static final String                   BLACKLIST     = "blacklist";
+    private static final String                   SKILLS          = "skills";
+    private static final String                   PARENT          = "parent";
+    private static final String                   NAME            = "name";
+    private static final String                   PREFIX          = "prefix";
+    private static final String                   ACTION_BAR      = "action-bar";
+    private static final String                   GROUP           = "group";
+    private static final String                   MANA            = "mana";
+    private static final String                   MAX             = "max-level";
+    private static final String                   EXP             = "exp-source";
+    private static final String                   REGEN           = "mana-regen";
+    private static final String                   PERM            = "needs-permission";
+    private static final String                   ATTR            = "attributes";
+    private static final String                   OLD_TREE        = "tree";
+    private static final String                   TREE            = "skill-tree";
+    private static final String                   BLACKLIST       = "blacklist";
+    private static final String                   TRANSLATED_LORE = "translated-lore";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
      */
-    protected final      Settings                 settings      = new Settings();
-    private final        Map<String, Skill>       skillMap      = new HashMap<>();
-    private final        List<Skill>              skills        = new ArrayList<>();
-    private final        Set<Material>            blacklist     = new HashSet<>();
-    private final        Map<Click, ComboStarter> comboStarters = new HashMap<>();
+    protected final      Settings                 settings       = new Settings();
+    private final        Map<String, Skill>       skillMap       = new HashMap<>();
+    private final        List<Skill>              skills         = new ArrayList<>();
+    private final        Set<Material>            blacklist      = new HashSet<>();
+    private final        Map<Click, ComboStarter> comboStarters  = new HashMap<>();
+    private final        Map<String, List<String>> translatedLore = new LinkedHashMap<>();
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -479,6 +481,63 @@ public abstract class FabledClass implements IconHolder {
     }
 
     /**
+     * Retrieves the translated lore for the specified language code.
+     * If the language code is not found, falls back to the first available language.
+     * Returns null if no translations are available.
+     *
+     * @param langCode the language code (e.g., "zh-TW", "en-US")
+     * @return the translated lore lines, or null if not available
+     */
+    @Nullable
+    public List<String> getTranslatedLore(String langCode) {
+        if (translatedLore.containsKey(langCode)) {
+            return translatedLore.get(langCode);
+        }
+        // Fallback to first available language
+        if (!translatedLore.isEmpty()) {
+            return translatedLore.values().iterator().next();
+        }
+        return null;
+    }
+
+    /**
+     * Sets the translated lore for the specified language code.
+     *
+     * @param langCode the language code (e.g., "zh-TW", "en-US")
+     * @param lore     the lore lines for this language
+     */
+    public void setTranslatedLore(String langCode, List<String> lore) {
+        translatedLore.put(langCode, lore);
+    }
+
+    /**
+     * Removes the translated lore for the specified language code.
+     *
+     * @param langCode the language code to remove
+     */
+    public void removeTranslatedLore(String langCode) {
+        translatedLore.remove(langCode);
+    }
+
+    /**
+     * Retrieves all available language codes for translated lore.
+     *
+     * @return set of available language codes
+     */
+    public Set<String> getAvailableLanguages() {
+        return translatedLore.keySet();
+    }
+
+    /**
+     * Retrieves the entire translated lore map.
+     *
+     * @return map of language codes to lore lines
+     */
+    public Map<String, List<String>> getAllTranslatedLore() {
+        return translatedLore;
+    }
+
+    /**
      * Retrieves the list of skills this class provides a player
      *
      * @return list of skills provided by the class
@@ -638,6 +697,14 @@ public abstract class FabledClass implements IconHolder {
             dataSection.set("inverted", comboStarter.blacklist);
             dataSection.set("whitelist", comboStarter.itemTypes);
         }
+
+        // Save translated lore
+        if (!translatedLore.isEmpty()) {
+            DataSection translatedLoreSection = config.createSection(TRANSLATED_LORE);
+            for (Map.Entry<String, List<String>> entry : translatedLore.entrySet()) {
+                translatedLoreSection.set(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -714,6 +781,18 @@ public abstract class FabledClass implements IconHolder {
                 if (click == null) continue;
                 DataSection subSection = section.getSection(key);
                 if (subSection != null) comboStarters.put(click, new ComboStarter(subSection));
+            }
+        }
+
+        // Load translated lore
+        translatedLore.clear();
+        DataSection translatedLoreSection = config.getSection(TRANSLATED_LORE);
+        if (translatedLoreSection != null) {
+            for (String langCode : translatedLoreSection.keys()) {
+                List<String> lore = translatedLoreSection.getList(langCode);
+                if (lore != null && !lore.isEmpty()) {
+                    translatedLore.put(langCode, lore);
+                }
             }
         }
 
