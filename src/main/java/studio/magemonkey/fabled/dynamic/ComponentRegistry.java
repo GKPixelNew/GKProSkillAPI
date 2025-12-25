@@ -89,6 +89,7 @@ public class ComponentRegistry {
         register(new WorldChangeTrigger());
 
         // Targets
+        register(new AngryAtTarget());
         register(new AreaTarget());
         register(new ConeTarget());
         register(new LinearTarget());
