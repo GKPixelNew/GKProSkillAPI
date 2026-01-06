@@ -5092,6 +5092,58 @@ class StatMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class AddModifierMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Add Modifier',
+			description:  'Adds a stat or attribute modifier to targets that can be removed later using Remove Modifier mechanic',
+			data:         [
+				new StringSelect('Modifier Key', 'key', 'my-modifier')
+					.setTooltip('A unique key to identify this modifier for later removal'),
+				new DropdownSelect('Type', 'type', ['STAT', 'ATTRIBUTE'], 'STAT')
+					.setTooltip('Whether to modify a stat (like physical-damage, cooldown) or an attribute (like strength, intelligence)'),
+				new StringSelect('Target Key', 'target-key', 'physical-damage')
+					.requireValue('type', ['STAT'])
+					.setTooltip('The stat key to modify (e.g., physical-damage, cooldown, mana-cost, skill-damage)'),
+				new DropdownSelect('Target Attribute', 'target-key', () => attributeStore.getAttributeNames(), ['Intelligence'])
+					.requireValue('type', ['ATTRIBUTE'])
+					.setTooltip('The attribute to modify'),
+				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
+					.setTooltip('ADD_NUMBER: Adds the amount to the value. MULTIPLY_PERCENTAGE: Multiplies the value by amount (e.g., 0.5 = 50% reduction, 1.5 = 50% increase)'),
+				new AttributeSelect('Amount', 'amount', 5, 2)
+					.setTooltip('The amount to use with the operation'),
+				new AttributeSelect('Seconds', 'seconds', -1)
+					.setTooltip('Duration in seconds. Use -1 for permanent (until removed manually)'),
+				new BooleanSelect('Stackable', 'stackable', false)
+					.setTooltip('Whether applying multiple times creates separate stacks')
+			],
+			summaryItems: ['key', 'type', 'target-key', 'operation', 'amount', 'seconds']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class RemoveModifierMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Remove Modifier',
+			description:  'Removes stat or attribute modifiers from targets by their modifier key',
+			data:         [
+				new StringSelect('Modifier Key', 'key', 'my-modifier')
+					.setTooltip('The modifier key to remove (must match the key used in Add Modifier)'),
+				new DropdownSelect('Type', 'type', ['STAT', 'ATTRIBUTE'], 'STAT')
+					.setTooltip('Whether to remove a stat modifier or an attribute modifier'),
+				new AttributeSelect('Amount', 'amount', -1)
+					.setTooltip('Number of stacks to remove. Use -1 to remove all stacks with this key')
+			],
+			summaryItems: ['key', 'type', 'amount']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class StatusMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6143,6 +6195,8 @@ export const initComponents = () => {
 		SOUND:              { name: 'Sound', component: SoundMechanic },
 		SOUND_STOP:         { name: 'Sound Stop', component: SoundStopMechanic },
 		STAT:               { name: 'Stat', component: StatMechanic },
+		ADD_MODIFIER:       { name: 'Add Modifier', component: AddModifierMechanic },
+		REMOVE_MODIFIER:    { name: 'Remove Modifier', component: RemoveModifierMechanic },
 		STATUS:             { name: 'Status', component: StatusMechanic },
 		SUMMON:             { name: 'Summon', component: SummonMechanic },
 		TAUNT:              { name: 'Taunt', component: TauntMechanic },
