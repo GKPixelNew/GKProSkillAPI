@@ -59,6 +59,7 @@ export default class FabledClass implements Serializable {
 	});
 	unusableItems: string[]  = $state([]);
 	actionBar                = $state('');
+	translatedLore: { [langCode: string]: string[] } = $state({ 'zh-TW': [] });
 
 	lInverted  = $state(true);
 	rInverted  = $state(true);
@@ -98,6 +99,7 @@ export default class FabledClass implements Serializable {
 		if (data?.icon) this.icon = data.icon;
 		if (data?.unusableItems) this.unusableItems = data.unusableItems;
 		if (data?.actionBar) this.actionBar = data.actionBar;
+		if (data?.translatedLore) this.translatedLore = data.translatedLore;
 
 		// Combo starters
 		if (data?.lInverted !== undefined) this.lInverted = data.lInverted;
@@ -137,6 +139,7 @@ export default class FabledClass implements Serializable {
 			icon:          this.icon,
 			unusableItems: this.unusableItems,
 			actionBar:     this.actionBar,
+			translatedLore: this.translatedLore,
 			lInverted:     this.lInverted,
 			rInverted:     this.rInverted,
 			lsInverted:    this.lsInverted,
@@ -232,6 +235,7 @@ export default class FabledClass implements Serializable {
 			'icon-data':        this.icon.customModelData,
 			'icon-lore':        this.icon.lore,
 			'exp-source':       this.expSources,
+			'translated-lore':  this.translatedLore,
 			'combo-starters':   {
 				L:  { inverted: this.lInverted, whitelist: this.lWhitelist },
 				R:  { inverted: this.rInverted, whitelist: this.rWhitelist },
@@ -308,6 +312,7 @@ export default class FabledClass implements Serializable {
 		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
 		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
 		if (yaml['exp-source'] !== null) this.expSources = yaml['exp-source'];
+		if (yaml['translated-lore']) this.translatedLore = yaml['translated-lore'];
 
 		if (yaml['combo-starters']) {
 			// Combo starters
