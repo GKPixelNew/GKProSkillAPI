@@ -100,7 +100,6 @@ public class AddModifierMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) {
-            if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] targets is empty");
             return false;
         }
 
@@ -115,24 +114,12 @@ public class AddModifierMechanic extends MechanicComponent {
         final boolean permanent   = seconds < 0;
         final int     ticks       = permanent ? -1 : (int) (seconds * 20);
 
-        if (caster instanceof Player) {
-            Player p = (Player) caster;
-            p.sendMessage("[AddModifier] modifierKey=" + modifierKey);
-            p.sendMessage("[AddModifier] type=" + type + ", isStat=" + isStat);
-            p.sendMessage("[AddModifier] targetKey=" + targetKey);
-            p.sendMessage("[AddModifier] operation=" + operation + ", amount=" + amount);
-            p.sendMessage("[AddModifier] seconds=" + seconds + ", permanent=" + permanent);
-            p.sendMessage("[AddModifier] stackable=" + stackable);
-        }
-
         if (targetKey.isEmpty()) {
-            if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] targetKey is empty, returning false");
             return false;
         }
 
         // Validate attribute key exists if it's an attribute modifier
         if (!isStat && Fabled.getAttributesManager().getAttribute(targetKey) == null) {
-            if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Attribute '" + targetKey + "' not found in AttributeManager");
             return false;
         }
 
@@ -140,14 +127,10 @@ public class AddModifierMechanic extends MechanicComponent {
 
         boolean worked = false;
         for (LivingEntity target : targets) {
-            if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Processing target: " + target.getName() + " (isPlayer=" + (target instanceof Player) + ")");
-            
             if (target instanceof Player) {
                 worked = true;
                 final PlayerData data    = Fabled.getData((Player) target);
                 final String     taskKey = data.getPlayerName() + ":" + modifierKey;
-
-                if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] PlayerData found, taskKey=" + taskKey);
 
                 // Handle non-stackable: remove old modifier with same key
                 if (!stackable && casterTasks.containsKey(taskKey)) {
@@ -158,7 +141,6 @@ public class AddModifierMechanic extends MechanicComponent {
                         data.removeAttributeModifier(old.modifierUUID, false);
                     }
                     old.cancel();
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Removed old modifier");
                 }
 
                 UUID modifierUUID;
@@ -171,7 +153,6 @@ public class AddModifierMechanic extends MechanicComponent {
                     );
                     modifierUUID = modifier.getUUID();
                     data.addStatModifier(targetKey, modifier, true);
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Added STAT modifier to '" + targetKey + "', UUID=" + modifierUUID);
                 } else {
                     PlayerAttributeModifier modifier = new PlayerAttributeModifier(
                             modifierKey,
@@ -180,14 +161,7 @@ public class AddModifierMechanic extends MechanicComponent {
                             permanent
                     );
                     modifierUUID = modifier.getUUID();
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Created ATTRIBUTE modifier, UUID=" + modifierUUID);
                     data.addAttributeModifier(targetKey, modifier, true);
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Added ATTRIBUTE modifier to '" + targetKey + "'");
-                    
-                    // Debug: Check if modifier was actually added
-                    int modifierCount = data.getAttributeModifiers(targetKey).size();
-                    int attrValue = data.getAttribute(targetKey);
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] After add: modifierCount=" + modifierCount + ", attrValue=" + attrValue);
                 }
 
                 // Schedule removal task if not permanent
@@ -201,11 +175,9 @@ public class AddModifierMechanic extends MechanicComponent {
                     );
                     casterTasks.put(taskKey, task);
                     Fabled.schedule(task, ticks);
-                    if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Scheduled removal in " + ticks + " ticks");
                 }
             }
         }
-        if (caster instanceof Player) ((Player) caster).sendMessage("[AddModifier] Returning worked=" + worked);
         return worked;
     }
 
