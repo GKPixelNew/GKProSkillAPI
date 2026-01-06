@@ -2307,6 +2307,44 @@ public class PlayerData {
     }
 
     /**
+     * Remove stat modifiers by their name/key
+     *
+     * @param name   The name/key of the modifiers to remove
+     * @param amount The number of modifiers to remove (-1 for all)
+     * @param update calculate player stat immediately and apply to him
+     * @return the number of modifiers removed
+     */
+    public int removeStatModifiersByName(String name, int amount, boolean update) {
+        int removed = 0;
+        boolean removeAll = amount < 0;
+
+        for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
+            List<PlayerStatModifier>     modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i         = modifiers.iterator();
+
+            while (i.hasNext()) {
+                if (!removeAll && removed >= amount) break;
+                
+                PlayerStatModifier modifier = i.next();
+                if (modifier.getName().equals(name)) {
+                    i.remove();
+                    removed++;
+                }
+            }
+
+            this.statModifiers.put(entry.getKey(), modifiers);
+            
+            if (!removeAll && removed >= amount) break;
+        }
+
+        if (update && removed > 0) {
+            this.updatePlayerStat(getPlayer());
+        }
+        
+        return removed;
+    }
+
+    /**
      * Clear all stat modifier which is not persistent
      */
     public void clearStatModifier() {
@@ -2351,6 +2389,44 @@ public class PlayerData {
         if (update) {
             this.updatePlayerStat(getPlayer());
         }
+    }
+
+    /**
+     * Remove attribute modifiers by their name/key
+     *
+     * @param name   The name/key of the modifiers to remove
+     * @param amount The number of modifiers to remove (-1 for all)
+     * @param update calculate player stat immediately and apply to him
+     * @return the number of modifiers removed
+     */
+    public int removeAttributeModifiersByName(String name, int amount, boolean update) {
+        int removed = 0;
+        boolean removeAll = amount < 0;
+
+        for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
+            List<PlayerAttributeModifier>     modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i         = modifiers.iterator();
+
+            while (i.hasNext()) {
+                if (!removeAll && removed >= amount) break;
+                
+                PlayerAttributeModifier modifier = i.next();
+                if (modifier.getName().equals(name)) {
+                    i.remove();
+                    removed++;
+                }
+            }
+
+            this.attributesModifiers.put(entry.getKey(), modifiers);
+            
+            if (!removeAll && removed >= amount) break;
+        }
+
+        if (update && removed > 0) {
+            this.updatePlayerStat(getPlayer());
+        }
+        
+        return removed;
     }
 
     ///////////////////////////////////////////////////////
