@@ -169,6 +169,8 @@ public class ComponentRegistry {
         register(new ArmorStandPoseMechanic());
         register(new ArmorStandRemoveMechanic());
         register(new AttributeMechanic());
+        register(new AddModifierMechanic());
+        register(new RemoveModifierMechanic());
         register(new BlockMechanic());
         register(new BuffMechanic());
         register(new CancelEffectMechanic());
