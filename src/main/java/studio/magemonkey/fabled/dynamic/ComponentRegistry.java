@@ -79,6 +79,8 @@ public class ComponentRegistry {
         register(new RiptideTrigger());
         register(new ShearTrigger());
         register(new ShieldTrigger());
+        register(new SkillUpgradeTrigger());
+        register(new SkillDowngradeTrigger());
         register(new SignalTrigger());
         register(new SprintTrigger());
         register(new SkillCastTrigger());
@@ -89,6 +91,7 @@ public class ComponentRegistry {
         register(new WorldChangeTrigger());
 
         // Targets
+        register(new AngryAtTarget());
         register(new AreaTarget());
         register(new ConeTarget());
         register(new LinearTarget());
