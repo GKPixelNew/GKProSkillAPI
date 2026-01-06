@@ -5102,10 +5102,10 @@ class AddModifierMechanic extends FabledMechanic {
 					.setTooltip('A unique key to identify this modifier for later removal'),
 				new DropdownSelect('Type', 'type', ['STAT', 'ATTRIBUTE'], 'STAT')
 					.setTooltip('Whether to modify a stat (like physical-damage, cooldown) or an attribute (like strength, intelligence)'),
-				new StringSelect('Target Key', 'target-key', 'physical-damage')
+				new StringSelect('Stat Key', 'stat-key', 'physical-damage')
 					.requireValue('type', ['STAT'])
 					.setTooltip('The stat key to modify (e.g., physical-damage, cooldown, mana-cost, skill-damage)'),
-				new DropdownSelect('Target Attribute', 'target-key', () => attributeStore.getAttributeNames(), ['Intelligence'])
+				new DropdownSelect('Attribute Key', 'attribute-key', () => attributeStore.getAttributeNames(), ['Vitality'])
 					.requireValue('type', ['ATTRIBUTE'])
 					.setTooltip('The attribute to modify'),
 				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
@@ -5117,7 +5117,7 @@ class AddModifierMechanic extends FabledMechanic {
 				new BooleanSelect('Stackable', 'stackable', false)
 					.setTooltip('Whether applying multiple times creates separate stacks')
 			],
-			summaryItems: ['key', 'type', 'target-key', 'operation', 'amount', 'seconds']
+			summaryItems: ['key', 'type', 'stat-key', 'attribute-key', 'operation', 'amount', 'seconds']
 		});
 	}
 
