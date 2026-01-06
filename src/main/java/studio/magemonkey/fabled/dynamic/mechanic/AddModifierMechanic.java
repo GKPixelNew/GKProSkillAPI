@@ -37,6 +37,7 @@ import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,13 +47,14 @@ import java.util.UUID;
  * Adds a stat or attribute modifier to targets that can be removed later by key
  */
 public class AddModifierMechanic extends MechanicComponent {
-    private static final String KEY        = "key";
-    private static final String TYPE       = "type";
-    private static final String TARGET_KEY = "target-key";
-    private static final String OPERATION  = "operation";
-    private static final String AMOUNT     = "amount";
-    private static final String SECONDS    = "seconds";
-    private static final String STACKABLE  = "stackable";
+    private static final String KEY           = "key";
+    private static final String TYPE          = "type";
+    private static final String STAT_KEY      = "stat-key";
+    private static final String ATTRIBUTE_KEY = "attribute-key";
+    private static final String OPERATION     = "operation";
+    private static final String AMOUNT        = "amount";
+    private static final String SECONDS       = "seconds";
+    private static final String STACKABLE     = "stackable";
 
     private final Map<Integer, Map<String, ModifierTask>> tasks = new HashMap<>();
 
@@ -70,6 +72,29 @@ public class AddModifierMechanic extends MechanicComponent {
     }
 
     /**
+     * Reads a key that might be stored as a string or a list
+     */
+    private String readTargetKey(String settingKey) {
+        // Try as list first (dropdown selects often store as list)
+        List<String> list = settings.getStringList(settingKey);
+        if (list != null && !list.isEmpty()) {
+            return list.get(0);
+        }
+        
+        // Try as string
+        String value = settings.getString(settingKey, "");
+        if (value != null && !value.isBlank() && !value.equals("[]")) {
+            // Handle case where it's stored as "[value]" string
+            if (value.startsWith("[") && value.endsWith("]")) {
+                value = value.substring(1, value.length() - 1);
+            }
+            return value;
+        }
+        
+        return "";
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -80,7 +105,8 @@ public class AddModifierMechanic extends MechanicComponent {
 
         final String  modifierKey = settings.getString(KEY, "default");
         final String  type        = settings.getString(TYPE, "STAT");
-        final String  targetKey   = settings.getString(TARGET_KEY, "");
+        final boolean isStat      = type.equalsIgnoreCase("STAT");
+        final String  targetKey   = isStat ? readTargetKey(STAT_KEY) : readTargetKey(ATTRIBUTE_KEY);
         final String  operation   = settings.getString(OPERATION, "ADD_NUMBER");
         final double  amount      = parseValues(caster, AMOUNT, level, 5);
         final double  seconds     = parseValues(caster, SECONDS, level, -1);
@@ -92,15 +118,19 @@ public class AddModifierMechanic extends MechanicComponent {
             return false;
         }
 
+        // Validate attribute key exists if it's an attribute modifier
+        if (!isStat && Fabled.getAttributesManager().getAttribute(targetKey) == null) {
+            return false;
+        }
+
         final Map<String, ModifierTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData data      = Fabled.getData((Player) target);
-                final String     taskKey   = data.getPlayerName() + ":" + modifierKey;
-                final boolean    isStat    = type.equalsIgnoreCase("STAT");
+                final PlayerData data    = Fabled.getData((Player) target);
+                final String     taskKey = data.getPlayerName() + ":" + modifierKey;
 
                 // Handle non-stackable: remove old modifier with same key
                 if (!stackable && casterTasks.containsKey(taskKey)) {
