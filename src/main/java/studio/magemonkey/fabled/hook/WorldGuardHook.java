@@ -44,7 +44,7 @@ public class WorldGuardHook {
 
     private static Method getApplicableRegionsMethod() throws Exception {
         if (applicableRegionsMethod == null) {
-            vectorClass = Class.forName("com.sk89q.worldedit.Vector");
+            vectorClass = Class.forName("com.sk89q.worldedit.math.BlockVector3");
             vectorConstructor = vectorClass.getConstructor(double.class, double.class, double.class);
             applicableRegionsMethod = RegionManager.class.getMethod("getApplicableRegionsIDs", vectorClass);
         }

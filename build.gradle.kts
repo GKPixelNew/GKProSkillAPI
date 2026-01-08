@@ -53,7 +53,7 @@ dependencies {
     }
     compileOnly("com.github.retrooper:packetevents-spigot:2.8.0")
     compileOnly("fr.neatmonster:nocheatplus:3.16.0-RC")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT") {
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.14-SNAPSHOT") {
         exclude(group = "com.sk89q.worldedit")
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
