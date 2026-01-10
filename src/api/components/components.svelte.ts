@@ -1760,6 +1760,24 @@ class FoodCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class GKArtifactCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'GK Artifact',
+			description:  'Applies child components when the target player has (or does not have) the specified GK Legends artifact',
+			data:         [
+				new StringSelect('Artifact', 'artifact', '')
+					.setTooltip('The artifact ID to check for'),
+				new BooleanSelect('Not Have', 'not-have', false)
+					.setTooltip('If true, the condition passes when the player does NOT have the artifact')
+			],
+			summaryItems: ['artifact', 'not-have']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class GroundCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -6099,6 +6117,7 @@ export const initComponents = () => {
 		FIRE:           { name: 'Fire', component: FireCondition },
 		FLAG:           { name: 'Flag', component: FlagCondition },
 		FOOD:           { name: 'Food', component: FoodCondition },
+		GK_ARTIFACT:    { name: 'GK Artifact', component: GKArtifactCondition },
 		GLIDE:          { name: 'Glide', component: GlideCondition },
 		GROUND:         { name: 'Ground', component: GroundCondition },
 		HEALTH:         { name: 'Health', component: HealthCondition },
