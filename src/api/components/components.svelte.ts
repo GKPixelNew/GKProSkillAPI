@@ -715,7 +715,7 @@ class SkillDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Damage',
-			description:  'Applies skill effects when a player deals damage with a skill',
+			description:  'Applies skill effects when a player deals damage with a skill. <code>api-damage</code> is the damage the target took',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the damaged entity'),
@@ -5090,7 +5090,7 @@ class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/attributes.yml">attribute stats</a>',
+			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/creating-attributes">attribute stats</a>',
 			data:         [
 				new StringSelect('Stat', 'key', 'health')
 					.setTooltip('The name of the stat to add to'),
