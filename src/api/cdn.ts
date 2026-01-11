@@ -2,7 +2,7 @@ import axios, {AxiosError, type AxiosInstance} from "axios";
 import {userManager} from "$api/oauth";
 import { active, getAttributeYaml, loadRaw } from '../data/store';
 import {notifyFailure, notifySuccess} from "$api/notify";
-import {get} from "svelte/store";
+import { writable, get } from "svelte/store";
 import FabledAttribute from '$api/fabled-attribute.svelte';
 import YAML from 'yaml';
 import FabledClass, { classStore } from '../data/class-store.svelte';
@@ -12,7 +12,6 @@ import { classChinese, getTargetGame } from '../version/data';
 import { attributeStore } from '../data/attribute-store';
 import { trackVersion, getTrackedVersion, clearTrackedVersion, getAllTrackedVersions } from '$api/version-tracker';
 import { clearPendingUpdate, pendingUpdates, type UpdateEvent } from '$api/sse';
-import { writable, get } from 'svelte/store';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
