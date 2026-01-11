@@ -42,7 +42,7 @@
 	import {Circle} from "svelte-loading-spinners";
 	import { importClass, importSkill } from '$api/cdn.js';
 	import { classChinese, targetGame } from '../../version/data';
-	import { connectSSE, disconnectSSE, onUpdate, type UpdateEvent } from '$api/sse';
+	import { connectSSE, disconnectSSE, onUpdate, sseConnected, type UpdateEvent } from '$api/sse';
 	import { toast } from '@zerodevx/svelte-toast';
 
 	let folders: FabledFolder[] = [];
@@ -208,6 +208,10 @@
 		 transition:squish
 		 use:clickOutside={clickOut}>
 	<div class='type-wrap'>
+		<div class="sse-status">
+			<span class="sse-indicator" class:connected={$sseConnected} title={$sseConnected ? '即時更新已連線' : '即時更新已斷線'}></span>
+			<span class="sse-label">{$sseConnected ? '即時' : '離線'}</span>
+		</div>
 		<Tabs
 			bind:selectedTab={$shownTab}
 			color='#111' data={['Classes', 'Skills', 'Attributes']}
@@ -551,5 +555,37 @@
 
     .modal-delete {
         background-color: #b60000;
+    }
+
+    .sse-status {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .sse-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #ef4444;
+        transition: background-color 0.3s ease;
+    }
+
+    .sse-indicator.connected {
+        background-color: #22c55e;
+        animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+        50% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
+    }
+
+    .sse-label {
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 </style>
