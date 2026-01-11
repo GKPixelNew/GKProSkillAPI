@@ -365,6 +365,8 @@ export const upload = async (forceOverwrite: boolean = false) => {
             // Update tracked version after successful upload
             const uploadedData = type === 'class' ? response.data.class : response.data.skill;
             trackVersion(type, resourceId, uploadedData.uploadedAt, uploadedData.uploadedBy);
+            // Clear any pending update indicator since we just uploaded
+            clearPendingUpdate(type, resourceId);
             notifySuccess('上傳成功')
         } else {
             notifyFailure('上傳失敗')
@@ -433,6 +435,8 @@ export const uploadAttributes = async (forceOverwrite: boolean = false) => {
             // Update tracked version after successful upload
             const uploadedData = response.data.attributeCollection;
             trackVersion('attribute', 'all', uploadedData.uploadedAt, uploadedData.uploadedBy);
+            // Clear any pending update indicator since we just uploaded
+            clearPendingUpdate('attribute', 'all');
             notifySuccess('屬性上傳成功');
         } else {
             notifyFailure('屬性上傳失敗');

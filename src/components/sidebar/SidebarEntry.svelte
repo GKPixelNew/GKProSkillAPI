@@ -139,6 +139,7 @@
 		 class:in-folder={!!folderStore.getFolder(data)}
 		 class:over
 		 class:activeSync={sync}
+		 class:hasUpdate={hasPendingUpdate}
 		 draggable='{!!data}'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
 		 {onclick}
@@ -152,7 +153,12 @@
 		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}
 		 role='menuitem'
 		 tabindex='0'>
-	{@render children?.()}
+	<span class="entry-content" class:hasUpdate={hasPendingUpdate}>
+		{#if hasPendingUpdate}
+			<span class="update-icon material-symbols-rounded" title="有新版本可用 (被 {pendingUpdateInfo?.uploadedBy} 更新)">download</span>
+		{/if}
+		{@render children?.()}
+	</span>
 	{#if data}
 		<div class='buttons'>
 			{#if data instanceof FabledSkill}
@@ -381,6 +387,46 @@
 	.hasUpdate:hover {
 		background-color: #f59e0b;
 		color: white;
+	}
+	
+	/* Entry-level hasUpdate style */
+	.sidebar-entry.hasUpdate {
+		animation: none;
+	}
+	
+	.sidebar-entry.hasUpdate:hover {
+		background-color: #444;
+	}
+	
+	.entry-content {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	.entry-content.hasUpdate {
+		color: #f59e0b;
+		animation: none;
+	}
+	
+	.update-icon {
+		font-size: 1.1rem;
+		color: #f59e0b;
+		flex-shrink: 0;
+		animation: bounce 1s ease-in-out infinite;
+	}
+	
+	@keyframes bounce {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-2px);
+		}
 	}
 	
 	@keyframes pulse {

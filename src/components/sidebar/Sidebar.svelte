@@ -75,6 +75,9 @@
 	let unsubscribeUpdate: (() => void) | null = null;
 	let gameSub: Unsubscriber;
 
+	// Track recently shown notifications to prevent duplicates
+	const recentNotifications = new Set<string>();
+
 	const getTypeLabel = (type: string) => {
 		switch (type) {
 			case 'skill': return '技能';
@@ -85,6 +88,19 @@
 	};
 
 	const handleUpdateEvent = (event: UpdateEvent) => {
+		// Create a unique key for this notification
+		const notifKey = `${event.type}:${event.resourceId}:${event.uploadedAt}`;
+		
+		// Skip if we've already shown this notification recently
+		if (recentNotifications.has(notifKey)) {
+			console.log('[SSE] Skipping duplicate notification:', notifKey);
+			return;
+		}
+		
+		// Mark as shown and auto-remove after 10 seconds
+		recentNotifications.add(notifKey);
+		setTimeout(() => recentNotifications.delete(notifKey), 10000);
+		
 		const typeLabel = getTypeLabel(event.type);
 		const resourceLabel = event.resourceId === 'all' ? '全部' : event.resourceId;
 		
