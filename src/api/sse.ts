@@ -57,9 +57,48 @@ export const connectSSE = async (game?: string) => {
     
     console.log(`[SSE] Creating EventSource for URL: ${url}`);
     
+    // First, test if the endpoint is reachable with a quick fetch
+    try {
+        console.log(`[SSE] Testing endpoint with fetch first...`);
+        const testResponse = await fetch(url, { 
+            method: 'GET',
+            headers: { 'Accept': 'text/event-stream' }
+        });
+        console.log(`[SSE] Fetch test response:`, {
+            status: testResponse.status,
+            statusText: testResponse.statusText,
+            headers: Object.fromEntries(testResponse.headers.entries())
+        });
+        // Abort the fetch since we just wanted to test
+        testResponse.body?.cancel();
+    } catch (fetchErr) {
+        console.error(`[SSE] Fetch test failed:`, fetchErr);
+    }
+    
     try {
         eventSource = new EventSource(url);
-        console.log(`[SSE] EventSource created, readyState: ${eventSource.readyState}`);
+        console.log(`[SSE] EventSource created, readyState: ${eventSource.readyState} (0=CONNECTING, 1=OPEN, 2=CLOSED)`);
+        
+        // Log readyState changes periodically
+        const checkInterval = setInterval(() => {
+            if (eventSource) {
+                console.log(`[SSE] Checking readyState: ${eventSource.readyState}`);
+                if (eventSource.readyState === 1) {
+                    console.log(`[SSE] Connection is OPEN!`);
+                    sseConnected.set(true);
+                    clearInterval(checkInterval);
+                } else if (eventSource.readyState === 2) {
+                    console.log(`[SSE] Connection is CLOSED`);
+                    clearInterval(checkInterval);
+                }
+            } else {
+                clearInterval(checkInterval);
+            }
+        }, 1000);
+        
+        // Clear interval after 30 seconds regardless
+        setTimeout(() => clearInterval(checkInterval), 30000);
+        
     } catch (err) {
         console.error(`[SSE] Failed to create EventSource:`, err);
         return;
@@ -78,6 +117,7 @@ export const connectSSE = async (game?: string) => {
     
     eventSource.addEventListener('connected', (e) => {
         console.log('[SSE] "connected" event received:', e.data);
+        sseConnected.set(true);
     });
     
     eventSource.addEventListener('update', (e) => {
