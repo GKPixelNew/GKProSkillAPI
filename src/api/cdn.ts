@@ -1,6 +1,6 @@
 import axios, {AxiosError, type AxiosInstance} from "axios";
 import {userManager} from "$api/oauth";
-import { active, loadRaw } from '../data/store';
+import { active, getAttributeYaml, loadRaw } from '../data/store';
 import {notifyFailure, notifySuccess} from "$api/notify";
 import {get} from "svelte/store";
 import FabledAttribute from '$api/fabled-attribute.svelte';
@@ -9,6 +9,7 @@ import FabledClass, { classStore } from '../data/class-store.svelte';
 import { skillStore } from '../data/skill-store.svelte';
 import { FabledFolder } from '../data/folder-store.svelte';
 import { classChinese, getTargetGame } from '../version/data';
+import { attributeStore } from '../data/attribute-store';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
@@ -173,7 +174,8 @@ export const upload = async () => {
     const act = get(active);
     if (!act) return;
     if (act instanceof FabledAttribute) {
-        notifyFailure("無法上傳屬性")
+        // For attributes, upload the entire combined attributes file
+        await uploadAttributes();
         return;
     }
     if (act instanceof FabledClass) {
@@ -197,4 +199,57 @@ export const upload = async () => {
     }).catch(function (error) {
         notifyFailure('上傳失敗，錯誤 ' + error.response.status)
     });
+}
+
+/**
+ * Upload all attributes as a combined file to CDN
+ */
+export const uploadAttributes = async () => {
+    const formData = new FormData();
+    const yamlContent = await getAttributeYaml();
+    
+    formData.append('file', new File([new Blob([yamlContent], {
+        type: 'application/x-yaml'
+    })], 'attributes.yml'));
+    
+    try {
+        const response = await CONFIGURED_AXIOS.post(`attribute/${getTargetGame()}`, formData);
+        if (response.data.success) {
+            notifySuccess('屬性上傳成功');
+        } else {
+            notifyFailure('屬性上傳失敗');
+        }
+    } catch (error) {
+        notifyFailure('屬性上傳失敗，錯誤 ' + (error as AxiosError).response?.status);
+    }
+}
+
+/**
+ * Import all attributes from CDN (combined file)
+ */
+export const importAttributes = async () => {
+    try {
+        const response = await CONFIGURED_AXIOS.get(`attribute/${getTargetGame()}`);
+        if (response.data.success) {
+            const file = await CONFIGURED_AXIOS.get('download/' + response.data.attributes.fileId);
+            attributeStore.loadAttributesText(file.data, 'local');
+            notifySuccess('成功匯入所有屬性');
+        } else {
+            notifyFailure('匯入屬性失敗');
+        }
+    } catch (error) {
+        const status = (error as AxiosError).response?.status;
+        if (status === 404) {
+            notifyFailure('匯入失敗，找不到屬性資料');
+        } else {
+            notifyFailure('匯入屬性失敗，錯誤 ' + status);
+        }
+    }
+}
+
+/**
+ * Reload all attributes from CDN (same as import, refreshes local data)
+ */
+export const reloadAllAttributes = async () => {
+    await importAttributes();
 }

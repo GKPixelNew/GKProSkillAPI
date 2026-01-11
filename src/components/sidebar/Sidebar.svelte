@@ -29,7 +29,10 @@
 		importAllClasses,
 		importAllSkills,
 		reloadAllClasses,
-		reloadAllSkills
+		reloadAllSkills,
+		importAttributes,
+		uploadAttributes,
+		reloadAllAttributes
 	} from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
 	import ProInput from "$input/ProInput.svelte";
@@ -282,7 +285,25 @@
 					<span tabindex='0'
 								role='button'
 								onclick={() => attributeStore.addAttribute()}
-								onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}>New Attribute</span>
+								onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}>新增屬性</span>
+					<span tabindex='0'
+								role='button'
+								onclick={() => importAttributes()}
+								onkeypress={(e) => e.key === 'Enter' && importAttributes()}>匯入屬性</span>
+				</div>
+			</SidebarEntry>
+			<SidebarEntry
+				delay={200 + 100*($attributes.length+2)}
+				direction='right'>
+				<div class='new'>
+					<span tabindex='0'
+								role='button'
+								onclick={() => uploadAttributes()}
+								onkeypress={(e) => e.key === 'Enter' && uploadAttributes()}>上傳全部</span>
+					<span tabindex='0'
+								role='button'
+								onclick={() => reloadAllAttributes()}
+								onkeypress={(e) => e.key === 'Enter' && reloadAllAttributes()}>重新載入</span>
 				</div>
 			</SidebarEntry>
 		</div>
