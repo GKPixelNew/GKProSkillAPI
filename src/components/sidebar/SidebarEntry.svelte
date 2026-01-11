@@ -171,7 +171,6 @@
 				</a>
 			{/if}
 			
-			{#if !browser || ('showOpenFilePicker' in window)}
 			{#key sync}
 			<div onclick={(e) => {
 				if (data instanceof FabledSkill) {
@@ -204,7 +203,6 @@
 			   <span class='material-symbols-rounded'>{hasPendingUpdate ? 'sync_problem' : 'sync'}</span>
 			</div>
 			{/key}
-			{/if}
 
 			<div onclick={(e) => saveData(data, e)}
 					 onkeypress={(event) => {if (event?.key === 'Enter') saveData(data, event);}}
