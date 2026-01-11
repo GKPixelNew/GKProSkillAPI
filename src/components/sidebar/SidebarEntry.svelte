@@ -12,7 +12,8 @@
 	import FabledClass, { classStore }                                          from '../../data/class-store.svelte';
 	import { FabledFolder, folderStore }                                        from '../../data/folder-store.svelte.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
-	import { importSkill, reloadAllSkills, reloadAllAttributes } from '$api/cdn';
+	import { importSkill, importClass, reloadAllSkills, reloadAllAttributes } from '$api/cdn';
+	import { pendingUpdates, type UpdateEvent } from '$api/sse';
 
 
 	interface Props {
@@ -35,6 +36,27 @@
 	let over     = $state(false);
 	let deleting = $state(false);
 	let sync     = $state(data ? isSyncLocal(data) : false);
+
+	// Check if this item has pending updates
+	const getUpdateKey = () => {
+		if (!data) return null;
+		if (data instanceof FabledSkill) return `skill:${data.name}`;
+		if (data instanceof FabledClass) return `class:${data.name}`;
+		if (data instanceof FabledAttribute) return `attribute:all`;
+		return null;
+	};
+	
+	let hasPendingUpdate = $derived.by(() => {
+		const key = getUpdateKey();
+		if (!key) return false;
+		return $pendingUpdates.has(key);
+	});
+	
+	let pendingUpdateInfo = $derived.by(() => {
+		const key = getUpdateKey();
+		if (!key) return null;
+		return $pendingUpdates.get(key);
+	});
 
 	const startDrag = (e: DragEvent) => {
 		if (!data) {
@@ -148,6 +170,8 @@
 			<div onclick={(e) => {
 				if (data instanceof FabledSkill) {
 					importSkill(data.name);
+				} else if (data instanceof FabledClass) {
+					importClass(data.name);
 				} else if (data instanceof FabledAttribute) {
 					reloadAllAttributes();
 				}
@@ -156,17 +180,22 @@
 					if (event?.key === 'Enter') {
 						if (data instanceof FabledSkill) {
 							importSkill(data.name);
+						} else if (data instanceof FabledClass) {
+							importClass(data.name);
 						} else if (data instanceof FabledAttribute) {
 							reloadAllAttributes();
 						}
 					}
 				}}
 				class:activeSync={sync}
+				class:hasUpdate={hasPendingUpdate}
 				tabindex='0'
 				role='button'
 				class='sync'
-				title={data instanceof FabledAttribute ? '重新載入所有屬性' : '重新整理本技能'}>
-			   <span class='material-symbols-rounded'>sync</span>
+				title={hasPendingUpdate 
+					? `有更新！被 ${pendingUpdateInfo?.uploadedBy} 修改` 
+					: (data instanceof FabledAttribute ? '重新載入所有屬性' : '重新整理')}>
+			   <span class='material-symbols-rounded'>{hasPendingUpdate ? 'sync_problem' : 'sync'}</span>
 			</div>
 			{/key}
 			{/if}
@@ -342,6 +371,25 @@
 
 	.activeSync {
 		color: limegreen;
+	}
+	
+	.hasUpdate {
+		color: #f59e0b;
+		animation: pulse 1.5s ease-in-out infinite;
+	}
+	
+	.hasUpdate:hover {
+		background-color: #f59e0b;
+		color: white;
+	}
+	
+	@keyframes pulse {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
 	}
 
     .modal-buttons {

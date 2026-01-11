@@ -32,13 +32,18 @@
 		reloadAllSkills,
 		importAttributes,
 		uploadAttributes,
-		reloadAllAttributes
+		reloadAllAttributes,
+		conflictDialog,
+		checkAllVersions
 	} from '$api/cdn';
 	import Modal from "$components/Modal.svelte";
+	import ConfirmDialog from "$components/ConfirmDialog.svelte";
 	import ProInput from "$input/ProInput.svelte";
 	import {Circle} from "svelte-loading-spinners";
 	import { importClass, importSkill } from '$api/cdn.js';
-	import { classChinese } from '../../version/data';
+	import { classChinese, targetGame } from '../../version/data';
+	import { connectSSE, disconnectSSE, onUpdate, type UpdateEvent } from '$api/sse';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	let folders: FabledFolder[] = [];
 	let tabSub: Unsubscriber;
@@ -65,6 +70,44 @@
 	const classes      = classStore.classes;
 	const classFolders = classStore.classFolders;
 	const attributes   = attributeStore.attributes;
+	
+	// SSE update handling
+	let unsubscribeUpdate: (() => void) | null = null;
+	let gameSub: Unsubscriber;
+
+	const getTypeLabel = (type: string) => {
+		switch (type) {
+			case 'skill': return '技能';
+			case 'class': return classChinese();
+			case 'attribute': return '屬性';
+			default: return type;
+		}
+	};
+
+	const handleUpdateEvent = (event: UpdateEvent) => {
+		const typeLabel = getTypeLabel(event.type);
+		const resourceLabel = event.resourceId === 'all' ? '全部' : event.resourceId;
+		
+		if (event.action === 'update') {
+			toast.push(`${typeLabel} "${resourceLabel}" 已被 ${event.uploadedBy} 更新`, {
+				theme: {
+					'--toastBackground': '#f59e0b',
+					'--toastColor': 'white',
+					'--toastBarBackground': '#d97706'
+				},
+				duration: 5000
+			});
+		} else if (event.action === 'delete') {
+			toast.push(`${typeLabel} "${resourceLabel}" 已被 ${event.uploadedBy} 刪除`, {
+				theme: {
+					'--toastBackground': '#ef4444',
+					'--toastColor': 'white',
+					'--toastBarBackground': '#dc2626'
+				},
+				duration: 5000
+			});
+		}
+	};
 
 	const rebuildFolders = (fold?: FabledFolder[]) => {
 		switch (get(shownTab)) {
@@ -114,12 +157,29 @@
 		classSub = classFolders.subscribe(rebuildFolders);
 		skillSub = skillFolders.subscribe(rebuildFolders);
 		rebuildFolders();
+		
+		// Connect to SSE for real-time updates
+		connectSSE();
+		unsubscribeUpdate = onUpdate(handleUpdateEvent);
+		
+		// Reconnect SSE when game changes
+		gameSub = targetGame.subscribe((game) => {
+			connectSSE(game);
+			// Check versions when game changes too
+			checkAllVersions();
+		});
+		
+		// Check all tracked versions against server on load
+		checkAllVersions();
 	});
 
 	onDestroy(() => {
 		if (tabSub) tabSub();
 		if (classSub) classSub();
 		if (skillSub) skillSub();
+		if (gameSub) gameSub();
+		if (unsubscribeUpdate) unsubscribeUpdate();
+		disconnectSSE();
 	});
 
 	const clickOut = (e: MouseEvent) => {
@@ -395,6 +455,18 @@
 			</div>
 		</div>
 	</Modal>
+{/if}
+
+{#if $conflictDialog}
+	<ConfirmDialog
+		title="版本衝突"
+		message={`此${getTypeLabel($conflictDialog.type)} "${$conflictDialog.resourceId === 'all' ? '全部' : $conflictDialog.resourceId}" 已被 ${$conflictDialog.serverUploadedBy} 在 ${new Date($conflictDialog.serverUploadedAt).toLocaleString()} 更新。\n\n是否要覆蓋伺服器上的版本？`}
+		confirmText="覆蓋"
+		cancelText="取消"
+		confirmDanger={true}
+		onConfirm={$conflictDialog.onConfirm}
+		onCancel={$conflictDialog.onCancel}
+	/>
 {/if}
 
 <style>

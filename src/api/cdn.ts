@@ -10,9 +10,23 @@ import { skillStore } from '../data/skill-store.svelte';
 import { FabledFolder } from '../data/folder-store.svelte';
 import { classChinese, getTargetGame } from '../version/data';
 import { attributeStore } from '../data/attribute-store';
+import { trackVersion, getTrackedVersion, clearTrackedVersion, getAllTrackedVersions } from '$api/version-tracker';
+import { clearPendingUpdate, pendingUpdates, type UpdateEvent } from '$api/sse';
+import { writable, get } from 'svelte/store';
 
 let CONFIGURED_AXIOS: AxiosInstance = axios;
 export const loading: string[] = [];
+
+// Store for showing conflict confirmation dialog
+export interface ConflictInfo {
+    type: 'skill' | 'class' | 'attribute';
+    resourceId: string;
+    serverUploadedBy: string;
+    serverUploadedAt: string;
+    onConfirm: () => void;
+    onCancel: () => void;
+}
+export const conflictDialog = writable<ConflictInfo | null>(null);
 
 export const refreshAxios = async () => {
     const user = await userManager.getUser()
@@ -33,7 +47,13 @@ export const refreshAxios = async () => {
 export const importClass = async (classId: string) => {
     CONFIGURED_AXIOS.get(`class/${getTargetGame()}/${classId}`).then(response => {
         if (response.data.success) {
-            CONFIGURED_AXIOS.get('download/' + response.data.class.fileId).then(response => {
+            const classData = response.data.class;
+            // Track version for conflict detection
+            trackVersion('class', classId, classData.uploadedAt, classData.uploadedBy);
+            // Clear any pending update badge
+            clearPendingUpdate('class', classId);
+            
+            CONFIGURED_AXIOS.get('download/' + classData.fileId).then(response => {
                 loadRaw(response.data, false)
             })
             notifySuccess(`成功匯入: ${classId}`);
@@ -53,8 +73,14 @@ export const importSkill = async (skillId: string) => {
     try {
         const response = await CONFIGURED_AXIOS.get(`skill/${getTargetGame()}/${skillId}`);
         if (response.data.success) {
+            const skillData = response.data.skill;
+            // Track version for conflict detection
+            trackVersion('skill', skillId, skillData.uploadedAt, skillData.uploadedBy);
+            // Clear any pending update badge
+            clearPendingUpdate('skill', skillId);
+            
             try {
-                const file = await CONFIGURED_AXIOS.get('download/' + response.data.skill.fileId);
+                const file = await CONFIGURED_AXIOS.get('download/' + skillData.fileId);
                 await loadRaw(file.data, false);
                 notifySuccess(`成功匯入: ${skillId}`);
             } catch (error) {
@@ -169,15 +195,160 @@ export const getAllSkills = async () => {
     return []
 }
 
-export const upload = async () => {
+/**
+ * Check all tracked resources against server versions and mark outdated ones
+ * Call this on editor load to show which files have newer versions on server
+ */
+export const checkAllVersions = async () => {
+    const trackedVersions = getAllTrackedVersions();
+    if (trackedVersions.size === 0) return;
+    
+    const updates = get(pendingUpdates);
+    let hasChanges = false;
+    
+    try {
+        // Check skills
+        const skillsResponse = await CONFIGURED_AXIOS.get(`skill/${getTargetGame()}`);
+        if (skillsResponse.data.success) {
+            for (const skill of skillsResponse.data.skills) {
+                const localVersion = getTrackedVersion('skill', skill.skillId);
+                if (localVersion && skill.uploadedAt) {
+                    const localDate = new Date(localVersion.uploadedAt).getTime();
+                    const serverDate = new Date(skill.uploadedAt).getTime();
+                    
+                    if (serverDate > localDate) {
+                        const key = `skill:${skill.skillId}`;
+                        updates.set(key, {
+                            type: 'skill',
+                            game: getTargetGame(),
+                            resourceId: skill.skillId,
+                            uploadedBy: skill.uploadedBy,
+                            uploadedAt: skill.uploadedAt,
+                            action: 'update'
+                        });
+                        hasChanges = true;
+                    }
+                }
+            }
+        }
+        
+        // Check classes
+        const classesResponse = await CONFIGURED_AXIOS.get(`class/${getTargetGame()}`);
+        if (classesResponse.data.success) {
+            for (const clazz of classesResponse.data.classes) {
+                const localVersion = getTrackedVersion('class', clazz.classId);
+                if (localVersion && clazz.uploadedAt) {
+                    const localDate = new Date(localVersion.uploadedAt).getTime();
+                    const serverDate = new Date(clazz.uploadedAt).getTime();
+                    
+                    if (serverDate > localDate) {
+                        const key = `class:${clazz.classId}`;
+                        updates.set(key, {
+                            type: 'class',
+                            game: getTargetGame(),
+                            resourceId: clazz.classId,
+                            uploadedBy: clazz.uploadedBy,
+                            uploadedAt: clazz.uploadedAt,
+                            action: 'update'
+                        });
+                        hasChanges = true;
+                    }
+                }
+            }
+        }
+        
+        // Check attributes
+        try {
+            const attrResponse = await CONFIGURED_AXIOS.get(`attribute/${getTargetGame()}`);
+            if (attrResponse.data.success) {
+                const attrData = attrResponse.data.attributeCollection;
+                const localVersion = getTrackedVersion('attribute', 'all');
+                if (localVersion && attrData.uploadedAt) {
+                    const localDate = new Date(localVersion.uploadedAt).getTime();
+                    const serverDate = new Date(attrData.uploadedAt).getTime();
+                    
+                    if (serverDate > localDate) {
+                        const key = 'attribute:all';
+                        updates.set(key, {
+                            type: 'attribute',
+                            game: getTargetGame(),
+                            resourceId: 'all',
+                            uploadedBy: attrData.uploadedBy,
+                            uploadedAt: attrData.uploadedAt,
+                            action: 'update'
+                        });
+                        hasChanges = true;
+                    }
+                }
+            }
+        } catch (e) {
+            // 404 is fine - no attributes uploaded yet
+        }
+        
+        if (hasChanges) {
+            pendingUpdates.set(new Map(updates));
+        }
+        
+    } catch (error) {
+        console.error('Failed to check versions:', error);
+    }
+}
+
+export const upload = async (forceOverwrite: boolean = false) => {
     const formData = new FormData();
     const act = get(active);
     if (!act) return;
     if (act instanceof FabledAttribute) {
         // For attributes, upload the entire combined attributes file
-        await uploadAttributes();
+        await uploadAttributes(forceOverwrite);
         return;
     }
+    
+    const type = act instanceof FabledClass ? 'class' : 'skill';
+    const resourceId = act.name;
+    
+    // Check for version conflict if not force overwriting
+    if (!forceOverwrite) {
+        try {
+            const response = await CONFIGURED_AXIOS.get(`${type}/${getTargetGame()}/${resourceId}`);
+            if (response.data.success) {
+                const serverData = type === 'class' ? response.data.class : response.data.skill;
+                const localVersion = getTrackedVersion(type, resourceId);
+                
+                if (localVersion && serverData.uploadedAt) {
+                    const localDate = new Date(localVersion.uploadedAt).getTime();
+                    const serverDate = new Date(serverData.uploadedAt).getTime();
+                    
+                    if (serverDate > localDate) {
+                        // Conflict detected - show confirmation dialog
+                        return new Promise<void>((resolve) => {
+                            conflictDialog.set({
+                                type: type as 'skill' | 'class',
+                                resourceId,
+                                serverUploadedBy: serverData.uploadedBy,
+                                serverUploadedAt: serverData.uploadedAt,
+                                onConfirm: async () => {
+                                    conflictDialog.set(null);
+                                    await upload(true); // Force overwrite
+                                    resolve();
+                                },
+                                onCancel: () => {
+                                    conflictDialog.set(null);
+                                    resolve();
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+        } catch (error) {
+            // 404 means new file, proceed with upload
+            if ((error as AxiosError).response?.status !== 404) {
+                console.error('Failed to check version:', error);
+            }
+        }
+    }
+    
     if (act instanceof FabledClass) {
         formData.append('details', new Blob([JSON.stringify({classId: act.name})], {
             type: 'application/json'
@@ -192,6 +363,9 @@ export const upload = async () => {
     })], act.name + ".yml"));
     CONFIGURED_AXIOS.post((act instanceof FabledClass ? 'class' : 'skill') + `/${getTargetGame()}`, formData).then(function (response) {
         if (response.data.success) {
+            // Update tracked version after successful upload
+            const uploadedData = type === 'class' ? response.data.class : response.data.skill;
+            trackVersion(type, resourceId, uploadedData.uploadedAt, uploadedData.uploadedBy);
             notifySuccess('上傳成功')
         } else {
             notifyFailure('上傳失敗')
@@ -204,7 +378,49 @@ export const upload = async () => {
 /**
  * Upload all attributes as a combined file to CDN
  */
-export const uploadAttributes = async () => {
+export const uploadAttributes = async (forceOverwrite: boolean = false) => {
+    // Check for version conflict if not force overwriting
+    if (!forceOverwrite) {
+        try {
+            const response = await CONFIGURED_AXIOS.get(`attribute/${getTargetGame()}`);
+            if (response.data.success) {
+                const serverData = response.data.attributeCollection;
+                const localVersion = getTrackedVersion('attribute', 'all');
+                
+                if (localVersion && serverData.uploadedAt) {
+                    const localDate = new Date(localVersion.uploadedAt).getTime();
+                    const serverDate = new Date(serverData.uploadedAt).getTime();
+                    
+                    if (serverDate > localDate) {
+                        // Conflict detected - show confirmation dialog
+                        return new Promise<void>((resolve) => {
+                            conflictDialog.set({
+                                type: 'attribute',
+                                resourceId: 'all',
+                                serverUploadedBy: serverData.uploadedBy,
+                                serverUploadedAt: serverData.uploadedAt,
+                                onConfirm: async () => {
+                                    conflictDialog.set(null);
+                                    await uploadAttributes(true); // Force overwrite
+                                    resolve();
+                                },
+                                onCancel: () => {
+                                    conflictDialog.set(null);
+                                    resolve();
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+        } catch (error) {
+            // 404 means new file, proceed with upload
+            if ((error as AxiosError).response?.status !== 404) {
+                console.error('Failed to check version:', error);
+            }
+        }
+    }
+    
     const formData = new FormData();
     const yamlContent = await getAttributeYaml();
     
@@ -215,6 +431,9 @@ export const uploadAttributes = async () => {
     try {
         const response = await CONFIGURED_AXIOS.post(`attribute/${getTargetGame()}`, formData);
         if (response.data.success) {
+            // Update tracked version after successful upload
+            const uploadedData = response.data.attributeCollection;
+            trackVersion('attribute', 'all', uploadedData.uploadedAt, uploadedData.uploadedBy);
             notifySuccess('屬性上傳成功');
         } else {
             notifyFailure('屬性上傳失敗');
@@ -231,7 +450,13 @@ export const importAttributes = async () => {
     try {
         const response = await CONFIGURED_AXIOS.get(`attribute/${getTargetGame()}`);
         if (response.data.success) {
-            const file = await CONFIGURED_AXIOS.get('download/' + response.data.attributes.fileId);
+            const attrData = response.data.attributeCollection;
+            // Track version for conflict detection
+            trackVersion('attribute', 'all', attrData.uploadedAt, attrData.uploadedBy);
+            // Clear any pending update badge
+            clearPendingUpdate('attribute', 'all');
+            
+            const file = await CONFIGURED_AXIOS.get('download/' + attrData.fileId);
             attributeStore.loadAttributesText(file.data, 'local');
             notifySuccess('成功匯入所有屬性');
         } else {
