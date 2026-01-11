@@ -1,5 +1,6 @@
 import { getTargetGame } from '../version/data';
 import { writable, get } from 'svelte/store';
+import { userManager } from '$api/oauth';
 
 export interface UpdateEvent {
     type: 'skill' | 'class' | 'attribute';
@@ -30,6 +31,18 @@ export const onUpdate = (callback: UpdateCallback) => {
         const index = updateCallbacks.indexOf(callback);
         if (index > -1) updateCallbacks.splice(index, 1);
     };
+};
+
+/**
+ * Get current user's username for filtering own events
+ */
+const getCurrentUsername = async (): Promise<string | null> => {
+    try {
+        const user = await userManager?.getUser();
+        return user?.profile?.preferred_username || user?.profile?.name || null;
+    } catch {
+        return null;
+    }
 };
 
 /**
@@ -120,11 +133,18 @@ export const connectSSE = async (game?: string) => {
         sseConnected.set(true);
     });
     
-    eventSource.addEventListener('update', (e) => {
+    eventSource.addEventListener('update', async (e) => {
         console.log('[SSE] "update" event received:', e.data);
         try {
             const event: UpdateEvent = JSON.parse(e.data);
             console.log('[SSE] Parsed update event:', event);
+            
+            // Ignore events from current user (own uploads)
+            const currentUser = await getCurrentUsername();
+            if (currentUser && event.uploadedBy === currentUser) {
+                console.log('[SSE] Ignoring own update event from:', currentUser);
+                return;
+            }
             
             // Store the update
             const key = `${event.type}:${event.resourceId}`;
