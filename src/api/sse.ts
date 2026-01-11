@@ -38,8 +38,12 @@ export const onUpdate = (callback: UpdateCallback) => {
 export const connectSSE = async (game?: string) => {
     const targetGame = game || getTargetGame();
     
+    console.log(`[SSE] connectSSE called with game: ${game}, targetGame: ${targetGame}`);
+    console.log(`[SSE] Current state - eventSource: ${eventSource ? 'exists' : 'null'}, currentGame: ${currentGame}`);
+    
     // Don't reconnect if already connected to same game
     if (eventSource && currentGame === targetGame) {
+        console.log(`[SSE] Already connected to ${targetGame}, skipping`);
         return;
     }
     
@@ -51,12 +55,18 @@ export const connectSSE = async (game?: string) => {
     // SSE endpoint is public (scoped by game)
     const url = `https://cdn.gkpixel.com/v2/events/subscribe/${targetGame}`;
     
-    console.log(`SSE: Connecting to ${targetGame}...`);
+    console.log(`[SSE] Creating EventSource for URL: ${url}`);
     
-    eventSource = new EventSource(url);
+    try {
+        eventSource = new EventSource(url);
+        console.log(`[SSE] EventSource created, readyState: ${eventSource.readyState}`);
+    } catch (err) {
+        console.error(`[SSE] Failed to create EventSource:`, err);
+        return;
+    }
     
-    eventSource.onopen = () => {
-        console.log(`SSE: Connected to ${targetGame}`);
+    eventSource.onopen = (e) => {
+        console.log(`[SSE] onopen fired! readyState: ${eventSource?.readyState}`, e);
         sseConnected.set(true);
         
         // Clear any pending reconnect
@@ -67,13 +77,14 @@ export const connectSSE = async (game?: string) => {
     };
     
     eventSource.addEventListener('connected', (e) => {
-        console.log('SSE: Connection confirmed', e.data);
+        console.log('[SSE] "connected" event received:', e.data);
     });
     
     eventSource.addEventListener('update', (e) => {
+        console.log('[SSE] "update" event received:', e.data);
         try {
             const event: UpdateEvent = JSON.parse(e.data);
-            console.log('SSE: Received update', event);
+            console.log('[SSE] Parsed update event:', event);
             
             // Store the update
             const key = `${event.type}:${event.resourceId}`;
@@ -90,19 +101,35 @@ export const connectSSE = async (game?: string) => {
             // Notify callbacks
             updateCallbacks.forEach(cb => cb(event));
         } catch (err) {
-            console.error('SSE: Failed to parse event', err);
+            console.error('[SSE] Failed to parse event:', err);
         }
     });
     
+    // Also listen for generic message events
+    eventSource.onmessage = (e) => {
+        console.log('[SSE] onmessage (generic) received:', e.data);
+    };
+    
     eventSource.onerror = (e) => {
-        console.error('SSE: Connection error', e);
+        console.error('[SSE] onerror fired! readyState:', eventSource?.readyState, 'event:', e);
+        
+        // Log more details about the error
+        if (eventSource) {
+            console.error('[SSE] EventSource state:', {
+                readyState: eventSource.readyState,
+                url: eventSource.url,
+                withCredentials: eventSource.withCredentials
+            });
+        }
+        
         sseConnected.set(false);
         
         // Auto-reconnect after 5 seconds
         if (!reconnectTimeout) {
+            console.log('[SSE] Scheduling reconnect in 5 seconds...');
             reconnectTimeout = setTimeout(() => {
                 reconnectTimeout = null;
-                console.log('SSE: Attempting to reconnect...');
+                console.log('[SSE] Attempting to reconnect...');
                 connectSSE(currentGame || undefined);
             }, 5000);
         }
