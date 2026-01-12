@@ -186,6 +186,7 @@ public class ComponentRegistry {
         register(new DefenseBuffMechanic());
         register(new DelayMechanic());
         register(new DisguiseMechanic());
+        register(new DismountMechanic());
         register(new DurabilityMechanic());
         register(new ExperienceMechanic());
         register(new ExplosionMechanic());
@@ -230,6 +231,7 @@ public class ComponentRegistry {
         register(new PushMechanic());
         register(new RememberTargetsMechanic());
         register(new RepeatMechanic());
+        register(new RideMechanic());
         register(new ShieldMechanic());
         register(new SignalEmitMechanic());
         register(new SkillCastMechanic());
