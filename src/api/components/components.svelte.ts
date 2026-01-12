@@ -3392,6 +3392,20 @@ class ForgetTargetsMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class GlowMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name: 'Glow',
+			description: 'Makes the targets glow (only for the caster, client-sided)',
+			data: [
+				new AttributeSelect('Duration', 'duration', 5)
+					.setTooltip('The duration of the glow effect in seconds')
+			],
+			summaryItems: ['duration']
+		}, false);
+	}
+}
+
 class GKCooldownMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6177,6 +6191,7 @@ export const initComponents = () => {
 		FLY:                { name: 'Fly', component: FlyMechanic },
 		FOOD:               { name: 'Food', component: FoodMechanic },
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
+		GLOW:								{ name: 'Glow', component: GlowMechanic },
 		GKCOOLDOWN:					{ name: 'GKCooldown', component: GKCooldownMechanic },
 		GKSUMMON:						{ name: 'GKSummon', component: GKSummonMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
