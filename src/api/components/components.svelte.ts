@@ -2457,6 +2457,8 @@ const projectileOptions = (): ComponentOption[] => {
 			.setTooltip('The number of projectiles to fire'),
 		new BooleanSelect('Target Blocks', 'target-blocks', false)
 			.setTooltip('Whether to execute children if the projectile hits a block'),
+		new BooleanSelect('Ride', 'ride', false)
+			.setTooltip('Whether the caster should ride the projectile'),
 
 		// Cone values
 		new AttributeSelect('Angle', 'angle', 30)
@@ -4220,8 +4222,6 @@ class ParticleProjectileMechanic extends FabledMechanic {
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
-				new BooleanSelect('Ride', 'ride', false)
-					.setTooltip('Whether the caster should ride the projectile'),
 				new BooleanSelect('Trigger children multiple times', 'multi-callback', true)
 					.setTooltip('Whether to trigger the child components multiple times for any entities hit with respect to "amount".'),
 				...homingOptions(),
