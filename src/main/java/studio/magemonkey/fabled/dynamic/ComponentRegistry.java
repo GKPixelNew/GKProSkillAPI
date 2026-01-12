@@ -196,6 +196,7 @@ public class ComponentRegistry {
         register(new FlyMechanic());
         register(new FoodMechanic());
         register(new ForgetTargetsMechanic());
+        register(new GlowMechanic());
         register(new HealMechanic());
         register(new HealthSetMechanic());
         register(new HeldItemMechanic());
