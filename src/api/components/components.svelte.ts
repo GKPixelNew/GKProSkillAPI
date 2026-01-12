@@ -3203,6 +3203,17 @@ class DisguiseMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class DismountMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name: 'Dismount',
+			description: 'Dismounts the caster from the first target',
+			data: [],
+			summaryItems: []
+		}, false);
+	}
+}
+
 class DurabilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -4974,6 +4985,17 @@ class RepeatMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class RideMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name: 'Ride',
+			description: 'Makes the caster ride the first target.',
+			data: [],
+			summaryItems: []
+		}, false);
+	}
+}
+
 class ShieldMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6184,6 +6206,7 @@ export const initComponents = () => {
 		DEFENSE_BUFF:       { name: 'Defense Buff', component: DefenseBuffMechanic },
 		DELAY:              { name: 'Delay', component: DelayMechanic },
 		DISGUISE:           { name: 'Disguise', component: DisguiseMechanic },
+		DISMOUNT:           { name: 'Dismount', component: DismountMechanic },
 		DURABILITY:         { name: 'Durability', component: DurabilityMechanic },
 		EXPERIENCE:         { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:          { name: 'Explosion', component: ExplosionMechanic },
@@ -6223,6 +6246,7 @@ export const initComponents = () => {
 		PUSH:               { name: 'Push', component: PushMechanic },
 		REMEMBER_TARGETS:   { name: 'Remember Targets', component: RememberTargetsMechanic },
 		REPEAT:             { name: 'Repeat', component: RepeatMechanic },
+		RIDE:               { name: 'Ride', component: RideMechanic },
 		SHIELD:             { name: 'Shield', component: ShieldMechanic },
 		SIGNAL_EMIT:        { name: 'Signal Emit', component: SignalEmitMechanic },
 		SKILL_CAST:         { name: 'Skill Cast', component: SkillCastMechanic },
