@@ -866,8 +866,6 @@ public abstract class Skill implements IconHolder {
         } else {
             if (!DamageRegistry.dealDamage(target, damage, classification, source)){
                 target.setHealth(target.getHealth()-damage);
-                float yaw = source.getLocation().getYaw();
-                target.playHurtAnimation(yaw);
             }
         }
 
