@@ -3419,6 +3419,8 @@ class GlowMechanic extends FabledMechanic {
 			summaryItems: ['duration']
 		}, false);
 	}
+
+	public static override new = () => new this();
 }
 
 class GKCooldownMechanic extends FabledMechanic {
