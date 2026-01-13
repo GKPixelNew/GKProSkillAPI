@@ -1,7 +1,10 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
+import studio.magemonkey.fabled.hook.MythicMobsHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 
@@ -36,8 +39,8 @@ public class AngryTowardsMechanic extends MechanicComponent {
             // Targets become angry at caster - useful for taunting/tanking
             boolean success = false;
             for (LivingEntity target : targets) {
-                if (target instanceof Mob mob && isValidTarget(target) && isValidTarget(caster)) {
-                    mob.setTarget(caster);
+                if (target instanceof Mob mob && target != caster && isValidTarget(target) && isValidTarget(caster)) {
+                    setMobTarget(mob, caster);
                     success = true;
                 }
             }
@@ -51,7 +54,7 @@ public class AngryTowardsMechanic extends MechanicComponent {
             // Find the first valid target
             LivingEntity target = null;
             for (LivingEntity t : targets) {
-                if (isValidTarget(t)) {
+                if (isValidTarget(t) && t != caster) {
                     target = t;
                     break;
                 }
@@ -61,9 +64,30 @@ public class AngryTowardsMechanic extends MechanicComponent {
                 return false;
             }
 
-            mob.setTarget(target);
+            setMobTarget(mob, target);
             return true;
         }
+    }
+
+    /**
+     * Sets the target for a mob, with special handling for MythicMobs and Iron Golems
+     *
+     * @param mob    the mob to set the target for
+     * @param target the target entity
+     */
+    private void setMobTarget(Mob mob, LivingEntity target) {
+        // MythicMobs integration - use threat system if available
+        if (PluginChecker.isMythicMobsActive() && MythicMobsHook.isMonster(mob)) {
+            MythicMobsHook.taunt(mob, target, 1);
+            return;
+        }
+
+        // Iron Golems need special handling - they need to be set as not player-created to attack players
+        if (mob instanceof IronGolem golem) {
+            golem.setPlayerCreated(false);
+        }
+
+        mob.setTarget(target);
     }
 
     /**
