@@ -174,7 +174,9 @@ public abstract class TargetHelper {
                 .toVector();
 
         // If the dot product is positive, the target is in front
-        return facing.dot(relative) >= 0;
+        // Use a threshold to narrow the angle (0.5 means 60 degrees off center, or 120 degrees total FOV)
+        if (relative.lengthSquared() == 0) return true;
+        return facing.dot(relative.normalize()) >= 0.5;
     }
 
     /**
@@ -190,7 +192,7 @@ public abstract class TargetHelper {
         if (angle >= 360) return true;
 
         // Get the necessary data
-        double dotTarget = Math.cos(angle);
+        double dotTarget = Math.cos(angle * Math.PI / 180);
         Vector facing    = entity.getLocation().getDirection();
         Vector relative = target.getLocation().clone()
                 .add(0, getHeight(entity) * -0.5, 0)
