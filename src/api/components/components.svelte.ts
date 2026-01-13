@@ -1630,9 +1630,11 @@ class DirectionCondition extends FabledCondition {
 				new DropdownSelect('Type', 'type', ['Target', 'Caster'])
 					.setTooltip('The entity to check the direction of'),
 				new DropdownSelect('Direction', 'direction', ['Away', 'Towards'])
-					.setTooltip('The direction the chosen entity needs to be looking relative to the other')
+					.setTooltip('The direction the chosen entity needs to be looking relative to the other'),
+				new AttributeSelect('Angle', 'angle', 74)
+					.setTooltip('The field of view angle in degrees (0-360). 74 is the default ~37° off center each side. 180 would be the entire front hemisphere')
 			],
-			summaryItems: ['type', 'direction']
+			summaryItems: ['type', 'direction', 'angle']
 		});
 	}
 
