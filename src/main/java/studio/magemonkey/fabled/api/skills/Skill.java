@@ -865,7 +865,11 @@ public abstract class Skill implements IconHolder {
                 target.damage(damage, source);
         } else {
             if (!DamageRegistry.dealDamage(target, damage, classification, source)){
-                target.setHealth(target.getHealth()-damage);
+                if(damage >= target.getHealth()){
+                    target.damage(damage, source);
+                }else{
+                    target.setHealth(target.getHealth()-damage);
+                }
             }
         }
 
