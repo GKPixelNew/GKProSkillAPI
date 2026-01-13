@@ -584,7 +584,7 @@ class PhysicalDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Physical Damage',
-			description:  'Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow',
+			description:  'Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow. <code>api-dealt</code> is the damage dealt',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
@@ -782,7 +782,7 @@ class TookPhysicalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Physical Damage',
-			description:  'Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill',
+			description:  'Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill. <code>api-taken</code> is the damage received',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
@@ -804,7 +804,7 @@ class TookSkillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Skill Damage',
-			description:  'Applies skill effects when a player takes damage from a skill other than their own',
+			description:  'Applies skill effects when a player takes damage from a skill other than their own. <code>api-taken</code> is the damage received',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
