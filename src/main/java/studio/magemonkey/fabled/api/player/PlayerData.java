@@ -1070,8 +1070,13 @@ public class PlayerData {
             return;
         }
 
+        PlayerClass playerClass = data.getPlayerClass();
+        if (playerClass == null) {
+            return;
+        }
+
         int lastLevel = data.getLevel();
-        while (data.getData().canAutoLevel(lastLevel) && !data.isMaxed() && data.getLevelReq() <= data.getPlayerClass()
+        while (data.getData().canAutoLevel(lastLevel) && !data.isMaxed() && data.getLevelReq() <= playerClass
                 .getLevel()) {
             upgradeSkill(skill);
             if (lastLevel == data.getLevel()) {
