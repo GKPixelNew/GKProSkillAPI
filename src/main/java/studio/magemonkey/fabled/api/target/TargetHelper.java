@@ -163,20 +163,17 @@ public abstract class TargetHelper {
      * @return true if the target is in front of the entity
      */
     public static boolean isInFront(Entity entity, Entity target) {
+        // Use eye location for source so pitch is accurate
+        Location sourceLoc = (entity instanceof LivingEntity) ? ((LivingEntity) entity).getEyeLocation() : entity.getLocation();
+        Vector facing = sourceLoc.getDirection();
 
-        // Get the necessary vectors
-        Vector facing = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().clone()
-                // Get the target's location and add half their height, so we have the "center of mass"
-                .add(0, getHeight(entity) * -0.5, 0)
-                // Subtract the entity location so we translate to our origin
-                .subtract(entity.getLocation())
-                .toVector();
+        // Target center
+        Location targetLoc = target.getLocation().add(0, getHeight(target) * 0.5, 0);
+        Vector relative = targetLoc.subtract(sourceLoc).toVector();
 
-        // If the dot product is positive, the target is in front
-        // Use a threshold to narrow the angle (0.5 means 60 degrees off center, or 120 degrees total FOV)
+        // 0.8 is ~37 degrees off center, or ~74 degrees total FOV
         if (relative.lengthSquared() == 0) return true;
-        return facing.dot(relative.normalize()) >= 0.5;
+        return facing.dot(relative.normalize()) >= 0.8;
     }
 
     /**
@@ -191,16 +188,16 @@ public abstract class TargetHelper {
         if (angle <= 0) return false;
         if (angle >= 360) return true;
 
-        // Get the necessary data
-        double dotTarget = Math.cos(angle * Math.PI / 180);
-        Vector facing    = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().clone()
-                .add(0, getHeight(entity) * -0.5, 0)
-                .subtract(entity.getLocation())
-                .toVector().normalize();
+        // Calculate dot threshold from angle (degrees)
+        double dotTarget = Math.cos((angle / 2) * Math.PI / 180);
 
-        // Compare the target dot product with the actual result
-        return facing.dot(relative) >= dotTarget;
+        Location sourceLoc = (entity instanceof LivingEntity) ? ((LivingEntity) entity).getEyeLocation() : entity.getLocation();
+        Vector facing    = sourceLoc.getDirection();
+
+        Location targetLoc = target.getLocation().add(0, getHeight(target) * 0.5, 0);
+        Vector relative = targetLoc.subtract(sourceLoc).toVector();
+
+        return facing.dot(relative.normalize()) >= dotTarget;
     }
 
     /**
