@@ -3212,6 +3212,8 @@ class DismountMechanic extends FabledMechanic {
 			summaryItems: []
 		}, false);
 	}
+
+	public static override new = () => new this();
 }
 
 class DurabilityMechanic extends FabledMechanic {
@@ -4994,6 +4996,8 @@ class RideMechanic extends FabledMechanic {
 			summaryItems: []
 		}, false);
 	}
+
+	public static override new = () => new this();
 }
 
 class ShieldMechanic extends FabledMechanic {
