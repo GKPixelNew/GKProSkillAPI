@@ -31,17 +31,16 @@ import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-import java.util.function.BiPredicate;
-
 /**
  * A condition for dynamic skills that requires the target or caster to be facing a direction relative to the other
  */
 public class DirectionCondition extends ConditionComponent {
     private static final String TYPE      = "type";
     private static final String DIRECTION = "direction";
+    private static final String ANGLE     = "angle";
 
-    private BiPredicate<LivingEntity, LivingEntity> test;
-    private boolean                                 towards;
+    private boolean towards;
+    private boolean checkTarget;
 
     @Override
     public String getKey() {
@@ -52,13 +51,15 @@ public class DirectionCondition extends ConditionComponent {
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
         towards = settings.getString(DIRECTION).equalsIgnoreCase("towards");
-        test = settings.getString(TYPE).equalsIgnoreCase("target")
-                ? (caster, target) -> TargetHelper.isInFront(target, caster)
-                : TargetHelper::isInFront;
+        checkTarget = settings.getString(TYPE).equalsIgnoreCase("target");
     }
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return test.test(caster, target) == towards;
+        double angle = Math.max(0, Math.min(360, parseValues(caster, ANGLE, level, 74)));
+        boolean result = checkTarget
+                ? TargetHelper.isInFront(target, caster, angle)
+                : TargetHelper.isInFront(caster, target, angle);
+        return result == towards;
     }
 }
