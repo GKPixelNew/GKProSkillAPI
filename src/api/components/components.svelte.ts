@@ -5004,6 +5004,22 @@ class RideMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class AngryTowardsMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Angry Towards',
+			description:  'Makes a mob angry towards a target. Use "Caster to Target" when the caster is a mob and should target an entity. Use "Target to Caster" to make mob targets angry at the caster (useful for taunts/tanks).',
+			data:         [
+				new DropdownSelect('Direction', 'direction', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
+					.setTooltip('The direction of anger. "Caster to Target" makes the caster (must be a mob) angry at the first valid target. "Target to Caster" makes all mob targets angry at the caster.')
+			],
+			summaryItems: ['direction']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ShieldMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6195,6 +6211,7 @@ export const initComponents = () => {
 		AIR_MODIFY:         { name: 'Air Modify', component: AirModify },
 		AIR_SET:            { name: 'Air Set', component: AirSet },
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
+		ANGRY_TOWARDS:      { name: 'Angry Towards', component: AngryTowardsMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
