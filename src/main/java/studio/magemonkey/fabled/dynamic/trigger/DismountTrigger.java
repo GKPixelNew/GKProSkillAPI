@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
 import org.bukkit.entity.LivingEntity;
-import org.spigotmc.event.entity.EntityDismountEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 
