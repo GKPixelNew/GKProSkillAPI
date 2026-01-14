@@ -71,6 +71,8 @@ public class ComponentRegistry {
         register(new KillTrigger());
         register(new LandTrigger());
         register(new LaunchTrigger());
+        register(new MountTrigger());
+        register(new DismountTrigger());
         register(new MoveTrigger());
         register(new PhysicalDealtTrigger());
         register(new PhysicalTakenTrigger());
