@@ -2026,9 +2026,12 @@ class OwnerCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Owner',
-			description:  'Applies child components when the target is the owner (summoner) of the caster. This is useful for summoned entities to check if a target is their owner.',
-			data:         [],
-			summaryItems: []
+			description:  'Applies child components when the target is (or is not) the owner (summoner) of the caster. This is useful for summoned entities to check if a target is their owner.',
+			data:         [
+				new BooleanSelect('Is Owner', 'is-owner', true)
+					.setTooltip('If true, applies when target IS the owner. If false, applies when target is NOT the owner.')
+			],
+			summaryItems: ['is-owner']
 		});
 	}
 
