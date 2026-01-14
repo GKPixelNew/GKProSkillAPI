@@ -3457,7 +3457,7 @@ class GKCooldownMechanic extends FabledMechanic {
 class GKSummonMechanic extends FabledMechanic {
 	public constructor() {
 		super({
-			name:         'GK Summon',
+			name:         'GKSummon',
 			description:  'Summon an entity with full attribute control. Some options have no effect on certain entities (e.g. move speed on a shulker).',
 			data:         [
 				new DropdownSelect('Entity', 'entity', getEntities, 'Zombie')
@@ -6268,7 +6268,7 @@ export const initComponents = () => {
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
 		GLOW:               { name: 'Glow', component: GlowMechanic },
 		GKCOOLDOWN:         { name: 'GKCooldown', component: GKCooldownMechanic },
-		GKSUMMON:           { name: 'GK Summon', component: GKSummonMechanic },
+		GKSUMMON:           { name: 'GKSummon', component: GKSummonMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
 		HEALTH_SET:         { name: 'Health Set', component: HealthSetMechanic },
 		HELD_ITEM:          { name: 'Held Item', component: HeldItemMechanic },
