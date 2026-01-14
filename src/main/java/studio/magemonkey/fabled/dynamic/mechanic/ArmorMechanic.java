@@ -74,19 +74,19 @@ public class ArmorMechanic extends MechanicComponent {
             if (!overwrite) {
                 switch (slot) {
                     case FEET:
-                        proceed = equipment.getBoots().getType().equals(Material.AIR);
+                        proceed = equipment.getBoots() == null || equipment.getBoots().getType().equals(Material.AIR);
                         break;
                     case HAND:
                         proceed = equipment.getItemInMainHand().getType().equals(Material.AIR);
                         break;
                     case HEAD:
-                        proceed = equipment.getHelmet().getType().equals(Material.AIR);
+                        proceed = equipment.getHelmet() == null || equipment.getHelmet().getType().equals(Material.AIR);
                         break;
                     case LEGS:
-                        proceed = equipment.getLeggings().getType().equals(Material.AIR);
+                        proceed = equipment.getLeggings() == null || equipment.getLeggings().getType().equals(Material.AIR);
                         break;
                     case CHEST:
-                        proceed = equipment.getChestplate().getType().equals(Material.AIR);
+                        proceed = equipment.getChestplate() == null || equipment.getChestplate().getType().equals(Material.AIR);
                         break;
                     case OFF_HAND:
                         proceed = equipment.getItemInOffHand().getType().equals(Material.AIR);
