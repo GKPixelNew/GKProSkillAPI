@@ -47,7 +47,11 @@ public class DismountTrigger implements Trigger<EntityDismountEvent> {
      */
     @Override
     public LivingEntity getCaster(final EntityDismountEvent event) {
-        return (LivingEntity) event.getEntity();
+        try {
+            return (LivingEntity) event.getEntity();
+        } catch (ClassCastException e) {
+            return null;
+        }
     }
 
     /**
