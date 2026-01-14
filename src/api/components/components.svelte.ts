@@ -2659,6 +2659,59 @@ class ArmorMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class GKArmorMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'GK Armor',
+			description:  'Sets the specified armor slot of the target to an item. Can use a block type stored by Value Block Type mechanic instead of defining the item manually.',
+			data:         [
+				new DropdownSelect('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'])
+					.setTooltip('The slot number to set the item to'),
+				new BooleanSelect('Overwrite', 'overwrite', false)
+					.setTooltip('USE WITH CAUTION. Whether to overwrite an existing item in the slot. If true, will permanently delete the existing item'),
+				new BooleanSelect('Use Block Type Key', 'use-block-type-key', false)
+					.setTooltip('If true, uses the block type stored by Value Block Type mechanic instead of the item settings below'),
+				new StringSelect('Block Type Key', 'block-type-key', 'blockType')
+					.setTooltip('The key used in Value Block Type mechanic to retrieve the stored block type')
+					.requireValue('use-block-type-key', [true]),
+				new SectionMarker('Item Options')
+					.requireValue('use-block-type-key', [false]),
+				new MaterialSelect(false, 'Arrow')
+					.setTooltip('The type of item to give to the player')
+					.requireValue('use-block-type-key', [false]),
+				new IntSelect('Amount', 'amount', 1)
+					.setTooltip('The quantity of the item to give to the player')
+					.requireValue('use-block-type-key', [false]),
+				new IntSelect('Durability', 'data')
+					.requireValue('material', getDamageableMaterials())
+					.setTooltip('The durability to reduce from the item')
+					.requireValue('use-block-type-key', [false]),
+				new BooleanSelect('Unbreakable', 'unbreakable', false)
+					.requireValue('material', getDamageableMaterials())
+					.setTooltip('Whether to make the item unbreakable')
+					.requireValue('use-block-type-key', [false]),
+				new IntSelect('CustomModelData', 'byte', 0)
+					.setTooltip('The CustomModelData of the item')
+					.requireValue('use-block-type-key', [false]),
+				new BooleanSelect('Custom Name/Lore', 'custom', false)
+					.setTooltip('Whether to apply a custom name/lore to the item')
+					.requireValue('use-block-type-key', [false]),
+				new StringSelect('Name', 'name', 'Name')
+					.requireValue('custom', [true])
+					.setTooltip('The name of the item')
+					.requireValue('use-block-type-key', [false]),
+				new StringListSelect('Lore', 'lore')
+					.requireValue('custom', [true])
+					.setTooltip('The lore text for the item (the text below the name)')
+					.requireValue('use-block-type-key', [false])
+			],
+			summaryItems: ['slot', 'use-block-type-key', 'block-type-key', 'material']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ArmorStandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5582,6 +5635,26 @@ class ValueLocationMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class ValueBlockTypeMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Value Block Type',
+			description:  'Stores the block type (BlockData) at the target\'s location into a stored value for use at a later time. Useful with Particle Projectile targeting blocks.',
+			data:         [
+				new StringSelect('Key', 'key', 'blockType')
+					.setTooltip('The unique key to store the block type under. This key can be used with GK Armor mechanic to set armor to the block type'),
+				new BooleanSelect('Check Block Below', 'check-block-below', false)
+					.setTooltip('If true, checks the block 1 below the target location. Useful when projectile spawns TempEntity slightly above the block surface'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+			],
+			summaryItems: ['key', 'check-block-below', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ValueLoadMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6213,6 +6286,7 @@ export const initComponents = () => {
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ANGRY_TOWARDS:      { name: 'Angry Towards', component: AngryTowardsMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
+		GK_ARMOR:           { name: 'GK Armor', component: GKArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
 		ARMOR_STAND_REMOVE: { name: 'Armor Stand Remove', component: ArmorStandRemoveMechanic },
@@ -6307,6 +6381,7 @@ export const initComponents = () => {
 		VALUE_HEALTH:      { name: 'Value Health', component: ValueHealthMechanic, section: 'Value' },
 		VALUE_LOAD:        { name: 'Value Load', component: ValueLoadMechanic, section: 'Value' },
 		VALUE_LOCATION:    { name: 'Value Location', component: ValueLocationMechanic, section: 'Value' },
+		VALUE_BLOCK_TYPE:  { name: 'Value Block Type', component: ValueBlockTypeMechanic, section: 'Value' },
 		VALUE_LORE:        { name: 'Value Lore', component: ValueLoreMechanic, section: 'Value' },
 		VALUE_LORE_SLOT:   { name: 'Value Lore Slot', component: ValueLoreSlotMechanic, section: 'Value' },
 		VALUE_MANA:        { name: 'Value Mana', component: ValueManaMechanic, section: 'Value' },
