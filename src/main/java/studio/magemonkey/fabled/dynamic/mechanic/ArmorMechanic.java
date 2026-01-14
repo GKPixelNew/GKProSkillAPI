@@ -1,22 +1,27 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import studio.magemonkey.fabled.api.util.ItemStackReader;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Sets the specified armor slot of the target to the item defined by the settings
+ * Sets the specified armor slot of the target to the item defined by the settings.
+ * Can optionally use a block type stored by ValueBlockTypeMechanic.
  */
 public class ArmorMechanic extends MechanicComponent {
-    private static final String SLOT      = "slot";
-    private static final String OVERWRITE = "overwrite";
+    private static final String SLOT               = "slot";
+    private static final String OVERWRITE          = "overwrite";
+    private static final String USE_BLOCK_TYPE_KEY = "use-block-type-key";
+    private static final String BLOCK_TYPE_KEY     = "block-type-key";
 
     @Override
     public String getKey() {
@@ -40,8 +45,27 @@ public class ArmorMechanic extends MechanicComponent {
         } catch (IllegalArgumentException exception) {
             return false;
         }
-        ItemStack item      = ItemStackReader.read(settings);
-        boolean   overwrite = settings.getBool(OVERWRITE, false);
+
+        // Determine the item to use
+        ItemStack item;
+        boolean useBlockTypeKey = settings.getBool(USE_BLOCK_TYPE_KEY, false);
+        if (useBlockTypeKey) {
+            String key = settings.getString(BLOCK_TYPE_KEY, "blockType");
+            Object stored = DynamicSkill.getCastData(caster).get(key);
+            if (!(stored instanceof BlockData)) {
+                return false;
+            }
+            BlockData blockData = (BlockData) stored;
+            Material material = blockData.getMaterial();
+            if (!material.isItem()) {
+                return false;
+            }
+            item = new ItemStack(material);
+        } else {
+            item = ItemStackReader.read(settings);
+        }
+
+        boolean overwrite = settings.getBool(OVERWRITE, false);
 
         boolean success = false;
         for (LivingEntity target : targets) {
