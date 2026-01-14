@@ -2655,7 +2655,36 @@ class ArmorMechanic extends FabledMechanic {
 				new StringSelect('Block Type Key', 'block-type-key', 'blockType')
 					.setTooltip('The key used in Value Block Type mechanic to retrieve the stored block type')
 					.requireValue('use-block-type-key', [true]),
-				...itemOptions()
+				new SectionMarker('Item Options')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new MaterialSelect(false, 'Arrow')
+					.setTooltip('The type of item to give to the player')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new IntSelect('Amount', 'amount', 1)
+					.setTooltip('The quantity of the item to give to the player')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new IntSelect('Durability', 'data')
+					.requireValue('material', getDamageableMaterials())
+					.setTooltip('The durability to reduce from the item')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new BooleanSelect('Unbreakable', 'unbreakable', false)
+					.requireValue('material', getDamageableMaterials())
+					.setTooltip('Whether to make the item unbreakable')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new IntSelect('CustomModelData', 'byte', 0)
+					.setTooltip('The CustomModelData of the item')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new BooleanSelect('Custom Name/Lore', 'custom', false)
+					.setTooltip('Whether to apply a custom name/lore to the item')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new StringSelect('Name', 'name', 'Name')
+					.requireValue('custom', [true])
+					.setTooltip('The name of the item')
+					.requireValue('use-block-type-key', [false, undefined]),
+				new StringListSelect('Lore', 'lore')
+					.requireValue('custom', [true])
+					.setTooltip('The lore text for the item (the text below the name)')
+					.requireValue('use-block-type-key', [false, undefined])
 			],
 			summaryItems: ['slot', 'use-block-type-key', 'block-type-key', 'material']
 		});
