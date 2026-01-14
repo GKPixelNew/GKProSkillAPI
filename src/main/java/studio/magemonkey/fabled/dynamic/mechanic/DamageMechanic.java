@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -76,6 +77,18 @@ public class DamageMechanic extends MechanicComponent {
             } else if (left) {
                 amount = damage * target.getHealth() / 100;
             }
+            
+            // Special handling for ArmorStands since they don't take damage normally
+            if (target instanceof ArmorStand) {
+                double newHealth = target.getHealth() - amount;
+                if (newHealth <= 0) {
+                    target.remove();
+                } else {
+                    target.setHealth(newHealth);
+                }
+                continue;
+            }
+            
             if (trueDmg) {
                 skill.trueDamage(target, amount, caster);
             } else {
