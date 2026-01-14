@@ -60,6 +60,7 @@ public class GKSummonMechanic extends MechanicComponent {
     private static final String RIDE = "ride";
     private static final String COPY_SCOREBOARD_TEAM = "copy-scoreboard-team";
     private static final String INVISIBILITY = "invisibility";
+    private static final String CAN_DAMAGE_OWNER = "can-damage-owner";
 
     @Override
     public String getKey() {
@@ -133,6 +134,8 @@ public class GKSummonMechanic extends MechanicComponent {
 
                     Fabled.setMeta(le, "sapi_wolf_skills", skills);
                     Fabled.setMeta(le, "sapi_wolf_level", level);
+                    Fabled.setMeta(le, "sapi_summon_owner", caster);
+                    Fabled.setMeta(le, "sapi_can_damage_owner", settings.getBool(CAN_DAMAGE_OWNER, true));
 
                     entities.add(le);
                 }

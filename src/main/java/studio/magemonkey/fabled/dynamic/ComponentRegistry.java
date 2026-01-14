@@ -145,6 +145,7 @@ public class ComponentRegistry {
         register(new MythicMobTypeCondition());
         register(new NameCondition());
         register(new OffhandCondition());
+        register(new OwnerCondition());
         register(new PermissionCondition());
         register(new PotionCondition());
         register(new SkillLevelCondition());

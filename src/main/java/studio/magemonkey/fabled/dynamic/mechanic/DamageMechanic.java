@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +67,13 @@ public class DamageMechanic extends MechanicComponent {
         }
         for (LivingEntity target : targets) {
             if (target.isDead()) {
+                continue;
+            }
+            
+            // Check if caster is a summon that cannot damage its owner
+            Object owner = Fabled.getMeta(caster, "sapi_summon_owner");
+            Object canDamageOwner = Fabled.getMeta(caster, "sapi_can_damage_owner");
+            if (owner != null && owner.equals(target) && canDamageOwner != null && !(Boolean) canDamageOwner) {
                 continue;
             }
 
