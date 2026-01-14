@@ -6268,7 +6268,7 @@ export const initComponents = () => {
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
 		GLOW:               { name: 'Glow', component: GlowMechanic },
 		GKCOOLDOWN:         { name: 'GKCooldown', component: GKCooldownMechanic },
-		GK_SUMMON:          { name: 'GK Summon', component: GKSummonMechanic },
+		GKSUMMON:           { name: 'GK Summon', component: GKSummonMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
 		HEALTH_SET:         { name: 'Health Set', component: HealthSetMechanic },
 		HELD_ITEM:          { name: 'Held Item', component: HeldItemMechanic },
