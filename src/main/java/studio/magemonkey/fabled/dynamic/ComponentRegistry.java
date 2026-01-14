@@ -165,7 +165,6 @@ public class ComponentRegistry {
         register(new AirModifyMechanic());
         register(new AirSetMechanic());
         register(new AngryTowardsMechanic());
-        register(new GKArmorMechanic());
         register(new ArmorMechanic());
         register(new ArmorStandMechanic());
         register(new ArmorStandPoseMechanic());
