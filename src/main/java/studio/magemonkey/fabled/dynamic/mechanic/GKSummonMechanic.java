@@ -59,6 +59,7 @@ public class GKSummonMechanic extends MechanicComponent {
     private static final String TARGET = "target"; // for shulker bullet
     private static final String RIDE = "ride";
     private static final String COPY_SCOREBOARD_TEAM = "copy-scoreboard-team";
+    private static final String INVISIBILITY = "invisibility";
 
     @Override
     public String getKey() {
@@ -87,6 +88,10 @@ public class GKSummonMechanic extends MechanicComponent {
                 if (entity instanceof Monster monster) {
                     monster.setAI(true);
                     monster.setTarget(null);
+                }
+
+                if (entity instanceof ArmorStand armorStand) {
+                    armorStand.setVisible(!settings.getBool(INVISIBILITY, false));
                 }
 
                 if (entity instanceof Attributable ae) {
