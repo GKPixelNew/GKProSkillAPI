@@ -240,6 +240,7 @@ public class ComponentRegistry {
         register(new StatMechanic());
         register(new StatusMechanic());
         register(new SummonMechanic());
+        register(new GKSummonMechanic());
         register(new TauntMechanic());
         register(new ThrowMechanic());
         register(new TriggerMechanic());
