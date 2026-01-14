@@ -3518,6 +3518,9 @@ class GKSummonMechanic extends FabledMechanic {
 					.setTooltip('Whether to make the caster ride the summoned entity'),
 				new BooleanSelect('Copy Scoreboard Team', 'copy-scoreboard-team', false)
 					.setTooltip('Whether to copy the target\'s scoreboard team to the summoned entity'),
+				new BooleanSelect('Invisibility', 'invisibility', false)
+					.requireValue('entity', ['Armor stand'])
+					.setTooltip('Whether the armor stand should be invisible'),
 				new StringListSelect('Skills', 'skills', [])
 					.setTooltip('The skills to give the summoned entity. Skills are executed at the level of this skill. Skills needing a Cast trigger will not work.')
 			],
