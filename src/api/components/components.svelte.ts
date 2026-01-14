@@ -2655,36 +2655,7 @@ class ArmorMechanic extends FabledMechanic {
 				new StringSelect('Block Type Key', 'block-type-key', 'blockType')
 					.setTooltip('The key used in Value Block Type mechanic to retrieve the stored block type')
 					.requireValue('use-block-type-key', [true]),
-				new SectionMarker('Item Options')
-					.requireValue('use-block-type-key', [false]),
-				new MaterialSelect(false, 'Arrow')
-					.setTooltip('The type of item to give to the player')
-					.requireValue('use-block-type-key', [false]),
-				new IntSelect('Amount', 'amount', 1)
-					.setTooltip('The quantity of the item to give to the player')
-					.requireValue('use-block-type-key', [false]),
-				new IntSelect('Durability', 'data')
-					.requireValue('material', getDamageableMaterials())
-					.setTooltip('The durability to reduce from the item')
-					.requireValue('use-block-type-key', [false]),
-				new BooleanSelect('Unbreakable', 'unbreakable', false)
-					.requireValue('material', getDamageableMaterials())
-					.setTooltip('Whether to make the item unbreakable')
-					.requireValue('use-block-type-key', [false]),
-				new IntSelect('CustomModelData', 'byte', 0)
-					.setTooltip('The CustomModelData of the item')
-					.requireValue('use-block-type-key', [false]),
-				new BooleanSelect('Custom Name/Lore', 'custom', false)
-					.setTooltip('Whether to apply a custom name/lore to the item')
-					.requireValue('use-block-type-key', [false]),
-				new StringSelect('Name', 'name', 'Name')
-					.requireValue('custom', [true])
-					.setTooltip('The name of the item')
-					.requireValue('use-block-type-key', [false]),
-				new StringListSelect('Lore', 'lore')
-					.requireValue('custom', [true])
-					.setTooltip('The lore text for the item (the text below the name)')
-					.requireValue('use-block-type-key', [false])
+				...itemOptions()
 			],
 			summaryItems: ['slot', 'use-block-type-key', 'block-type-key', 'material']
 		});
@@ -3486,8 +3457,8 @@ class GKCooldownMechanic extends FabledMechanic {
 class GKSummonMechanic extends FabledMechanic {
 	public constructor() {
 		super({
-			name:         'GKSummon',
-			description:  'Summon an entity. Some option have no use for some entities, for example, set move speed 69 for a shulker.',
+			name:         'GK Summon',
+			description:  'Summon an entity with full attribute control. Some options have no effect on certain entities (e.g. move speed on a shulker).',
 			data:         [
 				new DropdownSelect('Entity', 'entity', getEntities, 'Zombie')
 					.setTooltip('The entity to be summoned'),
@@ -3498,29 +3469,31 @@ class GKSummonMechanic extends FabledMechanic {
 				new AttributeSelect('Knockback', 'knockback', 1, 0)
 					.setTooltip('The power of knockback when the entities attack others'),
 				new AttributeSelect('Walk Speed', 'walk_speed', -1, 0)
-					.setTooltip('The move speed of the entities, leave negative and their walk speed should be the same as they used to'),
+					.setTooltip('The move speed of the entities, leave negative to keep their default walk speed'),
 				new AttributeSelect('Fly Speed', 'fly_speed', -1, 0)
-					.setTooltip('The fly speed of the entities, leave negative and their fly speed should be the same as they used to'),
+					.setTooltip('The fly speed of the entities, leave negative to keep their default fly speed'),
 				new AttributeSelect('Follow Range', 'follow_range', -1, 0)
-					.setTooltip('The entities can detect enemies within how many blocks and trace them, , leave negative and their follow range should be the same as they used to'),
+					.setTooltip('The entities can detect enemies within how many blocks, leave negative to keep their default follow range'),
 				new AttributeSelect('Armor', 'armor', 0, 0)
 					.setTooltip('The armor value of the entities'),
 				new BooleanSelect('Adult', 'adult', true)
-					.setTooltip('The entity should be an adult or a baby'),
+					.setTooltip('Whether the entity should be an adult or a baby'),
 				new AttributeSelect('Duration', 'duration', 10, 0)
-					.setTooltip('How many seconds it should exist'),
+					.setTooltip('How many seconds the entity should exist'),
 				new AttributeSelect('Amount', 'amount', 1, 0)
 					.setTooltip('How many entities will be summoned'),
 				new StringSelect('Target', 'target', '')
 					.requireValue('entity', ['Shulker bullet'])
-					.setTooltip('The target you want this bullet trace to'),
+					.setTooltip('The remembered target key for shulker bullet to trace'),
 				new BooleanSelect('Ride', 'ride', false)
-					.setTooltip('Whether to make launcher get on the entity'),
+					.setTooltip('Whether to make the caster ride the summoned entity'),
+				new BooleanSelect('Copy Scoreboard Team', 'copy-scoreboard-team', false)
+					.setTooltip('Whether to copy the target\'s scoreboard team to the summoned entity'),
 				new StringListSelect('Skills', 'skills', [])
-					.setTooltip('The skills to give the wolf. Skills are executed at the level of the skill summoning the wolf. Skills needing a Cast trigger will not work.')
+					.setTooltip('The skills to give the summoned entity. Skills are executed at the level of this skill. Skills needing a Cast trigger will not work.')
 			],
-			summaryItems: ['skill', 'type', 'value']
-		}, false);
+			summaryItems: ['entity', 'amount', 'duration']
+		}, true);
 	}
 
 	public static override new = () => new this();
@@ -6293,9 +6266,9 @@ export const initComponents = () => {
 		FLY:                { name: 'Fly', component: FlyMechanic },
 		FOOD:               { name: 'Food', component: FoodMechanic },
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
-		GLOW:								{ name: 'Glow', component: GlowMechanic },
-		GKCOOLDOWN:					{ name: 'GKCooldown', component: GKCooldownMechanic },
-		GKSUMMON:						{ name: 'GKSummon', component: GKSummonMechanic },
+		GLOW:               { name: 'Glow', component: GlowMechanic },
+		GKCOOLDOWN:         { name: 'GKCooldown', component: GKCooldownMechanic },
+		GK_SUMMON:          { name: 'GK Summon', component: GKSummonMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
 		HEALTH_SET:         { name: 'Health Set', component: HealthSetMechanic },
 		HELD_ITEM:          { name: 'Held Item', component: HeldItemMechanic },
