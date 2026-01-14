@@ -2022,6 +2022,19 @@ class OffhandCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class OwnerCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Owner',
+			description:  'Applies child components when the target is the owner (summoner) of the caster. This is useful for summoned entities to check if a target is their owner.',
+			data:         [],
+			summaryItems: []
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class PermissionCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -3521,6 +3534,8 @@ class GKSummonMechanic extends FabledMechanic {
 				new BooleanSelect('Invisibility', 'invisibility', false)
 					.requireValue('entity', ['Armor stand'])
 					.setTooltip('Whether the armor stand should be invisible'),
+				new BooleanSelect('Can Damage Owner', 'can-damage-owner', true)
+					.setTooltip('Whether the summoned entity\'s skills can damage its owner (the caster). Set to false to prevent friendly fire.'),
 				new StringListSelect('Skills', 'skills', [])
 					.setTooltip('The skills to give the summoned entity. Skills are executed at the level of this skill. Skills needing a Cast trigger will not work.')
 			],
@@ -6251,6 +6266,7 @@ export const initComponents = () => {
 		MYTHICMOB_TYPE: { name: 'MythicMob Type', component: MythicMobTypeCondition },
 		NAME:           { name: 'Name', component: NameCondition },
 		OFFHAND:        { name: 'Offhand', component: OffhandCondition },
+		OWNER:          { name: 'Owner', component: OwnerCondition },
 		PERMISSION:     { name: 'Permission', component: PermissionCondition },
 		POTION:         { name: 'Potion', component: PotionCondition },
 		SKILL_LEVEL:    { name: 'Skill Level', component: SkillLevelCondition },
