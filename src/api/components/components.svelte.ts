@@ -541,6 +541,32 @@ class LandTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class MountTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Mount',
+			description:  'Applies skill effects when an entity mounts another entity. The target is the mounted entity.',
+			data:         [],
+			summaryItems: []
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class DismountTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Dismount',
+			description:  'Applies skill effects when an entity dismounts from another entity. The target is the dismounted entity.',
+			data:         [],
+			summaryItems: []
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class LaunchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -6177,6 +6203,8 @@ export const initComponents = () => {
 		JUMP:             { name: 'Jump', component: JumpTrigger },
 		KILL:             { name: 'Kill', component: KillTrigger },
 		LAND:             { name: 'Land', component: LandTrigger },
+		MOUNT:            { name: 'Mount', component: MountTrigger },
+		DISMOUNT:         { name: 'Dismount', component: DismountTrigger },
 		LEFT_CLICK:       { name: 'Left Click', component: LeftClickTrigger },
 		RIGHT_CLICK:      { name: 'Right Click', component: RightClickTrigger },
 		MOVE:             { name: 'Move', component: MoveTrigger },
