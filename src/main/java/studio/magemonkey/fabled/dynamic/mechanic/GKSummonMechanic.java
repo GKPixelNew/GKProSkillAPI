@@ -62,7 +62,7 @@ public class GKSummonMechanic extends MechanicComponent {
 
     @Override
     public String getKey() {
-        return "gk summon";
+        return "gksummon";
     }
 
     @Override
