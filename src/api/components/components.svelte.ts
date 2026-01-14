@@ -2644,26 +2644,7 @@ class ArmorMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor',
-			description:  'Sets the specified armor slot of the target to the item defined by the settings',
-			data:         [
-				new DropdownSelect('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'])
-					.setTooltip('The slot number to set the item to'),
-				new BooleanSelect('Overwrite', 'overwrite', false)
-					.setTooltip('USE WITH CAUTION. Whether to overwrite an existing item in the slot. If true, will permanently delete the existing iem'),
-				...itemOptions()
-			],
-			summaryItems: ['slot', 'material', 'data', 'lore', 'name']
-		});
-	}
-
-	public static override new = () => new this();
-}
-
-class GKArmorMechanic extends FabledMechanic {
-	public constructor() {
-		super({
-			name:         'GK Armor',
-			description:  'Sets the specified armor slot of the target to an item. Can use a block type stored by Value Block Type mechanic instead of defining the item manually.',
+			description:  'Sets the specified armor slot of the target to the item defined by the settings. Can optionally use a block type stored by Value Block Type mechanic.',
 			data:         [
 				new DropdownSelect('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'])
 					.setTooltip('The slot number to set the item to'),
@@ -6286,7 +6267,6 @@ export const initComponents = () => {
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ANGRY_TOWARDS:      { name: 'Angry Towards', component: AngryTowardsMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
-		GK_ARMOR:           { name: 'GK Armor', component: GKArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
 		ARMOR_STAND_REMOVE: { name: 'Armor Stand Remove', component: ArmorStandRemoveMechanic },
