@@ -60,6 +60,7 @@ public class GKSummonMechanic extends MechanicComponent {
     private static final String RIDE = "ride";
     private static final String COPY_SCOREBOARD_TEAM = "copy-scoreboard-team";
     private static final String INVISIBILITY = "invisibility";
+    private static final String GRAVITY = "gravity";
     private static final String CAN_DAMAGE_OWNER = "can-damage-owner";
 
     @Override
@@ -93,6 +94,7 @@ public class GKSummonMechanic extends MechanicComponent {
 
                 if (entity instanceof ArmorStand armorStand) {
                     armorStand.setVisible(!settings.getBool(INVISIBILITY, false));
+                    armorStand.setGravity(settings.getBool(GRAVITY, true));
                 }
 
                 if (entity instanceof Attributable ae) {
