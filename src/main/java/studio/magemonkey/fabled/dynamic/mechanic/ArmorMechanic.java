@@ -57,10 +57,12 @@ public class ArmorMechanic extends MechanicComponent {
             }
             BlockData blockData = (BlockData) stored;
             Material material = blockData.getMaterial();
-            if (!material.isItem()) {
+            // Try to create item directly - blocks can be worn on head even if isItem() returns false
+            try {
+                item = new ItemStack(material);
+            } catch (Exception e) {
                 return false;
             }
-            item = new ItemStack(material);
         } else {
             item = ItemStackReader.read(settings);
         }
