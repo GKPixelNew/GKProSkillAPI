@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.util.ItemStackReader;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
@@ -51,18 +52,34 @@ public class ArmorMechanic extends MechanicComponent {
         boolean useBlockTypeKey = settings.getBool(USE_BLOCK_TYPE_KEY, false);
         if (useBlockTypeKey) {
             String key = settings.getString(BLOCK_TYPE_KEY, "blockType");
-            Object stored = DynamicSkill.getCastData(caster).get(key);
-            if (!(stored instanceof BlockData)) {
+            CastData data = DynamicSkill.getCastData(caster);
+            Object stored = data.getRaw(key);
+            
+            if (stored == null) {
                 return false;
             }
-            BlockData blockData = (BlockData) stored;
-            Material material = blockData.getMaterial();
-            // Try to create item directly - blocks can be worn on head even if isItem() returns false
-            try {
-                item = new ItemStack(material);
-            } catch (Exception e) {
+            
+            Material material;
+            if (stored instanceof BlockData) {
+                material = ((BlockData) stored).getMaterial();
+            } else if (stored instanceof String) {
+                // Handle persistent data stored as string
+                try {
+                    BlockData blockData = org.bukkit.Bukkit.createBlockData((String) stored);
+                    material = blockData.getMaterial();
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
+            } else {
                 return false;
             }
+            
+            // Skip if the material is not a valid item (like AIR, WATER, etc.)
+            if (!material.isItem()) {
+                return false;
+            }
+            
+            item = new ItemStack(material);
         } else {
             item = ItemStackReader.read(settings);
         }
