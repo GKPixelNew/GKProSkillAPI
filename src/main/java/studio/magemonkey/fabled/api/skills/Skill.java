@@ -864,13 +864,11 @@ public abstract class Skill implements IconHolder {
             if (!DamageRegistry.dealDamage(target, damage, classification, source))
                 target.damage(damage, source);
         } else {
-            if (!DamageRegistry.dealDamage(target, damage, classification, source)){
-                if(damage >= target.getHealth()){
-                    target.damage(damage, source);
-                }else{
-                    target.setHealth(target.getHealth()-damage);
-                }
-            }
+            // TODO: an option to disable screen shake
+            Vector velocity = target.getVelocity();
+            if (!DamageRegistry.dealDamage(target, damage, classification, source))
+                target.damage(damage, source);
+            target.setVelocity(velocity);
         }
 
 
