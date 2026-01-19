@@ -23,7 +23,7 @@ repositories {
     maven("https://repo.travja.dev/releases")
     maven("https://repo.travja.dev/snapshots")
 }
-var codex_version = "1.1.1-R0.16-SNAPSHOT"
+var codex_version = "1.1.1-R0.17-SNAPSHOT"
 
 dependencies {
     testImplementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
