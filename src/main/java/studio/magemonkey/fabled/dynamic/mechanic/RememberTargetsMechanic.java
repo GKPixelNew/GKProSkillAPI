@@ -30,13 +30,16 @@ import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Applies a flag to each target
  */
 public class RememberTargetsMechanic extends MechanicComponent {
-    private static final String KEY = "key";
+    private static final String KEY       = "key";
     private static final String OVERWRITE = "overwrite";
 
     @Override
@@ -44,32 +47,23 @@ public class RememberTargetsMechanic extends MechanicComponent {
         return "remember targets";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
-        String key = settings.getString(KEY);
-        boolean overwrite = settings.getBool(OVERWRITE, true);
-        CastData castData = DynamicSkill.getCastData(caster);
-        Object rawTargets = castData.getRaw(key);
+        String   key        = settings.getString(KEY);
+        boolean  overwrite  = settings.getBool(OVERWRITE, true);
+        CastData castData   = DynamicSkill.getCastData(caster);
+        Object   rawTargets = castData.getRaw(key);
 
-        if (!overwrite && rawTargets instanceof List<?>) {
+        if (!overwrite && rawTargets instanceof Set<?>) {
             @SuppressWarnings("unchecked")
-            List<LivingEntity> originalTargets = (List<LivingEntity>) rawTargets;
+            Set<LivingEntity> originalTargets = (Set<LivingEntity>) rawTargets;
             originalTargets.addAll(targets);
         } else {
-            castData.put(key, targets);
+            castData.put(key, new HashSet<>(targets));
         }
         return true;
     }
