@@ -354,8 +354,10 @@ public final class ParticleHelper {
             case "dust":
             case "redstone":
             case "redstone_dust":
-            case "flash":
                 object = new Particle.DustOptions(dustColor, dustSize);
+                break;
+            case "flash":
+                object = dustColor;
                 break;
             case "item":
             case "item_crack":
