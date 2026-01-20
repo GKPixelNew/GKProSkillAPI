@@ -150,6 +150,7 @@ public class ComponentRegistry {
         register(new OwnerCondition());
         register(new PermissionCondition());
         register(new PotionCondition());
+        register(new SkillCooldownCondition());
         register(new SkillLevelCondition());
         register(new SlotCondition());
         register(new SprintCondition());
