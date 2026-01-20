@@ -2104,6 +2104,30 @@ class PotionCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class SkillCooldownCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Skill Cooldown',
+			description:  'Applies child components when the skill cooldown matches the settings. Use "all" as skill name to check all skills (all must meet the condition).',
+			data:         [
+				new SkillSelect('Skill', 'skill', false)
+					.setTooltip('The name of the skill to check the cooldown of. Use "all" to check all skills.'),
+				new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
+					.setTooltip('Whether to check cooldown in seconds or as a percentage of total cooldown'),
+				new DropdownSelect('Target', 'target', ['Caster', 'Target'], 'Caster')
+					.setTooltip('Whether to check the caster\'s or target\'s skill cooldown'),
+				new AttributeSelect('Min Value', 'min-value', 0, 0)
+					.setTooltip('The minimum cooldown value required'),
+				new AttributeSelect('Max Value', 'max-value', 999, 0)
+					.setTooltip('The maximum cooldown value allowed')
+			],
+			summaryItems: ['skill', 'type', 'target', 'min-value', 'max-value']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class SkillLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -6303,6 +6327,7 @@ export const initComponents = () => {
 		OWNER:          { name: 'Owner', component: OwnerCondition },
 		PERMISSION:     { name: 'Permission', component: PermissionCondition },
 		POTION:         { name: 'Potion', component: PotionCondition },
+		SKILL_COOLDOWN: { name: 'Skill Cooldown', component: SkillCooldownCondition },
 		SKILL_LEVEL:    { name: 'Skill Level', component: SkillLevelCondition },
 		SLOT:           { name: 'Slot', component: SlotCondition },
 		SPRINT:         { name: 'Sprint', component: SprintCondition },
