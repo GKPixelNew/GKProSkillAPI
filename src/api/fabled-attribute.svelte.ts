@@ -152,7 +152,7 @@ export class AttributeSection {
 		const yaml: { [key: string]: string } = {};
 		for (const component of this.components) {
 			for (const stat of component.stats) {
-				yaml[component.name + '-' + stat.key] = stat.formula;
+				yaml[component.name + '-' + stat.key] = stat.getFullFormula();
 			}
 		}
 		return yaml;
@@ -197,13 +197,33 @@ export class AttributeComponent {
 }
 
 export class AttributeStat {
-	public key: string     = $state('');
-	public formula: string = $state('a*0.025+1*v');
+	public key: string         = $state('');
+	public formula: string     = $state('a*0.025+1*v');
+	public skillFilter: string = $state('');
 
 	constructor(key?: string, formula?: string) {
 		if (key) this.key = key;
-		if (formula) this.formula = formula;
+		if (formula) {
+			// Parse skill filter from formula if present (format: formula:skill=regex)
+			const skillMatch = formula.match(/:skill=(.+)$/);
+			if (skillMatch) {
+				this.skillFilter = skillMatch[1];
+				this.formula = formula.replace(/:skill=.+$/, '');
+			} else {
+				this.formula = formula;
+			}
+		}
 	}
+
+	/**
+	 * Returns the full formula string including skill filter if set
+	 */
+	public getFullFormula = (): string => {
+		if (this.skillFilter && this.skillFilter.trim()) {
+			return `${this.formula}:skill=${this.skillFilter}`;
+		}
+		return this.formula;
+	};
 }
 
 export class AttributeStats {
@@ -235,7 +255,7 @@ export class AttributeStats {
 	public serializeYaml = (): { [key: string]: string } => {
 		const yaml: { [key: string]: string } = {};
 		for (const stat of this.stats) {
-			yaml[stat.key] = stat.formula;
+			yaml[stat.key] = stat.getFullFormula();
 		}
 		return yaml;
 	};

@@ -22,7 +22,8 @@
 	<ProInput label={'Option'} tooltip={'Attribute option to modify based on attribute value'}>
 		<SearchableSelect bind:selected={stat.key} data={component.availableStats} multiple={false} />
 	</ProInput>
-	<StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by' />
+	<StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by. Use "v" for the base value and "a" for attribute points.' />
+	<StringSelectOption bind:data={stat.skillFilter} name={'Skill Filter (Regex)'} tooltip='Optional regex pattern to filter which skills this modifier applies to. Leave empty to apply to all skills. Example: "attack_.*" to only affect skills starting with "attack_".' />
 </div>
 
 <style>
