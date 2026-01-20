@@ -78,7 +78,11 @@ public class LaunchMechanic extends MechanicComponent {
             dir.multiply(forward);
             dir.add(nor.multiply(right)).setY(dir.getY() + upward);
 
-            target.setVelocity(dir);
+            try {
+                target.setVelocity(dir);
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid velocity
+            }
         }
         return !targets.isEmpty();
     }

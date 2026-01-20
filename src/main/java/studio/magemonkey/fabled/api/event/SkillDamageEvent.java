@@ -66,6 +66,9 @@ public class SkillDamageEvent extends DamageEvent {
     private              boolean      knockback;
     @Getter
     private              boolean      ignoreDivinity;
+    @Getter
+    @Setter
+    private              boolean      noShake;
     private              boolean      cancelled = false;
 
     /**
@@ -78,15 +81,17 @@ public class SkillDamageEvent extends DamageEvent {
      * @param classification the damage type to use
      * @param knockback      whether to apply knockback to the target
      * @param ignoreDivinity whether to ignore divinity
+     * @param noShake        whether to prevent screen shake
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
-                            @Nullable String classification, boolean knockback, boolean ignoreDivinity) {
+                            @Nullable String classification, boolean knockback, boolean ignoreDivinity, boolean noShake) {
         super(damager, target, damage, false);
         this.skill = skill;
         this.classification = classification;
         this.knockback = knockback;
         this.ignoreDivinity = ignoreDivinity;
         this.damage = damage;
+        this.noShake = noShake;
     }
 
     /**

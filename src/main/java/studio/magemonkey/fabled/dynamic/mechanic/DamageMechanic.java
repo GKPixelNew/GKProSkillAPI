@@ -45,6 +45,7 @@ public class DamageMechanic extends MechanicComponent {
     private static final String KNOCKBACK       = "knockback";
     private static final String IGNORE_DIVINITY = "ignore-divinity";
     private static final String CAUSE           = "cause";
+    private static final String NO_SHAKE        = "no-shake";
 
     @Override
     public String getKey() {
@@ -61,6 +62,7 @@ public class DamageMechanic extends MechanicComponent {
         double  damage         = parseValues(caster, DAMAGE, level, 1.0);
         boolean knockback      = settings.getBool(KNOCKBACK, true);
         boolean ignoreDivinity = settings.getBool(IGNORE_DIVINITY, false);
+        boolean noShake        = settings.getBool(NO_SHAKE, false);
         String  classification = settings.getString(CLASSIFIER, "default");
         if (damage < 0) {
             return false;
@@ -108,7 +110,8 @@ public class DamageMechanic extends MechanicComponent {
                         ignoreDivinity,
                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Custom")
                                 .toUpperCase(Locale.US)
-                                .replace(' ', '_')));
+                                .replace(' ', '_')),
+                        noShake);
             }
         }
         return !targets.isEmpty();

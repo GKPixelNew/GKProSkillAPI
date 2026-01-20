@@ -59,7 +59,6 @@ public class ExplosionMechanic extends MechanicComponent {
             return false;
         }
         double  power  = parseValues(caster, POWER, level, 4);
-        if (power == 0) power = 0.0000000000001; // to prevent server crashes
         boolean fire   = settings.getBool(FIRE, false);
         boolean damage = settings.getBool(DAMAGE, false);
         for (LivingEntity target : targets) {

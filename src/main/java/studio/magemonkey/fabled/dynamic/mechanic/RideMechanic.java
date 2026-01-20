@@ -1,10 +1,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.protocol.potion.PotionTypes;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEffect;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
