@@ -80,8 +80,13 @@ public abstract class EffectComponent {
      */
     protected final      Settings              preview          = new Settings();
     /**
-     * Parent class of the component
+     * Parent skill of the component
+     * -- GETTER --
+     *  Retrieves the parent skill of the component
+     *
+     * @return parent skill of the component
      */
+    @Getter
     protected            DynamicSkill          skill;
     /**
      * -- GETTER --
