@@ -2108,18 +2108,18 @@ class SkillCooldownCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Skill Cooldown',
-			description:  'Applies child components when the skill cooldown matches the settings. Use "all" as skill name to check all skills (all must meet the condition).',
+			description:  'Applies child components when the skill\'s remaining cooldown is within the specified range. Use "all" as skill name to check all skills (all must meet the condition). <br><br><b>Seconds example:</b> To check if a skill has 5-10 seconds left on cooldown, set Type=Seconds, Min=5, Max=10. <br><b>Percent example:</b> To check if a skill is more than halfway through its cooldown (less than 50% remaining), set Type=Percent, Min=0, Max=50.',
 			data:         [
 				new SkillSelect('Skill', 'skill', false)
-					.setTooltip('The name of the skill to check the cooldown of. Use "all" to check all skills.'),
+					.setTooltip('The name of the skill to check the cooldown of. Use "all" to check all skills (all must meet the condition).'),
 				new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
-					.setTooltip('Whether to check cooldown in seconds or as a percentage of total cooldown'),
+					.setTooltip('Seconds: checks the flat remaining cooldown time. Percent: checks the percentage of cooldown remaining (e.g., a 10s skill with 3s left = 30%).'),
 				new DropdownSelect('Target', 'target', ['Caster', 'Target'], 'Caster')
-					.setTooltip('Whether to check the caster\'s or target\'s skill cooldown'),
+					.setTooltip('Whether to check the caster\'s or target\'s skill cooldown.'),
 				new AttributeSelect('Min Value', 'min-value', 0, 0)
-					.setTooltip('The minimum cooldown value required'),
+					.setTooltip('The minimum cooldown value required (in seconds or percent based on Type).'),
 				new AttributeSelect('Max Value', 'max-value', 999, 0)
-					.setTooltip('The maximum cooldown value allowed')
+					.setTooltip('The maximum cooldown value allowed (in seconds or percent based on Type).')
 			],
 			summaryItems: ['skill', 'type', 'target', 'min-value', 'max-value']
 		});
