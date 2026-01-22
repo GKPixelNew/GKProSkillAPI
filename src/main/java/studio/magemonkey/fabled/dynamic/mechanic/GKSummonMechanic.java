@@ -97,6 +97,9 @@ public class GKSummonMechanic extends MechanicComponent {
                     armorStand.setGravity(settings.getBool(GRAVITY, true));
                 }
 
+                if (entity instanceof Tameable tameable)
+                    tameable.setOwner((AnimalTamer) target);
+
                 if (entity instanceof Attributable ae) {
                     ae.registerAttribute(Attribute.ATTACK_DAMAGE);
                     ae.registerAttribute(Attribute.ATTACK_KNOCKBACK);
@@ -150,8 +153,6 @@ public class GKSummonMechanic extends MechanicComponent {
 
                 if (settings.getBool(RIDE, false)) {
                     entity.addPassenger(target);
-                    if (entity instanceof Tameable tameable)
-                        tameable.setOwner((AnimalTamer) target);
                     if (entity instanceof Steerable steerable)
                         steerable.setSaddle(true);
                 }
