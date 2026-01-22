@@ -3592,8 +3592,8 @@ class GKSummonMechanic extends FabledMechanic {
 				new BooleanSelect('Gravity', 'gravity', true)
 					.requireValue('entity', ['Armor stand'])
 					.setTooltip('Whether the armor stand should have gravity. Set to false for a floating armor stand.'),
-				new BooleanSelect('Can Damage Owner', 'can-damage-owner', true)
-					.setTooltip('Whether the summoned entity\'s skills can damage its owner (the caster). Set to false to prevent friendly fire.'),
+				new BooleanSelect('Damage as Owner', 'damage-as-owner', true)
+					.setTooltip('Whether the summoned entity\'s skills should inflict damage as the owner. Set to true to prevent friendly fire.'),
 				new StringListSelect('Skills', 'skills', [])
 					.setTooltip('The skills to give the summoned entity. Skills are executed at the level of this skill. Skills needing a Cast trigger will not work.')
 			],
