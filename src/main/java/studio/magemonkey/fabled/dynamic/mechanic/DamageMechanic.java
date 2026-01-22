@@ -74,9 +74,9 @@ public class DamageMechanic extends MechanicComponent {
             
             // Check if caster is a summon that cannot damage its owner
             Object owner = Fabled.getMeta(caster, "sapi_summon_owner");
-            Object canDamageOwner = Fabled.getMeta(caster, "sapi_can_damage_owner");
-            if (owner != null && owner.equals(target) && canDamageOwner != null && !(Boolean) canDamageOwner) {
-                continue;
+            Object damageAsOwner = Fabled.getMeta(caster, "sapi_damage_as_owner");
+            if (owner instanceof LivingEntity ownerEntity) {
+                caster = ownerEntity;
             }
 
             double amount = damage;
