@@ -19,17 +19,7 @@ public class AccurateLaunchEvent extends Event implements Cancellable {
     private final LivingEntity target;
 
     @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-
-    }
-
-    @Override
     public @NotNull HandlerList getHandlers() {
-        return null;
+        return handlers;
     }
 }
