@@ -25,4 +25,13 @@ public class AccurateLaunchEvent extends Event implements Cancellable {
     public @NotNull HandlerList getHandlers() {
         return handlers;
     }
+
+    /**
+     * Retrieves the handlers for the event
+     *
+     * @return list of event handlers
+     */
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
