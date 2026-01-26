@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.warp;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -34,6 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.WarpEvent;
 import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 
@@ -93,6 +95,9 @@ public class WarpMechanic extends AbstractWarpingMechanic {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
         for (LivingEntity target : targets) {
+            WarpEvent event = new WarpEvent(target);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) continue;
             warp(target, caster, getLocation(caster, level, target), level);
         }
         return true;
