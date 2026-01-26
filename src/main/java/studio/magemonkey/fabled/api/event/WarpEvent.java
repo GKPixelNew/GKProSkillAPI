@@ -17,6 +17,8 @@ public class WarpEvent extends Event implements Cancellable {
     @Setter
     private boolean cancelled = false;
     @Getter
+    private final LivingEntity caster;
+    @Getter
     private final LivingEntity target;
 
     @Override

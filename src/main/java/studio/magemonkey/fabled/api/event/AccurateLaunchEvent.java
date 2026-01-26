@@ -15,6 +15,9 @@ public class AccurateLaunchEvent extends Event implements Cancellable {
     @Getter
     @Setter
     private boolean cancelled = false;
+
+    @Getter
+    private final LivingEntity caster;
     @Getter
     private final LivingEntity target;
 

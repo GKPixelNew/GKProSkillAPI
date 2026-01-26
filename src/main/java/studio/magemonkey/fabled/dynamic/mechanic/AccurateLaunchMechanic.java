@@ -18,7 +18,6 @@ import org.bukkit.util.Vector;
 
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.AccurateLaunchEvent;
-import studio.magemonkey.fabled.api.event.WarpEvent;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 
@@ -84,7 +83,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 launchSubject = caster;
             }
 
-            AccurateLaunchEvent event = new AccurateLaunchEvent(launchSubject);
+            AccurateLaunchEvent event = new AccurateLaunchEvent(caster, launchSubject);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) continue;
 

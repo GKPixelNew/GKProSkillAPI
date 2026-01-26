@@ -95,7 +95,7 @@ public class WarpMechanic extends AbstractWarpingMechanic {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
         for (LivingEntity target : targets) {
-            WarpEvent event = new WarpEvent(target);
+            WarpEvent event = new WarpEvent(caster, target);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) continue;
             warp(target, caster, getLocation(caster, level, target), level);
