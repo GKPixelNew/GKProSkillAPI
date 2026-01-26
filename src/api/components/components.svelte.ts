@@ -749,8 +749,11 @@ class SkillDamageTrigger extends FabledTrigger {
 					.setTooltip('The minimum damage that needs to be dealt'),
 				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.setTooltip('The maximum damage that needs to be dealt'),
+				new BooleanSelect('Check category', 'check-category', false)
+					.setTooltip('True makes this only trigger for damage categories defined below'),
 				new StringListSelect('Category', 'category', ['default'])
 					.setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage')
+					.requireValue('check-category', [true])
 			],
 			summaryItems: ['target', 'dmg-min', 'dmg-max', 'category']
 		});
