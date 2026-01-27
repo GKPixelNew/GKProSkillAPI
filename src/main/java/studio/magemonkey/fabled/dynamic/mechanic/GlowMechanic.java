@@ -7,10 +7,14 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEn
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Fabled © 2024
@@ -19,6 +23,9 @@ import java.util.List;
 public class GlowMechanic extends MechanicComponent {
     private static final String DURATION = "duration";
     private static final byte GLOWING_FLAG = 0x40;
+    
+    // Track active glow tasks: viewer UUID -> (target UUID -> task)
+    private static final Map<UUID, Map<UUID, BukkitTask>> activeGlowTasks = new ConcurrentHashMap<>();
 
     @Override
     public String getKey() {
@@ -32,7 +39,18 @@ public class GlowMechanic extends MechanicComponent {
                            boolean force) {
         if (caster instanceof Player player) {
             var duration = (int) parseValues(caster, DURATION, level, 5) * 20;
+            var playerUuid = player.getUniqueId();
+            
             for (var target : targets) {
+                var targetUuid = target.getUniqueId();
+                
+                // Cancel any existing glow removal task for this player-target pair
+                var playerTasks = activeGlowTasks.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
+                var existingTask = playerTasks.remove(targetUuid);
+                if (existingTask != null) {
+                    existingTask.cancel();
+                }
+                
                 // Get current entity flags and add glowing
                 byte flags = GLOWING_FLAG;
                 if (target.getFireTicks() > 0) flags |= 0x01;
@@ -47,7 +65,16 @@ public class GlowMechanic extends MechanicComponent {
                 PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
                 
                 // Schedule removal of glow effect
-                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
+                var task = Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
+                    // Remove from tracking
+                    var tasks = activeGlowTasks.get(playerUuid);
+                    if (tasks != null) {
+                        tasks.remove(targetUuid);
+                        if (tasks.isEmpty()) {
+                            activeGlowTasks.remove(playerUuid);
+                        }
+                    }
+                    
                     // Remove glowing flag
                     byte resetFlags = 0;
                     if (target.getFireTicks() > 0) resetFlags |= 0x01;
@@ -61,6 +88,9 @@ public class GlowMechanic extends MechanicComponent {
                     var resetPacket = new WrapperPlayServerEntityMetadata(target.getEntityId(), Collections.singletonList(resetMetadata));
                     PacketEvents.getAPI().getPlayerManager().sendPacket(player, resetPacket);
                 }, duration);
+                
+                // Track the new task
+                playerTasks.put(targetUuid, task);
             }
             return true;
         }
