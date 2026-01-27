@@ -35,9 +35,9 @@ public class GlowMechanic extends MechanicComponent {
             for (var target : targets) {
                 // Get current entity flags and add glowing
                 byte flags = GLOWING_FLAG;
-                if (target.isOnFire()) flags |= 0x01;
+                if (target.getFireTicks() > 0) flags |= 0x01;
                 if (target.isSneaking()) flags |= 0x02;
-                if (target.isSprinting()) flags |= 0x08;
+                if (target instanceof Player p && p.isSprinting()) flags |= 0x08;
                 if (target.isSwimming()) flags |= 0x10;
                 if (target.isInvisible()) flags |= 0x20;
                 
@@ -50,9 +50,9 @@ public class GlowMechanic extends MechanicComponent {
                 Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
                     // Remove glowing flag
                     byte resetFlags = 0;
-                    if (target.isOnFire()) resetFlags |= 0x01;
+                    if (target.getFireTicks() > 0) resetFlags |= 0x01;
                     if (target.isSneaking()) resetFlags |= 0x02;
-                    if (target.isSprinting()) resetFlags |= 0x08;
+                    if (target instanceof Player p && p.isSprinting()) resetFlags |= 0x08;
                     if (target.isSwimming()) resetFlags |= 0x10;
                     if (target.isInvisible()) resetFlags |= 0x20;
                     if (target.isGlowing()) resetFlags |= GLOWING_FLAG; // Keep if actually glowing
