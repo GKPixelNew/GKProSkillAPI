@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
@@ -34,7 +35,18 @@ public class ValueTextCondition extends ConditionComponent {
         final Object      value  = DynamicSkill.getCastData(caster).getRaw(settings.getString(VALUE));
         final String      expect = settings.getString(EXPECT);
         if (value == null || expect == null) return false;
-        return mode.compare((String) value, expect);
+        
+        // Convert value to string, handling special types
+        String valueStr;
+        if (value instanceof String) {
+            valueStr = (String) value;
+        } else if (value instanceof BlockData) {
+            valueStr = ((BlockData) value).getMaterial().name();
+        } else {
+            valueStr = value.toString();
+        }
+        
+        return mode.compare(valueStr, expect);
     }
 
     private enum CompareMode {
