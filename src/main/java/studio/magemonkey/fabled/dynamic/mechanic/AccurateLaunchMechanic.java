@@ -6,20 +6,19 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.AccurateLaunchEvent;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.TempEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Launches targets toward a computed destination using a ballistic-style
@@ -83,7 +82,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 launchSubject = caster;
             }
 
-            AccurateLaunchEvent event = new AccurateLaunchEvent(caster, launchSubject);
+            AccurateLaunchEvent event = new AccurateLaunchEvent(caster, launchSubject, this.getSkill());
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) continue;
 
