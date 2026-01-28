@@ -3390,6 +3390,19 @@ class ExplosionMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class FakeSpectatorMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Fake Spectator',
+			description:  'Tricks the targets\' Minecraft client into thinking they are spectators.',
+			data:         [],
+			summaryItems: []
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
 class FireMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5109,6 +5122,19 @@ class RepeatMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class ReturnGamemodeMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Return Gamemode',
+			description:  'Reverse the effect of Fake Spectator',
+			data:         [],
+			summaryItems: []
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
 class RideMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6377,6 +6403,7 @@ export const initComponents = () => {
 		DURABILITY:         { name: 'Durability', component: DurabilityMechanic },
 		EXPERIENCE:         { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:          { name: 'Explosion', component: ExplosionMechanic },
+		FAKE_SPECTATOR:     { name: 'Fake Spectator', component: FakeSpectatorMechanic },
 		FIRE:               { name: 'Fire', component: FireMechanic },
 		FLY:                { name: 'Fly', component: FlyMechanic },
 		FOOD:               { name: 'Food', component: FoodMechanic },
@@ -6413,6 +6440,7 @@ export const initComponents = () => {
 		PUSH:               { name: 'Push', component: PushMechanic },
 		REMEMBER_TARGETS:   { name: 'Remember Targets', component: RememberTargetsMechanic },
 		REPEAT:             { name: 'Repeat', component: RepeatMechanic },
+		RETURN_GAMEMODE:    { name: 'Return Gamemode', component: ReturnGamemodeMechanic },
 		RIDE:               { name: 'Ride', component: RideMechanic },
 		SHIELD:             { name: 'Shield', component: ShieldMechanic },
 		SIGNAL_EMIT:        { name: 'Signal Emit', component: SignalEmitMechanic },
