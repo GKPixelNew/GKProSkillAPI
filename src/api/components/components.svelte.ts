@@ -3421,7 +3421,7 @@ class FakeSpectatorMechanic extends FabledMechanic {
 			description:  'Tricks the targets\' Minecraft client into thinking they are spectators.',
 			data:         [],
 			summaryItems: []
-		}, true);
+		}, false);
 	}
 
 	public static override new = () => new this();
@@ -5153,7 +5153,7 @@ class ReturnGamemodeMechanic extends FabledMechanic {
 			description:  'Reverse the effect of Fake Spectator',
 			data:         [],
 			summaryItems: []
-		}, true);
+		}, false);
 	}
 
 	public static override new = () => new this();
