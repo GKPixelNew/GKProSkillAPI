@@ -717,6 +717,30 @@ class ShearTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class SkillDowngradeTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Skill Downgrade',
+			description: 'Applies skill effects when a player loses a level in a skill. The placeholders `api-refund`, `api-skill`, and `api-level` provide details about the downgrade.',
+			keywords:    'skill, downgrade, level down, player, API, refund, skill name, level'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class SkillUpgradeTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Skill Upgrade',
+			description: 'Applies skill effects when a player levels up a skill. The placeholders `api-cost`, `api-skill`, and `api-level` provide details about the upgrade.',
+			keywords:    'skill, upgrade, level up, player, API, cost, skill name, level'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class SkillCastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -5895,6 +5919,8 @@ class ValuePlaceholderMechanic extends FabledMechanic {
 					.setTooltip('The type of value to store. Number values require numeric placeholders. String values can be used in messages or commands'),
 				new StringSelect('Placeholder', 'placeholder', '{value}')
 					.setTooltip('The placeholder string to use. Can contain multiple placeholders if using the String type'),
+				new BooleanSelect('Evaluate', 'evaluate', false)
+					.setTooltip('If true, the placeholder will be evaluated before being stored. If <code>false</code>, the raw placeholder string will be stored, effectively creating a pass-by-reference system. <code>true</code> is essentially pass-by-value.'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
 
@@ -6273,6 +6299,8 @@ export const initComponents = () => {
 		SHEAR:            { name: 'Shear', component: ShearTrigger },
 		SHIELD:           { name: 'Shield', component: ShieldTrigger },
 		SIGNAL:           { name: 'Signal', component: SignalTrigger },
+		SKILL_UPGRADE:    { name: 'Skill Upgrade', component: SkillUpgradeTrigger },
+		SKILL_DOWNGRADE:  { name: 'Skill Downgrade', component: SkillDowngradeTrigger },
 		SKILL_CAST:       { name: 'Skill Cast', component: SkillCastTrigger },
 		SPRINT:           { name: 'Sprint', component: SprintTrigger },
 		STRIP_LOG:        { name: 'Strip Log', component: StripLogTrigger },
