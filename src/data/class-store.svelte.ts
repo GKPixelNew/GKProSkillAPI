@@ -295,8 +295,16 @@ export default class FabledClass implements Serializable {
 
 			const map: { [key: string]: IAttribute } = {};
 			for (const attrId of Object.keys(attributes)) {
-				const split = attrId.split('-');
-				const name  = split[0];
+				// Extract attribute name by removing -base or -scale suffix
+				let name: string;
+				if (attrId.endsWith('-base')) {
+					name = attrId.slice(0, -5); // Remove '-base' (5 chars)
+				} else if (attrId.endsWith('-scale')) {
+					name = attrId.slice(0, -6); // Remove '-scale' (6 chars)
+				} else {
+					continue; // Skip if not a base or scale attribute
+				}
+				
 				if (map[name] || name === 'health' || name === 'mana') continue;
 
 				map[name] = { name, base: attributes[`${name}-base`], scale: attributes[`${name}-scale`] };
