@@ -287,7 +287,8 @@ public abstract class TargetHelper {
             while (steps > 0) {
                 if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
                     lastValid = temp.clone();
-                }
+                } else
+                    break;
                 temp.add(slope);
                 steps--;
             }
