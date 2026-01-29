@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.api.target;
 
+import lombok.extern.slf4j.Slf4j;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+@Slf4j
 public abstract class TargetHelper {
 
 
@@ -287,6 +289,7 @@ public abstract class TargetHelper {
             while (steps > 0) {
                 if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
                     lastValid = temp.clone();
+                    log.info(lastValid.toString());
                 } else
                     break;
                 temp.add(slope);
