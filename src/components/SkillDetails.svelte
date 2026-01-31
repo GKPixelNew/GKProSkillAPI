@@ -628,9 +628,3 @@
         background: #45a049;
     }
 </style>
-        width: 40%;
-        height: 1px;
-        background: white;
-        margin: 1rem auto;
-    }
-</style>
