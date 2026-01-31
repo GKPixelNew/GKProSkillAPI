@@ -1,9 +1,10 @@
 package studio.magemonkey.fabled.api.target;
 
+import lombok.extern.slf4j.Slf4j;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+@Slf4j
 public abstract class TargetHelper {
 
 
@@ -271,9 +273,7 @@ public abstract class TargetHelper {
         if (throughWall) {
             Location temp = loc2.clone();
             while (steps > 0) {
-                if (temp.getBlock().isPassable() && temp.getBlock()
-                        .getRelative(BlockFace.UP)
-                        .isPassable()) {
+                if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
                     temp.setX(temp.getBlockX() + 0.5);
                     temp.setZ(temp.getBlockZ() + 0.5);
                     temp.setY(temp.getBlockY() + 1);
@@ -287,11 +287,11 @@ public abstract class TargetHelper {
             Location temp      = loc1.clone();
             Location lastValid = null;
             while (steps > 0) {
-                if (temp.getBlock().isPassable() && temp.getBlock()
-                        .getRelative(BlockFace.UP)
-                        .isPassable()) {
+                if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
                     lastValid = temp.clone();
-                }
+                    log.info(lastValid.toString());
+                } else
+                    break;
                 temp.add(slope);
                 steps--;
             }
@@ -305,14 +305,16 @@ public abstract class TargetHelper {
         }
     }
 
-    public static boolean isSolid(Material mat) {
+    public static boolean isSolid(Block block) {
+        var mat = block.getType();
         if (!mat.isSolid()) return false;
-        else return mat.isOccluding()
+        else if (mat.isOccluding()
                 || mat.name().contains("GLASS")
                 || mat.name().contains("FENCE")
                 || mat.name().contains("LEAVES")
                 || mat.name().contains("SLAB")
-                || mat.name().contains("STAIR");
+                || mat.name().contains("STAIR")) return false;
+        else return !block.isPassable();
 
         // Not going to worry about doors, slabs, trapdoors, etc that *could* be blocking the path of a projectile.
         // We'll just assume that these are good to go.
