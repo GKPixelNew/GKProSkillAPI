@@ -91,6 +91,7 @@ public abstract class Skill implements IconHolder {
     private static final String            DESC             = "desc";
     private static final String            ATTR             = "attributes";
     private static final String            COMBO            = "combo";
+    private static final String            TRANSLATED_LORE  = "translated-lore";
     /**
      * -- GETTER --
      * Checks whether the current damage event is due to
@@ -109,6 +110,7 @@ public abstract class Skill implements IconHolder {
     protected final      Settings          settings         = new Settings();
     private final        ArrayList<String> description      = new ArrayList<>();
     private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
+    private final        Map<String, List<String>> translatedLore = new LinkedHashMap<>();
     /**
      * -- GETTER --
      * Retrieves the configuration key for the skill
@@ -948,6 +950,14 @@ public abstract class Skill implements IconHolder {
         }
         Data.serializeIcon(indicator, config);
         config.set(DESC, description);
+
+        // Save translated lore
+        if (!translatedLore.isEmpty()) {
+            DataSection translatedLoreSection = config.createSection(TRANSLATED_LORE);
+            for (Map.Entry<String, List<String>> entry : translatedLore.entrySet()) {
+                translatedLoreSection.set(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -992,5 +1002,74 @@ public abstract class Skill implements IconHolder {
         }
 
         settings.load(config.getSection(ATTR));
+
+        // Load translated lore
+        translatedLore.clear();
+        DataSection translatedLoreSection = config.getSection(TRANSLATED_LORE);
+        if (translatedLoreSection != null) {
+            for (String langCode : translatedLoreSection.keys()) {
+                List<String> lore = translatedLoreSection.getList(langCode);
+                if (lore != null) {
+                    translatedLore.put(langCode, new ArrayList<>(lore));
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the translated lore for the specified language code.
+     * If the language code is not found, falls back to the first available language.
+     * Returns null if no translations are available.
+     *
+     * @param langCode the language code (e.g., "zh-TW", "en-US")
+     * @return the translated lore lines, or null if not available
+     */
+    @org.jetbrains.annotations.Nullable
+    public List<String> getTranslatedLore(String langCode) {
+        if (translatedLore.containsKey(langCode)) {
+            return translatedLore.get(langCode);
+        }
+        // Fallback to first available language
+        if (!translatedLore.isEmpty()) {
+            return translatedLore.values().iterator().next();
+        }
+        return null;
+    }
+
+    /**
+     * Sets the translated lore for the specified language code.
+     *
+     * @param langCode the language code (e.g., "zh-TW", "en-US")
+     * @param lore     the lore lines for this language
+     */
+    public void setTranslatedLore(String langCode, List<String> lore) {
+        translatedLore.put(langCode, lore);
+    }
+
+    /**
+     * Removes the translated lore for the specified language code.
+     *
+     * @param langCode the language code to remove
+     */
+    public void removeTranslatedLore(String langCode) {
+        translatedLore.remove(langCode);
+    }
+
+    /**
+     * Retrieves all available language codes for translated lore.
+     *
+     * @return set of available language codes
+     */
+    public Set<String> getAvailableLanguages() {
+        return translatedLore.keySet();
+    }
+
+    /**
+     * Retrieves the entire translated lore map.
+     *
+     * @return map of language codes to lore lines
+     */
+    public Map<String, List<String>> getAllTranslatedLore() {
+        return translatedLore;
     }
 }
