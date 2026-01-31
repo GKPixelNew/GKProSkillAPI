@@ -64,6 +64,7 @@ export default class FabledSkill implements Serializable {
 	});
 	incompatible: FabledSkill[]         = $state([]);
 	triggers: FabledTrigger[]           = $state([]);
+	translatedLore: { [langCode: string]: string[] } = $state({ 'zh-TW': [] });
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
@@ -93,6 +94,7 @@ export default class FabledSkill implements Serializable {
 		if (data.icon) this.icon = data.icon;
 		if (data.incompatible) this.incompatible = data.incompatible;
 		if (data.triggers) this.triggers = data.triggers;
+		if (data.translatedLore) this.translatedLore = data.translatedLore;
 	}
 
 	/**
@@ -125,7 +127,8 @@ export default class FabledSkill implements Serializable {
 				'points-spent-req-scale': this.minSpent.scale
 			},
 			incompatible:       this.incompatible,
-			components:         this.triggers
+			components:         this.triggers,
+			'translated-lore':  this.translatedLore
 		};
 	};
 
@@ -203,7 +206,8 @@ export default class FabledSkill implements Serializable {
 				'points-spent-req-scale': this.minSpent.scale
 			},
 			incompatible:       this.incompatible.map(s => s.name),
-			components:         compData
+			components:         compData,
+			'translated-lore':  this.translatedLore
 		};
 
 		this.attributeRequirements.forEach(attr => {
@@ -251,6 +255,7 @@ export default class FabledSkill implements Serializable {
 		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
 		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
 		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
+		if (yaml['translated-lore']) this.translatedLore = yaml['translated-lore'];
 
 		let unsub: Unsubscriber | undefined = undefined;
 

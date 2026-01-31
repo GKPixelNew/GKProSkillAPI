@@ -61,6 +61,7 @@ export interface FabledSkillData {
 	indicator?: '2D' | '3D' | 'None';
 	icon?: Icon;
 	incompatible?: FabledSkill[];
+	translatedLore?: { [langCode: string]: string[] };
 
 	triggers?: FabledTrigger[];
 }
@@ -189,6 +190,7 @@ export interface SkillYamlData {
 
 	incompatible: string[];
 	components: YamlComponentData;
+	'translated-lore'?: { [langCode: string]: string[] };
 }
 
 export interface AttributeYamlData {
