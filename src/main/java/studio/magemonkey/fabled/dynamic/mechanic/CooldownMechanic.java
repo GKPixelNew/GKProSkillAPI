@@ -88,8 +88,18 @@ public class CooldownMechanic extends MechanicComponent {
 
     private void subtractCooldown(String type, PlayerSkill data, double value) {
         Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
-            if (type.equals("percent")) data.subtractCooldown(value * data.getCooldownLeft() / 100);
-            else data.subtractCooldown(value);
+            if (type.equals("percent")) {
+                if (value < 0) {
+                    // Negative percent: add cooldown based on skill's max cooldown (after stat scaling)
+                    double maxCooldown = data.getData().getCooldown(data.getLevel(), data.getPlayerData());
+                    data.addCooldown(-value * maxCooldown / 100);
+                } else {
+                    // Positive percent: subtract based on remaining cooldown
+                    data.subtractCooldown(value * data.getCooldownLeft() / 100);
+                }
+            } else {
+                data.subtractCooldown(value);
+            }
         }, 1L);
     }
 }
