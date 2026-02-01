@@ -999,7 +999,7 @@ public class Settings extends com.sucy.skill.data.Settings {
             var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
             var teamA = scoreboard.getEntryTeam(playerA.getName());
             var teamB = scoreboard.getEntryTeam(playerB.getName());
-            return Objects.equals(teamA, teamB);
+            return teamA != null && teamB != null && Objects.equals(teamA, teamB);
         }
         return false;
     }
