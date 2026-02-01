@@ -32,6 +32,7 @@ import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ManaCost;
 import studio.magemonkey.fabled.api.enums.ManaSource;
 import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.skills.Skill;
 
 import java.util.List;
 
@@ -39,8 +40,9 @@ import java.util.List;
  * Gives mana to each target
  */
 public class ManaMechanic extends MechanicComponent {
-    private static final String TYPE  = "type";
-    private static final String VALUE = "value";
+    private static final String TYPE       = "type";
+    private static final String VALUE      = "value";
+    private static final String SKILL_NAME = "skill-name";
 
     @Override
     public String getKey() {
@@ -58,8 +60,8 @@ public class ManaMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        boolean percent = settings.getString(TYPE, "mana").toLowerCase().equals("percent");
-        double  value   = parseValues(caster, VALUE, level, 1.0);
+        String type = settings.getString(TYPE, "mana").toLowerCase();
+        double value = parseValues(caster, VALUE, level, 1.0);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
@@ -69,11 +71,28 @@ public class ManaMechanic extends MechanicComponent {
 
             worked = true;
 
-            PlayerData data = Fabled.getData((Player) target);
+            PlayerData data   = Fabled.getData((Player) target);
             double     amount;
-            if (percent) {
+            
+            if (type.equals("percent")) {
                 amount = data.getMaxMana() * value / 100;
+            } else if (type.equals("skill-cost")) {
+                // Get the skill's mana cost (with player stat scaling)
+                String skillName = settings.getString(SKILL_NAME, "");
+                Skill  skill     = Fabled.getSkill(skillName);
+                if (skill == null) {
+                    continue;
+                }
+                // Use the skill level from player's data, or default to 1
+                int skillLevel = 1;
+                var playerSkill = data.getSkill(skillName);
+                if (playerSkill != null) {
+                    skillLevel = Math.max(1, playerSkill.getLevel());
+                }
+                double manaCost = skill.getManaCost(skillLevel, data);
+                amount = manaCost * value;
             } else {
+                // Default "mana" type
                 amount = value;
             }
 
