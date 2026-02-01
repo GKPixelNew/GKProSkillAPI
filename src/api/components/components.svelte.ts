@@ -4101,10 +4101,13 @@ class ManaMechanic extends FabledMechanic {
 			name:         'Mana',
 			description:  'Restores or deducts mana from the target',
 			data:         [
-				new DropdownSelect('Type', 'type', ['Mana', 'Percent'], 'Mana')
-					.setTooltip('The unit to use for the amount of mana to restore/drain. Mana does a flat amount while Percent does a percentage of their max mana'),
+				new DropdownSelect('Type', 'type', ['Mana', 'Percent', 'Skill Cost'], 'Mana')
+					.setTooltip('The unit to use for the amount of mana to restore/drain. Mana does a flat amount, Percent does a percentage of their max mana, Skill Cost uses the mana cost of a specified skill (after mana-cost stat scaling)'),
 				new AttributeSelect('Value', 'value', 1)
-					.setTooltip('The amount of mana to restore/drain')
+					.setTooltip('The amount of mana to restore/drain. For Skill Cost type, this is a multiplier (1 = 100% of skill cost, 0.5 = 50%, etc.)'),
+				new SkillSelect('Skill Name', 'skill-name', false)
+					.requireValue('type', ['Skill Cost'])
+					.setTooltip('The skill to get the mana cost from. Uses the target player\'s skill level and mana-cost stat scaling')
 			],
 			summaryItems: ['type', 'value']
 		}, false);
