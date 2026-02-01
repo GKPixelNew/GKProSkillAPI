@@ -273,7 +273,9 @@ public abstract class TargetHelper {
         if (throughWall) {
             Location temp = loc2.clone();
             while (steps > 0) {
-                if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
+                if (!isSolid(temp.getBlock().getType()) && !isSolid(temp.getBlock()
+                        .getRelative(BlockFace.UP)
+                        .getType())) {
                     temp.setX(temp.getBlockX() + 0.5);
                     temp.setZ(temp.getBlockZ() + 0.5);
                     temp.setY(temp.getBlockY() + 1);
@@ -287,11 +289,11 @@ public abstract class TargetHelper {
             Location temp      = loc1.clone();
             Location lastValid = null;
             while (steps > 0) {
-                if (!isSolid(temp.getBlock()) && !isSolid(temp.getBlock().getRelative(BlockFace.UP))) {
+                if (!isSolid(temp.getBlock().getType()) && !isSolid(temp.getBlock()
+                        .getRelative(BlockFace.UP)
+                        .getType())) {
                     lastValid = temp.clone();
-                    log.info(lastValid.toString());
-                } else
-                    break;
+                }
                 temp.add(slope);
                 steps--;
             }
@@ -305,16 +307,14 @@ public abstract class TargetHelper {
         }
     }
 
-    public static boolean isSolid(Block block) {
-        var mat = block.getType();
+    public static boolean isSolid(Material mat) {
         if (!mat.isSolid()) return false;
-        else if (!mat.isOccluding()
+        else return mat.isOccluding()
                 || mat.name().contains("GLASS")
                 || mat.name().contains("FENCE")
                 || mat.name().contains("LEAVES")
                 || mat.name().contains("SLAB")
-                || mat.name().contains("STAIR")) return false;
-        else return !block.isPassable();
+                || mat.name().contains("STAIR");
 
         // Not going to worry about doors, slabs, trapdoors, etc that *could* be blocking the path of a projectile.
         // We'll just assume that these are good to go.
