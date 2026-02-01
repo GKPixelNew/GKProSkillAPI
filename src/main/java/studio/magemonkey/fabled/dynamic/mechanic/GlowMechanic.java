@@ -53,11 +53,11 @@ public class GlowMechanic extends MechanicComponent {
                 if (!glowingTargets.contains(entityId)) return;
                 
                 // Find and modify the entity flags (index 0)
-                List<EntityData> metadata = packet.getEntityMetadata();
+                List<EntityData<?>> metadata = new ArrayList<>(packet.getEntityMetadata());
                 boolean foundFlags = false;
                 
                 for (int i = 0; i < metadata.size(); i++) {
-                    EntityData data = metadata.get(i);
+                    EntityData<?> data = metadata.get(i);
                     if (data.getIndex() == 0 && data.getType() == EntityDataTypes.BYTE) {
                         // Add glowing flag to existing flags
                         byte currentFlags = (byte) data.getValue();
