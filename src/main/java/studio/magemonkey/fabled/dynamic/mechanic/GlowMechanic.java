@@ -17,6 +17,7 @@ import studio.magemonkey.fabled.Fabled;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Fabled © 2024
@@ -25,37 +26,37 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlowMechanic extends MechanicComponent {
     private static final String DURATION = "duration";
     private static final byte GLOWING_FLAG = 0x40;
-    
+
     // Track active glow effects: viewer UUID -> Set of target entity IDs
     private static final Map<UUID, Set<Integer>> activeGlowTargets = new ConcurrentHashMap<>();
     // Track active glow tasks: viewer UUID -> (target entity ID -> task)
     private static final Map<UUID, Map<Integer, BukkitTask>> activeGlowTasks = new ConcurrentHashMap<>();
-    
+
     private static boolean listenerRegistered = false;
-    
+
     private static void ensureListenerRegistered() {
         if (listenerRegistered) return;
         listenerRegistered = true;
-        
+
         PacketEvents.getAPI().getEventManager().registerListener(new PacketListenerAbstract(PacketListenerPriority.HIGH) {
             @Override
             public void onPacketSend(PacketSendEvent event) {
                 if (event.getPacketType() != PacketType.Play.Server.ENTITY_METADATA) return;
                 if (!(event.getPlayer() instanceof Player player)) return;
-                
+
                 var playerUuid = player.getUniqueId();
                 var glowingTargets = activeGlowTargets.get(playerUuid);
                 if (glowingTargets == null || glowingTargets.isEmpty()) return;
-                
+
                 var packet = new WrapperPlayServerEntityMetadata(event);
                 int entityId = packet.getEntityId();
-                
+
                 if (!glowingTargets.contains(entityId)) return;
-                
+
                 // Find and modify the entity flags (index 0)
                 List<EntityData<?>> metadata = new ArrayList<>(packet.getEntityMetadata());
                 boolean foundFlags = false;
-                
+
                 for (int i = 0; i < metadata.size(); i++) {
                     EntityData<?> data = metadata.get(i);
                     if (data.getIndex() == 0 && data.getType() == EntityDataTypes.BYTE) {
@@ -67,32 +68,38 @@ public class GlowMechanic extends MechanicComponent {
                         break;
                     }
                 }
-                
-                // If flags weren't in the packet, we need to add them
+
+                // If flags weren't in the packet, compute them on the main thread and add them
                 if (!foundFlags) {
-                    // Get the entity and compute flags
-                    Entity entity = null;
-                    for (var world : Bukkit.getWorlds()) {
-                        for (var e : world.getEntities()) {
-                            if (e.getEntityId() == entityId) {
-                                entity = e;
-                                break;
+                    // Compute flags synchronously to avoid AsyncCatcher
+                    var future = Bukkit.getScheduler().callSyncMethod(Fabled.inst(), () -> {
+                        for (var world : Bukkit.getWorlds()) {
+                            for (var e : world.getEntities()) {
+                                if (e.getEntityId() == entityId) {
+                                    byte flags = GLOWING_FLAG;
+                                    if (e.getFireTicks() > 0) flags |= 0x01;
+                                    if (e instanceof LivingEntity le && le.isSneaking()) flags |= 0x02;
+                                    if (e instanceof Player p && p.isSprinting()) flags |= 0x08;
+                                    if (e instanceof LivingEntity lle && lle.isSwimming()) flags |= 0x10;
+                                    if (e instanceof LivingEntity ile && ile.isInvisible()) flags |= 0x20;
+                                    return flags;
+                                }
                             }
                         }
-                        if (entity != null) break;
-                    }
-                    
-                    if (entity != null) {
-                        byte flags = GLOWING_FLAG;
-                        if (entity.getFireTicks() > 0) flags |= 0x01;
-                        if (entity instanceof LivingEntity le && le.isSneaking()) flags |= 0x02;
-                        if (entity instanceof Player p && p.isSprinting()) flags |= 0x08;
-                        if (entity instanceof LivingEntity le && le.isSwimming()) flags |= 0x10;
-                        if (entity instanceof LivingEntity le && le.isInvisible()) flags |= 0x20;
-                        metadata.add(new EntityData(0, EntityDataTypes.BYTE, flags));
+                        return null;
+                    });
+
+                    try {
+                        Byte flags = future.get();
+                        if (flags != null) {
+                            metadata.add(new EntityData(0, EntityDataTypes.BYTE, flags));
+                        }
+                    } catch (InterruptedException | ExecutionException ex) {
+                        Thread.currentThread().interrupt();
+                        // If we fail to compute flags, do nothing (avoid modifying packet)
                     }
                 }
-                
+
                 packet.setEntityMetadata(metadata);
             }
         });
@@ -110,24 +117,24 @@ public class GlowMechanic extends MechanicComponent {
                            boolean force) {
         if (caster instanceof Player player) {
             ensureListenerRegistered();
-            
+
             var duration = (int) parseValues(caster, DURATION, level, 5) * 20;
             var playerUuid = player.getUniqueId();
-            
+
             for (var target : targets) {
                 int entityId = target.getEntityId();
-                
+
                 // Cancel any existing glow removal task for this player-target pair
                 var playerTasks = activeGlowTasks.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
                 var existingTask = playerTasks.remove(entityId);
                 if (existingTask != null) {
                     existingTask.cancel();
                 }
-                
+
                 // Add to active glow targets
                 var glowingTargets = activeGlowTargets.computeIfAbsent(playerUuid, k -> ConcurrentHashMap.newKeySet());
                 glowingTargets.add(entityId);
-                
+
                 // Get current entity flags and add glowing
                 byte flags = GLOWING_FLAG;
                 if (target.getFireTicks() > 0) flags |= 0x01;
@@ -135,12 +142,12 @@ public class GlowMechanic extends MechanicComponent {
                 if (target instanceof Player p && p.isSprinting()) flags |= 0x08;
                 if (target.isSwimming()) flags |= 0x10;
                 if (target.isInvisible()) flags |= 0x20;
-                
+
                 // Send metadata packet with glowing flag
                 var metadata = new EntityData(0, EntityDataTypes.BYTE, flags);
                 var packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(metadata));
                 PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-                
+
                 // Schedule removal of glow effect
                 var task = Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
                     // Remove from tracking
@@ -151,7 +158,7 @@ public class GlowMechanic extends MechanicComponent {
                             activeGlowTasks.remove(playerUuid);
                         }
                     }
-                    
+
                     // Remove from active glow targets
                     var targets2 = activeGlowTargets.get(playerUuid);
                     if (targets2 != null) {
@@ -160,7 +167,7 @@ public class GlowMechanic extends MechanicComponent {
                             activeGlowTargets.remove(playerUuid);
                         }
                     }
-                    
+
                     // Remove glowing flag
                     byte resetFlags = 0;
                     if (target.getFireTicks() > 0) resetFlags |= 0x01;
@@ -169,12 +176,12 @@ public class GlowMechanic extends MechanicComponent {
                     if (target.isSwimming()) resetFlags |= 0x10;
                     if (target.isInvisible()) resetFlags |= 0x20;
                     if (target.isGlowing()) resetFlags |= GLOWING_FLAG; // Keep if actually glowing
-                    
+
                     var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
                     var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
                     PacketEvents.getAPI().getPlayerManager().sendPacket(player, resetPacket);
                 }, duration);
-                
+
                 // Track the new task
                 playerTasks.put(entityId, task);
             }
