@@ -308,7 +308,7 @@ public abstract class TargetHelper {
     public static boolean isSolid(Block block) {
         var mat = block.getType();
         if (!mat.isSolid()) return false;
-        else if (mat.isOccluding()
+        else if (!mat.isOccluding()
                 || mat.name().contains("GLASS")
                 || mat.name().contains("FENCE")
                 || mat.name().contains("LEAVES")
