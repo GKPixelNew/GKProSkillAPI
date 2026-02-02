@@ -9,7 +9,6 @@ import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -29,8 +28,6 @@ public class GlowMechanic extends MechanicComponent {
 
     // Track active glow effects: viewer UUID -> Set of target entity IDs
     private static final Map<UUID, Set<Integer>> activeGlowTargets = new ConcurrentHashMap<>();
-    // Cache entity flags: viewer UUID -> (entity ID -> cached flags)
-    private static final Map<UUID, Map<Integer, Byte>> cachedEntityFlags = new ConcurrentHashMap<>();
     // Track active glow tasks: viewer UUID -> (target entity ID -> task)
     private static final Map<UUID, Map<Integer, BukkitTask>> activeGlowTasks = new ConcurrentHashMap<>();
 
@@ -55,34 +52,19 @@ public class GlowMechanic extends MechanicComponent {
 
                 if (!glowingTargets.contains(entityId)) return;
 
-                // Find and modify the entity flags (index 0)
-                List<EntityData<?>> metadata = new ArrayList<>(packet.getEntityMetadata());
-                boolean foundFlags = false;
-
-                for (int i = 0; i < metadata.size(); i++) {
-                    EntityData<?> data = metadata.get(i);
+                // Mutate the existing flags entry (index 0) like the proven logic does.
+                List<EntityData<?>> metadata = packet.getEntityMetadata();
+                for (EntityData<?> data : metadata) {
                     if (data.getIndex() == 0 && data.getType() == EntityDataTypes.BYTE) {
-                        // Add glowing flag to existing flags
-                        byte currentFlags = (byte) data.getValue();
-                        byte newFlags = (byte) (currentFlags | GLOWING_FLAG);
-                        metadata.set(i, new EntityData(0, EntityDataTypes.BYTE, newFlags));
-                        foundFlags = true;
+                        byte flags = (byte) data.getValue();
+                        if ((flags & GLOWING_FLAG) == 0) {
+                            flags |= GLOWING_FLAG;
+                        }
+                        //noinspection unchecked
+                        ((EntityData<Byte>) data).setValue(flags);
                         break;
                     }
                 }
-
-                // If flags weren't in the packet, use cached flags
-                if (!foundFlags) {
-                    var cachedFlags = cachedEntityFlags.get(playerUuid);
-                    if (cachedFlags != null) {
-                        Byte flags = cachedFlags.get(entityId);
-                        if (flags != null) {
-                            metadata.add(new EntityData(0, EntityDataTypes.BYTE, flags));
-                        }
-                    }
-                }
-
-                packet.setEntityMetadata(metadata);
             }
         });
     }
@@ -128,12 +110,8 @@ public class GlowMechanic extends MechanicComponent {
                 var glowingTargets = activeGlowTargets.computeIfAbsent(playerUuid, k -> ConcurrentHashMap.newKeySet());
                 glowingTargets.add(entityId);
 
-                // Cache entity flags
-                byte flags = getEntityFlags(target);
-                var flagsCache = cachedEntityFlags.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
-                flagsCache.put(entityId, flags);
-
                 // Send metadata packet with glowing flag
+                byte flags = getEntityFlags(target);
                 var metadata = new EntityData(0, EntityDataTypes.BYTE, flags);
                 var packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(metadata));
                 PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
@@ -158,24 +136,8 @@ public class GlowMechanic extends MechanicComponent {
                         }
                     }
 
-                    // Remove from cached flags
-                    var cachedFlags = cachedEntityFlags.get(playerUuid);
-                    if (cachedFlags != null) {
-                        cachedFlags.remove(entityId);
-                        if (cachedFlags.isEmpty()) {
-                            cachedEntityFlags.remove(playerUuid);
-                        }
-                    }
-
                     // Remove glowing flag
-                    byte resetFlags = 0;
-                    if (target.getFireTicks() > 0) resetFlags |= 0x01;
-                    if (target.isSneaking()) resetFlags |= 0x02;
-                    if (target instanceof Player p && p.isSprinting()) resetFlags |= 0x08;
-                    if (target.isSwimming()) resetFlags |= 0x10;
-                    if (target.isInvisible()) resetFlags |= 0x20;
-                    if (target.isGliding()) resetFlags |= GLIDING_FLAG;
-                    if (target.isGlowing()) resetFlags |= GLOWING_FLAG; // Keep if actually glowing
+                    byte resetFlags = (byte) (getEntityFlags(target) & ~GLOWING_FLAG);
 
                     var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
                     var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
