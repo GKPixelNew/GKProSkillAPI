@@ -3133,6 +3133,8 @@ class DamageMechanic extends FabledMechanic {
 					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and does not have a damage animation nor knockback'),
 				new StringSelect('Damage Type', 'classifier', 'default')
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from Divinity like "DIVINITY_magical"'),
+				new StringSelect('Damage Source', 'source', '_none')
+					.setTooltip('The remembered target key to use as the damage source. If empty or not found, uses the caster. This determines who is credited for the damage (e.g., for kill tracking)'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new BooleanSelect('No Screen Shake', 'no-shake', false)
