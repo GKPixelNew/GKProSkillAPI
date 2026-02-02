@@ -216,6 +216,7 @@ public class ComponentRegistry {
         register(new AccurateLaunchMechanic());
         register(new LaunchMechanic());
         register(new LightningMechanic());
+        register(new LookAtMechanic());
         register(new ManaMechanic());
         register(new MessageMechanic());
         register(new MineMechanic());
