@@ -161,6 +161,7 @@ const BAD_POTIONS: string[] = [
 	'Oozing',
 	'Poison',
 	'Raid omen',
+	'Slow falling',
 	'Slowness',
 	'Trial omen',
 	'Unluck',
