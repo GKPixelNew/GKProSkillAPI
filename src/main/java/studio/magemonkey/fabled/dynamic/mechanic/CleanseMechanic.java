@@ -44,19 +44,26 @@ import java.util.*;
  */
 public class CleanseMechanic extends MechanicComponent {
     public static final List<PotionEffectType> NEGATIVE_POTIONS = Arrays.asList(
+            PotionEffectType.BAD_OMEN,
             PotionEffectType.BLINDNESS,
-            NamespaceResolver.getPotion("CONFUSION", "NAUSEA"),
+            NamespaceResolver.getPotion("DARKNESS", "DARKNESS"),
             PotionEffectType.HUNGER,
+            NamespaceResolver.getPotion("INFESTED", "INFESTED"),
+            PotionEffectType.INSTANT_DAMAGE,
             PotionEffectType.LEVITATION,
+            NamespaceResolver.getPotion("MINING_FATIGUE", "SLOW_DIGGING"),
+            NamespaceResolver.getPotion("NAUSEA", "CONFUSION"),
+            NamespaceResolver.getPotion("OOZING", "OOZING"),
             PotionEffectType.POISON,
+            NamespaceResolver.getPotion("RAID_OMEN", "RAID_OMEN"),
+            NamespaceResolver.getPotion("SLOW_FALLING", "SLOW_FALLING"),
             NamespaceResolver.getPotion("SLOWNESS", "SLOW"),
-            NamespaceResolver.getPotion("SLOW_DIGGING", "MINING_FATIGUE"),
+            NamespaceResolver.getPotion("TRIAL_OMEN", "TRIAL_OMEN"),
             PotionEffectType.UNLUCK,
             PotionEffectType.WEAKNESS,
-            PotionEffectType.WITHER,
-            PotionEffectType.BAD_OMEN,
-            PotionEffectType.GLOWING,
-            PotionEffectType.INSTANT_DAMAGE
+            NamespaceResolver.getPotion("WEAVING", "WEAVING"),
+            NamespaceResolver.getPotion("WIND_CHARGED", "WIND_CHARGED"),
+            PotionEffectType.WITHER
     );
 
     private static final String STATUS = "status";
