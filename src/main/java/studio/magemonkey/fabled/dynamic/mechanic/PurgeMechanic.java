@@ -42,21 +42,20 @@ public class PurgeMechanic extends MechanicComponent {
     private static final Set<PotionEffectType> POTIONS = ImmutableSet.of(
             PotionEffectType.ABSORPTION,
             PotionEffectType.CONDUIT_POWER,
-            NamespaceResolver.getPotion("DAMAGE_RESISTANCE", "RESISTANCE"),
             PotionEffectType.DOLPHINS_GRACE,
-            NamespaceResolver.getPotion("FAST_DIGGING", "HASTE"),
             PotionEffectType.FIRE_RESISTANCE,
-            PotionEffectType.GLOWING,
+            NamespaceResolver.getPotion("HASTE", "FAST_DIGGING"),
             PotionEffectType.HEALTH_BOOST,
-            NamespaceResolver.getPotion("STRENGTH", "INCREASE_DAMAGE"),
+            NamespaceResolver.getPotion("HERO_OF_THE_VILLAGE", "HERO_OF_THE_VILLAGE"),
             PotionEffectType.INVISIBILITY,
-            NamespaceResolver.getPotion("JUMP", "JUMP_BOOST"),
+            NamespaceResolver.getPotion("JUMP_BOOST", "JUMP"),
             PotionEffectType.LUCK,
             PotionEffectType.NIGHT_VISION,
             PotionEffectType.REGENERATION,
+            NamespaceResolver.getPotion("RESISTANCE", "DAMAGE_RESISTANCE"),
             PotionEffectType.SATURATION,
-            PotionEffectType.SLOW_FALLING,
             PotionEffectType.SPEED,
+            NamespaceResolver.getPotion("STRENGTH", "INCREASE_DAMAGE"),
             PotionEffectType.WATER_BREATHING
     );
 
