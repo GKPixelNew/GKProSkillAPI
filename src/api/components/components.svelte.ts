@@ -3991,6 +3991,24 @@ class ItemRemoveMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class LookAtMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Look At',
+			description:  'Forces targets to look at a remembered target location',
+			data:         [
+				new StringSelect('Remember Key', 'source', 'target')
+					.setTooltip('The key of the remembered target to look at'),
+				new DropdownSelect('Control', 'control', ['Both', 'Yaw', 'Pitch'], 'Both')
+					.setTooltip('Which rotation axis to control. Yaw is horizontal rotation, Pitch is vertical rotation')
+			],
+			summaryItems: ['source', 'control']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class LaunchMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6458,6 +6476,7 @@ export const initComponents = () => {
 		LAUNCH_TO:          { name: 'Launch To', component: LaunchToMechanic },
 		ACCURATE_LAUNCH:    { name: 'Accurate Launch', component: AccurateLaunchMechanic },
 		LIGHTNING:          { name: 'Lightning', component: LightningMechanic },
+		LOOK_AT:            { name: 'Look At', component: LookAtMechanic },
 		MANA:               { name: 'Mana', component: ManaMechanic },
 		MESSAGE:            { name: 'Message', component: MessageMechanic },
 		MINE:               { name: 'Mine', component: MineMechanic },
