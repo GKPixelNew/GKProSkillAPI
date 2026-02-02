@@ -27,7 +27,9 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 
@@ -67,10 +69,10 @@ public class LookAtMechanic extends MechanicComponent {
 
         boolean worked = false;
         for (LivingEntity target : targets) {
-            Location targetLoc = target.getLocation();
+            Location targetLoc = target.getLocation().clone();
             
-            // Calculate direction vector from target to look-at location
-            Vector direction = lookAt.clone().subtract(targetLoc.add(0, target.getEyeHeight(), 0)).toVector();
+            // Calculate direction vector from target's eyes to look-at location
+            Vector direction = lookAt.clone().subtract(targetLoc.clone().add(0, target.getEyeHeight(), 0)).toVector();
             
             if (direction.lengthSquared() == 0) {
                 continue;
@@ -93,8 +95,23 @@ public class LookAtMechanic extends MechanicComponent {
                 finalPitch = newPitch;
             }
             
-            // Set the new rotation
-            target.setRotation(finalYaw, finalPitch);
+            // For players, we need to teleport them to change rotation
+            // setRotation() doesn't work for players
+            if (target instanceof Player player) {
+                Location newLoc = player.getLocation().clone();
+                newLoc.setYaw(finalYaw);
+                newLoc.setPitch(finalPitch);
+                player.teleport(newLoc);
+            } else if (target instanceof ArmorStand armorStand) {
+                // ArmorStands also need teleport to change rotation reliably
+                Location newLoc = armorStand.getLocation().clone();
+                newLoc.setYaw(finalYaw);
+                newLoc.setPitch(finalPitch);
+                armorStand.teleport(newLoc);
+            } else {
+                // For other entities (mobs), setRotation works
+                target.setRotation(finalYaw, finalPitch);
+            }
             worked = true;
         }
         
