@@ -30,6 +30,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ public class DamageMechanic extends MechanicComponent {
     private static final String IGNORE_DIVINITY = "ignore-divinity";
     private static final String CAUSE           = "cause";
     private static final String NO_SHAKE        = "no-shake";
+    private static final String SOURCE          = "source";
 
     @Override
     public String getKey() {
@@ -64,6 +66,11 @@ public class DamageMechanic extends MechanicComponent {
         boolean ignoreDivinity = settings.getBool(IGNORE_DIVINITY, false);
         boolean noShake        = settings.getBool(NO_SHAKE, false);
         String  classification = settings.getString(CLASSIFIER, "default");
+        
+        // Get damage source from remembered target, or use caster
+        final List<LivingEntity> sources = RememberTarget.remember(caster, settings.getString(SOURCE, "_none"));
+        LivingEntity damageSource = sources.isEmpty() ? caster : sources.get(0);
+        
         if (damage < 0) {
             return false;
         }
@@ -72,11 +79,11 @@ public class DamageMechanic extends MechanicComponent {
                 continue;
             }
             
-            // Check if caster is a summon that cannot damage its owner
-            Object owner = Fabled.getMeta(caster, "sapi_summon_owner");
-            Object damageAsOwner = Fabled.getMeta(caster, "sapi_damage_as_owner");
+            // Check if damage source is a summon that should damage as owner
+            LivingEntity effectiveSource = damageSource;
+            Object owner = Fabled.getMeta(effectiveSource, "sapi_summon_owner");
             if (owner instanceof LivingEntity ownerEntity) {
-                caster = ownerEntity;
+                effectiveSource = ownerEntity;
             }
 
             double amount = damage;
@@ -100,11 +107,11 @@ public class DamageMechanic extends MechanicComponent {
             }
             
             if (trueDmg) {
-                skill.trueDamage(target, amount, caster);
+                skill.trueDamage(target, amount, effectiveSource);
             } else {
                 skill.damage(target,
                         amount,
-                        caster,
+                        effectiveSource,
                         classification,
                         knockback,
                         ignoreDivinity,
