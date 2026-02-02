@@ -151,7 +151,16 @@ public class ParticleProjectile extends CustomProjectile {
                             .getRaw(ParticleProjectile.this.settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
-                        return ((List<LivingEntity>) data).stream()
+                        // Remembered targets can be stored as Set or List
+                        java.util.Collection<LivingEntity> targets;
+                        if (data instanceof java.util.Set) {
+                            targets = (java.util.Set<LivingEntity>) data;
+                        } else if (data instanceof java.util.List) {
+                            targets = (java.util.List<LivingEntity>) data;
+                        } else {
+                            return null;
+                        }
+                        return targets.stream()
                                 .filter(tar -> ParticleProjectile.this.settings.getBool(WALL, false)
                                         || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
                                 .min(comparator)
