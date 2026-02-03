@@ -137,6 +137,7 @@ public class ComponentRegistry {
         register(new GroundCondition());
         register(new HealthCondition());
         register(new InventoryCondition());
+        register(new IsAngryCondition());
         register(new ItemCondition());
         register(new LightCondition());
         register(new LoreCondition());
