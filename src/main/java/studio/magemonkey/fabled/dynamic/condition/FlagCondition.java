@@ -28,6 +28,7 @@ package studio.magemonkey.fabled.dynamic.condition;
 
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.dynamic.mechanic.FlagMechanic;
 
 /**
  * A condition for dynamic skills that requires the target to have a specified flag active
@@ -38,7 +39,8 @@ public class FlagCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String  flag = settings.getString(KEY);
+        final String  flagTemplate = settings.getString(KEY);
+        final String  flag = FlagMechanic.parseFlagKey(flagTemplate, caster, target);
         final boolean set  = !settings.getString(TYPE, "set").toLowerCase().equals("not set");
         return FlagManager.hasFlag(target, flag) == set;
     }

@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.util.FlagManager;
 
 import java.util.List;
@@ -58,12 +59,49 @@ public class FlagMechanic extends MechanicComponent {
             return false;
         }
 
-        String key     = settings.getString(KEY);
+        String keyTemplate = settings.getString(KEY);
         double seconds = parseValues(caster, SECONDS, level, 3.0);
         int    ticks   = (int) (seconds * 20);
         for (LivingEntity target : targets) {
+            String key = parseFlagKey(keyTemplate, caster, target);
             FlagManager.addFlag(target, key, ticks);
         }
         return targets.size() > 0;
+    }
+
+    /**
+     * Parses placeholders in flag keys.
+     * Supports: {casterUUID}, {targetUUID}, {ownerUUID}
+     *
+     * @param key    the flag key template
+     * @param caster the caster of the skill
+     * @param target the target entity
+     * @return the parsed flag key with placeholders replaced
+     */
+    public static String parseFlagKey(String key, LivingEntity caster, LivingEntity target) {
+        if (key == null) return null;
+        
+        // Replace {casterUUID} with caster's UUID
+        if (key.contains("{casterUUID}")) {
+            key = key.replace("{casterUUID}", caster.getUniqueId().toString());
+        }
+        
+        // Replace {targetUUID} with target's UUID
+        if (key.contains("{targetUUID}")) {
+            key = key.replace("{targetUUID}", target.getUniqueId().toString());
+        }
+        
+        // Replace {ownerUUID} with owner's UUID (for summoned entities)
+        if (key.contains("{ownerUUID}")) {
+            Object ownerObj = Fabled.getMeta(caster, "sapi_summon_owner");
+            if (ownerObj instanceof LivingEntity owner) {
+                key = key.replace("{ownerUUID}", owner.getUniqueId().toString());
+            } else {
+                // If no owner, use caster's UUID as fallback
+                key = key.replace("{ownerUUID}", caster.getUniqueId().toString());
+            }
+        }
+        
+        return key;
     }
 }

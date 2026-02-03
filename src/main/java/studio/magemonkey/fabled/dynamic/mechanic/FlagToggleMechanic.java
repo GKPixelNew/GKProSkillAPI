@@ -57,8 +57,9 @@ public class FlagToggleMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
+        String keyTemplate = settings.getString(KEY);
         for (LivingEntity target : targets) {
+            String key = FlagMechanic.parseFlagKey(keyTemplate, caster, target);
             if (FlagManager.hasFlag(target, key)) {
                 FlagManager.removeFlag(target, key);
             } else {
