@@ -110,8 +110,9 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
                 LivingEntity lookTarget = lookTargets.get(0);
                 Location lookAt = lookTarget.getLocation().add(0, lookTarget.getEyeHeight() / 2, 0);
                 
-                // Calculate direction from current position to look-at location
-                Location currentLoc = target.getLocation();
+                // Use the warp destination location, NOT target.getLocation()
+                // target.getLocation() may not be updated immediately after teleport
+                Location currentLoc = location.clone();
                 Vector direction = lookAt.clone().subtract(currentLoc.clone().add(0, target.getEyeHeight(), 0)).toVector();
                 
                 if (direction.lengthSquared() > 0) {
