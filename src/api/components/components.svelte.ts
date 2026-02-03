@@ -2474,7 +2474,12 @@ const warpOptions = (): ComponentOption[] => {
 			.setTooltip('Whether to set the pitch relative to the target\'s current pitch'),
 		new AttributeSelect('Pitch', 'pitch', 0)
 			.requireValue('setPitch', [true])
-			.setTooltip('The Pitch of the desired position (up/down orientation)')
+			.setTooltip('The Pitch of the desired position (up/down orientation)'),
+		new BooleanSelect('Look At', 'look-at', false)
+			.setTooltip('Whether to make the target look at a remembered target after warping. This overrides Set Yaw and Set Pitch.'),
+		new StringSelect('Look At Key', 'look-at-key', 'target')
+			.requireValue('look-at', [true])
+			.setTooltip('The key of the remembered target to look at after warping')
 	];
 };
 
@@ -5356,22 +5361,23 @@ class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/creating-attributes">attribute stats</a>',
+			description:  'Gives a target bonus stat temporarily. For players, uses Fabled\'s stat system (<a href="https://github.com/magemonkeystudio/fabled/wiki/creating-attributes">attribute stats</a>). For mobs, uses vanilla Minecraft attributes (e.g., scale, max_health, attack_damage, movement_speed, etc.)',
 			data:         [
 				new StringSelect('Stat', 'key', 'health')
-					.setTooltip('The name of the stat to add to'),
+					.setTooltip('The name of the stat. For players: use Fabled stat names like "health", "mana", etc. For mobs: use vanilla attribute names like "scale", "max_health", "attack_damage", "movement_speed", "knockback_resistance", etc.'),
 				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
 					.setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount'),
 				new AttributeSelect('Amount', 'amount', 5, 2)
 					.setTooltip('The amount to use with the operation'),
 				new AttributeSelect('Seconds', 'seconds', 3)
-					.setTooltip('How long in seconds to give the stat to the player'),
+					.setTooltip('How long in seconds to give the stat to the target'),
 				new BooleanSelect('Stackable', 'stackable')
 					.setTooltip('Whether applying multiple times stacks the effects')
 			],
 			summaryItems: ['key', 'operation', 'amount', 'seconds']
 		});
 	}
+
 
 	public static override new = () => new this();
 }
