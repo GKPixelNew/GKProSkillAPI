@@ -105,7 +105,6 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         // rotation when an entity appears at a new location
         if (lookAt()) {
             List<LivingEntity> lookTargets = RememberTarget.remember(caster, lookAtKey());
-            System.out.println("[DEBUG] Look-at enabled, key='" + lookAtKey() + "', found " + lookTargets.size() + " targets");
             if (!lookTargets.isEmpty()) {
                 LivingEntity lookTarget = lookTargets.get(0);
                 Location lookAt = lookTarget.getLocation().add(0, lookTarget.getEyeHeight() / 2, 0);
@@ -121,7 +120,6 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
                     float newPitch = (float) Math.toDegrees(-Math.asin(direction.getY()));
                     currentLoc.setYaw(newYaw);
                     currentLoc.setPitch(newPitch);
-                    System.out.println("[DEBUG] Teleporting " + target.getName() + " to look at " + lookTarget.getName() + " (yaw=" + newYaw + ", pitch=" + newPitch + ")");
                     // Second teleport to force rotation - same technique as LookAtMechanic
                     target.teleport(currentLoc);
                 }
