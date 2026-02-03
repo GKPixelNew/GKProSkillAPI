@@ -1802,7 +1802,7 @@ class FlagCondition extends FabledCondition {
 				new DropdownSelect('Type', 'type', ['Set', 'Not Set'], 'Set')
 					.setTooltip('Whether the flag should be set'),
 				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique key representing the flag. This should match the key for when you set it using the Flag mechanic or the Flat Toggle mechanic')
+					.setTooltip('The unique key representing the flag. Supports placeholders: {casterUUID}, {targetUUID}, {ownerUUID}. Example: check for "poisoned_by_{ownerUUID}" on summons to match "poisoned_by_{casterUUID}" set by owner')
 			],
 			summaryItems: ['type', 'key']
 		});
@@ -3490,7 +3490,7 @@ class FlagMechanic extends FabledMechanic {
 			description:  'Marks the target with a flag for a duration. Flags can be checked by other triggers, spells or the related for interesting synergies and effects',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition'),
+					.setTooltip('The unique string for the flag. Supports placeholders: {casterUUID}, {targetUUID}, {ownerUUID}. Example: "poisoned_by_{casterUUID}"'),
 				new AttributeSelect('Seconds', 'seconds', 3, 1)
 					.setTooltip('The duration the flag should be set for. To set one indefinitely, use Flag Toggle')
 			],
@@ -3508,7 +3508,7 @@ class FlagClearMechanic extends FabledMechanic {
 			description:  'Clears a flag from the target',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique string for the flag. This should match that of the mechanic that set the flag to begin with')
+					.setTooltip('The unique string for the flag. Supports placeholders: {casterUUID}, {targetUUID}, {ownerUUID}')
 			],
 			summaryItems: ['key']
 		});
@@ -3524,7 +3524,7 @@ class FlagToggleMechanic extends FabledMechanic {
 			description:  'Toggles a flag on or off for the target. This can be used to make toggle effects',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition')
+					.setTooltip('The unique string for the flag. Supports placeholders: {casterUUID}, {targetUUID}, {ownerUUID}')
 			],
 			summaryItems: ['key']
 		});
