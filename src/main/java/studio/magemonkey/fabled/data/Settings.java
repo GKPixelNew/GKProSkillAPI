@@ -961,6 +961,8 @@ public class Settings extends com.sucy.skill.data.Settings {
         if (attacker.equals(target)) return true;
         if (isTeammate(attacker, target))
             return false;
+        if (isSummonAlly(attacker, target))
+            return false;
 
         if (attacker instanceof Player && target instanceof Player) {
             if (playerAlly) return false;
@@ -995,12 +997,42 @@ public class Settings extends com.sucy.skill.data.Settings {
     }
 
     public boolean isTeammate(LivingEntity a, LivingEntity b) {
-        if (a instanceof Player playerA && b instanceof Player playerB) {
-            var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-            var teamA = scoreboard.getEntryTeam(playerA.getName());
-            var teamB = scoreboard.getEntryTeam(playerB.getName());
-            return teamA != null && teamB != null && Objects.equals(teamA, teamB);
-        }
+        var scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        var teamA = scoreboard.getEntityTeam(a);
+        var teamB = scoreboard.getEntityTeam(b);
+        return teamA != null && teamB != null && Objects.equals(teamA, teamB);
+    }
+
+    /**
+     * Checks if two entities are allies through summon ownership.
+     * Returns true if:
+     * - a is the owner of b (b was summoned by a)
+     * - b is the owner of a (a was summoned by b)
+     * - a and b share the same owner (both summoned by the same entity)
+     * - a and b's owner are teammates (same scoreboard team)
+     * - b and a's owner are teammates (same scoreboard team)
+     *
+     * @param a first entity
+     * @param b second entity
+     * @return true if they are summon allies, false otherwise
+     */
+    public boolean isSummonAlly(LivingEntity a, LivingEntity b) {
+        Object ownerA = Fabled.getMeta(a, "sapi_summon_owner");
+        Object ownerB = Fabled.getMeta(b, "sapi_summon_owner");
+        
+        // a is b's owner, or b is a's owner
+        if (ownerA != null && ownerA.equals(b)) return true;
+        if (ownerB != null && ownerB.equals(a)) return true;
+        
+        // Both have the same owner
+        if (ownerA != null && ownerB != null && ownerA.equals(ownerB)) return true;
+        
+        // a and b's owner are teammates (avoid recursion by only checking scoreboard team)
+        if (ownerB instanceof LivingEntity ownerBEntity && isTeammate(a, ownerBEntity)) return true;
+        
+        // b and a's owner are teammates
+        if (ownerA instanceof LivingEntity ownerAEntity && isTeammate(b, ownerAEntity)) return true;
+        
         return false;
     }
 
