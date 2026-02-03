@@ -34,16 +34,26 @@ import studio.magemonkey.fabled.Fabled;
  * This is useful for summoned entities to check if a target is their owner.
  */
 public class OwnerCondition extends ConditionComponent {
-    private static final String IS_OWNER = "is-owner";
+    private static final String IS_OWNER      = "is-owner";
+    private static final String INCLUDE_ALLY  = "include-ally";
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         boolean isOwner = settings.getBool(IS_OWNER, true);
-        Object owner = Fabled.getMeta(caster, "sapi_summon_owner");
-        if (owner == null) {
+        boolean includeAlly = settings.getBool(INCLUDE_ALLY, false);
+        
+        Object ownerObj = Fabled.getMeta(caster, "sapi_summon_owner");
+        if (ownerObj == null) {
             return !isOwner;
         }
-        boolean result = owner.equals(target);
+        
+        boolean result = ownerObj.equals(target);
+        
+        // If not the owner directly but includeAlly is true, check if target is ally of owner
+        if (!result && includeAlly && ownerObj instanceof LivingEntity owner) {
+            result = Fabled.getSettings().isAlly(owner, target);
+        }
+        
         return isOwner ? result : !result;
     }
 
