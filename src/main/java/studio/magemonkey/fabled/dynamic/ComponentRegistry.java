@@ -100,6 +100,7 @@ public class ComponentRegistry {
         register(new LocationTarget());
         register(new NearestTarget());
         register(new OffsetTarget());
+        register(new OwnerTarget());
         register(new PlayerTarget());
         register(new RememberTarget());
         register(new SelfTarget());
