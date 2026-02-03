@@ -1932,6 +1932,22 @@ class InventoryCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class IsAngryCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Is Angry',
+			description:  'Applies child components when the target mob is (or is not) angry (has a target). Only works on mobs.',
+			data:         [
+				new BooleanSelect('Is Angry', 'is-angry', true)
+					.setTooltip('If true, applies when the mob IS angry (has a target). If false, applies when the mob is NOT angry.')
+			],
+			summaryItems: ['is-angry']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class LightCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -6421,6 +6437,7 @@ export const initComponents = () => {
 		GROUND:         { name: 'Ground', component: GroundCondition },
 		HEALTH:         { name: 'Health', component: HealthCondition },
 		INVENTORY:      { name: 'Inventory', component: InventoryCondition },
+		IS_ANGRY:       { name: 'Is Angry', component: IsAngryCondition },
 		ITEM:           { name: 'Item', component: ItemCondition },
 		LIGHT:          { name: 'Light', component: LightCondition },
 		MANA:           { name: 'Mana', component: ManaCondition },
