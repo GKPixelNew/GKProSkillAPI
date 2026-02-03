@@ -1215,6 +1215,19 @@ class OffsetTarget extends FabledTarget {
 	public static override new = () => new this();
 }
 
+class OwnerTarget extends FabledTarget {
+	public constructor() {
+		super({
+			name:         'Owner',
+			description:  'Targets the owner (summoner) of the caster. This is useful for summoned entities to target their owner.',
+			data:         [],
+			summaryItems: []
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class PartyTarget extends FabledTarget {
 	public constructor() {
 		super({
@@ -2085,7 +2098,9 @@ class OwnerCondition extends FabledCondition {
 			description:  'Applies child components when the target is (or is not) the owner (summoner) of the caster. This is useful for summoned entities to check if a target is their owner.',
 			data:         [
 				new BooleanSelect('Is Owner', 'is-owner', true)
-					.setTooltip('If true, applies when target IS the owner. If false, applies when target is NOT the owner.')
+					.setTooltip('If true, applies when target IS the owner. If false, applies when target is NOT the owner.'),
+				new BooleanSelect('Include Ally', 'include-ally', false)
+					.setTooltip('If true, the owner\'s allies will also be treated as the owner for this check.')
 			],
 			summaryItems: ['is-owner']
 		});
@@ -6361,6 +6376,7 @@ export const initComponents = () => {
 		LOCATION: { name: 'Location', component: LocationTarget },
 		NEAREST:  { name: 'Nearest', component: NearestTarget },
 		OFFSET:   { name: 'Offset', component: OffsetTarget },
+		OWNER:    { name: 'Owner', component: OwnerTarget },
 		PLAYER:   { name: 'Player', component: PlayerTarget },
 		REMEMBER: { name: 'Remember', component: RememberTarget },
 		PARTY:    { name: 'Party', component: PartyTarget },
