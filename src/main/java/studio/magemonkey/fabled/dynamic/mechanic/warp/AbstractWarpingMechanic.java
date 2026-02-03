@@ -29,15 +29,21 @@ package studio.magemonkey.fabled.dynamic.mechanic.warp;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
+import studio.magemonkey.fabled.dynamic.target.RememberTarget;
+
+import java.util.List;
 
 abstract class AbstractWarpingMechanic extends MechanicComponent {
-    protected static final String PRESERVE  = "preserve";
-    protected static final String SET_YAW   = "setYaw";
-    protected static final String SET_PITCH = "setPitch";
-    protected static final String YAW       = "yaw";
-    protected static final String PITCH     = "pitch";
+    protected static final String PRESERVE    = "preserve";
+    protected static final String SET_YAW     = "setYaw";
+    protected static final String SET_PITCH   = "setPitch";
+    protected static final String YAW         = "yaw";
+    protected static final String PITCH       = "pitch";
+    protected static final String LOOK_AT     = "look-at";
+    protected static final String LOOK_AT_KEY = "look-at-key";
 
     public boolean preserveVelocity() {
         return settings.getBool(PRESERVE, false);
@@ -59,6 +65,14 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         return settings.getBool("relative-pitch", false);
     }
 
+    public boolean lookAt() {
+        return settings.getBool(LOOK_AT, false);
+    }
+
+    public String lookAtKey() {
+        return settings.getString(LOOK_AT_KEY, "target");
+    }
+
     public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
         if (setYaw()) {
             boolean relative = relativeYaw();
@@ -75,6 +89,26 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
                 pitch += target.getLocation().getPitch();
             }
             location.setPitch(pitch);
+        }
+
+        // Apply look-at rotation if enabled (overrides setYaw/setPitch)
+        if (lookAt()) {
+            List<LivingEntity> lookTargets = RememberTarget.remember(caster, lookAtKey());
+            if (!lookTargets.isEmpty()) {
+                LivingEntity lookTarget = lookTargets.get(0);
+                Location lookAt = lookTarget.getLocation().add(0, lookTarget.getEyeHeight() / 2, 0);
+                
+                // Calculate direction from warp destination to look-at location
+                Vector direction = lookAt.clone().subtract(location.clone().add(0, target.getEyeHeight(), 0)).toVector();
+                
+                if (direction.lengthSquared() > 0) {
+                    direction.normalize();
+                    float newYaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
+                    float newPitch = (float) Math.toDegrees(-Math.asin(direction.getY()));
+                    location.setYaw(newYaw);
+                    location.setPitch(newPitch);
+                }
+            }
         }
 
         Vector  velocity = target.getVelocity().clone();

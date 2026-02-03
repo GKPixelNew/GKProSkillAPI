@@ -27,7 +27,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -97,20 +96,19 @@ public class LookAtMechanic extends MechanicComponent {
             
             // For players, we need to teleport them to change rotation
             // setRotation() doesn't work for players
+            // For mobs, setRotation() is often overridden by AI immediately, so teleport is more reliable
             if (target instanceof Player player) {
                 Location newLoc = player.getLocation().clone();
                 newLoc.setYaw(finalYaw);
                 newLoc.setPitch(finalPitch);
                 player.teleport(newLoc);
-            } else if (target instanceof ArmorStand armorStand) {
-                // ArmorStands also need teleport to change rotation reliably
-                Location newLoc = armorStand.getLocation().clone();
+            } else {
+                // For all non-player entities (mobs, armor stands, etc.), teleport is more reliable
+                // setRotation() can be immediately overridden by mob AI
+                Location newLoc = target.getLocation().clone();
                 newLoc.setYaw(finalYaw);
                 newLoc.setPitch(finalPitch);
-                armorStand.teleport(newLoc);
-            } else {
-                // For other entities (mobs), setRotation works
-                target.setRotation(finalYaw, finalPitch);
+                target.teleport(newLoc);
             }
             worked = true;
         }
