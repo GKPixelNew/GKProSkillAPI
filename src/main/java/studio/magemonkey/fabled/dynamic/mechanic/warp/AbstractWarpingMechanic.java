@@ -91,26 +91,6 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
             location.setPitch(pitch);
         }
 
-        // Apply look-at rotation if enabled (overrides setYaw/setPitch)
-        if (lookAt()) {
-            List<LivingEntity> lookTargets = RememberTarget.remember(caster, lookAtKey());
-            if (!lookTargets.isEmpty()) {
-                LivingEntity lookTarget = lookTargets.get(0);
-                Location lookAt = lookTarget.getLocation().add(0, lookTarget.getEyeHeight() / 2, 0);
-                
-                // Calculate direction from warp destination to look-at location
-                Vector direction = lookAt.clone().subtract(location.clone().add(0, target.getEyeHeight(), 0)).toVector();
-                
-                if (direction.lengthSquared() > 0) {
-                    direction.normalize();
-                    float newYaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
-                    float newPitch = (float) Math.toDegrees(-Math.asin(direction.getY()));
-                    location.setYaw(newYaw);
-                    location.setPitch(newPitch);
-                }
-            }
-        }
-
         Vector  velocity = target.getVelocity().clone();
         boolean marker   = false;
         if (target instanceof ArmorStand) {
@@ -119,6 +99,31 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         }
 
         target.teleport(location);
+
+        // Apply look-at rotation AFTER teleport (overrides setYaw/setPitch)
+        // This must happen after the initial teleport because mob AI will override
+        // rotation when an entity appears at a new location
+        if (lookAt()) {
+            List<LivingEntity> lookTargets = RememberTarget.remember(caster, lookAtKey());
+            if (!lookTargets.isEmpty()) {
+                LivingEntity lookTarget = lookTargets.get(0);
+                Location lookAt = lookTarget.getLocation().add(0, lookTarget.getEyeHeight() / 2, 0);
+                
+                // Calculate direction from current position to look-at location
+                Location currentLoc = target.getLocation();
+                Vector direction = lookAt.clone().subtract(currentLoc.clone().add(0, target.getEyeHeight(), 0)).toVector();
+                
+                if (direction.lengthSquared() > 0) {
+                    direction.normalize();
+                    float newYaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
+                    float newPitch = (float) Math.toDegrees(-Math.asin(direction.getY()));
+                    currentLoc.setYaw(newYaw);
+                    currentLoc.setPitch(newPitch);
+                    // Second teleport to force rotation - same technique as LookAtMechanic
+                    target.teleport(currentLoc);
+                }
+            }
+        }
 
         if (preserveVelocity()) {
             target.setVelocity(velocity);
