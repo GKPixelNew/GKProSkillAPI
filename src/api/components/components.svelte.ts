@@ -4441,6 +4441,12 @@ class ParticleProjectileMechanic extends FabledMechanic {
 					.setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them'),
 				new BooleanSelect('Pierce through blocks', 'pierce-blocks')
 					.setTooltip('Whether this projectile should pierce through blocks'),
+				new DropdownSelect('Pierce Entities', 'pierce-entities', getEntities, [], true)
+					.requireValue('pierce', [true])
+					.setTooltip('Entity types that the projectile can pierce through. If empty, pierces through ALL entities. Entities not in this list will stop the projectile.'),
+				new AttributeSelect('Pierce Count', 'pierce-count', -1)
+					.requireValue('pierce', [true])
+					.setTooltip('Maximum number of entities to pierce through. Use -1 for unlimited piercing.'),
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
 				new IntSelect('Steps', 'steps', 2)
