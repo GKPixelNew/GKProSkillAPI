@@ -148,7 +148,7 @@
 		tabindex='0'
 	>
 		{#if multiple && selected instanceof Array}
-			{#each selected as sel (transformer.transform(sel))}
+			{#each selected as sel, i (transformer.transform(sel) + '-' + i)}
 				<div
 					class='chip'
 					title='Click to remove'
