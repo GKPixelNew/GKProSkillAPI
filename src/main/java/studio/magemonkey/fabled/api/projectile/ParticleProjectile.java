@@ -28,6 +28,7 @@ package studio.magemonkey.fabled.api.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
@@ -44,7 +45,9 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -93,6 +96,8 @@ public class ParticleProjectile extends CustomProjectile {
 
     private static final String PIERCE = "pierce";
     private static final String PIERCE_BLOCKS = "pierce-blocks";
+    private static final String PIERCE_ENTITIES = "pierce-entities";
+    private static final String PIERCE_COUNT = "pierce-count";
 
     private       Location               loc;
     private final Location               startingLocation;  // Starting location of the projectile.
@@ -140,6 +145,22 @@ public class ParticleProjectile extends CustomProjectile {
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
         this.pierce = settings.getBool(PIERCE, false);
         this.pierceBlocks = settings.getBool(PIERCE_BLOCKS, false);
+        
+        // Parse pierce entities list and count
+        Set<EntityType> parsedPierceEntities = new HashSet<>();
+        List<String> entityList = settings.getStringList(PIERCE_ENTITIES);
+        if (entityList != null) {
+            for (String entityName : entityList) {
+                try {
+                    EntityType type = EntityType.valueOf(entityName.toUpperCase().replace(" ", "_"));
+                    parsedPierceEntities.add(type);
+                } catch (IllegalArgumentException ignored) {
+                    // Invalid entity type, skip
+                }
+            }
+        }
+        int parsedPierceCount = settings.getInt(PIERCE_COUNT, -1);
+        setPierceConfig(parsedPierceEntities, parsedPierceCount);
 
         if (settings.getBool(HOMING, false)) {
             String target = settings.getString(HOMING_TARGET, "nearest");

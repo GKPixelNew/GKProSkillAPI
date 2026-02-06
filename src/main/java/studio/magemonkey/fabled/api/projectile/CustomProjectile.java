@@ -45,6 +45,7 @@ import studio.magemonkey.fabled.log.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import org.bukkit.entity.EntityType;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -106,6 +107,11 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     protected       boolean                              enemy    = true;
     protected       boolean                              ally     = false;
     private         boolean                              valid    = true;
+    
+    // Pierce control fields
+    protected       Set<EntityType>                      pierceEntities    = new HashSet<>();
+    protected       int                                  maxPierceCount    = -1;  // -1 = unlimited
+    protected       int                                  currentPierceCount = 0;
 
     /**
      * Constructs a new custom projectile and starts its timer task
@@ -316,6 +322,17 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     }
 
     /**
+     * Sets the pierce configuration for this projectile
+     *
+     * @param pierceEntities set of entity types that can be pierced (empty = pierce all when pierce is true)
+     * @param maxPierceCount maximum number of entities to pierce (-1 = unlimited)
+     */
+    public void setPierceConfig(Set<EntityType> pierceEntities, int maxPierceCount) {
+        this.pierceEntities = pierceEntities != null ? pierceEntities : new HashSet<>();
+        this.maxPierceCount = maxPierceCount;
+    }
+
+    /**
      * Checks if the projectile collides with a given list of entities
      * Returns true if another check should happen, false otherwise
      */
@@ -341,7 +358,22 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             if (callback != null)
                 callback.callback(this, entity);
 
+            // Determine if we should pierce through this entity
             if (!pierce) {
+                cancel();
+                return false;
+            }
+            
+            // Check pierce count limit
+            currentPierceCount++;
+            if (maxPierceCount >= 0 && currentPierceCount >= maxPierceCount) {
+                cancel();
+                return false;
+            }
+            
+            // Check if entity type is in pierce list (if list is not empty)
+            // Empty pierce list means pierce all entities
+            if (!pierceEntities.isEmpty() && !pierceEntities.contains(entity.getType())) {
                 cancel();
                 return false;
             }
