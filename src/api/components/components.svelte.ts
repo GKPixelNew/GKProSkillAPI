@@ -1765,8 +1765,8 @@ class EntityTypeCondition extends FabledCondition {
 			name:         'Entity Type',
 			description:  'Applies child elements if the target matches one of the selected entity types',
 			data:         [
-				new DropdownSelect('Types', 'types', ['Location', ...getEntities()], [], true)
-					.setTooltip('The entity types to target'),
+				new DropdownSelect('Types', 'types', ['Any', 'Location', ...getEntities()], [], true)
+					.setTooltip('The entity types to target. "Any" matches all entity types'),
 				new BooleanSelect('Blacklist', 'blacklist', false)
 					.setTooltip('Whether to consider the listed types as a blacklist, meaning only entities that do NOT match one of them will pass the condition.')
 			],
@@ -4088,11 +4088,11 @@ class AccurateLaunchMechanic extends FabledMechanic {
 				new AttributeSelect('Right Offset', 'right', 0)
 					.setTooltip('How far to the right of the chosen direction to aim the landing point (negative = left)'),
 				new AttributeSelect('Speed', 'speed', 2)
-					.setTooltip('Base speed used to solve the ballistic path'),
+					.setTooltip('Base launch speed/power'),
 				new AttributeSelect('Max Velocity', 'max-velocity', 4)
-					.setTooltip('Clamp for the final launch velocity magnitude'),
-				new AttributeSelect('Far Launch Threshold', 'far-threshold', 4)
-					.setTooltip('Velocity threshold to trigger sustained flight (far launch) mode'),
+					.setTooltip('Maximum velocity cap - velocity will never exceed this value'),
+				new AttributeSelect('Far Launch Distance', 'far-threshold', 25)
+					.setTooltip('Distance threshold for homing mode. If distance to target > this value, enters far launch (homing) mode. When distance ≤ this value, stops homing and calculates final arc. Only used with Caster-to-Target or Target-to-Caster modes'),
 				new AttributeSelect('Minimum Ticks', 'min-ticks', 5, 1)
 					.setTooltip('Minimum flight ticks used when solving the ballistic trajectory (higher = smoother arc)')
 			],
