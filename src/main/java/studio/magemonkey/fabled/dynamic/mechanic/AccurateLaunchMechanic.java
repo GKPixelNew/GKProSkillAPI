@@ -141,7 +141,11 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                         launchData.targetEntity = target;
                     }
                 } else if (relative.equals("target-to-caster")) {
-                    launchData.targetEntity = caster;
+                    if (caster instanceof TempEntity) {
+                        launchData.targetLocation = caster.getLocation();
+                    } else {
+                        launchData.targetEntity = caster;
+                    }
                 }
 
                 launchData.times = Math.max(1, (int)((velocity.length() - farThreshold) * 5.0));
