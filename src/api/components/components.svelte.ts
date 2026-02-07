@@ -5369,7 +5369,7 @@ class SoundStopMechanic extends FabledMechanic {
 				new DropdownSelect('Sounds', 'sounds', (() => ['Custom', ...getSounds()]), [], true)
 					.setTooltip('The sounds to stop, leave empty to stop all sounds'),
 				new StringListSelect('Custom sound names', 'custom', ['myrp:some_sound'])
-					.requireValue('sound', ['Custom'])
+					.requireValue('sounds', ['Custom'])
 					.setTooltip('Namespaced key of your custom sound')
 			],
 			summaryItems: ['sounds']
