@@ -136,11 +136,12 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             
             Vector velocity = launchDir.normalize().multiply(speed);
 
-            // Check for Far Launch
-            if (velocity.length() > farThreshold) {
+            // Check for Far Launch (use maxVelocity as the per-tick velocity cap)
+            if (velocity.length() > maxVelocity) {
                 ExtraLaunch launchData = new ExtraLaunch();
                 launchData.entity = launchSubject;
                 launchData.speed = speed;
+                launchData.farThreshold = farThreshold;
 
                 // Homing setup
                 if (relative.equals("caster-to-target")) {
@@ -157,8 +158,8 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                     }
                 }
 
-                launchData.times = Math.max(1, (int)((velocity.length() - farThreshold) * 5.0));
-                Vector safeVelocity = velocity.clone().normalize().multiply(farThreshold);
+                launchData.times = Math.max(1, (int)((velocity.length() - maxVelocity) * 5.0));
+                Vector safeVelocity = velocity.clone().normalize().multiply(maxVelocity);
                 launchData.vector = safeVelocity;
 
                 startLaunch(launchData);
@@ -223,6 +224,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         int schedId;
         Location prevLoc;
         double speed;
+        double farThreshold;
         Location stuckCheckLoc;
         int stuckCheckTicks;
     }
@@ -268,7 +270,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
             if (dest != null) {
                 double dist = entity.getLocation().distance(dest);
-                if (dist > 25.0) { // Close enough distance
+                if (dist > launchData.farThreshold) { // Configurable homing stop distance
                     // Update vector to point to target
                     Vector dir = dest.clone().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(launchData.speed);
                     launchData.vector = dir;
