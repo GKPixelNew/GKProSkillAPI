@@ -68,13 +68,13 @@ public class EntityTarget implements EffectTarget {
 
     @Override
     public int hashCode() {
-        return Objects.hash(entity, loc);
+        return Objects.hash(entity.getUniqueId());
     }
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof EntityTarget)) return false;
         final EntityTarget target = (EntityTarget) o;
-        return target.entity == entity && target.loc.equals(loc);
+        return target.entity.getUniqueId().equals(entity.getUniqueId());
     }
 }
