@@ -59,6 +59,8 @@ public class AccurateLaunchMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
 
+        Fabled.inst().getLogger().info("[AccurateLaunch] Caster: " + caster.getName() + " (" + caster.getType() + "), Targets: " + targets.size());
+
         boolean resetY       = settings.getBool(RESET_Y, true);
         boolean launchCaster = settings.getBool(CASTER, false);
         double  forward      = parseValues(caster, FORWARD, level, 0);
@@ -71,13 +73,20 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
         String relative = settings.getString(RELATIVE, "target-looking").toLowerCase();
 
-        for (LivingEntity target : launchCaster ? List.of(caster) : targets) {
+        // When launching caster, we still need original targets for direction calculation
+        List<LivingEntity> launchSubjects = launchCaster ? List.of(caster) : targets;
+        
+        for (int i = 0; i < launchSubjects.size(); i++) {
+            LivingEntity launchSubject = launchSubjects.get(i);
+            // For direction calculation: when launching caster, use original targets; otherwise use the target itself
+            LivingEntity directionTarget = launchCaster && !targets.isEmpty() 
+                    ? targets.get(Math.min(i, targets.size() - 1)) 
+                    : launchSubject;
+            
             // 1. Cross-world check
-            if (caster.getWorld() != target.getWorld()) {
+            if (caster.getWorld() != launchSubject.getWorld()) {
                 continue;
             }
-
-            LivingEntity launchSubject = target;
 
             AccurateLaunchEvent event = new AccurateLaunchEvent(caster, launchSubject, this.getSkill());
             Bukkit.getPluginManager().callEvent(event);
@@ -89,7 +98,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                 Bukkit.getScheduler().cancelTask(existing.schedId);
             }
 
-            Vector rawDir = getDirection(caster, target, relative);
+            Vector rawDir = getDirection(caster, directionTarget, relative);
 
             if (rawDir == null || rawDir.lengthSquared() == 0) {
                 continue;
@@ -106,7 +115,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             Vector rightVec;
             if (Math.abs(dir.getY()) > 0.99) {
                 if (relative.contains("looking") || relative.equals("caster") || relative.equals("target")) {
-                    LivingEntity dirSource = relative.contains("target") ? target : caster;
+                    LivingEntity dirSource = relative.contains("target") ? directionTarget : caster;
                     Location loc = dirSource.getLocation();
                     loc.setPitch(0);
                     rightVec = loc.getDirection().crossProduct(up);
@@ -135,10 +144,10 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
                 // Homing setup
                 if (relative.equals("caster-to-target")) {
-                    if (target instanceof TempEntity) {
-                        launchData.targetLocation = target.getLocation();
+                    if (directionTarget instanceof TempEntity) {
+                        launchData.targetLocation = directionTarget.getLocation();
                     } else {
-                        launchData.targetEntity = target;
+                        launchData.targetEntity = directionTarget;
                     }
                 } else if (relative.equals("target-to-caster")) {
                     if (caster instanceof TempEntity) {
