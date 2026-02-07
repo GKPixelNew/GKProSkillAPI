@@ -135,13 +135,29 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             }
             
             Vector velocity = launchDir.normalize().multiply(speed);
-
-            // Check for Far Launch (use maxVelocity as the per-tick velocity cap)
+            
+            // Cap velocity to maxVelocity
             if (velocity.length() > maxVelocity) {
+                velocity = velocity.normalize().multiply(maxVelocity);
+            }
+
+            // Determine if we should use far launch mode based on DISTANCE (only for directional modes)
+            boolean useFarLaunch = false;
+            Location targetDestination = null;
+            
+            if (relative.equals("caster-to-target") || relative.equals("target-to-caster")) {
+                LivingEntity destEntity = relative.equals("caster-to-target") ? directionTarget : caster;
+                targetDestination = destEntity.getLocation();
+                double distance = launchSubject.getLocation().distance(targetDestination);
+                useFarLaunch = distance > farThreshold;
+            }
+
+            if (useFarLaunch) {
                 ExtraLaunch launchData = new ExtraLaunch();
                 launchData.entity = launchSubject;
-                launchData.speed = speed;
+                launchData.speed = Math.min(speed, maxVelocity); // Use capped speed
                 launchData.farThreshold = farThreshold;
+                launchData.maxVelocity = maxVelocity;
 
                 // Homing setup
                 if (relative.equals("caster-to-target")) {
@@ -158,9 +174,8 @@ public class AccurateLaunchMechanic extends MechanicComponent {
                     }
                 }
 
-                launchData.times = Math.max(1, (int)((velocity.length() - maxVelocity) * 5.0));
-                Vector safeVelocity = velocity.clone().normalize().multiply(maxVelocity);
-                launchData.vector = safeVelocity;
+                launchData.vector = velocity;
+                launchData.times = 999; // Will be controlled by distance check instead
 
                 startLaunch(launchData);
             } else {
@@ -225,6 +240,7 @@ public class AccurateLaunchMechanic extends MechanicComponent {
         Location prevLoc;
         double speed;
         double farThreshold;
+        double maxVelocity;
         Location stuckCheckLoc;
         int stuckCheckTicks;
     }
@@ -270,21 +286,24 @@ public class AccurateLaunchMechanic extends MechanicComponent {
 
             if (dest != null) {
                 double dist = entity.getLocation().distance(dest);
-                if (dist > launchData.farThreshold) { // Configurable homing stop distance
-                    // Update vector to point to target
-                    Vector dir = dest.clone().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize().multiply(launchData.speed);
-                    launchData.vector = dir;
-                    
-                    // Extend flight
-                    launchData.times = 20; 
+                if (dist > launchData.farThreshold) {
+                    // Still far - update vector to point to target (homing)
+                    Vector dir = dest.clone().add(0, 1.5, 0).toVector().subtract(entity.getLocation().toVector()).normalize();
+                    // Cap velocity to maxVelocity
+                    double appliedSpeed = Math.min(launchData.speed, launchData.maxVelocity);
+                    launchData.vector = dir.multiply(appliedSpeed);
                 } else {
-                    // Close enough, stop homing and apply final exact trajectory
+                    // Close enough (distance <= farThreshold), stop homing and apply final trajectory
                     launchData.targetEntity = null;
                     launchData.targetLocation = null;
                     
                     // Calculate exact trajectory for the final approach
                     Vector finalVelocity = calculateBallisticVelocity(entity.getLocation().toVector(), dest.clone().add(0, 1.5, 0).toVector(), launchData.speed, 5);
                     if (finalVelocity != null) {
+                        // Cap final velocity too
+                        if (finalVelocity.length() > launchData.maxVelocity) {
+                            finalVelocity = finalVelocity.normalize().multiply(launchData.maxVelocity);
+                        }
                         entity.setVelocity(finalVelocity);
                     }
                     
