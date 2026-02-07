@@ -78,9 +78,6 @@ public class AccurateLaunchMechanic extends MechanicComponent {
             }
 
             LivingEntity launchSubject = target;
-            if (relative.startsWith("caster")) {
-                launchSubject = caster;
-            }
 
             AccurateLaunchEvent event = new AccurateLaunchEvent(caster, launchSubject, this.getSkill());
             Bukkit.getPluginManager().callEvent(event);
