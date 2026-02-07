@@ -57,6 +57,11 @@ public class EntityTypeCondition extends ConditionComponent {
 
     @Override
     public boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+        // "Any" matches all entity types
+        if (types.contains("ANY")) {
+            return !settings.getBool(BLACKLIST, false);
+        }
+        
         boolean result = target instanceof TempEntity
                 ? types.contains("LOCATION")
                 : types.contains(target.getType().name());
