@@ -32,6 +32,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.scoreboard.Scoreboard;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.GKSummonEvent;
 import studio.magemonkey.fabled.api.skills.PassiveSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.dynamic.target.RememberTarget;
@@ -141,6 +142,14 @@ public class GKSummonMechanic extends MechanicComponent {
                     Fabled.setMeta(le, "sapi_wolf_level", level);
                     Fabled.setMeta(le, "sapi_summon_owner", caster);
                     Fabled.setMeta(le, "sapi_damage_as_owner", settings.getBool(DAMAGE_AS_OWNER, true));
+
+                    // Fire event - can be cancelled
+                    GKSummonEvent event = new GKSummonEvent(caster, le, this.getSkill());
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) {
+                        entity.remove();
+                        continue;
+                    }
 
                     entities.add(le);
                 }
