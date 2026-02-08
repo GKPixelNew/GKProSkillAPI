@@ -128,7 +128,12 @@ public class TextDisplayMechanic extends MechanicComponent {
                 existing.updateDisplay(textComponent, finalBillboard, backgroundColor,
                         finalOpacity, shadow, seeThrough, lineWidth, finalAlignment, scale,
                         translateX, translateY, translateZ);
-                existing.teleport(loc);
+                
+                // Only teleport if not riding or following (those systems handle positioning)
+                if (!rideTarget && !follow) {
+                    existing.teleport(loc);
+                }
+                
                 existing.setFollow(follow);
                 existing.setForward(forward);
                 existing.setUpward(upward);

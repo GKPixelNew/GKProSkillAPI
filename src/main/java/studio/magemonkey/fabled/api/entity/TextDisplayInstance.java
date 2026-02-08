@@ -77,7 +77,8 @@ public class TextDisplayInstance {
                               byte textOpacity, boolean shadow, boolean seeThrough,
                               int lineWidth, TextDisplay.TextAlignment alignment, double scale,
                               double translateX, double translateY, double translateZ) {
-        Bukkit.getScheduler().runTask(Fabled.inst(), () -> {
+        Runnable update = () -> {
+            if (!textDisplay.isValid()) return;
             textDisplay.text(text);
             textDisplay.setBillboard(billboard);
             textDisplay.setBackgroundColor(backgroundColor);
@@ -96,14 +97,28 @@ public class TextDisplayInstance {
                 );
                 textDisplay.setTransformation(transformation);
             }
-        });
+        };
+        
+        if (Bukkit.isPrimaryThread()) {
+            update.run();
+        } else {
+            Bukkit.getScheduler().runTask(Fabled.inst(), update);
+        }
     }
 
     /**
      * Teleports the text display to a new location
      */
     public void teleport(Location loc) {
-        Bukkit.getScheduler().runTask(Fabled.inst(), () -> textDisplay.teleport(loc));
+        Runnable tp = () -> {
+            if (textDisplay.isValid()) textDisplay.teleport(loc);
+        };
+        
+        if (Bukkit.isPrimaryThread()) {
+            tp.run();
+        } else {
+            Bukkit.getScheduler().runTask(Fabled.inst(), tp);
+        }
     }
 
     /**
@@ -118,15 +133,25 @@ public class TextDisplayInstance {
      */
     public void remove() {
         cancelRemovalTask();
-        Bukkit.getScheduler().runTask(Fabled.inst(), textDisplay::remove);
+        Runnable rem = () -> {
+            if (textDisplay.isValid()) textDisplay.remove();
+        };
+        
+        if (Bukkit.isPrimaryThread()) {
+            rem.run();
+        } else {
+            Bukkit.getScheduler().runTask(Fabled.inst(), rem);
+        }
     }
 
     /**
      * Ticks the text display to update position if following target
      */
     public void tick() {
-        if (follow) {
-            Bukkit.getScheduler().runTask(Fabled.inst(), () -> {
+        if (follow && textDisplay.isValid() && target.isValid()) {
+            Runnable tickUpdate = () -> {
+                if (!textDisplay.isValid() || !target.isValid()) return;
+                
                 boolean sameWorld = textDisplay.getWorld().equals(target.getWorld());
 
                 Location loc = target.getLocation().clone();
@@ -141,7 +166,13 @@ public class TextDisplayInstance {
                     }
                 }
                 textDisplay.teleport(loc);
-            });
+            };
+            
+            if (Bukkit.isPrimaryThread()) {
+                tickUpdate.run();
+            } else {
+                Bukkit.getScheduler().runTask(Fabled.inst(), tickUpdate);
+            }
         }
     }
 }
