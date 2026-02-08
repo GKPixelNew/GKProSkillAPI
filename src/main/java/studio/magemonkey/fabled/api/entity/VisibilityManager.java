@@ -204,7 +204,7 @@ public class VisibilityManager {
         if (value == null) {
             return VisibilityMode.EVERYONE;
         }
-        return switch (value.toLowerCase().replace("_", "-")) {
+        return switch (value.toLowerCase().replace("_", "-").replace(" ", "-")) {
             case "caster-only", "caster", "only-caster" -> VisibilityMode.CASTER_ONLY;
             case "caster-and-allies", "allies", "caster-allies" -> VisibilityMode.CASTER_AND_ALLIES;
             case "enemies-only", "enemies", "only-enemies" -> VisibilityMode.ENEMIES_ONLY;
