@@ -2854,6 +2854,8 @@ class ArmorStandMechanic extends FabledMechanic {
 					.setTooltip('Whether the armor stand should display its base plate'),
 				new BooleanSelect('Visible', 'visible', true)
 					.setTooltip('Whether the armor stand should be visible'),
+				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
+					.setTooltip('Controls which players can see the armor stand client-side. Everyone = all players, Caster Only = only the skill caster, Caster and Allies = caster and same team, Enemies Only = non-allies only, None = invisible to all'),
 				new SectionMarker('Offset'),
 				new AttributeSelect('Forward Offset', 'forward')
 					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind'),
@@ -5297,6 +5299,22 @@ class ShieldMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class SetClientVisibilityMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Set Client Visibility',
+			description:  'Sets the client-side visibility of target entities. Can be used as a child of mechanics that spawn entities (armor stands, summons, etc.) to control which players can see them.',
+			data:         [
+				new DropdownSelect('Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
+					.setTooltip('Controls which players can see the entity. Everyone = all players (removes restrictions), Caster Only = only the skill caster, Caster and Allies = caster and players on the same scoreboard team, Enemies Only = non-allies only, None = invisible to all')
+			],
+			summaryItems: ['visibility']
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
 class SignalEmitMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6539,6 +6557,7 @@ export const initComponents = () => {
 		REPEAT:             { name: 'Repeat', component: RepeatMechanic },
 		RETURN_GAMEMODE:    { name: 'Return Gamemode', component: ReturnGamemodeMechanic },
 		RIDE:               { name: 'Ride', component: RideMechanic },
+		SET_CLIENT_VISIBILITY: { name: 'Set Client Visibility', component: SetClientVisibilityMechanic },
 		SHIELD:             { name: 'Shield', component: ShieldMechanic },
 		SIGNAL_EMIT:        { name: 'Signal Emit', component: SignalEmitMechanic },
 		SKILL_CAST:         { name: 'Skill Cast', component: SkillCastMechanic },
