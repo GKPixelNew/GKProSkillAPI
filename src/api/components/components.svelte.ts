@@ -5567,6 +5567,8 @@ class TextDisplayMechanic extends FabledMechanic {
 					.setTooltip('How long the text display lasts before being deleted'),
 				new StringSelect('Text', 'text', '<white>Text Display')
 					.setTooltip('The text to display. Supports MiniMessage formatting (e.g., <red>, <bold>, etc.) and placeholders: {caster}, {target}, {level}, {player}, {health}, {max_health}'),
+				new BooleanSelect('Reuse', 'reuse', false)
+					.setTooltip('When enabled, if a text display with the same key already exists, it will be updated instead of creating a new one. This prevents flickering when updating text frequently'),
 				new BooleanSelect('Follow Target', 'follow', false)
 					.setTooltip('Whether the text display should follow the target')
 					.requireValue('ride-target', [false]),
