@@ -186,14 +186,14 @@ public abstract class IOManager {
                             skillData.setCurrentStock(skill.getInt(STOCK));
                         }
                         if (skill.has(STOCK_REGEN)) {
-                            long regenTime = skill.getLong(STOCK_REGEN, 0);
+                            long regenTime = (long) skill.getDouble(STOCK_REGEN, 0);
                             // Convert relative time back to absolute
                             if (regenTime > 0) {
                                 skillData.setStockRegenEndTime(System.currentTimeMillis() + regenTime);
                             }
                         }
                         if (skill.has(LAST_CAST)) {
-                            long lastCast = skill.getLong(LAST_CAST, 0);
+                            long lastCast = (long) skill.getDouble(LAST_CAST, 0);
                             // Convert relative time back to absolute
                             if (lastCast > 0) {
                                 skillData.setLastCastTime(System.currentTimeMillis() - lastCast);
