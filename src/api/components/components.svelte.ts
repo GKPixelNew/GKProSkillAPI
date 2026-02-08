@@ -2843,7 +2843,7 @@ class ArmorStandMechanic extends FabledMechanic {
 					.setTooltip('Whether the armor stand should follow the target')
 					.requireValue('ride-target', [false]),
 				new BooleanSelect('Ride Target', 'ride-target', false)
-					.setTooltip('Whether the armor stand should ride on the target\\'s head as a passenger'),
+					.setTooltip('Whether the armor stand should ride on the target\'s head as a passenger'),
 				new BooleanSelect('Marker', 'marker', false)
 					.setTooltip('Setting this to true will remove the armor stand\'s hit-box but will also disable gravity'),
 				new BooleanSelect('Apply gravity', 'gravity', true)
@@ -5555,6 +5555,78 @@ class TauntMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class TextDisplayMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Text Display',
+			description:  'Summons a text display entity that shows formatted text. Supports MiniMessage formatting. Applies child components on the text display',
+			data:         [
+				new StringSelect('Key', 'key', 'default')
+					.setTooltip('The key to refer to the text display by. Only one text display of each key can be active per target at a time'),
+				new AttributeSelect('Duration', 'duration', 5)
+					.setTooltip('How long the text display lasts before being deleted'),
+				new StringSelect('Text', 'text', '<white>Text Display')
+					.setTooltip('The text to display. Supports MiniMessage formatting (e.g., <red>, <bold>, etc.) and placeholders: {caster}, {target}, {level}, {player}, {health}, {max_health}'),
+				new BooleanSelect('Follow Target', 'follow', false)
+					.setTooltip('Whether the text display should follow the target')
+					.requireValue('ride-target', [false]),
+				new BooleanSelect('Ride Target', 'ride-target', false)
+					.setTooltip('Whether the text display should ride on the target as a passenger'),
+				new BooleanSelect('Marker', 'marker', true)
+					.setTooltip('Whether the text display should have no collision. Recommended to leave true'),
+				new DropdownSelect('Billboard', 'billboard', ['Fixed', 'Vertical', 'Horizontal', 'Center'], 'Center')
+					.setTooltip('How the text display rotates to face players. Fixed = no rotation, Vertical = rotates on Y axis, Horizontal = rotates on X axis, Center = always faces player'),
+				new StringSelect('Background Color', 'background-color', '#40000000')
+					.setTooltip('Background color in hex format. Use #RRGGBB for opaque or #AARRGGBB for transparent. Default is semi-transparent black'),
+				new AttributeSelect('Text Opacity', 'text-opacity', 255)
+					.setTooltip('Opacity of the text from 0 (invisible) to 255 (fully opaque)'),
+				new BooleanSelect('Shadow', 'shadow', false)
+					.setTooltip('Whether the text should have a shadow'),
+				new BooleanSelect('See Through', 'see-through', false)
+					.setTooltip('Whether the text can be seen through blocks'),
+				new AttributeSelect('Line Width', 'line-width', 200)
+					.setTooltip('Maximum line width in pixels before text wraps'),
+				new DropdownSelect('Alignment', 'alignment', ['Left', 'Center', 'Right'], 'Center')
+					.setTooltip('Text alignment within the display'),
+				new AttributeSelect('Scale', 'scale', 1.0)
+					.setTooltip('Scale of the text display. 1.0 is normal size'),
+				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
+					.setTooltip('Controls which players can see the text display client-side'),
+				new SectionMarker('Offset')
+					.requireValue('ride-target', [false]),
+				new AttributeSelect('Forward Offset', 'forward')
+					.setTooltip('How far forward in front of the target the text display should be in blocks. A negative value will put it behind')
+					.requireValue('ride-target', [false]),
+				new AttributeSelect('Upward Offset', 'upward')
+					.setTooltip('How far above the target the text display should be in blocks. A negative value will put it below')
+					.requireValue('ride-target', [false]),
+				new AttributeSelect('Right Offset', 'right')
+					.setTooltip('How far to the right the text display should be of the target. A negative value will put it to the left')
+					.requireValue('ride-target', [false])
+			],
+			summaryItems: ['duration', 'text', 'follow', 'billboard']
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
+class RemoveTextDisplayMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Remove Text Display',
+			description:  'Removes a text display with the given key',
+			data:         [
+				new StringSelect('Key', 'key', 'default')
+					.setTooltip('The key of the text display to remove')
+			],
+			summaryItems: ['key']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ThrowMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6588,6 +6660,8 @@ export const initComponents = () => {
 		STATUS:             { name: 'Status', component: StatusMechanic },
 		SUMMON:             { name: 'Summon', component: SummonMechanic },
 		TAUNT:              { name: 'Taunt', component: TauntMechanic },
+		TEXT_DISPLAY:       { name: 'Text Display', component: TextDisplayMechanic },
+		TEXT_DISPLAY_REMOVE: { name: 'Remove Text Display', component: RemoveTextDisplayMechanic },
 		THROW:              { name: 'Throw', component: ThrowMechanic },
 		TRANSLATED_MESSAGE: { name: 'Translated Message', component: TranslatedMessageMechanic },
 		TRIGGER:            { name: 'Trigger', component: TriggerMechanic },
