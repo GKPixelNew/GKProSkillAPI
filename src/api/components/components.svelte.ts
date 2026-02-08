@@ -5563,8 +5563,6 @@ class TextDisplayMechanic extends FabledMechanic {
 					.setTooltip('How long the text display lasts before being deleted'),
 				new StringSelect('Text', 'text', '<white>Text Display')
 					.setTooltip('The text to display. Supports MiniMessage formatting (e.g., <red>, <bold>, etc.) and placeholders: {caster}, {target}, {level}, {player}, {health}, {max_health}'),
-				new DropdownSelect('Text Transform', 'text-transform', ['None', 'Uppercase', 'Lowercase', 'Capitalize'], 'None')
-					.setTooltip('Transforms the displayed text. None = keep as-is, Uppercase = ALL CAPS, Lowercase = all lowercase, Capitalize = First Letter Of Each Word'),
 				new BooleanSelect('Reuse', 'reuse', false)
 					.setTooltip('When enabled, if a text display with the same key already exists, it will be updated instead of creating a new one. This prevents flickering when updating text frequently'),
 				new BooleanSelect('Follow Target', 'follow', false)
@@ -5590,6 +5588,13 @@ class TextDisplayMechanic extends FabledMechanic {
 					.setTooltip('Text alignment within the display'),
 				new AttributeSelect('Scale', 'scale', 1.0)
 					.setTooltip('Scale of the text display. 1.0 is normal size'),
+				new SectionMarker('Text Transform'),
+				new AttributeSelect('Translate X', 'translate-x')
+					.setTooltip('Visual translation offset on the X axis. This moves the rendered text without moving the entity'),
+				new AttributeSelect('Translate Y', 'translate-y')
+					.setTooltip('Visual translation offset on the Y axis. This moves the rendered text without moving the entity'),
+				new AttributeSelect('Translate Z', 'translate-z')
+					.setTooltip('Visual translation offset on the Z axis. This moves the rendered text without moving the entity'),
 				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
 					.setTooltip('Controls which players can see the text display client-side'),
 				new SectionMarker('Offset'),
