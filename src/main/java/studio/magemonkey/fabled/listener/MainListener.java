@@ -195,6 +195,10 @@ public class MainListener extends FabledListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onUnload(final ChunkUnloadEvent event) {
         for (final Entity entity : event.getChunk().getEntities()) {
+            // Clean up visibility tracking BEFORE entity becomes invalid
+            // This prevents hideEntity state from persisting and affecting other entities
+            VisibilityManager.unregister(entity);
+            
             if (entity instanceof LivingEntity && !(entity instanceof Player)) {
                 final LivingEntity livingEntity = (LivingEntity) entity;
                 DynamicSkill.clearCastData(livingEntity);

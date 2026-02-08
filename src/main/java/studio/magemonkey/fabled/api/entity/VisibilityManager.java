@@ -115,7 +115,9 @@ public class VisibilityManager {
     }
     
     /**
-     * Unregisters an entity, making it visible to everyone again
+     * Unregisters an entity, making it visible to everyone again.
+     * IMPORTANT: Call this BEFORE the entity becomes invalid (e.g., during ChunkUnloadEvent)
+     * to properly clear Bukkit's internal hideEntity tracking.
      * 
      * @param entity the entity to unregister
      */
@@ -123,12 +125,15 @@ public class VisibilityManager {
         if (entity == null) return;
         
         VisibilityData data = trackedEntities.remove(entity.getUniqueId());
-        if (data != null && entity.isValid()) {
-            // Only show Display and ArmorStand entities
-            if (entity instanceof Display || entity instanceof ArmorStand) {
+        if (data != null) {
+            // Try to show entity to all players - do this even if entity appears invalid
+            // because we need to clear Bukkit's internal tracking before the entity is fully removed
+            try {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     player.showEntity(Fabled.inst(), entity);
                 }
+            } catch (Exception ignored) {
+                // Entity may already be fully removed, that's okay
             }
         }
     }
@@ -227,9 +232,15 @@ public class VisibilityManager {
      * @param player the player who joined
      */
     public static void applyVisibilityForPlayer(Player player) {
-        for (VisibilityData data : trackedEntities.values()) {
+        // Use iterator to allow removal of stale entries during iteration
+        var iterator = trackedEntities.entrySet().iterator();
+        while (iterator.hasNext()) {
+            VisibilityData data = iterator.next().getValue();
             if (data.isStillValid()) {
                 applyVisibilityTo(player, data);
+            } else {
+                // Clean up stale entry
+                iterator.remove();
             }
         }
     }
