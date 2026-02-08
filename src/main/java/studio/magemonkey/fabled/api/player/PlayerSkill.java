@@ -415,6 +415,9 @@ public final class PlayerSkill {
      * @return max stock, minimum 1
      */
     public int getMaxStock() {
+        if (player == null) {
+            return skill.getMaxStock(level);
+        }
         return skill.getMaxStock(level, player);
     }
 
@@ -424,6 +427,9 @@ public final class PlayerSkill {
      * @return cast interval in seconds
      */
     public double getCastInterval() {
+        if (player == null) {
+            return skill.getCastInterval(level);
+        }
         return skill.getCastInterval(level, player);
     }
 
