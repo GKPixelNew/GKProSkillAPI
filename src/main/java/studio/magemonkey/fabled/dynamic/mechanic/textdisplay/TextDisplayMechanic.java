@@ -37,6 +37,7 @@ public class TextDisplayMechanic extends MechanicComponent {
     private static final String TEXT             = "text";
     private static final String FOLLOW           = "follow";
     private static final String RIDE_TARGET      = "ride-target";
+    private static final String REUSE            = "reuse";
     private static final String MARKER           = "marker";
     private static final String BILLBOARD        = "billboard";
     private static final String BACKGROUND_COLOR = "background-color";
@@ -63,6 +64,7 @@ public class TextDisplayMechanic extends MechanicComponent {
         String text       = settings.getString(TEXT, "Text Display");
         boolean follow    = settings.getBool(FOLLOW, false);
         boolean rideTarget = settings.getBool(RIDE_TARGET, false);
+        boolean reuse     = settings.getBool(REUSE, false);
         boolean marker    = settings.getBool(MARKER, true);
         String  billboardStr = settings.getString(BILLBOARD, "center").toUpperCase();
         String  bgColorHex = settings.getString(BACKGROUND_COLOR, "#40000000");
@@ -99,86 +101,110 @@ public class TextDisplayMechanic extends MechanicComponent {
         }
         final TextDisplay.TextAlignment finalAlignment = alignment;
 
-        // Parse text with MiniMessage and placeholders
-        Component textComponent = parseText(text, caster, targets.isEmpty() ? caster : targets.get(0), level);
-        
         // Clamp text opacity
         byte finalOpacity = (byte) Math.max(-128, Math.min(127, textOpacity - 128));
 
         List<LivingEntity> textDisplays = new ArrayList<>();
         for (LivingEntity target : targets) {
+            // Parse text with MiniMessage and placeholders (per target for {target} placeholder)
+            Component textComponent = parseText(text, caster, target, level);
+            
             Location loc = target.getLocation().clone();
             Vector   dir = loc.getDirection().setY(0).normalize();
             Vector   side = dir.clone().crossProduct(UP);
             double   spawnUpward = rideTarget ? upward + 2 : upward;
             loc.add(dir.multiply(forward)).add(0, spawnUpward, 0).add(side.multiply(right));
 
-            Consumer<TextDisplay> onSpawn = td -> {
-                try {
-                    td.setPersistent(false);
-                } catch (NoSuchMethodError ignored) {
-                }
-                try {
-                    td.setInvulnerable(true);
-                } catch (NoSuchMethodError ignored) {
-                }
-                td.text(textComponent);
-                td.setBillboard(finalBillboard);
-                td.setBackgroundColor(backgroundColor);
-                td.setTextOpacity(finalOpacity);
-                td.setShadowed(shadow);
-                td.setSeeThrough(seeThrough);
-                td.setLineWidth(lineWidth);
-                td.setAlignment(finalAlignment);
+            // Check if we should reuse an existing text display
+            TextDisplayInstance existing = TextDisplayManager.getTextDisplay(target, key).orElse(null);
+            if (reuse && existing != null && existing.isValid()) {
+                // Update existing text display instead of creating new
+                existing.updateDisplay(textComponent, finalBillboard, backgroundColor,
+                        finalOpacity, shadow, seeThrough, lineWidth, finalAlignment, scale);
+                existing.teleport(loc);
+                existing.setFollow(follow);
+                existing.setForward(forward);
+                existing.setUpward(upward);
+                existing.setRight(right);
                 
-                // Apply scale transformation
-                if (scale != 1.0) {
-                    Transformation transformation = new Transformation(
-                            new Vector3f(0, 0, 0),
-                            new AxisAngle4f(0, 0, 0, 1),
-                            new Vector3f((float) scale, (float) scale, (float) scale),
-                            new AxisAngle4f(0, 0, 0, 1)
-                    );
-                    td.setTransformation(transformation);
-                }
-            };
-
-            TextDisplay td = target.getWorld().spawn(loc, TextDisplay.class, onSpawn);
-            Fabled.setMeta(td, MechanicListener.TEXT_DISPLAY, true);
-            
-            // Make it a marker (no collision, invisible hitbox)
-            if (marker) {
-                // TextDisplay doesn't have setMarker(), but we can set view range for interaction
-                td.setViewRange(16.0f);
-            }
-
-            TextDisplayInstance instance;
-            if (follow) {
-                instance = new TextDisplayInstance(td, target, true, forward, upward, right);
+                // Update visibility
+                VisibilityManager.register(existing.getTextDisplay(), caster, visibilityMode);
+                
+                // Cancel old removal task and schedule new one
+                existing.cancelRemovalTask();
+                existing.setRemovalTask(Fabled.schedule(() -> {
+                    TextDisplayManager.remove(target, key);
+                }, duration));
+                
+                // Wrap in TempEntity for child component execution
+                textDisplays.add(new TempEntity(existing.getTextDisplay().getLocation()));
             } else {
-                instance = new TextDisplayInstance(td, target, false);
+                // Create new text display
+                Consumer<TextDisplay> onSpawn = td -> {
+                    try {
+                        td.setPersistent(false);
+                    } catch (NoSuchMethodError ignored) {
+                    }
+                    try {
+                        td.setInvulnerable(true);
+                    } catch (NoSuchMethodError ignored) {
+                    }
+                    td.text(textComponent);
+                    td.setBillboard(finalBillboard);
+                    td.setBackgroundColor(backgroundColor);
+                    td.setTextOpacity(finalOpacity);
+                    td.setShadowed(shadow);
+                    td.setSeeThrough(seeThrough);
+                    td.setLineWidth(lineWidth);
+                    td.setAlignment(finalAlignment);
+                    
+                    // Apply scale transformation
+                    if (scale != 1.0) {
+                        Transformation transformation = new Transformation(
+                                new Vector3f(0, 0, 0),
+                                new AxisAngle4f(0, 0, 0, 1),
+                                new Vector3f((float) scale, (float) scale, (float) scale),
+                                new AxisAngle4f(0, 0, 0, 1)
+                        );
+                        td.setTransformation(transformation);
+                    }
+                };
+
+                TextDisplay td = target.getWorld().spawn(loc, TextDisplay.class, onSpawn);
+                Fabled.setMeta(td, MechanicListener.TEXT_DISPLAY, true);
+                
+                // Make it a marker (no collision, invisible hitbox)
+                if (marker) {
+                    td.setViewRange(16.0f);
+                }
+
+                TextDisplayInstance instance;
+                if (follow) {
+                    instance = new TextDisplayInstance(td, target, true, forward, upward, right);
+                } else {
+                    instance = new TextDisplayInstance(td, target, false);
+                }
+                TextDisplayManager.register(instance, target, key);
+
+                // Make text display ride on target if enabled
+                if (rideTarget) {
+                    target.addPassenger(td);
+                }
+
+                // Apply visibility restrictions
+                VisibilityManager.register(td, caster, visibilityMode);
+
+                // Set up removal task
+                instance.setRemovalTask(Fabled.schedule(() -> {
+                    TextDisplayManager.remove(target, key);
+                }, duration));
+
+                // Wrap in TempEntity for child component execution
+                textDisplays.add(new TempEntity(td.getLocation()));
             }
-            TextDisplayManager.register(instance, target, key);
-
-            // Make text display ride on target if enabled
-            if (rideTarget) {
-                target.addPassenger(td);
-            }
-
-            // Apply visibility restrictions
-            VisibilityManager.register(td, caster, visibilityMode);
-
-            // Wrap in TempEntity for child component execution
-            textDisplays.add(new TempEntity(td.getLocation()));
         }
         
         executeChildren(caster, level, textDisplays, force);
-        // Set up removal task (TextDisplayManager handles actual cleanup)
-        Fabled.schedule(() -> {
-            for (LivingEntity target : targets) {
-                TextDisplayManager.remove(target, key);
-            }
-        }, duration);
         
         return targets.size() > 0;
     }

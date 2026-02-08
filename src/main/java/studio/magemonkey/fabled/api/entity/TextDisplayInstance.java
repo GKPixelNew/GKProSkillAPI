@@ -1,30 +1,109 @@
 package studio.magemonkey.fabled.api.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.joml.AxisAngle4f;
+import org.joml.Vector3f;
 import studio.magemonkey.fabled.Fabled;
 
 /**
  * Represents an active text display entity instance that can follow a target.
  */
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class TextDisplayInstance {
     private static final Vector UP = new Vector(0, 1, 0);
     
     @Getter
     private final TextDisplay textDisplay;
+    @Getter
     private final LivingEntity target;
-    private final boolean follow;
+    @Getter @Setter
+    private boolean follow;
+    @Getter @Setter
     private double forward;
+    @Getter @Setter
     private double upward;
+    @Getter @Setter
     private double right;
+    
+    private BukkitTask removalTask;
+
+    public TextDisplayInstance(TextDisplay textDisplay, LivingEntity target, boolean follow) {
+        this.textDisplay = textDisplay;
+        this.target = target;
+        this.follow = follow;
+    }
+
+    public TextDisplayInstance(TextDisplay textDisplay, LivingEntity target, boolean follow, double forward, double upward, double right) {
+        this.textDisplay = textDisplay;
+        this.target = target;
+        this.follow = follow;
+        this.forward = forward;
+        this.upward = upward;
+        this.right = right;
+    }
+
+    /**
+     * Sets the removal task for this instance
+     * @param task the scheduled removal task
+     */
+    public void setRemovalTask(BukkitTask task) {
+        this.removalTask = task;
+    }
+
+    /**
+     * Cancels the current removal task if one exists
+     */
+    public void cancelRemovalTask() {
+        if (removalTask != null && !removalTask.isCancelled()) {
+            removalTask.cancel();
+            removalTask = null;
+        }
+    }
+
+    /**
+     * Updates all display properties on the text display entity
+     */
+    public void updateDisplay(Component text, Display.Billboard billboard, Color backgroundColor,
+                              byte textOpacity, boolean shadow, boolean seeThrough,
+                              int lineWidth, TextDisplay.TextAlignment alignment, double scale) {
+        Bukkit.getScheduler().runTask(Fabled.inst(), () -> {
+            textDisplay.text(text);
+            textDisplay.setBillboard(billboard);
+            textDisplay.setBackgroundColor(backgroundColor);
+            textDisplay.setTextOpacity(textOpacity);
+            textDisplay.setShadowed(shadow);
+            textDisplay.setSeeThrough(seeThrough);
+            textDisplay.setLineWidth(lineWidth);
+            textDisplay.setAlignment(alignment);
+            
+            if (scale != 1.0) {
+                Transformation transformation = new Transformation(
+                        new Vector3f(0, 0, 0),
+                        new AxisAngle4f(0, 0, 0, 1),
+                        new Vector3f((float) scale, (float) scale, (float) scale),
+                        new AxisAngle4f(0, 0, 0, 1)
+                );
+                textDisplay.setTransformation(transformation);
+            }
+        });
+    }
+
+    /**
+     * Teleports the text display to a new location
+     */
+    public void teleport(Location loc) {
+        Bukkit.getScheduler().runTask(Fabled.inst(), () -> textDisplay.teleport(loc));
+    }
 
     /**
      * @return true if the instance is still valid
@@ -37,6 +116,7 @@ public class TextDisplayInstance {
      * Removes the text display
      */
     public void remove() {
+        cancelRemovalTask();
         Bukkit.getScheduler().runTask(Fabled.inst(), textDisplay::remove);
     }
 
