@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
@@ -43,14 +44,30 @@ public class VisibilityManager {
         @Getter
         private final Entity entity;
         @Getter
+        private final UUID entityUuid;
+        @Getter
+        private final EntityType entityType;
+        @Getter
         private final UUID casterUuid;
         @Getter
         private final VisibilityMode mode;
         
         public VisibilityData(Entity entity, UUID casterUuid, VisibilityMode mode) {
             this.entity = entity;
+            this.entityUuid = entity.getUniqueId();
+            this.entityType = entity.getType();
             this.casterUuid = casterUuid;
             this.mode = mode;
+        }
+        
+        /**
+         * Validates that the entity is still the same one we registered.
+         * Protects against UUID reuse when entities despawn and new ones spawn.
+         */
+        public boolean isStillValid() {
+            if (!entity.isValid()) return false;
+            // Double-check UUID and type match (protection against UUID reuse)
+            return entity.getUniqueId().equals(entityUuid) && entity.getType() == entityType;
         }
     }
     
@@ -184,11 +201,14 @@ public class VisibilityManager {
      * @param data the visibility data
      */
     private static void applyVisibilityTo(Player player, VisibilityData data) {
-        Entity entity = data.getEntity();
-        // Safety check - only allow Display and ArmorStand, never regular mobs
-        if (entity == null || !entity.isValid()) {
+        // Use isStillValid() to ensure this is the same entity we registered
+        // This protects against UUID reuse when chunks unload/reload
+        if (!data.isStillValid()) {
             return;
         }
+        
+        Entity entity = data.getEntity();
+        // Safety check - only allow Display and ArmorStand, never regular mobs
         if (!(entity instanceof Display) && !(entity instanceof ArmorStand)) {
             return;
         }
@@ -208,7 +228,7 @@ public class VisibilityManager {
      */
     public static void applyVisibilityForPlayer(Player player) {
         for (VisibilityData data : trackedEntities.values()) {
-            if (data.getEntity().isValid()) {
+            if (data.isStillValid()) {
                 applyVisibilityTo(player, data);
             }
         }
@@ -216,20 +236,10 @@ public class VisibilityManager {
     
     /**
      * Cleans up invalid entities from the tracker.
-     * Also removes any incorrectly tracked entities (non-Display, non-ArmorStand).
+     * Removes entries where the entity is no longer valid or UUID was reused.
      */
     public static void cleanUp() {
-        trackedEntities.entrySet().removeIf(entry -> {
-            Entity entity = entry.getValue().getEntity();
-            // Remove if invalid
-            if (!entity.isValid()) return true;
-            // Remove if not a valid type (cleanup for any bugs)
-            if (!(entity instanceof Display) && !(entity instanceof ArmorStand)) {
-                Fabled.inst().getLogger().warning("VisibilityManager cleanUp: removing incorrectly tracked entity type: " + entity.getType());
-                return true;
-            }
-            return false;
-        });
+        trackedEntities.entrySet().removeIf(entry -> !entry.getValue().isStillValid());
     }
     
     /**
