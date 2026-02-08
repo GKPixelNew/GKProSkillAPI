@@ -156,19 +156,21 @@ public class GlowMechanic extends MechanicComponent {
         var playerUuid = viewer.getUniqueId();
         int entityId = target.getEntityId();
 
-        var playerTasks = activeGlowTasks.get(playerUuid);
-        if (playerTasks != null) {
-            var task = playerTasks.remove(entityId);
-            if (task != null) task.cancel();
+        var tasks = activeGlowTasks.get(playerUuid);
+        if (tasks != null) {
+            var existingTask = tasks.remove(entityId);
+            if (existingTask != null) {
+                existingTask.cancel(); // 務必取消，不然時間到會再執行一次
+            }
+            if (tasks.isEmpty()) activeGlowTasks.remove(playerUuid);
         }
 
-        // Remove from active glow targets
-        var glowingTargets = activeGlowTargets.get(playerUuid);
-        if (glowingTargets != null) {
-            glowingTargets.remove(entityId);
+        var targets2 = activeGlowTargets.get(playerUuid);
+        if (targets2 != null) {
+            targets2.remove(entityId);
+            if (targets2.isEmpty()) activeGlowTargets.remove(playerUuid);
         }
 
-        // Remove glowing flag
         byte resetFlags = (byte) (getEntityFlags(target) & ~GLOWING_FLAG);
         var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
         var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
