@@ -2859,17 +2859,13 @@ class ArmorStandMechanic extends FabledMechanic {
 					.setTooltip('Whether the armor stand should be visible'),
 				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
 					.setTooltip('Controls which players can see the armor stand client-side. Everyone = all players, Caster Only = only the skill caster, Caster and Allies = caster and same team, Enemies Only = non-allies only, None = invisible to all'),
-				new SectionMarker('Offset')
-					.requireValue('ride-target', [false]),
+				new SectionMarker('Offset'),
 				new AttributeSelect('Forward Offset', 'forward')
-					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind')
-					.requireValue('ride-target', [false]),
+					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind'),
 				new AttributeSelect('Upward Offset', 'upward')
-					.setTooltip('How far above the target the armor stand should be in blocks. A negative value will put it below')
-					.requireValue('ride-target', [false]),
+					.setTooltip('How far above the target the armor stand should be in blocks. A negative value will put it below. When ride-target is enabled, +2 is automatically added'),
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the armor stand should be of the target. A negative value will put it to the left')
-					.requireValue('ride-target', [false])
 			],
 			summaryItems: ['duration', 'name', 'follow', 'gravity', 'visible']
 		}, true);
@@ -5594,17 +5590,13 @@ class TextDisplayMechanic extends FabledMechanic {
 					.setTooltip('Scale of the text display. 1.0 is normal size'),
 				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
 					.setTooltip('Controls which players can see the text display client-side'),
-				new SectionMarker('Offset')
-					.requireValue('ride-target', [false]),
+				new SectionMarker('Offset'),
 				new AttributeSelect('Forward Offset', 'forward')
-					.setTooltip('How far forward in front of the target the text display should be in blocks. A negative value will put it behind')
-					.requireValue('ride-target', [false]),
+					.setTooltip('How far forward in front of the target the text display should be in blocks. A negative value will put it behind'),
 				new AttributeSelect('Upward Offset', 'upward')
-					.setTooltip('How far above the target the text display should be in blocks. A negative value will put it below')
-					.requireValue('ride-target', [false]),
+					.setTooltip('How far above the target the text display should be in blocks. A negative value will put it below. When ride-target is enabled, +2 is automatically added'),
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the text display should be of the target. A negative value will put it to the left')
-					.requireValue('ride-target', [false])
 			],
 			summaryItems: ['duration', 'text', 'follow', 'billboard']
 		}, true);
