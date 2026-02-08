@@ -213,13 +213,11 @@ public class TextDisplayMechanic extends MechanicComponent {
                     final TextDisplay finalTd = td;
                     Fabled.schedule(() -> {
                         if (finalTd.isValid()) {
-                            // Apply visibility restrictions (this also shows it to allowed players)
-                            VisibilityManager.register(finalTd, caster, visibilityMode);
-                            // For "everyone" mode, we need to explicitly show since VisibilityManager won't track it
-                            if (visibilityMode == VisibilityManager.VisibilityMode.EVERYONE) {
-                                for (Player viewer : Bukkit.getOnlinePlayers()) {
-                                    viewer.showEntity(Fabled.inst(), finalTd);
-                                }
+                            // IMPORTANT: Visibility restrictions are DISABLED for riding entities
+                            // due to a Minecraft bug where hideEntity on passengers corrupts mob name tags.
+                            // Always show to everyone when using ride-target.
+                            for (Player viewer : Bukkit.getOnlinePlayers()) {
+                                viewer.showEntity(Fabled.inst(), finalTd);
                             }
                         }
                     }, 1);

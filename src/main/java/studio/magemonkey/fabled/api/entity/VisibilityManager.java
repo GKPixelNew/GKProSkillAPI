@@ -78,6 +78,9 @@ public class VisibilityManager {
      * Only accepts Display entities (TextDisplay, ItemDisplay, BlockDisplay) and ArmorStand.
      * Never allows regular mobs/players to prevent breaking name tags.
      * 
+     * WARNING: Visibility restrictions for passenger entities (ride-target) are DISABLED
+     * due to a Minecraft bug where hideEntity on passengers corrupts mob name tag rendering.
+     * 
      * @param entity the entity to manage visibility for (must be Display or ArmorStand)
      * @param caster the caster who created/controls the entity
      * @param mode the visibility mode to apply
@@ -89,6 +92,13 @@ public class VisibilityManager {
                 Fabled.inst().getLogger().warning("VisibilityManager.register() called with LivingEntity (" 
                         + entity.getType() + ") - ignoring to prevent breaking name tags");
             }
+            return;
+        }
+        
+        // WORKAROUND: Don't use hideEntity for passenger entities - it causes a bug
+        // where mob name tags disappear after chunk unload/reload
+        if (entity.getVehicle() != null) {
+            // Entity is riding something - skip visibility management to prevent bug
             return;
         }
         
