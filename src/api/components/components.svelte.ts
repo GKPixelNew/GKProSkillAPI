@@ -2840,7 +2840,10 @@ class ArmorStandMechanic extends FabledMechanic {
 				new BooleanSelect('Name visible', 'name-visible', false)
 					.setTooltip('Whether the armor stand\'s name should be visible from afar'),
 				new BooleanSelect('Follow target', 'follow', false)
-					.setTooltip('Whether the armor stand should follow the target'),
+					.setTooltip('Whether the armor stand should follow the target')
+					.requireValue('ride-target', [false]),
+				new BooleanSelect('Ride Target', 'ride-target', false)
+					.setTooltip('Whether the armor stand should ride on the target\\'s head as a passenger'),
 				new BooleanSelect('Marker', 'marker', false)
 					.setTooltip('Setting this to true will remove the armor stand\'s hit-box but will also disable gravity'),
 				new BooleanSelect('Apply gravity', 'gravity', true)
@@ -2856,13 +2859,17 @@ class ArmorStandMechanic extends FabledMechanic {
 					.setTooltip('Whether the armor stand should be visible'),
 				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
 					.setTooltip('Controls which players can see the armor stand client-side. Everyone = all players, Caster Only = only the skill caster, Caster and Allies = caster and same team, Enemies Only = non-allies only, None = invisible to all'),
-				new SectionMarker('Offset'),
+				new SectionMarker('Offset')
+					.requireValue('ride-target', [false]),
 				new AttributeSelect('Forward Offset', 'forward')
-					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind'),
+					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind')
+					.requireValue('ride-target', [false]),
 				new AttributeSelect('Upward Offset', 'upward')
-					.setTooltip('How far above the target the armor stand should be in blocks. A negative value will put it below'),
+					.setTooltip('How far above the target the armor stand should be in blocks. A negative value will put it below')
+					.requireValue('ride-target', [false]),
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the armor stand should be of the target. A negative value will put it to the left')
+					.requireValue('ride-target', [false])
 			],
 			summaryItems: ['duration', 'name', 'follow', 'gravity', 'visible']
 		}, true);
