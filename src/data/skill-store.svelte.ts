@@ -45,6 +45,8 @@ export default class FabledSkill implements Serializable {
 	cooldown: IAttribute                = $state({ name: 'cooldown', base: 1, scale: 0 });
 	cooldownMessage: boolean            = $state(true);
 	mana: IAttribute                    = $state({ name: 'mana', base: 0, scale: 0 });
+	maxStock: IAttribute                = $state({ name: 'max-stock', base: 1, scale: 0 });
+	castInterval: IAttribute            = $state({ name: 'cast-interval', base: 0.1, scale: 0 });
 	minSpent: IAttribute                = $state({ name: 'points-spent-req', base: 0, scale: 0 });
 	castMessage                         = $state('&6{player} &2has cast &6{skill}');
 	combo                               = $state('');
@@ -88,6 +90,8 @@ export default class FabledSkill implements Serializable {
 		if (data.cooldown) this.cooldown = data.cooldown;
 		if (data.cooldownMessage !== undefined) this.cooldownMessage = data.cooldownMessage;
 		if (data.mana) this.mana = data.mana;
+		if (data.maxStock) this.maxStock = data.maxStock;
+		if (data.castInterval) this.castInterval = data.castInterval;
 		if (data.minSpent) this.minSpent = data.minSpent;
 		if (data.castMessage) this.castMessage = data.castMessage;
 		if (data.combo) this.combo = data.combo;
@@ -123,6 +127,10 @@ export default class FabledSkill implements Serializable {
 				'cooldown-scale':         this.cooldown.scale,
 				'mana-base':              this.mana.base,
 				'mana-scale':             this.mana.scale,
+				'max-stock-base':         this.maxStock.base,
+				'max-stock-scale':        this.maxStock.scale,
+				'cast-interval-base':     this.castInterval.base,
+				'cast-interval-scale':    this.castInterval.scale,
 				'points-spent-req-base':  this.minSpent.base,
 				'points-spent-req-scale': this.minSpent.scale
 			},
@@ -202,6 +210,10 @@ export default class FabledSkill implements Serializable {
 				'cooldown-scale':         this.cooldown.scale,
 				'mana-base':              this.mana.base,
 				'mana-scale':             this.mana.scale,
+				'max-stock-base':         this.maxStock.base,
+				'max-stock-scale':        this.maxStock.scale,
+				'cast-interval-base':     this.castInterval.base,
+				'cast-interval-scale':    this.castInterval.scale,
 				'points-spent-req-base':  this.minSpent.base,
 				'points-spent-req-scale': this.minSpent.scale
 			},
@@ -235,13 +247,15 @@ export default class FabledSkill implements Serializable {
 			this.cost        = { name: 'cost', base: attributes['cost-base'], scale: attributes['cost-scale'] };
 			this.cooldown    = { name: 'cooldown', base: attributes['cooldown-base'], scale: attributes['cooldown-scale'] };
 			this.mana        = { name: 'mana', base: attributes['mana-base'], scale: attributes['mana-scale'] };
+			this.maxStock    = { name: 'max-stock', base: attributes['max-stock-base'] ?? 1, scale: attributes['max-stock-scale'] ?? 0 };
+			this.castInterval = { name: 'cast-interval', base: attributes['cast-interval-base'] ?? 0.1, scale: attributes['cast-interval-scale'] ?? 0 };
 			this.minSpent    = {
 				name:  'points-spent-req',
 				base:  attributes['points-spent-req-base'],
 				scale: attributes['points-spent-req-scale']
 			};
 
-			const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
+			const reserved             = ['level', 'cost', 'cooldown', 'mana', 'max-stock', 'cast-interval', 'points-spent-req', 'incompatible'];
 			const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
 			this.attributeRequirements = [...names].map(name => ({
 				name,

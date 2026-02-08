@@ -187,6 +187,14 @@
 						tooltip='The amount of mana it takes to cast the skill (only works with the Cast trigger)'>
 		<AttributeInput bind:value={data.mana} />
 	</ProInput>
+	<ProInput label='Max Stock'
+						tooltip='Maximum charges the skill can hold. When greater than 1, enables the stock system where each cast consumes 1 stock and the cooldown regenerates stocks one at a time'>
+		<AttributeInput bind:value={data.maxStock} />
+	</ProInput>
+	<ProInput label='Cast Interval'
+						tooltip='Minimum delay (in seconds) between consecutive casts when multiple stocks are available. Prevents rapid-fire casting'>
+		<AttributeInput bind:value={data.castInterval} />
+	</ProInput>
 	<ProInput label='Cast Message'
 						tooltip='The message to display to players around the caster when the skill is cast. The radius of the area is in the config.yml options'
 						bind:value={data.castMessage} />

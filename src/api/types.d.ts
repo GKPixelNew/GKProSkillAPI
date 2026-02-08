@@ -55,6 +55,8 @@ export interface FabledSkillData {
 	cooldown?: IAttribute;
 	cooldownMessage?: boolean;
 	mana?: IAttribute;
+	maxStock?: IAttribute;
+	castInterval?: IAttribute;
 	minSpent?: IAttribute;
 	castMessage?: string;
 	combo?: string;
