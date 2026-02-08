@@ -3043,6 +3043,17 @@ class CancelMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class CancelGlowMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name: 'Cancel Glow',
+			description: 'Makes the targets cancel glow (only for the caster, client-sided)'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class CancelEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6502,6 +6513,7 @@ export const initComponents = () => {
 		BLOCK:              { name: 'Block', component: BlockMechanic },
 		BUFF:               { name: 'Buff', component: BuffMechanic },
 		CANCEL:             { name: 'Cancel', component: CancelMechanic },
+		CANCEL_GLOW:        { name: 'Cancel Glow', component: CancelGlowMechanic },
 		CHANNEL:            { name: 'Channel', component: ChannelMechanic },
 		CLEANSE:            { name: 'Cleanse', component: CleanseMechanic },
 		COMMAND:            { name: 'Command', component: CommandMechanic },
