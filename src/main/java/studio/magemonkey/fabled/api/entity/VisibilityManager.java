@@ -69,6 +69,14 @@ public class VisibilityManager {
         }
         
         UUID casterUuid = caster != null ? caster.getUniqueId() : null;
+        
+        // Check if already registered with same settings - skip to prevent flickering
+        VisibilityData existing = trackedEntities.get(entity.getUniqueId());
+        if (existing != null && existing.getMode() == mode 
+                && java.util.Objects.equals(existing.getCasterUuid(), casterUuid)) {
+            return; // No change needed
+        }
+        
         VisibilityData data = new VisibilityData(entity, casterUuid, mode);
         trackedEntities.put(entity.getUniqueId(), data);
         
