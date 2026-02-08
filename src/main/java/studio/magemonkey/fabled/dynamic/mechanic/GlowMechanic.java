@@ -151,4 +151,27 @@ public class GlowMechanic extends MechanicComponent {
         }
         return false;
     }
+
+    public static void stopGlow(Player viewer, LivingEntity target) {
+        var playerUuid = viewer.getUniqueId();
+        int entityId = target.getEntityId();
+
+        var playerTasks = activeGlowTasks.get(playerUuid);
+        if (playerTasks != null) {
+            var task = playerTasks.remove(entityId);
+            if (task != null) task.cancel();
+        }
+
+        // Remove from active glow targets
+        var glowingTargets = activeGlowTargets.get(playerUuid);
+        if (glowingTargets != null) {
+            glowingTargets.remove(entityId);
+        }
+
+        // Remove glowing flag
+        byte resetFlags = (byte) (getEntityFlags(target) & ~GLOWING_FLAG);
+        var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
+        var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
+        PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, resetPacket);
+    }
 }

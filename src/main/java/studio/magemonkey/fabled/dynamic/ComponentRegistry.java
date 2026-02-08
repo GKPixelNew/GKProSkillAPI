@@ -181,6 +181,7 @@ public class ComponentRegistry {
         register(new BlockMechanic());
         register(new BuffMechanic());
         register(new CancelEffectMechanic());
+        register(new CancelGlowMechanic());
         register(new CancelMechanic());
         register(new ChannelMechanic());
         register(new CleanseMechanic());
