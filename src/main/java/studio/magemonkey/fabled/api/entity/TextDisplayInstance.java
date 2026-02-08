@@ -75,7 +75,8 @@ public class TextDisplayInstance {
      */
     public void updateDisplay(Component text, Display.Billboard billboard, Color backgroundColor,
                               byte textOpacity, boolean shadow, boolean seeThrough,
-                              int lineWidth, TextDisplay.TextAlignment alignment, double scale) {
+                              int lineWidth, TextDisplay.TextAlignment alignment, double scale,
+                              double translateX, double translateY, double translateZ) {
         Bukkit.getScheduler().runTask(Fabled.inst(), () -> {
             textDisplay.text(text);
             textDisplay.setBillboard(billboard);
@@ -86,9 +87,9 @@ public class TextDisplayInstance {
             textDisplay.setLineWidth(lineWidth);
             textDisplay.setAlignment(alignment);
             
-            if (scale != 1.0) {
+            if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
                 Transformation transformation = new Transformation(
-                        new Vector3f(0, 0, 0),
+                        new Vector3f((float) translateX, (float) translateY, (float) translateZ),
                         new AxisAngle4f(0, 0, 0, 1),
                         new Vector3f((float) scale, (float) scale, (float) scale),
                         new AxisAngle4f(0, 0, 0, 1)

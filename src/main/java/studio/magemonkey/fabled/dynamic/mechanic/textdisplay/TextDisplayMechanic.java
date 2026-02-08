@@ -47,6 +47,9 @@ public class TextDisplayMechanic extends MechanicComponent {
     private static final String LINE_WIDTH       = "line-width";
     private static final String ALIGNMENT        = "alignment";
     private static final String SCALE            = "scale";
+    private static final String TRANSLATE_X      = "translate-x";
+    private static final String TRANSLATE_Y      = "translate-y";
+    private static final String TRANSLATE_Z      = "translate-z";
     private static final String FORWARD          = "forward";
     private static final String UPWARD           = "upward";
     private static final String RIGHT            = "right";
@@ -74,6 +77,9 @@ public class TextDisplayMechanic extends MechanicComponent {
         int     lineWidth = (int) parseValues(caster, LINE_WIDTH, level, 200);
         String  alignmentStr = settings.getString(ALIGNMENT, "center").toUpperCase();
         double  scale     = parseValues(caster, SCALE, level, 1.0);
+        double  translateX = parseValues(caster, TRANSLATE_X, level, 0);
+        double  translateY = parseValues(caster, TRANSLATE_Y, level, 0);
+        double  translateZ = parseValues(caster, TRANSLATE_Z, level, 0);
         double  forward   = parseValues(caster, FORWARD, level, 0);
         double  upward    = parseValues(caster, UPWARD, level, 0);
         double  right     = parseValues(caster, RIGHT, level, 0);
@@ -120,7 +126,8 @@ public class TextDisplayMechanic extends MechanicComponent {
             if (reuse && existing != null && existing.isValid()) {
                 // Update existing text display instead of creating new
                 existing.updateDisplay(textComponent, finalBillboard, backgroundColor,
-                        finalOpacity, shadow, seeThrough, lineWidth, finalAlignment, scale);
+                        finalOpacity, shadow, seeThrough, lineWidth, finalAlignment, scale,
+                        translateX, translateY, translateZ);
                 existing.teleport(loc);
                 existing.setFollow(follow);
                 existing.setForward(forward);
@@ -158,10 +165,10 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setLineWidth(lineWidth);
                     td.setAlignment(finalAlignment);
                     
-                    // Apply scale transformation
-                    if (scale != 1.0) {
+                    // Apply transformation (scale and translation)
+                    if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
                         Transformation transformation = new Transformation(
-                                new Vector3f(0, 0, 0),
+                                new Vector3f((float) translateX, (float) translateY, (float) translateZ),
                                 new AxisAngle4f(0, 0, 0, 1),
                                 new Vector3f((float) scale, (float) scale, (float) scale),
                                 new AxisAngle4f(0, 0, 0, 1)
