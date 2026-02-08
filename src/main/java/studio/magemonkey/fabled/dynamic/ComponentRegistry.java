@@ -12,6 +12,8 @@ import studio.magemonkey.fabled.dynamic.mechanic.armorstand.ArmorStandMechanic;
 import studio.magemonkey.fabled.dynamic.mechanic.armorstand.ArmorStandPoseMechanic;
 import studio.magemonkey.fabled.dynamic.mechanic.armorstand.ArmorStandRemoveMechanic;
 import studio.magemonkey.fabled.dynamic.mechanic.particle.*;
+import studio.magemonkey.fabled.dynamic.mechanic.textdisplay.RemoveTextDisplayMechanic;
+import studio.magemonkey.fabled.dynamic.mechanic.textdisplay.TextDisplayMechanic;
 import studio.magemonkey.fabled.dynamic.mechanic.value.*;
 import studio.magemonkey.fabled.dynamic.mechanic.warp.*;
 import studio.magemonkey.fabled.dynamic.target.*;
@@ -251,6 +253,8 @@ public class ComponentRegistry {
         register(new SummonMechanic());
         register(new GKSummonMechanic());
         register(new TauntMechanic());
+        register(new TextDisplayMechanic());
+        register(new RemoveTextDisplayMechanic());
         register(new ThrowMechanic());
         register(new TriggerMechanic());
         register(new ValueAddMechanic());

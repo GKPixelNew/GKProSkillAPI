@@ -50,6 +50,7 @@ import studio.magemonkey.codex.registry.provider.BuffProvider;
 import studio.magemonkey.fabled.api.FabledAttributeProvider;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.api.classes.FabledClass;
+import studio.magemonkey.fabled.api.entity.TextDisplayManager;
 import studio.magemonkey.fabled.api.particle.EffectManager;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.api.player.PlayerClass;
@@ -529,6 +530,7 @@ public class Fabled extends SkillAPI {
         GUITool.cleanUp();
         EffectManager.cleanUp();
         ArmorStandManager.cleanUp();
+        TextDisplayManager.cleanUp();
 
         for (FabledListener listener : listeners) {
             listener.cleanup();
@@ -593,6 +595,7 @@ public class Fabled extends SkillAPI {
         mainThread = new MainThread();
         EffectManager.init();
         ArmorStandManager.init();
+        TextDisplayManager.init();
 
         // Load settings
         settings = new Settings(this);
