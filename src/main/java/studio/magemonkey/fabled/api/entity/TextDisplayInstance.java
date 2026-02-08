@@ -134,7 +134,15 @@ public class TextDisplayInstance {
     public void remove() {
         cancelRemovalTask();
         Runnable rem = () -> {
-            if (textDisplay.isValid()) textDisplay.remove();
+            if (textDisplay.isValid()) {
+                // Unregister from visibility manager
+                VisibilityManager.unregister(textDisplay);
+                // Dismount from target if riding
+                if (target.isValid() && target.getPassengers().contains(textDisplay)) {
+                    target.removePassenger(textDisplay);
+                }
+                textDisplay.remove();
+            }
         };
         
         if (Bukkit.isPrimaryThread()) {
