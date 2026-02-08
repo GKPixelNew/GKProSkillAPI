@@ -43,6 +43,7 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String UPWARD       = "upward";
     private static final String RIGHT        = "right";
     private static final String VISIBILITY   = "visibility";
+    private static final String RIDE_TARGET  = "ride-target";
 
     @Override
     public String getKey() {
@@ -67,6 +68,7 @@ public class ArmorStandMechanic extends MechanicComponent {
         double  right       = parseValues(caster, RIGHT, level, 0);
         String  visibilityStr = settings.getString(VISIBILITY, "everyone");
         VisibilityManager.VisibilityMode visibilityMode = VisibilityManager.parseMode(visibilityStr);
+        boolean rideTarget  = settings.getBool(RIDE_TARGET, false);
 
         List<LivingEntity> armorStands = new ArrayList<>();
         for (LivingEntity target : targets) {
@@ -127,6 +129,11 @@ public class ArmorStandMechanic extends MechanicComponent {
                 instance = new ArmorStandInstance(as, target, false);
             }
             ArmorStandManager.register(instance, target, key);
+            
+            // Make armor stand ride on target's head if enabled
+            if (rideTarget) {
+                target.addPassenger(as);
+            }
             
             // Apply visibility restrictions
             VisibilityManager.register(as, caster, visibilityMode);
