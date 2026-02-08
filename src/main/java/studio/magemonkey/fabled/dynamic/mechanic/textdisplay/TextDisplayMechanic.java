@@ -110,7 +110,8 @@ public class TextDisplayMechanic extends MechanicComponent {
             Location loc = target.getLocation().clone();
             Vector   dir = loc.getDirection().setY(0).normalize();
             Vector   side = dir.clone().crossProduct(UP);
-            loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+            double   spawnUpward = rideTarget ? upward + 2 : upward;
+            loc.add(dir.multiply(forward)).add(0, spawnUpward, 0).add(side.multiply(right));
 
             Consumer<TextDisplay> onSpawn = td -> {
                 try {
