@@ -2,6 +2,7 @@ package studio.magemonkey.fabled.dynamic.mechanic.textdisplay;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
@@ -190,6 +191,13 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setViewRange(16.0f);
                 }
 
+                // If ride-target, hide initially to prevent seeing the spawn-to-ride teleport
+                if (rideTarget) {
+                    for (Player viewer : Bukkit.getOnlinePlayers()) {
+                        viewer.hideEntity(Fabled.inst(), td);
+                    }
+                }
+
                 TextDisplayInstance instance;
                 if (follow) {
                     instance = new TextDisplayInstance(td, target, true, forward, upward, right);
@@ -201,10 +209,24 @@ public class TextDisplayMechanic extends MechanicComponent {
                 // Make text display ride on target if enabled
                 if (rideTarget) {
                     target.addPassenger(td);
+                    // Show after 1 tick once it's positioned correctly on the passenger
+                    final TextDisplay finalTd = td;
+                    Fabled.schedule(() -> {
+                        if (finalTd.isValid()) {
+                            // Apply visibility restrictions (this also shows it to allowed players)
+                            VisibilityManager.register(finalTd, caster, visibilityMode);
+                            // For "everyone" mode, we need to explicitly show since VisibilityManager won't track it
+                            if (visibilityMode == VisibilityManager.VisibilityMode.EVERYONE) {
+                                for (Player viewer : Bukkit.getOnlinePlayers()) {
+                                    viewer.showEntity(Fabled.inst(), finalTd);
+                                }
+                            }
+                        }
+                    }, 1);
+                } else {
+                    // Apply visibility restrictions immediately if not riding
+                    VisibilityManager.register(td, caster, visibilityMode);
                 }
-
-                // Apply visibility restrictions
-                VisibilityManager.register(td, caster, visibilityMode);
 
                 // Set up removal task
                 instance.setRemovalTask(Fabled.schedule(() -> {
