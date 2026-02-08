@@ -42,6 +42,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.entity.VisibilityManager;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.api.event.PlayerLevelUpEvent;
@@ -116,6 +117,7 @@ public class MainListener extends FabledListener {
         data.init(player);
         GUITool.removeCastItems(player);
         JOIN_HANDLERS.forEach(handler -> handler.accept(player));
+        VisibilityManager.applyVisibilityForPlayer(player);
     }
 
     @Override

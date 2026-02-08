@@ -242,6 +242,7 @@ public class ComponentRegistry {
         register(new RepeatMechanic());
         register(new RideMechanic());
         register(new ShieldMechanic());
+        register(new SetClientVisibilityMechanic());
         register(new SignalEmitMechanic());
         register(new SkillCastMechanic());
         register(new SoundMechanic());

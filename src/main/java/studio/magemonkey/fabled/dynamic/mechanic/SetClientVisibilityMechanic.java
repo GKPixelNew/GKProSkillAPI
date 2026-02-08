@@ -1,0 +1,78 @@
+/**
+ * Fabled
+ * studio.magemonkey.fabled.dynamic.mechanic.SetClientVisibilityMechanic
+ * <p>
+ * The MIT License (MIT)
+ * <p>
+ * Copyright (c) 2024 MageMonkeyStudio
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software") to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package studio.magemonkey.fabled.dynamic.mechanic;
+
+import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.entity.VisibilityManager;
+
+import java.util.List;
+
+/**
+ * Sets the client-side visibility of target entities.
+ * This mechanic can be used as a child component of any mechanic that spawns entities
+ * (armor stands, summons, etc.) to control who can see them.
+ * 
+ * Visibility modes:
+ * - everyone: Visible to all players (default, removes restrictions)
+ * - caster-only: Only visible to the caster
+ * - caster-and-allies: Visible to caster and players on the same scoreboard team
+ * - enemies-only: Only visible to non-allies (not caster, not same team)
+ * - none: Invisible to everyone
+ */
+public class SetClientVisibilityMechanic extends MechanicComponent {
+    private static final String VISIBILITY = "visibility";
+
+    @Override
+    public String getKey() {
+        return "set client visibility";
+    }
+
+    /**
+     * Executes the component
+     *
+     * @param caster  caster of the skill
+     * @param level   level of the skill
+     * @param targets targets to apply to
+     * @param force   whether or not the mechanic is forced to execute even if conditions are not met
+     * @return true if applied to something, false otherwise
+     */
+    @Override
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.isEmpty()) {
+            return false;
+        }
+
+        String visibilityStr = settings.getString(VISIBILITY, "everyone");
+        VisibilityManager.VisibilityMode mode = VisibilityManager.parseMode(visibilityStr);
+
+        for (LivingEntity target : targets) {
+            VisibilityManager.register(target, caster, mode);
+        }
+
+        return executeChildren(caster, level, targets, force);
+    }
+}

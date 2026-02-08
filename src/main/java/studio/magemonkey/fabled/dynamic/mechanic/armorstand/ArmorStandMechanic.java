@@ -8,6 +8,7 @@ import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandInstance;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
+import studio.magemonkey.fabled.api.entity.VisibilityManager;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.listener.MechanicListener;
@@ -41,6 +42,7 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String FORWARD      = "forward";
     private static final String UPWARD       = "upward";
     private static final String RIGHT        = "right";
+    private static final String VISIBILITY   = "visibility";
 
     @Override
     public String getKey() {
@@ -63,6 +65,8 @@ public class ArmorStandMechanic extends MechanicComponent {
         double  forward     = parseValues(caster, FORWARD, level, 0);
         double  upward      = parseValues(caster, UPWARD, level, 0);
         double  right       = parseValues(caster, RIGHT, level, 0);
+        String  visibilityStr = settings.getString(VISIBILITY, "everyone");
+        VisibilityManager.VisibilityMode visibilityMode = VisibilityManager.parseMode(visibilityStr);
 
         List<LivingEntity> armorStands = new ArrayList<>();
         for (LivingEntity target : targets) {
@@ -123,6 +127,9 @@ public class ArmorStandMechanic extends MechanicComponent {
                 instance = new ArmorStandInstance(as, target, false);
             }
             ArmorStandManager.register(instance, target, key);
+            
+            // Apply visibility restrictions
+            VisibilityManager.register(as, caster, visibilityMode);
         }
         executeChildren(caster, level, armorStands, force);
         new RemoveEntitiesTask(armorStands, duration);
