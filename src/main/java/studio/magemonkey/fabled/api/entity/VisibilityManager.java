@@ -2,6 +2,8 @@ package studio.magemonkey.fabled.api.entity;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,13 +57,24 @@ public class VisibilityManager {
     private static final Map<UUID, VisibilityData> trackedEntities = new ConcurrentHashMap<>();
     
     /**
-     * Registers an entity with visibility restrictions
+     * Registers an entity with visibility restrictions.
+     * Only accepts Display entities (TextDisplay, ItemDisplay, BlockDisplay) and ArmorStand.
+     * Never allows regular mobs/players to prevent breaking name tags.
      * 
-     * @param entity the entity to manage visibility for
+     * @param entity the entity to manage visibility for (must be Display or ArmorStand)
      * @param caster the caster who created/controls the entity
      * @param mode the visibility mode to apply
      */
     public static void register(Entity entity, LivingEntity caster, VisibilityMode mode) {
+        // Only allow Display entities and ArmorStand - never regular mobs
+        if (!(entity instanceof Display) && !(entity instanceof ArmorStand)) {
+            if (entity instanceof LivingEntity) {
+                Fabled.inst().getLogger().warning("VisibilityManager.register() called with LivingEntity (" 
+                        + entity.getType() + ") - ignoring to prevent breaking name tags");
+            }
+            return;
+        }
+        
         if (mode == VisibilityMode.EVERYONE) {
             // No need to track entities visible to everyone
             unregister(entity);
@@ -90,11 +103,15 @@ public class VisibilityManager {
      * @param entity the entity to unregister
      */
     public static void unregister(Entity entity) {
+        if (entity == null) return;
+        
         VisibilityData data = trackedEntities.remove(entity.getUniqueId());
-        if (data != null) {
-            // Show entity to all players again
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.showEntity(Fabled.inst(), entity);
+        if (data != null && entity.isValid()) {
+            // Only show Display and ArmorStand entities
+            if (entity instanceof Display || entity instanceof ArmorStand) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.showEntity(Fabled.inst(), entity);
+                }
             }
         }
     }
@@ -167,10 +184,19 @@ public class VisibilityManager {
      * @param data the visibility data
      */
     private static void applyVisibilityTo(Player player, VisibilityData data) {
+        Entity entity = data.getEntity();
+        // Safety check - only allow Display and ArmorStand, never regular mobs
+        if (entity == null || !entity.isValid()) {
+            return;
+        }
+        if (!(entity instanceof Display) && !(entity instanceof ArmorStand)) {
+            return;
+        }
+        
         if (canSee(player, data)) {
-            player.showEntity(Fabled.inst(), data.getEntity());
+            player.showEntity(Fabled.inst(), entity);
         } else {
-            player.hideEntity(Fabled.inst(), data.getEntity());
+            player.hideEntity(Fabled.inst(), entity);
         }
     }
     
@@ -189,10 +215,21 @@ public class VisibilityManager {
     }
     
     /**
-     * Cleans up invalid entities from the tracker
+     * Cleans up invalid entities from the tracker.
+     * Also removes any incorrectly tracked entities (non-Display, non-ArmorStand).
      */
     public static void cleanUp() {
-        trackedEntities.entrySet().removeIf(entry -> !entry.getValue().getEntity().isValid());
+        trackedEntities.entrySet().removeIf(entry -> {
+            Entity entity = entry.getValue().getEntity();
+            // Remove if invalid
+            if (!entity.isValid()) return true;
+            // Remove if not a valid type (cleanup for any bugs)
+            if (!(entity instanceof Display) && !(entity instanceof ArmorStand)) {
+                Fabled.inst().getLogger().warning("VisibilityManager cleanUp: removing incorrectly tracked entity type: " + entity.getType());
+                return true;
+            }
+            return false;
+        });
     }
     
     /**
