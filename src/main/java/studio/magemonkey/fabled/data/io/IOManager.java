@@ -72,7 +72,11 @@ public abstract class IOManager {
             ATTRSTAGES     = "attrstages",
             COOLDOWN       = "cd",
             HUNGER         = "hunger",
-            ATTRIB_POINTS  = "attrib-points";
+            ATTRIB_POINTS  = "attrib-points",
+            // Stock system keys
+            STOCK          = "stock",
+            STOCK_REGEN    = "stock-regen",
+            LAST_CAST      = "last-cast";
 
     /**
      * API reference
@@ -176,6 +180,25 @@ public abstract class IOManager {
                     if (skillData != null) {
                         skillData.setLevel(skill.getInt(LEVEL));
                         skillData.addCooldown(skill.getInt(COOLDOWN, 0));
+                        
+                        // Load stock system data
+                        if (skill.has(STOCK)) {
+                            skillData.setCurrentStock(skill.getInt(STOCK));
+                        }
+                        if (skill.has(STOCK_REGEN)) {
+                            long regenTime = skill.getLong(STOCK_REGEN, 0);
+                            // Convert relative time back to absolute
+                            if (regenTime > 0) {
+                                skillData.setStockRegenEndTime(System.currentTimeMillis() + regenTime);
+                            }
+                        }
+                        if (skill.has(LAST_CAST)) {
+                            long lastCast = skill.getLong(LAST_CAST, 0);
+                            // Convert relative time back to absolute
+                            if (lastCast > 0) {
+                                skillData.setLastCastTime(System.currentTimeMillis() - lastCast);
+                            }
+                        }
                     }
                 }
             }
@@ -380,6 +403,25 @@ public abstract class IOManager {
                     skillSection.set(LEVEL, skill.getLevel());
                     if (skill.isOnCooldown())
                         skillSection.set(COOLDOWN, skill.getCooldownLeft());
+                    
+                    // Save stock system data (only if using stock system)
+                    if (skill.usesStockSystem()) {
+                        // Ensure stock is up to date before saving
+                        int currentStock = skill.getAvailableStock();
+                        skillSection.set(STOCK, currentStock);
+                        
+                        // Save relative time until next regen (for portability)
+                        long regenTime = skill.getStockRegenEndTime();
+                        if (regenTime > System.currentTimeMillis()) {
+                            skillSection.set(STOCK_REGEN, regenTime - System.currentTimeMillis());
+                        }
+                        
+                        // Save time since last cast (for cast-interval restoration)
+                        long lastCast = skill.getLastCastTime();
+                        if (lastCast > 0) {
+                            skillSection.set(LAST_CAST, System.currentTimeMillis() - lastCast);
+                        }
+                    }
                 }
 
                 // Save binds

@@ -58,6 +58,28 @@ public final class PlayerSkill {
     private int         level;
     private boolean     external;
 
+    // Stock system fields
+    /**
+     * Current available stock charges (-1 means uninitialized, will be set to maxStock)
+     */
+    @Getter
+    @Setter
+    private int         currentStock = -1;
+
+    /**
+     * Timestamp when the next stock will regenerate (0 if not regenerating)
+     */
+    @Getter
+    @Setter
+    private long        stockRegenEndTime = 0;
+
+    /**
+     * Timestamp of the last successful cast (for cast-interval check)
+     */
+    @Getter
+    @Setter
+    private long        lastCastTime = 0;
+
     /**
      * Constructs a new PlayerSkill. You should not need to use
      * this constructor as it is provided by the API. Get instances
@@ -215,10 +237,24 @@ public final class PlayerSkill {
 
     /**
      * Gets the current cooldown of the skill in seconds.
+     * For stock system: returns regen time if no stock, or cast-interval time if within interval.
      *
      * @return current cooldown in seconds or 0 if not on cooldown
      */
     public int getCooldownLeft() {
+        if (usesStockSystem()) {
+            // No stock: return regen time
+            if (!hasStock()) {
+                return (int) Math.ceil(getStockRegenTimeLeft());
+            }
+            // Within cast-interval: return interval time
+            if (!isCastIntervalPassed()) {
+                return (int) Math.ceil(getCastIntervalTimeLeft());
+            }
+            return 0;
+        }
+        
+        // Standard cooldown
         if (isOnCooldown()) {
             return (int) ((cooldown - System.currentTimeMillis() + 999) / 1000);
         } else {
@@ -228,10 +264,24 @@ public final class PlayerSkill {
 
     /**
      * Gets the current cooldown of the skill in milliseconds.
+     * For stock system: returns regen time if no stock, or cast-interval time if within interval.
      *
      * @return current cooldown in milliseconds or 0 if not on cooldown
      */
     public int getCooldownMillis() {
+        if (usesStockSystem()) {
+            // No stock: return regen time
+            if (!hasStock()) {
+                return (int) (getStockRegenTimeLeft() * 1000);
+            }
+            // Within cast-interval: return interval time
+            if (!isCastIntervalPassed()) {
+                return (int) (getCastIntervalTimeLeft() * 1000);
+            }
+            return 0;
+        }
+        
+        // Standard cooldown
         if (isOnCooldown()) {
             return (int) (cooldown - System.currentTimeMillis());
         } else {
@@ -242,14 +292,26 @@ public final class PlayerSkill {
     /**
      * Retrieves the current ready status of the skill which could
      * be on cooldown, missing mana, or ready.
+     * For skills with maxStock > 1, this checks stock availability and cast-interval instead of cooldown.
      *
      * @return the ready status of the skill
      */
     public SkillStatus getStatus() {
-
-        // See if it is on cooldown
-        if (isOnCooldown()) {
-            return SkillStatus.ON_COOLDOWN;
+        // Stock system check (maxStock > 1)
+        if (usesStockSystem()) {
+            // Check if no stock available
+            if (!hasStock()) {
+                return SkillStatus.ON_COOLDOWN;
+            }
+            // Check if within cast-interval
+            if (!isCastIntervalPassed()) {
+                return SkillStatus.ON_COOLDOWN;
+            }
+        } else {
+            // Standard cooldown check (maxStock == 1)
+            if (isOnCooldown()) {
+                return SkillStatus.ON_COOLDOWN;
+            }
         }
 
         // If mana is enabled, check to see if the player has enough
@@ -292,18 +354,27 @@ public final class PlayerSkill {
     }
 
     /**
-     * Starts the cooldown of the skill
+     * Starts the cooldown of the skill.
+     * For skills with maxStock > 1, this consumes a stock charge instead.
      */
     public void startCooldown() {
-        cooldown = System.currentTimeMillis() + (long) Math.floor(skill.getCooldown(level, player) * 1000L);
+        if (usesStockSystem()) {
+            consumeStock();
+        } else {
+            cooldown = System.currentTimeMillis() + (long) Math.floor(skill.getCooldown(level, player) * 1000L);
+        }
     }
 
     /**
      * Refreshes the cooldown of the skill, allowing the
      * player to cast the skill again.
+     * For stock system, this also restores stock to max.
      */
     public void refreshCooldown() {
         cooldown = 0;
+        if (usesStockSystem()) {
+            restoreStock();
+        }
     }
 
     /**
@@ -334,5 +405,164 @@ public final class PlayerSkill {
      */
     public void startPreview() {
         skill.playPreview(player, level);
+    }
+
+    // ==================== Stock System Methods ====================
+
+    /**
+     * Gets the maximum stock charges for this skill at current level
+     *
+     * @return max stock, minimum 1
+     */
+    public int getMaxStock() {
+        return skill.getMaxStock(level, player);
+    }
+
+    /**
+     * Gets the cast interval for this skill at current level
+     *
+     * @return cast interval in seconds
+     */
+    public double getCastInterval() {
+        return skill.getCastInterval(level, player);
+    }
+
+    /**
+     * Updates and retrieves the current available stock count.
+     * This method processes any pending stock regenerations before returning.
+     *
+     * @return current available stock
+     */
+    public int getAvailableStock() {
+        int maxStock = getMaxStock();
+
+        // Initialize if needed
+        if (currentStock < 0) {
+            currentStock = maxStock;
+            return currentStock;
+        }
+
+        // Process any pending regenerations
+        if (currentStock < maxStock && stockRegenEndTime > 0) {
+            long now = System.currentTimeMillis();
+            long cooldownMs = (long) (skill.getCooldown(level, player) * 1000);
+
+            // Catch up on regenerated stocks
+            while (now >= stockRegenEndTime && currentStock < maxStock) {
+                currentStock++;
+                if (currentStock < maxStock) {
+                    stockRegenEndTime += cooldownMs;
+                } else {
+                    stockRegenEndTime = 0; // Full, stop regenerating
+                }
+            }
+        }
+
+        return currentStock;
+    }
+
+    /**
+     * Checks if the skill has stock available for casting
+     *
+     * @return true if at least 1 stock is available
+     */
+    public boolean hasStock() {
+        return getAvailableStock() > 0;
+    }
+
+    /**
+     * Checks if the cast interval has passed since last cast
+     *
+     * @return true if cast interval has passed (can cast again)
+     */
+    public boolean isCastIntervalPassed() {
+        if (lastCastTime == 0) return true;
+        long castIntervalMs = (long) (getCastInterval() * 1000);
+        return System.currentTimeMillis() - lastCastTime >= castIntervalMs;
+    }
+
+    /**
+     * Checks if the skill can be cast considering stock and cast-interval
+     *
+     * @return true if skill has stock and cast-interval has passed
+     */
+    public boolean canUseStock() {
+        return hasStock() && isCastIntervalPassed();
+    }
+
+    /**
+     * Consumes one stock charge and starts regeneration if needed.
+     * Call this when the skill is successfully cast.
+     */
+    public void consumeStock() {
+        // Ensure stock is up to date
+        getAvailableStock();
+
+        int maxStock = getMaxStock();
+        boolean wasAtMax = currentStock >= maxStock;
+
+        // Consume one stock
+        currentStock = Math.max(0, currentStock - 1);
+        lastCastTime = System.currentTimeMillis();
+
+        // Start regeneration if it wasn't running
+        if (wasAtMax || stockRegenEndTime <= System.currentTimeMillis()) {
+            stockRegenEndTime = System.currentTimeMillis() + (long) (skill.getCooldown(level, player) * 1000);
+        }
+    }
+
+    /**
+     * Gets the remaining time until the next stock regenerates
+     *
+     * @return time in seconds, or 0 if not regenerating
+     */
+    public double getStockRegenTimeLeft() {
+        if (stockRegenEndTime <= 0) return 0;
+        long diff = stockRegenEndTime - System.currentTimeMillis();
+        return Math.max(0, diff / 1000.0);
+    }
+
+    /**
+     * Gets the remaining time until cast interval passes
+     *
+     * @return time in seconds, or 0 if can cast immediately
+     */
+    public double getCastIntervalTimeLeft() {
+        if (lastCastTime == 0) return 0;
+        long castIntervalMs = (long) (getCastInterval() * 1000);
+        long elapsed = System.currentTimeMillis() - lastCastTime;
+        long remaining = castIntervalMs - elapsed;
+        return Math.max(0, remaining / 1000.0);
+    }
+
+    /**
+     * Checks if the skill uses the stock system (maxStock > 1)
+     *
+     * @return true if maxStock > 1
+     */
+    public boolean usesStockSystem() {
+        return getMaxStock() > 1;
+    }
+
+    /**
+     * Restores stock to maximum.
+     * Used when refreshing or resetting the skill.
+     */
+    public void restoreStock() {
+        currentStock = getMaxStock();
+        stockRegenEndTime = 0;
+    }
+
+    /**
+     * Sets current stock to a specific value (for loading saved data)
+     *
+     * @param stock the stock value to set
+     */
+    public void initializeStock(int stock) {
+        this.currentStock = Math.max(0, Math.min(stock, getMaxStock()));
+        // If below max, start regeneration
+        if (this.currentStock < getMaxStock()) {
+            stockRegenEndTime = System.currentTimeMillis() + (long) (skill.getCooldown(level, player) * 1000);
+        }
     }
 }

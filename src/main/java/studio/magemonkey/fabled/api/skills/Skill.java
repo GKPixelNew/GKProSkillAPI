@@ -415,6 +415,57 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
+     * Retrieves the maximum stock charges for the skill
+     *
+     * @param level current level of the skill
+     * @return max stock charges (default: 1)
+     */
+    public int getMaxStock(int level) {
+        return Math.max(1, (int) Math.ceil(settings.getAttr(SkillAttribute.MAX_STOCK, level, 1)));
+    }
+
+    /**
+     * Retrieves the maximum stock charges for the skill with player stat scaling
+     *
+     * @param level  current level of the skill
+     * @param player player data for stat scaling
+     * @return max stock charges, rounded up (minimum: 1)
+     */
+    public int getMaxStock(int level, PlayerData player) {
+        double scaled = player.scaleStat(AttributeManager.MAX_STOCK, settings.getAttr(SkillAttribute.MAX_STOCK, level, 1));
+        return Math.max(1, (int) Math.ceil(scaled));
+    }
+
+    public int getMaxStock(int level, Player player) {
+        return getMaxStock(level, Fabled.getData(player));
+    }
+
+    /**
+     * Retrieves the minimum interval between consecutive casts when using stock
+     *
+     * @param level current level of the skill
+     * @return cast interval in seconds (default: 0.1)
+     */
+    public double getCastInterval(int level) {
+        return settings.getAttr(SkillAttribute.CAST_INTERVAL, level, 0.1);
+    }
+
+    /**
+     * Retrieves the cast interval with player stat scaling
+     *
+     * @param level  current level of the skill
+     * @param player player data for stat scaling
+     * @return cast interval in seconds
+     */
+    public double getCastInterval(int level, PlayerData player) {
+        return player.scaleStat(AttributeManager.CAST_INTERVAL, settings.getAttr(SkillAttribute.CAST_INTERVAL, level, 0.1));
+    }
+
+    public double getCastInterval(int level, Player player) {
+        return getCastInterval(level, Fabled.getData(player));
+    }
+
+    /**
      * Checks if skill requires attributes to be upgraded
      *
      * @return true if requires, false otherwise

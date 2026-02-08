@@ -63,4 +63,16 @@ public final class SkillAttribute {
     public static final String RANGE = "range";
 
     public static final String POINTS_SPENT_REQ = "points-spent-req";
+
+    /**
+     * <p>Maximum stock charges a skill can hold</p>
+     * <p>Default: 1 (no stock system)</p>
+     */
+    public static final String MAX_STOCK = "max-stock";
+
+    /**
+     * <p>Minimum interval between consecutive casts when using stock charges</p>
+     * <p>Default: 0.1 seconds</p>
+     */
+    public static final String CAST_INTERVAL = "cast-interval";
 }

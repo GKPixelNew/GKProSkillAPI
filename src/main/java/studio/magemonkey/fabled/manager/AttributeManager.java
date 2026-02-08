@@ -91,6 +91,9 @@ public class AttributeManager implements IAttributeManager {
     public static final String SNEAKING_SPEED                 = "sneaking-speed";
     public static final String SUBMERGED_MINING_SPEED         = "submerged-mining-speed";
     public static final String SWEEPING_DAMAGE_RATIO          = "sweeping-damage-ratio";
+    // Stock system stats
+    public static final String MAX_STOCK                      = "max-stock";
+    public static final String CAST_INTERVAL                  = "cast-interval";
 
     /**
      * Unsafe getter for the attribute data.
