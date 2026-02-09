@@ -5609,6 +5609,8 @@ class TextDisplayMechanic extends FabledMechanic {
 					.setTooltip('Maximum line width in pixels before text wraps'),
 				new DropdownSelect('Alignment', 'alignment', ['Left', 'Center', 'Right'], 'Center')
 					.setTooltip('Text alignment within the display'),
+				new StringSelect('Font', 'font', 'default')
+					.setTooltip('The font to use. Use "default" for Minecraft\'s default font, or specify a custom font from a resource pack (e.g., "minecraft:uniform" or "mypack:custom_font")'),
 				new AttributeSelect('Scale', 'scale', 1.0)
 					.setTooltip('Scale of the text display. 1.0 is normal size'),
 				new SectionMarker('Text Transform'),
