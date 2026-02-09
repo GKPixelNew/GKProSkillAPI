@@ -5653,6 +5653,91 @@ class RemoveTextDisplayMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class BlockDisplayMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Block Display',
+			description:  'Summons a block display entity that shows a block. Applies child components on the block display',
+			data:         [
+				new StringSelect('Key', 'key', 'default')
+					.setTooltip('The key to refer to the block display by. Only one block display of each key can be active per target at a time'),
+				new AttributeSelect('Duration', 'duration', 5)
+					.setTooltip('How long the block display lasts before being deleted'),
+				new DropdownSelect('Block', 'block', (() => [...getBlocks()]), 'Stone')
+					.setTooltip('The block material to display'),
+				new BooleanSelect('Advanced Mode', 'advanced-mode', false)
+					.setTooltip('Enable to manually specify the full block state string'),
+				new StringSelect('Block State', 'block-state', '')
+					.setTooltip('Block state properties (e.g., "facing=north,half=top"). Leave empty for default state. In advanced mode, use full format like "minecraft:oak_stairs[facing=north,half=top]"'),
+				new BooleanSelect('Reuse', 'reuse', false)
+					.setTooltip('When enabled, if a block display with the same key already exists, it will be updated instead of creating a new one'),
+				new BooleanSelect('Follow Target', 'follow', false)
+					.setTooltip('Whether the block display should follow the target')
+					.requireValue('ride-target', [false]),
+				new BooleanSelect('Ride Target', 'ride-target', false)
+					.setTooltip('Whether the block display should ride on the target as a passenger'),
+				new BooleanSelect('Marker', 'marker', true)
+					.setTooltip('Whether the block display should have no collision. Recommended to leave true'),
+				new DropdownSelect('Billboard', 'billboard', ['Fixed', 'Vertical', 'Horizontal', 'Center'], 'Fixed')
+					.setTooltip('How the block display rotates to face players. Fixed = no rotation, Vertical = rotates on Y axis, Horizontal = rotates on X axis, Center = always faces player'),
+				new AttributeSelect('Scale', 'scale', 1.0)
+					.setTooltip('Scale of the block display. 1.0 is normal size'),
+				new BooleanSelect('Glow', 'glow', false)
+					.setTooltip('Whether the block display should glow'),
+				new AttributeSelect('View Range', 'view-range', 1.0)
+					.setTooltip('The view range modifier. Higher values mean the display can be seen from further away. Default is 1.0'),
+				new SectionMarker('Rotation'),
+				new AttributeSelect('Pitch', 'pitch')
+					.setTooltip('Rotation around the X axis in degrees'),
+				new AttributeSelect('Yaw', 'yaw')
+					.setTooltip('Rotation around the Y axis in degrees'),
+				new AttributeSelect('Roll', 'roll')
+					.setTooltip('Rotation around the Z axis in degrees'),
+				new SectionMarker('Brightness'),
+				new AttributeSelect('Block Light', 'block-light', -1)
+					.setTooltip('Block light level from 0-15. Use -1 to use natural lighting'),
+				new AttributeSelect('Sky Light', 'sky-light', -1)
+					.setTooltip('Sky light level from 0-15. Use -1 to use natural lighting'),
+				new SectionMarker('Transform'),
+				new AttributeSelect('Translate X', 'translate-x')
+					.setTooltip('Visual translation offset on the X axis. This moves the rendered block without moving the entity'),
+				new AttributeSelect('Translate Y', 'translate-y')
+					.setTooltip('Visual translation offset on the Y axis. This moves the rendered block without moving the entity'),
+				new AttributeSelect('Translate Z', 'translate-z')
+					.setTooltip('Visual translation offset on the Z axis. This moves the rendered block without moving the entity'),
+				new DropdownSelect('Client Visibility', 'visibility', ['Everyone', 'Caster Only', 'Caster and Allies', 'Enemies Only', 'None'], 'Everyone')
+					.setTooltip('Controls which players can see the block display client-side'),
+				new SectionMarker('Offset'),
+				new AttributeSelect('Forward Offset', 'forward')
+					.setTooltip('How far forward in front of the target the block display should be in blocks. A negative value will put it behind'),
+				new AttributeSelect('Upward Offset', 'upward')
+					.setTooltip('How far above the target the block display should be in blocks. A negative value will put it below'),
+				new AttributeSelect('Right Offset', 'right')
+					.setTooltip('How far to the right the block display should be of the target. A negative value will put it to the left')
+			],
+			summaryItems: ['duration', 'block', 'follow', 'billboard']
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
+class RemoveBlockDisplayMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Remove Block Display',
+			description:  'Removes a block display with the given key',
+			data:         [
+				new StringSelect('Key', 'key', 'default')
+					.setTooltip('The key of the block display to remove')
+			],
+			summaryItems: ['key']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ThrowMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -6690,6 +6775,8 @@ export const initComponents = () => {
 		TAUNT:              { name: 'Taunt', component: TauntMechanic },
 		TEXT_DISPLAY:       { name: 'Text Display', component: TextDisplayMechanic },
 		TEXT_DISPLAY_REMOVE: { name: 'Remove Text Display', component: RemoveTextDisplayMechanic },
+		BLOCK_DISPLAY:      { name: 'Block Display', component: BlockDisplayMechanic },
+		BLOCK_DISPLAY_REMOVE: { name: 'Remove Block Display', component: RemoveBlockDisplayMechanic },
 		THROW:              { name: 'Throw', component: ThrowMechanic },
 		TRANSLATED_MESSAGE: { name: 'Translated Message', component: TranslatedMessageMechanic },
 		TRIGGER:            { name: 'Trigger', component: TriggerMechanic },

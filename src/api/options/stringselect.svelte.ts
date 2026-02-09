@@ -36,8 +36,10 @@ export default class StringSelect extends Requirements implements ComponentOptio
 
 	getData = (): { [key: string]: string } => {
 		const data: { [key: string]: string } = {};
-
-		data[this.key] = this.data || '';
+		// Convert actual newlines back to \n for YAML storage
+		data[this.key] = this.multiline 
+			? (this.data || '').replace(/\n/g, '\\n')
+			: (this.data || '');
 		return data;
 	};
 
@@ -45,7 +47,9 @@ export default class StringSelect extends Requirements implements ComponentOptio
 
 	deserialize = (yaml: Unknown) => {
 		const val = <string>yaml[this.key];
-		if (val !== undefined)
-			this.data = val;
+		if (val !== undefined) {
+			// Convert \n strings to actual newlines for multiline display
+			this.data = this.multiline ? val.replace(/\\n/g, '\n') : val;
+		}
 	};
 }
