@@ -272,6 +272,9 @@ public class TextDisplayMechanic extends MechanicComponent {
      * Parse text with MiniMessage and replace placeholders
      */
     private Component parseText(String text, LivingEntity caster, LivingEntity target, int level) {
+        // Convert \n to actual newlines for multi-line support
+        text = text.replace("\\n", "\n");
+        
         // Replace placeholders
         text = text.replace("{caster}", caster.getName())
                    .replace("{target}", target.getName())
