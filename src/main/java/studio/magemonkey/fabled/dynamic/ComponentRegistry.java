@@ -78,6 +78,7 @@ public class ComponentRegistry {
         register(new MoveTrigger());
         register(new PhysicalDealtTrigger());
         register(new PhysicalTakenTrigger());
+        register(new PotionEffectTrigger());
         register(new ProjectileHitTrigger());
         register(new ProjectileTickTrigger());
         register(new RiptideTrigger());
