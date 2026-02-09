@@ -112,8 +112,8 @@ public class TextDisplayMechanic extends MechanicComponent {
         }
         final TextDisplay.TextAlignment finalAlignment = alignment;
 
-        // Clamp text opacity
-        byte finalOpacity = (byte) Math.max(-128, Math.min(127, textOpacity - 128));
+        // Convert 0-255 user input to signed byte (255 -> -1 = full opacity, 0 = transparent)
+        byte finalOpacity = (byte) Math.max(0, Math.min(255, textOpacity));
 
         List<LivingEntity> textDisplays = new ArrayList<>();
         for (LivingEntity target : targets) {
