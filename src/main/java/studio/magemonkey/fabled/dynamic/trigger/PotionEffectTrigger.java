@@ -40,6 +40,19 @@ public class PotionEffectTrigger implements Trigger<EntityPotionEffectEvent> {
         if (type.equals("end") && !isEnd) return false;
         // "both" accepts either
         
+        // Skip if the effect hasn't actually changed (same type, level, and duration)
+        if (action == EntityPotionEffectEvent.Action.CHANGED) {
+            PotionEffect oldEffect = event.getOldEffect();
+            PotionEffect newEffect = event.getNewEffect();
+            if (oldEffect != null && newEffect != null) {
+                if (oldEffect.getType().equals(newEffect.getType())
+                        && oldEffect.getAmplifier() == newEffect.getAmplifier()
+                        && oldEffect.getDuration() == newEffect.getDuration()) {
+                    return false;
+                }
+            }
+        }
+        
         // Check potion type filter
         List<String> potionTypes = settings.getStringList("potion");
         PotionEffectType modifiedType = event.getModifiedType();
