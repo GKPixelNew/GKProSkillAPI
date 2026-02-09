@@ -77,6 +77,8 @@ public class MechanicListener extends FabledListener {
     public static final String DISGUISE_KEY      = "sapiDisguiseKey";
     public static final String ARMOR_STAND       = "asMechanic";
     public static final String TEXT_DISPLAY      = "textDisplayMechanic";
+    public static final String BLOCK_DISPLAY     = "blockDisplayMechanic";
+    public static final String REMOVE_BLOCK_DISPLAY = "removeBlockDisplayMechanic";
     public static final String DAMAGE_CAUSE      = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
