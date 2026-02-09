@@ -499,6 +499,28 @@ class ItemSwapTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class PotionEffectTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Potion Effect',
+			description:  'Applies skill effects when a potion effect is applied or removed. Use {api-effect} for the effect type, {api-level} for the amplifier level, {api-duration} for the duration in ticks, and {api-action} for the action (added, changed, removed, cleared)',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Start', 'End', 'Both'], 'Start')
+					.setTooltip('Start triggers when an effect is applied or changed. End triggers when an effect is removed or cleared. Both triggers for all actions'),
+				new DropdownSelect('Potion', 'potion', getAnyPotion, ['Any'], true)
+					.setTooltip('The potion effect types to trigger on'),
+				new IntSelect('Min Level', 'min-level', 1)
+					.setTooltip('The minimum amplifier level of the effect (1 = level I)'),
+				new IntSelect('Max Level', 'max-level', 999)
+					.setTooltip('The maximum amplifier level of the effect')
+			],
+			summaryItems: ['type', 'potion', 'min-level', 'max-level']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class JumpTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -6488,6 +6510,8 @@ export const initComponents = () => {
 		DROP_ITEM:   { name: 'Drop Item', component: DropItemTrigger, section: 'Item' },
 		ITEM_HELD:   { name: 'Item Held', component: ItemHeldTrigger, section: 'Item' },
 		ITEM_SWAP:   { name: 'Item Swap', component: ItemSwapTrigger, section: 'Item' },
+
+		POTION_EFFECT: { name: 'Potion Effect', component: PotionEffectTrigger, section: 'Effect' },
 
 		FISHING:        { name: 'Fishing', component: FishingTrigger, section: 'Fishing' },
 		FISHING_BITE:   { name: 'Fishing Bite', component: FishingBiteTrigger, section: 'Fishing' },
