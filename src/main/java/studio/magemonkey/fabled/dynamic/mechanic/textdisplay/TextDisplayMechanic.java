@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic.textdisplay;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -55,6 +56,7 @@ public class TextDisplayMechanic extends MechanicComponent {
     private static final String UPWARD           = "upward";
     private static final String RIGHT            = "right";
     private static final String VISIBILITY       = "visibility";
+    private static final String FONT             = "font";
 
     @Override
     public String getKey() {
@@ -86,6 +88,8 @@ public class TextDisplayMechanic extends MechanicComponent {
         double  right     = parseValues(caster, RIGHT, level, 0);
         String  visibilityStr = settings.getString(VISIBILITY, "everyone");
         VisibilityManager.VisibilityMode visibilityMode = VisibilityManager.parseMode(visibilityStr);
+        String  fontStr = settings.getString(FONT, "default");
+        Key font = parseFont(fontStr);
 
         // Parse background color from hex
         Color backgroundColor = parseColor(bgColorHex);
@@ -128,7 +132,7 @@ public class TextDisplayMechanic extends MechanicComponent {
                 // Update existing text display instead of creating new
                 existing.updateDisplay(textComponent, finalBillboard, backgroundColor,
                         finalOpacity, shadow, seeThrough, lineWidth, finalAlignment, scale,
-                        translateX, translateY, translateZ);
+                        translateX, translateY, translateZ, font);
                 
                 // Only teleport if not riding or following (those systems handle positioning)
                 if (!rideTarget && !follow) {
@@ -170,6 +174,15 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setSeeThrough(seeThrough);
                     td.setLineWidth(lineWidth);
                     td.setAlignment(finalAlignment);
+                    
+                    // Apply font
+                    if (font != null) {
+                        try {
+                            td.font(font);
+                        } catch (NoSuchMethodError ignored) {
+                            // Font method not available in this version
+                        }
+                    }
                     
                     // Apply transformation (scale and translation)
                     if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
@@ -266,6 +279,29 @@ public class TextDisplayMechanic extends MechanicComponent {
         }
         // Default: semi-transparent black
         return Color.fromARGB(64, 0, 0, 0);
+    }
+
+    /**
+     * Parse font string to Adventure Key
+     * Supports formats: "default", "minecraft:default", "namespace:path"
+     * Returns null for "default" to use Minecraft's default font
+     */
+    private Key parseFont(String fontStr) {
+        if (fontStr == null || fontStr.isEmpty() || fontStr.equalsIgnoreCase("default")) {
+            return null; // Use default Minecraft font
+        }
+        
+        try {
+            if (fontStr.contains(":")) {
+                // Already namespaced
+                return Key.key(fontStr);
+            } else {
+                // Add minecraft namespace
+                return Key.key("minecraft", fontStr);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

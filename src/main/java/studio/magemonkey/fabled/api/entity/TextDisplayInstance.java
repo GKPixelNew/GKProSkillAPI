@@ -2,6 +2,7 @@ package studio.magemonkey.fabled.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -76,7 +77,7 @@ public class TextDisplayInstance {
     public void updateDisplay(Component text, Display.Billboard billboard, Color backgroundColor,
                               byte textOpacity, boolean shadow, boolean seeThrough,
                               int lineWidth, TextDisplay.TextAlignment alignment, double scale,
-                              double translateX, double translateY, double translateZ) {
+                              double translateX, double translateY, double translateZ, Key font) {
         Runnable update = () -> {
             if (!textDisplay.isValid()) return;
             textDisplay.text(text);
@@ -87,6 +88,15 @@ public class TextDisplayInstance {
             textDisplay.setSeeThrough(seeThrough);
             textDisplay.setLineWidth(lineWidth);
             textDisplay.setAlignment(alignment);
+            
+            // Apply font
+            if (font != null) {
+                try {
+                    textDisplay.font(font);
+                } catch (NoSuchMethodError ignored) {
+                    // Font method not available in this version
+                }
+            }
             
             if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
                 Transformation transformation = new Transformation(
