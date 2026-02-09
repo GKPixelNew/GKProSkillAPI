@@ -220,16 +220,13 @@ public class TextDisplayMechanic extends MechanicComponent {
                 // Make text display ride on target if enabled
                 if (rideTarget) {
                     target.addPassenger(td);
-                    // Show after 1 tick once it's positioned correctly on the passenger
+                    // Apply visibility after 1 tick once it's positioned correctly on the passenger
                     final TextDisplay finalTd = td;
+                    final LivingEntity finalCaster = caster;
+                    final VisibilityManager.VisibilityMode finalVisibilityMode = visibilityMode;
                     Fabled.schedule(() -> {
                         if (finalTd.isValid()) {
-                            // IMPORTANT: Visibility restrictions are DISABLED for riding entities
-                            // due to a Minecraft bug where hideEntity on passengers corrupts mob name tags.
-                            // Always show to everyone when using ride-target.
-                            for (Player viewer : Bukkit.getOnlinePlayers()) {
-                                viewer.showEntity(Fabled.inst(), finalTd);
-                            }
+                            VisibilityManager.register(finalTd, finalCaster, finalVisibilityMode);
                         }
                     }, 1);
                 } else {
