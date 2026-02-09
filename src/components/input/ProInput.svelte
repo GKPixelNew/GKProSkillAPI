@@ -14,6 +14,7 @@
 		autofocus?: boolean;
 		disabled?: boolean;
 		disableAnimation?: boolean;
+		multiline?: boolean;
 	}
 
 	let {
@@ -26,7 +27,8 @@
 				nowrap           = false,
 				autofocus        = false,
 				disabled         = false,
-				disableAnimation = false
+				disableAnimation = false,
+				multiline        = false
 			}: Props                       = $props();
 	let input: HTMLElement | undefined = $state();
 	let hovered                        = $state(false);
@@ -84,16 +86,26 @@
 	<!--           {placeholder} />-->
 	<!--  {:else}-->
 	{#if !!value || value === "" || value === 0}
-		<input bind:this={input} bind:value {disabled} {placeholder} />
+		{#if multiline}
+			<textarea bind:this={input} bind:value {disabled} {placeholder} rows="3"></textarea>
+		{:else}
+			<input bind:this={input} bind:value {disabled} {placeholder} />
+		{/if}
 	{/if}
 	<!--{/if}-->
 	{@render children?.()}
 </div>
 
 <style>
-    input {
+    input, textarea {
         width: 100%;
         padding-inline: 0.5rem;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 2.5rem;
+        font-family: inherit;
     }
 
     .label {

@@ -9,6 +9,7 @@ export default class StringSelect extends Requirements implements ComponentOptio
 	key: string;
 	data: string                = $state('');
 	tooltip: string | undefined = $state();
+	multiline: boolean          = false;
 
 	constructor(name: string, key: string, def = '') {
 		super();
@@ -22,8 +23,14 @@ export default class StringSelect extends Requirements implements ComponentOptio
 		return this;
 	};
 
+	setMultiline = (multiline: boolean = true): this => {
+		this.multiline = multiline;
+		return this;
+	};
+
 	clone = (): ComponentOption => {
 		const select = new StringSelect(this.name, this.key, this.data);
+		select.multiline = this.multiline;
 		return select;
 	};
 
