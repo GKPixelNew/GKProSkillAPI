@@ -233,8 +233,16 @@ public class TextDisplayMechanic extends MechanicComponent {
                         }
                     }, 1);
                 } else {
-                    // Apply visibility restrictions immediately if not riding
-                    VisibilityManager.register(td, caster, visibilityMode);
+                    // Apply visibility restrictions after 1 tick to ensure entity is fully initialized
+                    // hideEntity/showEntity don't work reliably immediately after spawn
+                    final TextDisplay finalTd = td;
+                    final LivingEntity finalCaster = caster;
+                    final VisibilityManager.VisibilityMode finalVisibilityMode = visibilityMode;
+                    Fabled.schedule(() -> {
+                        if (finalTd.isValid()) {
+                            VisibilityManager.register(finalTd, finalCaster, finalVisibilityMode);
+                        }
+                    }, 1);
                 }
 
                 // Set up removal task
