@@ -201,13 +201,9 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setViewRange(16.0f);
                 }
 
-                // For non-EVERYONE visibility modes (or ride-target), hide from all players immediately
-                // This prevents the brief flash of visibility before restrictions are applied
-                if (rideTarget || visibilityMode != VisibilityManager.VisibilityMode.EVERYONE) {
-                    for (Player viewer : Bukkit.getOnlinePlayers()) {
-                        viewer.hideEntity(Fabled.inst(), td);
-                    }
-                }
+                // Apply visibility restrictions via packet interception
+                // This works for both regular and ride-target cases
+                VisibilityManager.register(td, caster, visibilityMode);
 
                 TextDisplayInstance instance;
                 if (follow) {
@@ -220,26 +216,6 @@ public class TextDisplayMechanic extends MechanicComponent {
                 // Make text display ride on target if enabled
                 if (rideTarget) {
                     target.addPassenger(td);
-                    // Apply visibility after 1 tick once it's positioned correctly on the passenger
-                    final TextDisplay finalTd = td;
-                    final LivingEntity finalCaster = caster;
-                    final VisibilityManager.VisibilityMode finalVisibilityMode = visibilityMode;
-                    Fabled.schedule(() -> {
-                        if (finalTd.isValid()) {
-                            VisibilityManager.register(finalTd, finalCaster, finalVisibilityMode);
-                        }
-                    }, 1);
-                } else {
-                    // Apply visibility restrictions after 1 tick to ensure entity is fully initialized
-                    // hideEntity/showEntity don't work reliably immediately after spawn
-                    final TextDisplay finalTd = td;
-                    final LivingEntity finalCaster = caster;
-                    final VisibilityManager.VisibilityMode finalVisibilityMode = visibilityMode;
-                    Fabled.schedule(() -> {
-                        if (finalTd.isValid()) {
-                            VisibilityManager.register(finalTd, finalCaster, finalVisibilityMode);
-                        }
-                    }, 1);
                 }
 
                 // Set up removal task
