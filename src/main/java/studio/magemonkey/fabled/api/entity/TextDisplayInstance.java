@@ -80,7 +80,14 @@ public class TextDisplayInstance {
                               double translateX, double translateY, double translateZ, Key font) {
         Runnable update = () -> {
             if (!textDisplay.isValid()) return;
-            textDisplay.text(text);
+            
+            // Apply font to the component if specified
+            Component finalText = text;
+            if (font != null) {
+                finalText = text.font(font);
+            }
+            
+            textDisplay.text(finalText);
             textDisplay.setBillboard(billboard);
             textDisplay.setBackgroundColor(backgroundColor);
             textDisplay.setTextOpacity(textOpacity);
@@ -88,15 +95,6 @@ public class TextDisplayInstance {
             textDisplay.setSeeThrough(seeThrough);
             textDisplay.setLineWidth(lineWidth);
             textDisplay.setAlignment(alignment);
-            
-            // Apply font
-            if (font != null) {
-                try {
-                    textDisplay.font(font);
-                } catch (NoSuchMethodError ignored) {
-                    // Font method not available in this version
-                }
-            }
             
             if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
                 Transformation transformation = new Transformation(

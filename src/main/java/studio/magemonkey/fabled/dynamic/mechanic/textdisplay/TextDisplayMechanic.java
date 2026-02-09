@@ -120,6 +120,12 @@ public class TextDisplayMechanic extends MechanicComponent {
             // Parse text with MiniMessage and placeholders (per target for {target} placeholder)
             Component textComponent = parseText(text, caster, target, level);
             
+            // Apply font to component if specified
+            if (font != null) {
+                textComponent = textComponent.font(font);
+            }
+            final Component finalTextComponent = textComponent;
+            
             Location loc = target.getLocation().clone();
             Vector   dir = loc.getDirection().setY(0).normalize();
             Vector   side = dir.clone().crossProduct(UP);
@@ -166,7 +172,7 @@ public class TextDisplayMechanic extends MechanicComponent {
                         td.setInvulnerable(true);
                     } catch (NoSuchMethodError ignored) {
                     }
-                    td.text(textComponent);
+                    td.text(finalTextComponent);
                     td.setBillboard(finalBillboard);
                     td.setBackgroundColor(backgroundColor);
                     td.setTextOpacity(finalOpacity);
@@ -174,15 +180,6 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setSeeThrough(seeThrough);
                     td.setLineWidth(lineWidth);
                     td.setAlignment(finalAlignment);
-                    
-                    // Apply font
-                    if (font != null) {
-                        try {
-                            td.font(font);
-                        } catch (NoSuchMethodError ignored) {
-                            // Font method not available in this version
-                        }
-                    }
                     
                     // Apply transformation (scale and translation)
                     if (scale != 1.0 || translateX != 0 || translateY != 0 || translateZ != 0) {
