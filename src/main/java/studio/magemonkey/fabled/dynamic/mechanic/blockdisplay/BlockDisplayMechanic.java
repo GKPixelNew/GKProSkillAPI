@@ -23,6 +23,7 @@ import studio.magemonkey.fabled.listener.MechanicListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Summons a block display entity that can show a block with customizable properties.
@@ -287,7 +288,10 @@ public class BlockDisplayMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop,
+                            Player caster,
+                            int level,
+                            Supplier<List<LivingEntity>> targetSupplier) {
         // Block displays don't have a simple preview
     }
 }
