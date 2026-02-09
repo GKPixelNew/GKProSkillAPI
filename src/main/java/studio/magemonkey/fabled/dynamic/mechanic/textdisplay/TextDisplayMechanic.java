@@ -201,8 +201,9 @@ public class TextDisplayMechanic extends MechanicComponent {
                     td.setViewRange(16.0f);
                 }
 
-                // If ride-target, hide initially to prevent seeing the spawn-to-ride teleport
-                if (rideTarget) {
+                // For non-EVERYONE visibility modes (or ride-target), hide from all players immediately
+                // This prevents the brief flash of visibility before restrictions are applied
+                if (rideTarget || visibilityMode != VisibilityManager.VisibilityMode.EVERYONE) {
                     for (Player viewer : Bukkit.getOnlinePlayers()) {
                         viewer.hideEntity(Fabled.inst(), td);
                     }

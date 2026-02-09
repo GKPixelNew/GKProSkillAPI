@@ -134,6 +134,9 @@ public class MainListener extends FabledListener {
         if (player.hasMetadata("NPC") || !Fabled.getSettings().isWorldEnabled(player.getWorld()))
             return;
 
+        // Apply visibility restrictions immediately on join, before any delay
+        VisibilityManager.applyVisibilityForPlayer(player);
+
         final int delay = Fabled.getSettings().getSqlDelay();
         if (Fabled.getSettings().isUseSql() && delay > 0) {
             final BukkitTask task = Fabled.schedule(() -> {
