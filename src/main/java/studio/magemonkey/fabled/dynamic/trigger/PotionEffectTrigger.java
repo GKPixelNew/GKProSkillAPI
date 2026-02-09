@@ -46,8 +46,7 @@ public class PotionEffectTrigger implements Trigger<EntityPotionEffectEvent> {
             PotionEffect newEffect = event.getNewEffect();
             if (oldEffect != null && newEffect != null) {
                 if (oldEffect.getType().equals(newEffect.getType())
-                        && oldEffect.getAmplifier() == newEffect.getAmplifier()
-                        && oldEffect.getDuration() == newEffect.getDuration()) {
+                        && oldEffect.getAmplifier() == newEffect.getAmplifier()) {
                     return false;
                 }
             }
