@@ -77,6 +77,7 @@
 						name={datum.name}
 						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
 						multiple={datum.multiple}
+						multiline={datum.multiline}
 						{onsave}
 					/>
 				{/if}
