@@ -442,6 +442,11 @@ public final class PlayerSkill {
     public int getAvailableStock() {
         int maxStock = getMaxStock();
 
+        // For non-stock skills (maxStock == 1), reflect cooldown state
+        if (maxStock <= 1) {
+            return isOnCooldown() ? 0 : 1;
+        }
+
         // Initialize if needed
         if (currentStock < 0) {
             currentStock = maxStock;
