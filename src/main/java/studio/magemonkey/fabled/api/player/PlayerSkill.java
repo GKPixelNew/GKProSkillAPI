@@ -529,6 +529,16 @@ public final class PlayerSkill {
     }
 
     /**
+     * Gets the remaining time until the next stock regenerates in milliseconds
+     *
+     * @return time in milliseconds, or 0 if not regenerating
+     */
+    public long getStockRegenTimeLeftMillis() {
+        if (stockRegenEndTime <= 0) return 0;
+        return Math.max(0, stockRegenEndTime - System.currentTimeMillis());
+    }
+
+    /**
      * Gets the remaining time until cast interval passes
      *
      * @return time in seconds, or 0 if can cast immediately
