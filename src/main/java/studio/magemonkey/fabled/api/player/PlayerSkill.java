@@ -520,9 +520,10 @@ public final class PlayerSkill {
     /**
      * Gets the remaining time until the next stock regenerates
      *
-     * @return time in seconds, or 0 if not regenerating
+     * @return time in seconds, or 0 if at max stock
      */
     public double getStockRegenTimeLeft() {
+        getAvailableStock(); // Update stock state first
         if (stockRegenEndTime <= 0) return 0;
         long diff = stockRegenEndTime - System.currentTimeMillis();
         return Math.max(0, diff / 1000.0);
@@ -531,9 +532,10 @@ public final class PlayerSkill {
     /**
      * Gets the remaining time until the next stock regenerates in milliseconds
      *
-     * @return time in milliseconds, or 0 if not regenerating
+     * @return time in milliseconds, or 0 if at max stock
      */
     public long getStockRegenTimeLeftMillis() {
+        getAvailableStock(); // Update stock state first
         if (stockRegenEndTime <= 0) return 0;
         return Math.max(0, stockRegenEndTime - System.currentTimeMillis());
     }
