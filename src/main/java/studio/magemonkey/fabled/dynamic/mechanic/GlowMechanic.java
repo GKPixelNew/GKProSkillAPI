@@ -103,6 +103,12 @@ public class GlowMechanic extends MechanicComponent {
         return false;
     }
 
+    /**
+     * Starts a glow effect on the target entity for the specified viewer and duration.
+     * @param viewer the player who will see the glow effect
+     * @param target the entity to apply the glow effect to
+     * @param durationTicks the duration of the glow effect in ticks, -1 for infinite
+     */
     public static void startGlow(Player viewer, LivingEntity target, int durationTicks) {
         var playerUuid = viewer.getUniqueId();
         int entityId = target.getEntityId();
@@ -123,6 +129,8 @@ public class GlowMechanic extends MechanicComponent {
         var metadata = new EntityData(0, EntityDataTypes.BYTE, flags);
         var packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(metadata));
         PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, packet);
+
+        if (durationTicks < 0) return;
 
         // Schedule removal of glow effect
         var task = Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
