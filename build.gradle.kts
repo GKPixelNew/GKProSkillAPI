@@ -67,6 +67,7 @@ dependencies {
     compileOnly("dev.robothanzo.gk.replay:GKReplay:1.8.2-SNAPSHOT")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
     compileOnly("io.lumine:Mythic:5.11.1")
+    compileOnly("io.github.toxicity188:bettermodel:1.15.2")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 }
