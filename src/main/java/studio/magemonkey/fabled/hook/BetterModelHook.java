@@ -25,8 +25,9 @@ public class BetterModelHook {
             log.error("No limb found for limbId {}", limbId);
             return;
         }
-        limb.get().getOrCreate(player).animate(animationId, AnimationModifier.builder()
+        var tracker = limb.get().getOrCreate(player);
+        tracker.animate(animationId, AnimationModifier.builder()
                 .start(lerpIn).end(lerpOut).speed(speed).type(AnimationIterator.Type.valueOf(type))
-                .build());
+                .build(), tracker::close);
     }
 }
