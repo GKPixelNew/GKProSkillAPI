@@ -94,62 +94,66 @@ public class GlowMechanic extends MechanicComponent {
             ensureListenerRegistered();
 
             var duration = (int) parseValues(caster, DURATION, level, 5) * 20;
-            var playerUuid = player.getUniqueId();
 
             for (var target : targets) {
-                int entityId = target.getEntityId();
-
-                // Cancel any existing glow removal task for this player-target pair
-                var playerTasks = activeGlowTasks.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
-                var existingTask = playerTasks.remove(entityId);
-                if (existingTask != null) {
-                    existingTask.cancel();
-                }
-
-                // Add to active glow targets
-                var glowingTargets = activeGlowTargets.computeIfAbsent(playerUuid, k -> ConcurrentHashMap.newKeySet());
-                glowingTargets.add(entityId);
-
-                // Send metadata packet with glowing flag
-                byte flags = getEntityFlags(target);
-                var metadata = new EntityData(0, EntityDataTypes.BYTE, flags);
-                var packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(metadata));
-                PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
-
-                // Schedule removal of glow effect
-                var task = Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
-                    // Remove from tracking
-                    var tasks = activeGlowTasks.get(playerUuid);
-                    if (tasks != null) {
-                        tasks.remove(entityId);
-                        if (tasks.isEmpty()) {
-                            activeGlowTasks.remove(playerUuid);
-                        }
-                    }
-
-                    // Remove from active glow targets
-                    var targets2 = activeGlowTargets.get(playerUuid);
-                    if (targets2 != null) {
-                        targets2.remove(entityId);
-                        if (targets2.isEmpty()) {
-                            activeGlowTargets.remove(playerUuid);
-                        }
-                    }
-
-                    // Remove glowing flag
-                    byte resetFlags = (byte) (getEntityFlags(target) & ~GLOWING_FLAG);
-
-                    var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
-                    var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
-                    PacketEvents.getAPI().getPlayerManager().sendPacket(player, resetPacket);
-                }, duration);
-
-                // Track the new task
-                playerTasks.put(entityId, task);
+                startGlow(player, target, duration);
             }
             return true;
         }
         return false;
+    }
+
+    public static void startGlow(Player viewer, LivingEntity target, int durationTicks) {
+        var playerUuid = viewer.getUniqueId();
+        int entityId = target.getEntityId();
+
+        // Cancel any existing glow removal task for this player-target pair
+        var playerTasks = activeGlowTasks.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
+        var existingTask = playerTasks.remove(entityId);
+        if (existingTask != null) {
+            existingTask.cancel();
+        }
+
+        // Add to active glow targets
+        var glowingTargets = activeGlowTargets.computeIfAbsent(playerUuid, k -> ConcurrentHashMap.newKeySet());
+        glowingTargets.add(entityId);
+
+        // Send metadata packet with glowing flag
+        byte flags = getEntityFlags(target);
+        var metadata = new EntityData(0, EntityDataTypes.BYTE, flags);
+        var packet = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(metadata));
+        PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, packet);
+
+        // Schedule removal of glow effect
+        var task = Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
+            // Remove from tracking
+            var tasks = activeGlowTasks.get(playerUuid);
+            if (tasks != null) {
+                tasks.remove(entityId);
+                if (tasks.isEmpty()) {
+                    activeGlowTasks.remove(playerUuid);
+                }
+            }
+
+            // Remove from active glow targets
+            var targets2 = activeGlowTargets.get(playerUuid);
+            if (targets2 != null) {
+                targets2.remove(entityId);
+                if (targets2.isEmpty()) {
+                    activeGlowTargets.remove(playerUuid);
+                }
+            }
+
+            // Remove glowing flag
+            byte resetFlags = (byte) (getEntityFlags(target) & ~GLOWING_FLAG);
+
+            var resetMetadata = new EntityData(0, EntityDataTypes.BYTE, resetFlags);
+            var resetPacket = new WrapperPlayServerEntityMetadata(entityId, Collections.singletonList(resetMetadata));
+            PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, resetPacket);
+        }, durationTicks);
+
+        // Track the new task
+        playerTasks.put(entityId, task);
     }
 
     public static void stopGlow(Player viewer, LivingEntity target) {
