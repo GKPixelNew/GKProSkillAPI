@@ -6478,6 +6478,32 @@ class WolfMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class BetterModelAnimateLimbMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:        'Better Model Animate Limb',
+			description: 'Plays an limb animation on a player using BetterModel.',
+			data:        [
+				new StringSelect('Limb ID', 'limb_id', 'root')
+					.setTooltip('The limb id to animate on the model'),
+				new StringSelect('Animation ID', 'animation_id', 'default')
+					.setTooltip('The animation id to play'),
+				new DoubleSelect('Lerp In', 'lerp_in', 100)
+					.setTooltip('Time in milliseconds to interpolate into the animation'),
+				new DoubleSelect('Lerp Out', 'lerp_out', 100)
+					.setTooltip('Time in milliseconds to interpolate out of the animation'),
+				new AttributeSelect('Speed', 'speed', 1)
+					.setTooltip('Playback speed multiplier'),
+				new DropdownSelect('Type', 'type', ['play once', 'loop', 'hol on last'], 'once')
+					.setTooltip('How the animation should play')
+			],
+			summaryItems: ['limb_id', 'animation_id', 'speed', 'type']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 const particlePreviewOptions = (key: string): ComponentOption[] => {
 	return [
 		new IntSelect('Refresh period', key + '-period', 5)
@@ -6781,6 +6807,7 @@ export const initComponents = () => {
 		TRANSLATED_MESSAGE: { name: 'Translated Message', component: TranslatedMessageMechanic },
 		TRIGGER:            { name: 'Trigger', component: TriggerMechanic },
 		WOLF:               { name: 'Wolf', component: WolfMechanic },
+		BETTER_MODEL_ANIMATE_LIMB: { name: 'Better Model Animate Limb', component: BetterModelAnimateLimbMechanic, section: 'Animation' },
 
 		CANCEL_EFFECT:       { name: 'Cancel Effect', component: CancelEffectMechanic, section: 'Particle' },
 		PARTICLE:            { name: 'Particle', component: ParticleMechanic, section: 'Particle' },
